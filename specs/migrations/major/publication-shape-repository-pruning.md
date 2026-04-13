@@ -763,6 +763,22 @@ kept for the publication bundle:
 8. The release manifest is fail-closed: anything not explicitly included is
    excluded, and no dormant late-epic compatibility paths remain.
 
+## Completed So Far
+
+- [x] Remove `worker_renderer/utils/technical_drawing.py` and the
+  `render_technical_drawing_preview` route binding from
+  `worker_renderer/api/routes.py`.
+- [x] Remove the technical-drawing template artifacts from
+  `shared/assets/template_repos/benchmark_generator/**` and
+  `shared/assets/template_repos/engineer/drafting/**`.
+- [x] Remove the deleted technical-drawing filename constants from
+  `shared/script_contracts.py` and update
+  `controller/agent/node_entry_validation.py` to reference only the surviving
+  evidence-script names.
+- [x] Remove the electronics role prompt entries from
+  `controller/agent/prompt_manager.py`.
+- [x] Remove `worker_light/agent_files/.admin/clear_env.py`.
+
 ## Retained Roots
 
 The publication bundle keeps the minimal runnable and deployment roots:
@@ -968,7 +984,7 @@ The safe order is:
 
 ### Verification and docs
 
-- [ ] Curate the dataset and integration-test surface down to the paper-
+- [x] Curate the dataset and integration-test surface down to the paper-
   critical subset.
 - [x] Remove the technical-drawing fixture families and late-epic branch
   tests from the release candidate.
