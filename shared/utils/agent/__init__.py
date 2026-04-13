@@ -25,7 +25,6 @@ from shared.rendering import (
 from shared.script_contracts import (
     authored_script_path_for_agent,
     role_family_for_agent,
-    technical_drawing_script_path_for_agent,
 )
 from shared.simulation.schemas import get_default_simulator_backend
 from shared.utils.fasteners import HoleType as HoleType
@@ -851,73 +850,30 @@ async def _preview_async(
         )
     try:
         agent_role = _script_agent_role()
-        fallback_bundle_base64: str | None
-        fallback_script_path: str
-        if drafting:
-            script_path = technical_drawing_script_path_for_agent(agent_role)
-            workspace_root = _workspace_root()
-            workspace_script_path = workspace_root / script_path
-            if not workspace_script_path.exists():
-                raise FileNotFoundError(
-                    f"{script_path} is required for drafting preview"
-                )
-
-            matches, mismatch_message = _ensure_component_matches_workspace_script(
-                component, script_path=script_path
-            )
-            if not matches:
-                return PreviewDesignResponse(
-                    success=False,
-                    status_text="Preview generation failed",
-                    message=mismatch_message or "Drafting script mismatch",
-                    drafting=True,
-                    rendering_type=requested_rendering_type,
-                )
-
-            preview_request = PreviewDesignRequest(
-                script_path=str(script_path),
-                bundle_base64=_workspace_bundle_base64(),
-                agent_role=agent_role,
-                orbit_pitch=orbit_pitch,
-                orbit_yaw=orbit_yaw,
-                rgb=rgb,
-                depth=depth,
-                segmentation=segmentation,
-                payload_path=payload_path,
-                drafting=True,
-                rendering_type=(
-                    PreviewRenderingType(str(rendering_type))
-                    if rendering_type is not None
-                    else None
-                ),
-            )
-            fallback_bundle_base64 = _workspace_bundle_base64()
-            fallback_script_path = str(script_path)
-        else:
-            preview_scene_bundle = export_preview_scene_bundle(
-                component,
-                objectives=None,
-                workspace_root=_workspace_root(),
-            )
-            preview_request = PreviewDesignRequest(
-                script_path="preview_scene.json",
-                bundle_base64=preview_scene_bundle,
-                agent_role=agent_role,
-                orbit_pitch=orbit_pitch,
-                orbit_yaw=orbit_yaw,
-                rgb=rgb,
-                depth=depth,
-                segmentation=segmentation,
-                payload_path=payload_path,
-                drafting=False,
-                rendering_type=(
-                    PreviewRenderingType(str(rendering_type))
-                    if rendering_type is not None
-                    else None
-                ),
-            )
-            fallback_bundle_base64 = preview_scene_bundle
-            fallback_script_path = "preview_scene.json"
+        preview_scene_bundle = export_preview_scene_bundle(
+            component,
+            objectives=None,
+            workspace_root=_workspace_root(),
+        )
+        preview_request = PreviewDesignRequest(
+            script_path="preview_scene.json",
+            bundle_base64=preview_scene_bundle,
+            agent_role=agent_role,
+            orbit_pitch=orbit_pitch,
+            orbit_yaw=orbit_yaw,
+            rgb=rgb,
+            depth=depth,
+            segmentation=segmentation,
+            payload_path=payload_path,
+            drafting=False,
+            rendering_type=(
+                PreviewRenderingType(str(rendering_type))
+                if rendering_type is not None
+                else None
+            ),
+        )
+        fallback_bundle_base64 = preview_scene_bundle
+        fallback_script_path = "preview_scene.json"
     except Exception as exc:
         return PreviewDesignResponse(
             success=False,

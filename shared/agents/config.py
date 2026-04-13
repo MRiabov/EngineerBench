@@ -338,18 +338,10 @@ class AgentsConfig(BaseModel):
         return tuple(policy.allowed_during_unit_eval)
 
     def get_technical_drawing_mode(self, agent_role: AgentName | str) -> DraftingMode:
-        override = os.getenv(TECHNICAL_DRAWING_MODE_ENV, "").strip()
-        if override:
-            return DraftingMode(override)
-
-        key = agent_role.value if isinstance(agent_role, AgentName) else str(agent_role)
-        policy = self.agents.get(key)
-        if policy is None:
-            return self.defaults.technical_drawing_mode
-        return policy.technical_drawing_mode
+        return DraftingMode.OFF
 
     def get_drafting_mode(self, agent_role: AgentName | str) -> DraftingMode:
-        return self.get_technical_drawing_mode(agent_role)
+        return DraftingMode.OFF
 
     def get_motion_forecast_policy(
         self, planner_role: AgentName | str
