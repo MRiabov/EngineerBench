@@ -9,7 +9,6 @@ import yaml
 from controller.middleware.remote_fs import EditOp, RemoteFilesystemMiddleware
 from controller.observability.middleware_helper import broadcast_file_update
 from controller.observability.tracing import record_worker_events
-from shared.agents.config import DraftingMode, load_agents_config
 from shared.cots.agent import (
     search_cots_catalog as base_search_cots_catalog,
 )
@@ -19,10 +18,8 @@ from shared.models.schemas import PlannerSubmissionResult
 from shared.observability.schemas import RunCommandToolEvent
 from shared.rendering import build_render_bundle_index_entry, build_render_manifest
 from shared.script_contracts import (
-    drafting_render_manifest_path_for_agent,
-    drafting_script_paths_for_agent,
+    authored_script_path_for_agent,
     plan_path_for_agent,
-    technical_drawing_script_path_for_agent,
 )
 from shared.workers.schema import (
     PlanReviewManifest,
@@ -62,16 +59,6 @@ def _runtime_skill_script_path(*relative_parts: str) -> Path:
     if skill_root.exists():
         return skill_root.joinpath(*relative_parts)
     return repo_root.joinpath(*relative_parts)
-
-
-def _engineer_planner_drafting_required() -> bool:
-    try:
-        drafting_mode = load_agents_config().get_technical_drawing_mode(
-            AgentName.ENGINEER_PLANNER
-        )
-    except Exception:
-        return False
-    return drafting_mode in (DraftingMode.MINIMAL, DraftingMode.FULL)
 
 
 def _rewrite_render_bundle_path(
@@ -448,7 +435,7 @@ def get_common_tools(fs: RemoteFilesystemMiddleware, session_id: str) -> list[Ca
     Includes filesystem operations and COTS catalog search.
     """
 
-    default_script_path = technical_drawing_script_path_for_agent(fs.agent_role)
+    default_script_path = authored_script_path_for_agent(fs.agent_role)
 
     async def list_files(path: str = "/"):
         """List files in the workspace (filesystem)."""
@@ -520,20 +507,6 @@ def get_common_tools(fs: RemoteFilesystemMiddleware, session_id: str) -> list[Ca
             smoke_test_mode=smoke_test_mode,
         )
 
-    async def render_technical_drawing(
-        script_path: str = default_script_path,
-        orbit_pitch: float | list[float] = 45,
-        orbit_yaw: float | list[float] = 45,
-        smoke_test_mode: bool | None = None,
-    ):
-        """Render planner-authored technical drawings for inspection."""
-        return await fs.render_technical_drawing(
-            script_path,
-            orbit_pitch=orbit_pitch,
-            orbit_yaw=orbit_yaw,
-            smoke_test_mode=smoke_test_mode,
-        )
-
     async def preview(
         script_path: str = default_script_path,
         orbit_pitch: float | list[float] = 45,
@@ -556,19 +529,6 @@ def get_common_tools(fs: RemoteFilesystemMiddleware, session_id: str) -> list[Ca
             payload_path=payload_path,
             drafting=drafting,
             rendering_type=rendering_type,
-            smoke_test_mode=smoke_test_mode,
-        )
-
-    async def preview_drawing(
-        script_path: str = default_script_path,
-        orbit_pitch: float | list[float] = 45,
-        orbit_yaw: float | list[float] = 45,
-        smoke_test_mode: bool | None = None,
-    ):
-        return await render_technical_drawing(
-            script_path=script_path,
-            orbit_pitch=orbit_pitch,
-            orbit_yaw=orbit_yaw,
             smoke_test_mode=smoke_test_mode,
         )
 
@@ -633,7 +593,6 @@ def get_common_tools(fs: RemoteFilesystemMiddleware, session_id: str) -> list[Ca
         execute_command,
         inspect_topology,
         render_cad,
-        render_technical_drawing,
         verify,
         search_cots_catalog,
         invoke_cots_search_subagent,
