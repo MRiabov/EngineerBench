@@ -12,8 +12,6 @@ from controller.agent.context_usage import (
 )
 from controller.agent.execution_limits import evaluate_agent_hard_fail
 from controller.agent.handover_constants import (
-    ELECTRONICS_REVIEW_MANIFEST,
-    ELECTRONICS_REVIEWER_HANDOVER_CHECK,
     ENGINEER_BENCHMARK_HANDOVER_CHECK,
     ENGINEER_EXECUTION_REVIEWER_HANDOVER_CHECK,
     ENGINEER_PLAN_REVIEWER_HANDOVER_CHECK,
@@ -41,17 +39,12 @@ from shared.enums import AgentName, GenerationKind
 from shared.models.schemas import EpisodeMetadata
 from shared.observability.events import emit_event
 from shared.observability.schemas import NodeEntryValidationFailedEvent
-from worker_heavy.utils.file_validation import validate_benchmark_definition_yaml
 
 from .nodes.coder import coder_node
 from .nodes.cots_search import cots_search_node
-from .nodes.electronics_planner import electronics_planner_node
-from .nodes.electronics_reviewer import electronics_reviewer_node
 from .nodes.execution_reviewer import engineer_execution_reviewer_node
 from .nodes.plan_reviewer import engineer_plan_reviewer_node
 from .nodes.planner import planner_node
-from .nodes.skills import skills_node
-from .nodes.summarizer import summarizer_node
 from .state import AgentState, AgentStatus
 
 logger = structlog.get_logger(__name__)
@@ -231,59 +224,10 @@ def _build_entry_rejection_feedback(
     return feedback, journal_entry
 
 
-async def _state_requires_electronics(state: AgentState) -> bool:
-    session_id = (state.worker_session_id or state.session_id or "").strip()
-    if not session_id:
-        return True
-
-    client = WorkerClient(
-        base_url=controller_settings.worker_light_url,
-        heavy_url=controller_settings.worker_heavy_url,
-        session_id=session_id,
-    )
-    try:
-        if not await client.exists("benchmark_definition.yaml"):
-            return True
-        raw_objectives = await client.read_file("benchmark_definition.yaml")
-        is_valid, objectives_or_errors = validate_benchmark_definition_yaml(
-            raw_objectives,
-            session_id=session_id,
-        )
-        if not is_valid:
-            raise ValueError("; ".join(objectives_or_errors))
-        objectives = objectives_or_errors
-        return objectives.electronics_requirements is not None
-    except Exception as exc:
-        logger.warning(
-            "engineer_graph_electronics_scope_detection_failed",
-            session_id=session_id,
-            episode_id=state.episode_id,
-            error=str(exc),
-        )
-        return True
-    finally:
-        await client.aclose()
-
-
 async def _normalize_engineer_reroute_target(
     target_node: AgentName, state: AgentState, validation
 ):
-    if validation.ok:
-        return validation
-    if target_node != AgentName.ENGINEER_PLAN_REVIEWER:
-        return validation
-    if validation.reroute_target != AgentName.ELECTRONICS_PLANNER:
-        return validation
-    if await _state_requires_electronics(state):
-        return validation
-    logger.info(
-        "engineer_plan_review_reroute_normalized",
-        episode_id=state.episode_id,
-        session_id=str(state.session_id),
-        previous_reroute_target=AgentName.ELECTRONICS_PLANNER.value,
-        reroute_target=AgentName.ENGINEER_PLANNER.value,
-    )
-    return validation.model_copy(update={"reroute_target": AgentName.ENGINEER_PLANNER})
+    return validation
 
 
 async def _evaluate_engineer_node_entry(target_node: AgentName, state: AgentState):
@@ -312,15 +256,6 @@ async def _evaluate_engineer_node_entry(target_node: AgentName, state: AgentStat
             lambda *, contract, state: engineer_planner_evidence_layout_custom_check(
                 contract=contract,
                 state=state,
-            )
-        ),
-        ELECTRONICS_REVIEWER_HANDOVER_CHECK: (
-            lambda *, contract, state: reviewer_handover_custom_check_from_session_id(  # noqa: ARG005
-                session_id=getattr(state, "session_id", None),
-                reviewer_label="Electronics",
-                manifest_path=ELECTRONICS_REVIEW_MANIFEST,
-                expected_stage=AgentName.ELECTRONICS_REVIEWER,
-                agent_role=AgentName.ELECTRONICS_REVIEWER,
             )
         ),
     }
@@ -437,14 +372,6 @@ async def should_continue(state: AgentState) -> str:
                 episode_id=state.episode_id,
             )
 
-    # Check for summarization need if journal is long
-    if (
-        not await _sidecars_disabled_for_state(state)
-        and estimate_text_tokens(state.journal)
-        > agent_settings.context_compaction_threshold_tokens
-    ):
-        return AgentName.JOURNALLING_AGENT
-
     hard_fail = await evaluate_agent_hard_fail(
         agent_name=AgentName.ENGINEER_CODER,
         episode_id=state.episode_id,
@@ -456,9 +383,7 @@ async def should_continue(state: AgentState) -> str:
         state.journal = (
             state.journal + "\n[Hard Fail] " + (hard_fail.message or "quota reached")
         ).strip()
-        if await _sidecars_disabled_for_state(state):
-            return END
-        return AgentName.SKILL_AGENT
+        return END
 
     if state.status == AgentStatus.APPROVED or state.status == AgentStatus.FAILED:
         if await _should_end_scoped_run_after_node(
@@ -469,9 +394,7 @@ async def should_continue(state: AgentState) -> str:
         if state.status == AgentStatus.APPROVED and "- [ ]" in state.todo:
             logger.info("step_approved_continuing_to_next", todo=state.todo)
             return AgentName.ENGINEER_CODER
-        if await _sidecars_disabled_for_state(state):
-            return END
-        return AgentName.SKILL_AGENT
+        return END
 
     if await _should_end_scoped_run_after_node(
         state, AgentName.ENGINEER_EXECUTION_REVIEWER
@@ -484,9 +407,7 @@ async def should_continue(state: AgentState) -> str:
             return AgentName.ENGINEER_PLANNER
         return AgentName.ENGINEER_CODER
 
-    if await _sidecars_disabled_for_state(state):
-        return END
-    return AgentName.SKILL_AGENT
+    return END
 
 
 async def should_continue_after_plan_review(state: AgentState) -> str:
@@ -507,13 +428,6 @@ async def should_continue_after_plan_review(state: AgentState) -> str:
                 episode_id=state.episode_id,
             )
 
-    if (
-        not await _sidecars_disabled_for_state(state)
-        and estimate_text_tokens(state.journal)
-        > agent_settings.context_compaction_threshold_tokens
-    ):
-        return AgentName.JOURNALLING_AGENT
-
     if state.status == AgentStatus.APPROVED:
         if await _should_end_scoped_run_after_node(
             state, AgentName.ENGINEER_PLAN_REVIEWER
@@ -532,14 +446,10 @@ async def should_continue_after_plan_review(state: AgentState) -> str:
         state.journal = (
             state.journal + "\n[Hard Fail] " + (hard_fail.message or "quota reached")
         ).strip()
-        if await _sidecars_disabled_for_state(state):
-            return END
-        return AgentName.SKILL_AGENT
+        return END
 
     if state.status == AgentStatus.FAILED:
-        if await _sidecars_disabled_for_state(state):
-            return END
-        return AgentName.SKILL_AGENT
+        return END
 
     if await _should_end_scoped_run_after_node(state, AgentName.ENGINEER_PLAN_REVIEWER):
         return END
@@ -549,34 +459,16 @@ async def should_continue_after_plan_review(state: AgentState) -> str:
             return AgentName.ENGINEER_PLANNER
         return AgentName.ENGINEER_CODER
 
-    if await _sidecars_disabled_for_state(state):
-        return END
-    return AgentName.SKILL_AGENT
+    return END
 
 
 async def route_after_engineer_planner(
     state: AgentState,
 ) -> Literal[
-    AgentName.ELECTRONICS_PLANNER,
     AgentName.ENGINEER_PLAN_REVIEWER,
-    AgentName.SKILL_AGENT,
     END,
 ]:
     if await _should_end_scoped_run_after_node(state, AgentName.ENGINEER_PLANNER):
-        return END
-    if state.status == AgentStatus.FAILED:
-        if await _sidecars_disabled_for_state(state):
-            return END
-        return AgentName.SKILL_AGENT
-    if await _state_requires_electronics(state):
-        return AgentName.ELECTRONICS_PLANNER
-    return AgentName.ENGINEER_PLAN_REVIEWER
-
-
-async def route_after_electronics_planner(
-    state: AgentState,
-) -> Literal[AgentName.ENGINEER_PLAN_REVIEWER, END]:
-    if await _should_end_scoped_run_after_node(state, AgentName.ELECTRONICS_PLANNER):
         return END
     return AgentName.ENGINEER_PLAN_REVIEWER
 
@@ -584,45 +476,10 @@ async def route_after_electronics_planner(
 async def route_after_engineer_coder(
     state: AgentState,
 ) -> Literal[
-    AgentName.ELECTRONICS_REVIEWER,
     AgentName.ENGINEER_EXECUTION_REVIEWER,
     END,
 ]:
     if await _should_end_scoped_run_after_node(state, AgentName.ENGINEER_CODER):
-        return END
-    if await _state_requires_electronics(state):
-        return AgentName.ELECTRONICS_REVIEWER
-    worker_client = state.worker_client
-    created_worker_client = False
-    if worker_client is None:
-        worker_client = WorkerClient(
-            base_url=controller_settings.worker_light_url,
-            heavy_url=controller_settings.worker_heavy_url,
-            session_id=state.session_id,
-        )
-        created_worker_client = True
-    try:
-        handover_error = await _materialize_reviewer_handover(
-            worker_client,
-            reviewer_stage=AgentName.ENGINEER_EXECUTION_REVIEWER,
-        )
-        if handover_error:
-            logger.warning(
-                "engineer_execution_handover_materialization_failed",
-                episode_id=state.episode_id,
-                session_id=state.session_id,
-                error=handover_error,
-            )
-    finally:
-        if created_worker_client:
-            await worker_client.aclose()
-    return AgentName.ENGINEER_EXECUTION_REVIEWER
-
-
-async def route_after_electronics_reviewer(
-    state: AgentState,
-) -> Literal[AgentName.ENGINEER_EXECUTION_REVIEWER, END]:
-    if await _should_end_scoped_run_after_node(state, AgentName.ELECTRONICS_REVIEWER):
         return END
     worker_client = state.worker_client
     created_worker_client = False
@@ -660,20 +517,12 @@ builder.add_node(
     _guarded_node(AgentName.ENGINEER_PLANNER, planner_node),
 )
 builder.add_node(
-    AgentName.ELECTRONICS_PLANNER,
-    _guarded_node(AgentName.ELECTRONICS_PLANNER, electronics_planner_node),
-)
-builder.add_node(
     AgentName.ENGINEER_PLAN_REVIEWER,
     _guarded_node(AgentName.ENGINEER_PLAN_REVIEWER, engineer_plan_reviewer_node),
 )
 builder.add_node(
     AgentName.ENGINEER_CODER,
     _guarded_node(AgentName.ENGINEER_CODER, coder_node),
-)
-builder.add_node(
-    AgentName.ELECTRONICS_REVIEWER,
-    _guarded_node(AgentName.ELECTRONICS_REVIEWER, electronics_reviewer_node),
 )
 builder.add_node(
     AgentName.ENGINEER_EXECUTION_REVIEWER,
@@ -685,14 +534,6 @@ builder.add_node(
     AgentName.COTS_SEARCH,
     _guarded_node(AgentName.COTS_SEARCH, cots_search_node),
 )
-builder.add_node(
-    AgentName.SKILL_AGENT,
-    _guarded_node(AgentName.SKILL_AGENT, skills_node),
-)
-builder.add_node(
-    AgentName.JOURNALLING_AGENT,
-    _guarded_node(AgentName.JOURNALLING_AGENT, summarizer_node),
-)
 
 
 # Set the entry point and edges
@@ -700,12 +541,9 @@ def route_start(
     state: AgentState,
 ) -> Literal[
     AgentName.ENGINEER_PLANNER,
-    AgentName.ELECTRONICS_PLANNER,
     AgentName.ENGINEER_PLAN_REVIEWER,
     AgentName.ENGINEER_CODER,
-    AgentName.ELECTRONICS_REVIEWER,
     AgentName.ENGINEER_EXECUTION_REVIEWER,
-    AgentName.SKILL_AGENT,
 ]:
     start_node = (state.start_node or "").strip()
     if not start_node:
@@ -719,12 +557,9 @@ def route_start(
 
     allowed_start_nodes = {
         AgentName.ENGINEER_PLANNER,
-        AgentName.ELECTRONICS_PLANNER,
         AgentName.ENGINEER_PLAN_REVIEWER,
         AgentName.ENGINEER_CODER,
-        AgentName.ELECTRONICS_REVIEWER,
         AgentName.ENGINEER_EXECUTION_REVIEWER,
-        AgentName.SKILL_AGENT,
     }
     if requested not in allowed_start_nodes:
         logger.warning("unsupported_engineer_start_node", start_node=start_node)
@@ -738,16 +573,6 @@ builder.add_conditional_edges(
     AgentName.ENGINEER_PLANNER,
     route_after_engineer_planner,
     {
-        AgentName.ELECTRONICS_PLANNER: AgentName.ELECTRONICS_PLANNER,
-        AgentName.ENGINEER_PLAN_REVIEWER: AgentName.ENGINEER_PLAN_REVIEWER,
-        AgentName.SKILL_AGENT: AgentName.SKILL_AGENT,
-        END: END,
-    },
-)
-builder.add_conditional_edges(
-    AgentName.ELECTRONICS_PLANNER,
-    route_after_electronics_planner,
-    {
         AgentName.ENGINEER_PLAN_REVIEWER: AgentName.ENGINEER_PLAN_REVIEWER,
         END: END,
     },
@@ -759,8 +584,6 @@ builder.add_conditional_edges(
     {
         AgentName.ENGINEER_CODER: AgentName.ENGINEER_CODER,
         AgentName.ENGINEER_PLANNER: AgentName.ENGINEER_PLANNER,
-        AgentName.SKILL_AGENT: AgentName.SKILL_AGENT,
-        AgentName.JOURNALLING_AGENT: AgentName.JOURNALLING_AGENT,
         END: END,
     },
 )
@@ -768,16 +591,6 @@ builder.add_conditional_edges(
 builder.add_conditional_edges(
     AgentName.ENGINEER_CODER,
     route_after_engineer_coder,
-    {
-        AgentName.ELECTRONICS_REVIEWER: AgentName.ELECTRONICS_REVIEWER,
-        AgentName.ENGINEER_EXECUTION_REVIEWER: AgentName.ENGINEER_EXECUTION_REVIEWER,
-        END: END,
-    },
-)
-
-builder.add_conditional_edges(
-    AgentName.ELECTRONICS_REVIEWER,
-    route_after_electronics_reviewer,
     {
         AgentName.ENGINEER_EXECUTION_REVIEWER: AgentName.ENGINEER_EXECUTION_REVIEWER,
         END: END,
@@ -791,14 +604,10 @@ builder.add_conditional_edges(
     {
         AgentName.ENGINEER_CODER: AgentName.ENGINEER_CODER,
         AgentName.ENGINEER_PLANNER: AgentName.ENGINEER_PLANNER,
-        AgentName.SKILL_AGENT: AgentName.SKILL_AGENT,
-        AgentName.JOURNALLING_AGENT: AgentName.JOURNALLING_AGENT,
         END: END,
     },
 )
 
-builder.add_edge(AgentName.SKILL_AGENT, END)
-builder.add_edge(AgentName.JOURNALLING_AGENT, AgentName.ENGINEER_PLANNER)
 builder.add_edge(AgentName.COTS_SEARCH, AgentName.ENGINEER_PLANNER)
 
 # T026: Implement Checkpointing
@@ -817,8 +626,5 @@ def _build_single_node_graph(node_name: AgentName, node_callable):
 
 engineer_planner_graph = _build_single_node_graph(
     AgentName.ENGINEER_PLANNER, planner_node
-)
-electronics_planner_graph = _build_single_node_graph(
-    AgentName.ELECTRONICS_PLANNER, electronics_planner_node
 )
 cots_search_graph = _build_single_node_graph(AgentName.COTS_SEARCH, cots_search_node)
