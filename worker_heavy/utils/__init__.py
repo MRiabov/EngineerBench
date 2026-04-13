@@ -20,7 +20,6 @@ __all__ = [
     "preview",
     "preview_stress",
     "render_cad",
-    "render_technical_drawing",
     "renderer_client",
     "route_wire",
     "set_soft_mesh",
@@ -59,10 +58,6 @@ _LAZY_ATTRS: dict[str, tuple[str, str | None]] = {
     "simulate": ("worker_heavy.utils.validation", "simulate"),
     "validate": ("worker_heavy.utils.validation", "validate"),
     "render_cad": ("worker_heavy.utils.preview", "render_cad"),
-    "render_technical_drawing": (
-        "worker_heavy.utils.preview",
-        "render_technical_drawing",
-    ),
     "preview": ("worker_heavy.utils.preview", "preview"),
 }
 
