@@ -946,8 +946,8 @@ The safe order is:
 - [ ] Remove `frontend/` from the default publication bundle.
 - [ ] Remove `website/` from the default publication bundle.
 - [ ] Remove `scripts/experiments/` from the default publication bundle.
-- [ ] Remove `worker_light/agent_files/` from the default publication bundle.
-- [ ] Remove mock-provider, steerability, and legacy-wrapper surfaces.
+- [x] Remove `worker_light/agent_files/` from the default publication bundle.
+- [x] Remove mock-provider, steerability, and legacy-wrapper surfaces.
 - [ ] Remove Temporal orchestration shells, non-local devops helpers, and any
   bespoke local-agent-SDK clone surface from the default bundle.
 - [ ] Remove technical-drawing plumbing, electronics planner/reviewer
@@ -960,7 +960,7 @@ The safe order is:
 - [ ] Remove the standalone skill-training/autopilot CLIs.
 - [ ] Trim `shared/observability/schemas.py` to the paper-critical event set,
   excluding drafting, electronics, fluids, and steering events.
-- [ ] Remove `dataset/data/generated/` from the source release path.
+- [x] Remove `dataset/data/generated/` from the source release path.
 - [ ] Curate the seed rows to the paper-critical role families only and remove
   any `technical_drawing_mode` or late-epic seed variants.
 - [ ] Remove prompt and skill prose that teaches removed ReAct-only tools or
@@ -970,7 +970,7 @@ The safe order is:
 
 - [ ] Curate the dataset and integration-test surface down to the paper-
   critical subset.
-- [ ] Remove the technical-drawing fixture families and late-epic branch
+- [x] Remove the technical-drawing fixture families and late-epic branch
   tests from the release candidate.
 - [ ] Prune the architecture and integration docs that only explain removed
   Temporal, drafting, electronics, fluids, steerability, or local-SDK
