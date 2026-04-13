@@ -1,8 +1,0 @@
-[
-  {
-    "id": "sk-001-sidecar-skill",
-    "task": "Confirm `.manifests/current_role.json` names `skill_agent` before using the seeded artifacts. After completing the task, identify one reusable lesson from the journal and produce a concise sidecar learning summary.",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `skill_agent` and the seeded workspace to match that role. Skill sidecar node executes and records a skill-learning summary trace.",
-    "complexity_level": 0
-  }
-]
