@@ -1,2 +1,0 @@
-- [x] Build
-- [x] Electronics N/A

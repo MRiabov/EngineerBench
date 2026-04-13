@@ -1,2 +1,0 @@
-- [x] Baseline planning
-- [x] Electronics planning complete
