@@ -60,9 +60,6 @@ def _role_template_files(agent_name: AgentName) -> dict[str, str]:
             "benchmark_generator/benchmark_plan_evidence_script.py": (
                 "benchmark_plan_evidence_script.py"
             ),
-            "benchmark_generator/benchmark_plan_technical_drawing_script.py": (
-                "benchmark_plan_technical_drawing_script.py"
-            ),
         },
     }
 

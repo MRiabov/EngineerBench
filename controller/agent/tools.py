@@ -15,7 +15,7 @@ from shared.cots.agent import (
 from shared.enums import AgentName
 from shared.git_utils import repo_revision
 from shared.models.schemas import PlannerSubmissionResult
-from shared.observability.schemas import RunCommandToolEvent
+from shared.observability.schemas import ToolInvocationEvent
 from shared.script_contracts import (
     authored_script_path_for_agent,
     plan_path_for_agent,
@@ -197,7 +197,12 @@ def get_common_tools(fs: RemoteFilesystemMiddleware, session_id: str) -> list[Ca
         # Record the command execution event
         await record_worker_events(
             episode_id=session_id,
-            events=[RunCommandToolEvent(command=command)],
+            events=[
+                ToolInvocationEvent(
+                    tool_name="run_command",
+                    arguments={"command": command},
+                )
+            ],
         )
         return await fs.run_command(command)
 

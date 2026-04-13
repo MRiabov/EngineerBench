@@ -35,8 +35,6 @@ from shared.models.schemas import (
     ReviewFrontmatter,
     SubassemblyEstimate,
 )
-from shared.observability.events import emit_event
-from shared.observability.schemas import LintFailureDocsEvent, LogicFailureEvent
 from shared.script_contracts import (
     BENCHMARK_SCRIPT_PATH,
     SOLUTION_SCRIPT_PATH,
@@ -983,13 +981,6 @@ def validate_benchmark_definition_yaml(
                 errors=[objective_error],
                 session_id=session_id,
             )
-            emit_event(
-                LogicFailureEvent(
-                    file_path="benchmark_definition.yaml",
-                    constraint_name="objectives_consistency",
-                    error_message=objective_error,
-                )
-            )
             return False, [objective_error]
 
         logger.info("benchmark_definition_yaml_valid", session_id=session_id)
@@ -1006,14 +997,6 @@ def validate_benchmark_definition_yaml(
             errors=errors,
             session_id=session_id,
         )
-        for error in errors:
-            emit_event(
-                LogicFailureEvent(
-                    file_path="benchmark_definition.yaml",
-                    constraint_name="pydantic_validation",
-                    error_message=error,
-                )
-            )
         return False, errors
 
 
@@ -1182,14 +1165,6 @@ def validate_assembly_definition_yaml(
             errors=errors,
             session_id=session_id,
         )
-        for error in errors:
-            emit_event(
-                LogicFailureEvent(
-                    file_path="assembly_definition.yaml",
-                    constraint_name="pydantic_validation",
-                    error_message=error,
-                )
-            )
         return False, errors
 
 
@@ -2252,10 +2227,6 @@ def validate_plan_md_structure(
                 missing=result.violations,
                 session_id=session_id,
             )
-            for error in result.violations:
-                emit_event(
-                    LintFailureDocsEvent(file_path=artifact_path, errors=[error])
-                )
             return False, result.violations
 
         logger.info("plan_md_valid", plan_type=plan_type, session_id=session_id)
@@ -2270,8 +2241,6 @@ def validate_plan_md_structure(
             missing=result.violations,
             session_id=session_id,
         )
-        for error in result.violations:
-            emit_event(LintFailureDocsEvent(file_path=artifact_path, errors=[error]))
         return False, result.violations
 
     logger.info("plan_md_valid", plan_type=plan_type, session_id=session_id)
@@ -2344,13 +2313,6 @@ def validate_immutability(
                 )
                 logger.error(
                     "immutability_violation", path=str(path), session_id=session_id
-                )
-                emit_event(
-                    LogicFailureEvent(
-                        file_path=path.name,
-                        constraint_name="immutability_check",
-                        error_message=msg,
-                    )
                 )
                 return False, msg
 

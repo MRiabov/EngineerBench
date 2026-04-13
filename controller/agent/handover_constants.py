@@ -35,14 +35,6 @@ ENGINEERING_EXECUTION_REVIEWER_HANDOFF_ARTIFACTS: tuple[str, ...] = (
     "simulation_result.json",
 )
 
-ELECTRONICS_REVIEWER_HANDOFF_ARTIFACTS: tuple[str, ...] = (
-    SOLUTION_SCRIPT_PATH,
-    BENCHMARK_SCRIPT_PATH,
-    "benchmark_assembly_definition.yaml",
-    "validation_results.json",
-    "simulation_result.json",
-)
-
 ENGINEER_PLANNER_HANDOFF_ARTIFACTS: tuple[str, ...] = (
     ENGINEERING_PLAN_PATH,
     "plan.md",
@@ -58,14 +50,12 @@ BENCHMARK_REVIEW_MANIFEST = ".manifests/benchmark_review_manifest.json"
 ENGINEERING_EXECUTION_HANDOFF_MANIFEST = (
     ".manifests/engineering_execution_handoff_manifest.json"
 )
-ELECTRONICS_REVIEW_MANIFEST = ".manifests/electronics_review_manifest.json"
 
 BENCHMARK_PLAN_REVIEWER_HANDOVER_CHECK = "benchmark_plan_reviewer_handover"
 BENCHMARK_REVIEWER_HANDOVER_CHECK = "benchmark_reviewer_handover"
 BENCHMARK_CODER_HANDOVER_CHECK = "benchmark_coder_handover"
 ENGINEER_PLAN_REVIEWER_HANDOVER_CHECK = "engineer_plan_reviewer_handover"
 ENGINEER_EXECUTION_REVIEWER_HANDOVER_CHECK = "engineer_execution_reviewer_handover"
-ELECTRONICS_REVIEWER_HANDOVER_CHECK = "electronics_reviewer_handover"
 ENGINEER_BENCHMARK_HANDOVER_CHECK = "engineer_benchmark_handover"
 ENGINEER_PLANNER_EVIDENCE_LAYOUT_CHECK = "engineer_planner_evidence_layout_check"
 
@@ -80,9 +70,7 @@ SCHEMA_BACKED_HANDOFF_PATHS: tuple[str, ...] = (
     "benchmark_assembly_definition.yaml",
     ".manifests/current_role.json",
     "benchmark_plan_evidence_script.py",
-    "benchmark_plan_technical_drawing_script.py",
     "solution_plan_evidence_script.py",
-    "solution_plan_technical_drawing_script.py",
     "renders/benchmark_renders/render_manifest.json",
     "renders/engineer_plan_renders/render_manifest.json",
     "renders/final_solution_submission_renders/render_manifest.json",
@@ -94,7 +82,6 @@ SCHEMA_BACKED_HANDOFF_PATHS: tuple[str, ...] = (
     ENGINEERING_PLAN_REVIEW_MANIFEST,
     BENCHMARK_REVIEW_MANIFEST,
     ENGINEERING_EXECUTION_HANDOFF_MANIFEST,
-    ELECTRONICS_REVIEW_MANIFEST,
 )
 
 
@@ -106,9 +93,6 @@ __all__ = [
     "BENCHMARK_PLAN_REVIEW_MANIFEST",
     "BENCHMARK_REVIEWER_HANDOVER_CHECK",
     "BENCHMARK_REVIEW_MANIFEST",
-    "ELECTRONICS_REVIEWER_HANDOFF_ARTIFACTS",
-    "ELECTRONICS_REVIEWER_HANDOVER_CHECK",
-    "ELECTRONICS_REVIEW_MANIFEST",
     "ENGINEERING_EXECUTION_HANDOFF_MANIFEST",
     "ENGINEERING_EXECUTION_REVIEWER_HANDOFF_ARTIFACTS",
     "ENGINEERING_PLAN_REVIEW_MANIFEST",

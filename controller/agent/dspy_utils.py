@@ -448,18 +448,25 @@ def map_events_to_prediction(
             continue
 
         # 1. Filesystem & Artifacts
-        if etype == ObservabilityEventType.TOOL_WRITE_FILE:
-            path = (
-                data.get("path", "")
+        if etype == ObservabilityEventType.TOOL_INVOCATION:
+            tool_name = (
+                data.get("tool_name", "")
                 if isinstance(data, dict)
-                else getattr(data, "path", "")
+                else getattr(data, "tool_name", "")
             )
-            if any(path.endswith(f) for f in required_planner_files):
-                planned_files.add(Path(path).name)
-            if "review" in path.lower() and path.endswith(".yaml"):
-                metrics.review_artifacts_complete = True
-            if "schematic" in path.lower():
-                metrics.schematic_present = True
+            arguments = (
+                data.get("arguments", {})
+                if isinstance(data, dict)
+                else getattr(data, "arguments", {})
+            )
+            if tool_name == "write_file":
+                path = str(arguments.get("path", ""))
+                if any(path.endswith(f) for f in required_planner_files):
+                    planned_files.add(Path(path).name)
+                if "review" in path.lower() and path.endswith(".yaml"):
+                    metrics.review_artifacts_complete = True
+                if "schematic" in path.lower():
+                    metrics.schematic_present = True
 
         # 2. Planning & Logic
         if etype in [
@@ -467,16 +474,6 @@ def map_events_to_prediction(
             ObservabilityEventType.PLAN_SUBMISSION_BENCHMARK,
         ] and required_planner_files.issubset(planned_files):
             metrics.plan_artifacts_present = True
-
-        if etype == ObservabilityEventType.LOGIC_FAILURE:
-            metrics.yaml_schema_valid = False
-            metrics.geometry_consistent = False
-            metrics.mechanism_fits_build_zone = False
-            metrics.error = (
-                data.get("error_message")
-                if isinstance(data, dict)
-                else getattr(data, "error_message", str(data))
-            )
 
         # 3. Manufacturability & Pricing
         if etype == ObservabilityEventType.MANUFACTURABILITY_CHECK:
@@ -525,9 +522,6 @@ def map_events_to_prediction(
                     if isinstance(data, dict)
                     else getattr(data, "failure_reason", "unknown")
                 )
-
-        if etype == ObservabilityEventType.SIMULATION_INSTABILITY:
-            metrics.simulation_stable = False
 
         # 5. Review Decision
         if etype == ObservabilityEventType.REVIEW_DECISION:
@@ -593,13 +587,7 @@ def map_events_to_prediction(
             if count > 0:
                 metrics.n_valid_candidates += count
 
-        # 8. Skills
-        if etype == ObservabilityEventType.SKILL_EDIT:
-            metrics.skill_file_valid = True
-        if etype == ObservabilityEventType.SKILL_READ:
-            metrics.skill_adopted = True
-
-        # 9. Benchmark specific
+        # 8. Benchmark specific
         if etype == ObservabilityEventType.SCENE_VALIDATION:
             result = (
                 data.get("result")
