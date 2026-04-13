@@ -778,6 +778,8 @@ kept for the publication bundle:
 - [x] Remove the electronics role prompt entries from
   `controller/agent/prompt_manager.py`.
 - [x] Remove `worker_light/agent_files/.admin/clear_env.py`.
+- [x] Remove `controller/agent/nodes/{electronics_planner.py,electronics_reviewer.py,skills.py,summarizer.py}` and prune the corresponding engineer, benchmark, and top-level graph resolver routes that reached those sidecars.
+- [x] Remove the benchmark-side skill and journalling node implementations from `controller/agent/benchmark/nodes.py` so the deleted loop is no longer present as dead code.
 
 ## Retained Roots
 
@@ -795,6 +797,7 @@ The publication bundle keeps the minimal runnable and deployment roots:
 - `config/skills_config.yaml`
 - `shared/assets/template_repos/**`
 - `shared/skills/**`
+- `build123d-cad-drafting-skill`
 - `.agents/skills/**`
 
 The Python venv and minimal deployment path stay in place; this migration only
@@ -973,11 +976,11 @@ The safe order is:
 
 ### Training, observability, and data
 
-- [ ] Remove the standalone skill-training/autopilot CLIs.
+- [x] Remove the standalone skill-training/autopilot CLIs.
 - [ ] Trim `shared/observability/schemas.py` to the paper-critical event set,
   excluding drafting, electronics, fluids, and steering events.
 - [x] Remove `dataset/data/generated/` from the source release path.
-- [ ] Curate the seed rows to the paper-critical role families only and remove
+- [x] Curate the seed rows to the paper-critical role families only and remove
   any `technical_drawing_mode` or late-epic seed variants.
 - [ ] Remove prompt and skill prose that teaches removed ReAct-only tools or
   removed local-SDK clone behavior.
