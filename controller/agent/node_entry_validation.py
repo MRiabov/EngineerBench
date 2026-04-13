@@ -61,10 +61,8 @@ from shared.models.schemas import (
 from shared.models.simulation import SimulationResult
 from shared.script_contracts import (
     BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
-    BENCHMARK_PLAN_TECHNICAL_DRAWING_SCRIPT_PATH,
     BENCHMARK_SCRIPT_PATH,
     SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
-    SOLUTION_PLAN_TECHNICAL_DRAWING_SCRIPT_PATH,
     authored_script_path_for_reviewer_stage,
     drafting_render_manifest_path_for_agent,
     plan_path_for_agent,
@@ -378,7 +376,6 @@ def _node_technical_drawing_artifacts(target_node: AgentName) -> list[str]:
         artifacts.extend(
             (
                 SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
-                SOLUTION_PLAN_TECHNICAL_DRAWING_SCRIPT_PATH,
             )
         )
         artifacts.append(
@@ -392,7 +389,6 @@ def _node_technical_drawing_artifacts(target_node: AgentName) -> list[str]:
         artifacts.extend(
             (
                 BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
-                BENCHMARK_PLAN_TECHNICAL_DRAWING_SCRIPT_PATH,
             )
         )
         artifacts.append(
@@ -405,7 +401,6 @@ def _node_technical_drawing_artifacts(target_node: AgentName) -> list[str]:
         artifacts.extend(
             (
                 BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
-                BENCHMARK_PLAN_TECHNICAL_DRAWING_SCRIPT_PATH,
             )
         )
         artifacts.append(

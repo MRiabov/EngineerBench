@@ -6,7 +6,7 @@ import dspy
 import structlog
 from pydantic import BaseModel, ConfigDict, Field
 
-from shared.agents.config import DraftingMode, load_agents_config
+from shared.agents.config import load_agents_config
 from shared.enums import AgentName
 from shared.skills import build_skill_catalog_lines
 
@@ -56,30 +56,9 @@ class PromptManager:
         AgentName.ENGINEER_PLAN_REVIEWER.value: "engineer_plan_reviewer",
         AgentName.ENGINEER_CODER.value: "engineer_coder",
         AgentName.ENGINEER_EXECUTION_REVIEWER.value: "engineer_execution_reviewer",
-        AgentName.ELECTRONICS_PLANNER.value: "electronics_planner",
-        AgentName.ELECTRONICS_ENGINEER.value: "electronics_engineer",
-        AgentName.ELECTRONICS_REVIEWER.value: "electronics_reviewer",
         AgentName.COTS_SEARCH.value: "cots_search",
         AgentName.SKILL_AGENT.value: "skill_agent",
         AgentName.JOURNALLING_AGENT.value: "journalling_agent",
-    }
-
-    _DRAFTING_ROLE_KEYS: set[str] = {
-        "engineer_planner",
-        "engineer_plan_reviewer",
-        "engineer_coder",
-        "benchmark_planner",
-        "benchmark_plan_reviewer",
-        "benchmark_coder",
-    }
-
-    _DRAFTING_MODE_PLANNER_BY_ROLE: dict[str, AgentName] = {
-        "engineer_planner": AgentName.ENGINEER_PLANNER,
-        "engineer_plan_reviewer": AgentName.ENGINEER_PLANNER,
-        "engineer_coder": AgentName.ENGINEER_PLANNER,
-        "benchmark_planner": AgentName.BENCHMARK_PLANNER,
-        "benchmark_plan_reviewer": AgentName.BENCHMARK_PLANNER,
-        "benchmark_coder": AgentName.BENCHMARK_PLANNER,
     }
 
     def __init__(self) -> None:
@@ -89,18 +68,6 @@ class PromptManager:
         except Exception:
             self._agents_config = None
 
-    def _technical_drawing_mode_active(self, role_key: str) -> bool:
-        if self._agents_config is None:
-            return False
-        planner_role = self._DRAFTING_MODE_PLANNER_BY_ROLE.get(role_key)
-        if planner_role is None:
-            return False
-        try:
-            mode = self._agents_config.get_technical_drawing_mode(planner_role)
-        except Exception:
-            return False
-        return mode in (DraftingMode.MINIMAL, DraftingMode.FULL)
-
     def _bug_reports_enabled(self) -> bool:
         if self._agents_config is None:
             return False
@@ -108,10 +75,6 @@ class PromptManager:
             return bool(self._agents_config.bug_reports.enabled)
         except Exception:
             return False
-
-    @staticmethod
-    def _supports_drafting_appendix(role_key: str) -> bool:
-        return role_key in PromptManager._DRAFTING_ROLE_KEYS
 
     def _resolve_role_key(self, template_name: str | AgentName) -> str:
         if isinstance(template_name, AgentName):
@@ -161,12 +124,6 @@ class PromptManager:
                     "Bug-report mode is enabled, but config/prompts.yaml is missing appendices.bug_reporting"
                 )
             prompt_sections.append(bug_reporting_appendix)
-        if self._technical_drawing_mode_active(
-            role_key
-        ) and self._supports_drafting_appendix(role_key):
-            drafting_appendix = self._prompt_source.appendices.drafting.get(role_key)
-            if drafting_appendix:
-                prompt_sections.append(drafting_appendix.strip())
         prompt_sections.append(backend_appendix.strip())
         if backend_key == PromptBackendFamily.CLI_BASED.value:
             cli_appendices = self._prompt_source.appendices.cli
