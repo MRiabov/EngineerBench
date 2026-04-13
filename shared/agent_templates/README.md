@@ -10,7 +10,5 @@ Rules:
   flow.
 - `shared/assets/template_repos/` provides role-scoped starter workspace
   material that is copied into runs before prompt materialization.
-- `worker_light/agent_files/` is a legacy compatibility mirror only and is not
-  canonical.
 - Prompt text should treat these files as context-bearing inputs, not as a
   separate prompt-authoring system.

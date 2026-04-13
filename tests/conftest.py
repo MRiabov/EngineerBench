@@ -9,8 +9,8 @@ from pathlib import Path
 import httpx
 import pytest
 
-from controller.agent.mock_scenarios import load_integration_mock_scenarios
 from evals.logic.seed_maintenance import refresh_repo_seed_artifact_manifests
+from tests.integration.agent.helpers import load_integration_mock_scenarios
 
 pytest_plugins = ["tests.support.fixtures.browser"]
 

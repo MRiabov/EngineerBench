@@ -1218,13 +1218,11 @@ def materialize_seed_workspace(
             helper_script_paths.append("scripts/submit_benchmark_plan.sh")
         else:
             helper_script_paths.append("scripts/submit_engineering_plan.sh")
-        helper_script_paths.append("scripts/submit_plan.sh")
     elif is_coder_agent(agent_name):
         if agent_name == AgentName.BENCHMARK_CODER:
             helper_script_paths.append("scripts/submit_benchmark_for_review.sh")
         else:
             helper_script_paths.append("scripts/submit_solution_for_review.sh")
-        helper_script_paths.append("scripts/submit_for_review.sh")
     elif is_reviewer_agent(agent_name):
         helper_script_paths.append("scripts/submit_review.sh")
 
@@ -1661,7 +1659,6 @@ async def verify_coder_workspace(
 
     artifacts = _workspace_files_to_validate(workspace_dir)
     required_helper_files = [
-        workspace_dir / "scripts" / "submit_for_review.sh",
         workspace_dir / "scripts" / "submit_for_review.py",
     ]
     if agent_name == AgentName.BENCHMARK_CODER:

@@ -13,7 +13,6 @@ import httpx
 import yaml
 from websockets.asyncio.client import connect as websocket_connect
 
-from controller.agent.mock_scenarios import load_integration_mock_scenarios
 from controller.api.schemas import EpisodeResponse
 from controller.persistence.db import get_sessionmaker
 from controller.persistence.models import Episode
@@ -41,6 +40,8 @@ WORKER_LIGHT_URL = os.getenv("WORKER_LIGHT_URL", "http://127.0.0.1:18001")
 REPO_MANUFACTURING_CONFIG = Path(
     "worker_heavy/workbenches/manufacturing_config.yaml"
 ).read_text(encoding="utf-8")
+INTEGRATION_MOCK_RESPONSES_DIR = Path("tests/integration/mock_responses")
+_SCENARIO_ID_RE = re.compile(r"^INT-\d{3}$")
 
 _ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
 
@@ -220,6 +221,70 @@ def _benchmark_assembly_definition_content(
         assembly.model_dump(mode="json", by_alias=True, exclude_none=True),
         sort_keys=False,
     )
+
+
+@lru_cache(maxsize=1)
+def load_integration_mock_scenarios(
+    root: Path | None = None,
+) -> dict[str, dict[str, object]]:
+    source = INTEGRATION_MOCK_RESPONSES_DIR if root is None else root
+    if not source.exists():
+        raise FileNotFoundError(
+            f"Integration mock responses directory not found: {source}"
+        )
+    if not source.is_dir():
+        raise ValueError(
+            f"Integration mock responses path must be a directory: {source}"
+        )
+
+    scenarios: dict[str, dict[str, object]] = {}
+    for scenario_file in sorted(source.glob("*.yaml")) + sorted(source.glob("*.yml")):
+        scenario_id = scenario_file.stem
+        if _SCENARIO_ID_RE.fullmatch(scenario_id) is None:
+            raise ValueError(
+                "Invalid integration mock scenario filename. Expected strict "
+                f"INT-###.yaml naming only: {scenario_file.name}"
+            )
+        raw_scenario = yaml.safe_load(scenario_file.read_text(encoding="utf-8")) or {}
+        if not isinstance(raw_scenario, dict):
+            raise ValueError(
+                f"Invalid scenario file {scenario_file}: expected mapping at root."
+            )
+        expanded = raw_scenario
+        transcript = expanded.get("transcript")
+        if transcript is not None:
+            for node_block in transcript:
+                for step in node_block.get("steps", []):
+                    tool_args = step.get("tool_args") or {}
+                    if "content" in tool_args:
+                        continue
+                    content_file = tool_args.get("content_file")
+                    template_file = tool_args.get("template_file")
+                    if content_file and template_file:
+                        raise ValueError(
+                            "Scenario entry may not define both 'content_file' and 'template_file'."
+                        )
+                    if content_file:
+                        content_path = (
+                            scenario_file.parent / str(content_file)
+                        ).resolve()
+                        if not content_path.is_file():
+                            raise FileNotFoundError(
+                                f"content_file not found for scenario fixture: {content_path}"
+                            )
+                        tool_args["content"] = content_path.read_text(encoding="utf-8")
+                    elif template_file:
+                        from shared.agent_templates import load_template_text
+
+                        tool_args["content"] = load_template_text(str(template_file))
+        scenarios[scenario_id] = expanded
+
+    if not scenarios:
+        raise ValueError(
+            f"No scenario files found in integration mock responses directory: {source}"
+        )
+
+    return scenarios
 
 
 @lru_cache(maxsize=1)

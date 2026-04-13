@@ -2,10 +2,10 @@ from pathlib import Path
 
 import pytest
 
-from controller.agent.mock_scenarios import load_integration_mock_scenarios
 from shared.agent_templates import load_common_template_files, load_template_text
 from shared.current_role import parse_current_role_manifest
 from shared.enums import AgentName
+from tests.integration.agent.helpers import load_integration_mock_scenarios
 
 
 @pytest.mark.integration_p0
