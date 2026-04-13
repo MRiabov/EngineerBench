@@ -1,7 +1,6 @@
 from controller.agent.benchmark.graph import define_graph
 from controller.agent.graph import (
     cots_search_graph,
-    electronics_planner_graph,
     engineer_planner_graph,
 )
 from controller.agent.graph import (
@@ -27,25 +26,17 @@ def _resolve_graph_bundle(
         AgentName.ENGINEER_PLANNER,
         AgentName.ENGINEER_CODER,
         AgentName.ENGINEER_PLAN_REVIEWER,
-        AgentName.ELECTRONICS_PLANNER,
-        AgentName.ELECTRONICS_REVIEWER,
         AgentName.ENGINEER_EXECUTION_REVIEWER,
-        AgentName.SKILL_AGENT,
     }:
         return engineering_graph, None
 
     if agent_name == AgentName.ENGINEER_PLANNER:
         return engineer_planner_graph, None
 
-    if agent_name == AgentName.ELECTRONICS_PLANNER:
-        return electronics_planner_graph, None
-
     if agent_name in {
         AgentName.ENGINEER_CODER,
         AgentName.ENGINEER_PLAN_REVIEWER,
         AgentName.ENGINEER_EXECUTION_REVIEWER,
-        AgentName.ELECTRONICS_REVIEWER,
-        AgentName.SKILL_AGENT,
     }:
         return engineering_graph, None
 
