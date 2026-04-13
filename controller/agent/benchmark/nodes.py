@@ -40,8 +40,6 @@ from shared.observability.schemas import (
 from shared.script_contracts import (
     BENCHMARK_PLAN_PATH,
     BENCHMARK_SCRIPT_PATH,
-    drafting_render_manifest_path_for_agent,
-    drafting_script_paths_for_agent,
 )
 from shared.simulation.schemas import (
     RandomizationStrategy,
@@ -205,15 +203,6 @@ class BenchmarkPlannerNode(BaseNode):
                 "todo.md",
                 "benchmark_definition.yaml",
                 "benchmark_assembly_definition.yaml",
-                *(
-                    str(path)
-                    for path in drafting_script_paths_for_agent(
-                        AgentName.BENCHMARK_PLANNER
-                    )
-                ),
-                str(
-                    drafting_render_manifest_path_for_agent(AgentName.BENCHMARK_PLANNER)
-                ),
             ]
             prediction, _, journal_entry = await self._run_program(
                 dspy.ReAct,
@@ -615,31 +604,6 @@ class BenchmarkPlannerNode(BaseNode):
             "benchmark_definition.yaml",
             "benchmark_assembly_definition.yaml",
         ]
-        from shared.agents.config import DraftingMode, load_agents_config
-
-        drafting_mode = DraftingMode.OFF
-        try:
-            drafting_mode = load_agents_config().get_technical_drawing_mode(
-                AgentName.BENCHMARK_PLANNER
-            )
-        except Exception:
-            drafting_mode = DraftingMode.OFF
-        if drafting_mode in (DraftingMode.MINIMAL, DraftingMode.FULL):
-            validate_files.extend(
-                [
-                    *(
-                        str(path)
-                        for path in drafting_script_paths_for_agent(
-                            AgentName.BENCHMARK_PLANNER
-                        )
-                    ),
-                    str(
-                        drafting_render_manifest_path_for_agent(
-                            AgentName.BENCHMARK_PLANNER
-                        )
-                    ),
-                ]
-            )
         episode_id = getattr(state, "episode_id", None) or self.ctx.episode_id
         db_callback = None
         if episode_id and str(episode_id).strip():
@@ -1610,15 +1574,6 @@ class BenchmarkCoderNode(BaseNode):
                 PLAN_FILE,
                 "todo.md",
                 "benchmark_definition.yaml",
-                *[
-                    str(path)
-                    for path in drafting_script_paths_for_agent(
-                        AgentName.BENCHMARK_PLANNER
-                    )
-                ],
-                str(
-                    drafting_render_manifest_path_for_agent(AgentName.BENCHMARK_PLANNER)
-                ),
             ],
             AgentName.BENCHMARK_CODER,
         )
