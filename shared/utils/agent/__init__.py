@@ -1045,38 +1045,6 @@ def preview(
     )
 
 
-def render_technical_drawing(
-    component: Part | Compound,
-    orbit_pitch: float | list[float] = 45,
-    orbit_yaw: float | list[float] = 45,
-) -> _PreviewResponseProxy:
-    return _PreviewResponseProxy(
-        lambda: _preview_async(
-            component,
-            orbit_pitch=orbit_pitch,
-            orbit_yaw=orbit_yaw,
-            payload_path=False,
-            drafting=True,
-        )
-    )
-
-
-@deprecated(
-    "Use render_technical_drawing instead. preview_drawing remains as a "
-    "compatibility alias only."
-)
-def preview_drawing(
-    component: Part | Compound,
-    orbit_pitch: float | list[float] = 45,
-    orbit_yaw: float | list[float] = 45,
-) -> _PreviewResponseProxy:
-    return render_technical_drawing(
-        component,
-        orbit_pitch=orbit_pitch,
-        orbit_yaw=orbit_yaw,
-    )
-
-
 def list_render_bundles(*args: Any, **kwargs: Any) -> Any:
     """Proxy to the worker-light render bundle history helper."""
     from worker_light.utils.render_query import (

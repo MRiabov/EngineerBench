@@ -11,8 +11,6 @@ from sqlalchemy import select
 
 from controller.agent.tools import (
     _invoke_cots_search_subagent,
-    _publish_drafting_preview_bundle,
-    _validate_drafting_preview_artifacts,
     filter_tools_for_agent,
     get_common_tools,
     run_validate_and_price_script,
@@ -22,13 +20,10 @@ from controller.observability.middleware_helper import broadcast_file_update
 from controller.persistence.db import get_sessionmaker
 from controller.persistence.models import Asset
 from controller.utils import resolve_episode_id
-from shared.agents.config import DraftingMode, load_agents_config
 from shared.enums import AgentName
 from shared.git_utils import repo_revision
 from shared.models.schemas import PlannerSubmissionResult
 from shared.script_contracts import (
-    drafting_render_manifest_path_for_agent,
-    drafting_script_paths_for_agent,
     plan_path_for_agent,
 )
 from shared.workers.schema import PlanReviewManifest, PreviewRenderingType
@@ -55,20 +50,6 @@ def _workspace_environment_version(content: str) -> str | None:
         return None
     version_text = str(version).strip()
     return version_text or None
-
-
-def _benchmark_planner_drafting_required() -> bool | None:
-    try:
-        drafting_mode = load_agents_config().get_technical_drawing_mode(
-            AgentName.BENCHMARK_PLANNER
-        )
-    except Exception:
-        logger.warning(
-            "benchmark_planner_drafting_mode_lookup_failed",
-            agent_name=AgentName.BENCHMARK_PLANNER.value,
-        )
-        return None
-    return drafting_mode in (DraftingMode.MINIMAL, DraftingMode.FULL)
 
 
 def _canonicalize_benchmark_constraints(
@@ -230,20 +211,6 @@ def get_benchmark_planner_tools(
             agent_role=AgentName.BENCHMARK_PLANNER,
         )
 
-    async def render_technical_drawing(
-        script_path: str = "benchmark_plan_technical_drawing_script.py",
-        orbit_pitch: float | list[float] = 45,
-        orbit_yaw: float | list[float] = 45,
-        smoke_test_mode: bool | None = None,
-    ):
-        return await fs.client.render_technical_drawing(
-            script_path,
-            orbit_pitch=orbit_pitch,
-            orbit_yaw=orbit_yaw,
-            smoke_test_mode=smoke_test_mode,
-            agent_role=AgentName.BENCHMARK_PLANNER,
-        )
-
     async def preview(
         script_path: str = "benchmark_plan_evidence_script.py",
         orbit_pitch: float | list[float] = 45,
@@ -255,30 +222,17 @@ def get_benchmark_planner_tools(
         drafting: bool = False,
         rendering_type: PreviewRenderingType | str | None = None,
         smoke_test_mode: bool | None = None,
-    ):
-        return await render_cad(
-            script_path=script_path,
-            orbit_pitch=orbit_pitch,
-            orbit_yaw=orbit_yaw,
+        ):
+            return await render_cad(
+                script_path=script_path,
+                orbit_pitch=orbit_pitch,
+                orbit_yaw=orbit_yaw,
             rgb=rgb,
             depth=depth,
             segmentation=segmentation,
             payload_path=payload_path,
             drafting=drafting,
             rendering_type=rendering_type,
-            smoke_test_mode=smoke_test_mode,
-        )
-
-    async def preview_drawing(
-        script_path: str = "benchmark_plan_technical_drawing_script.py",
-        orbit_pitch: float | list[float] = 45,
-        orbit_yaw: float | list[float] = 45,
-        smoke_test_mode: bool | None = None,
-    ):
-        return await render_technical_drawing(
-            script_path=script_path,
-            orbit_pitch=orbit_pitch,
-            orbit_yaw=orbit_yaw,
             smoke_test_mode=smoke_test_mode,
         )
 
@@ -322,48 +276,6 @@ def get_benchmark_planner_tools(
             "benchmark_definition.yaml",
             "benchmark_assembly_definition.yaml",
         ]
-        drafting_required = _benchmark_planner_drafting_required()
-        if drafting_required is None:
-            result = PlannerSubmissionResult(
-                ok=False,
-                status="rejected",
-                errors=[
-                    "benchmark planner drafting policy could not be loaded; "
-                    "refusing to submit without a verified drafting contract"
-                ],
-                node_type=AgentName.BENCHMARK_PLANNER,
-            )
-            return result.model_dump(mode="json")
-
-        if drafting_required:
-            try:
-                await _publish_drafting_preview_bundle(
-                    fs,
-                    AgentName.BENCHMARK_PLANNER,
-                )
-            except Exception as exc:
-                result = PlannerSubmissionResult(
-                    ok=False,
-                    status="rejected",
-                    errors=[
-                        f"drafting preview publication failed: {exc}",
-                    ],
-                    node_type=AgentName.BENCHMARK_PLANNER,
-                )
-                return result.model_dump(mode="json")
-            required_files.extend(
-                [
-                    str(path)
-                    for path in drafting_script_paths_for_agent(
-                        AgentName.BENCHMARK_PLANNER
-                    )
-                ]
-            )
-            required_files.append(
-                str(
-                    drafting_render_manifest_path_for_agent(AgentName.BENCHMARK_PLANNER)
-                )
-            )
         artifacts: dict[str, str] = {}
         missing_files: list[str] = []
 
@@ -492,22 +404,6 @@ def get_benchmark_planner_tools(
             benchmark_assembly_definition_text
         )
 
-        drafting_required = _benchmark_planner_drafting_required()
-        if drafting_required:
-            drafting_errors = await _validate_drafting_preview_artifacts(
-                fs,
-                AgentName.BENCHMARK_PLANNER,
-                artifacts,
-            )
-            if drafting_errors:
-                result = PlannerSubmissionResult(
-                    ok=False,
-                    status="rejected",
-                    errors=drafting_errors,
-                    node_type=AgentName.BENCHMARK_PLANNER,
-                )
-                return result.model_dump(mode="json")
-
         is_valid, errors = validate_node_output(
             AgentName.BENCHMARK_PLANNER,
             artifacts,
@@ -574,7 +470,6 @@ def get_benchmark_planner_tools(
             grep,
             invoke_cots_search_subagent,
             render_cad,
-            render_technical_drawing,
             submit_benchmark_plan,
         ],
     )

@@ -17,11 +17,7 @@ from shared.rendering import (
     render_preview,
     select_single_preview_render_subdir,
 )
-from shared.script_contracts import technical_drawing_script_path_for_agent
-from shared.utils.agent import (
-    _ensure_component_matches_workspace_script,
-    _script_agent_role,
-)
+from shared.utils.agent import _script_agent_role
 from shared.workers.schema import PreviewDesignResponse, PreviewRenderingType
 from worker_renderer.utils.scene_builder import normalize_preview_label
 
@@ -54,27 +50,12 @@ def preview(
     workspace_root = Path.cwd()
     session_id = os.getenv("SESSION_ID") or None
     agent_role = _script_agent_role()
-    if drafting:
-        script_path = technical_drawing_script_path_for_agent(agent_role)
-        workspace_script_path = workspace_root / script_path
-        if not workspace_script_path.exists():
-            raise FileNotFoundError(f"{script_path} is required for drafting preview")
-
-        matches, mismatch_message = _ensure_component_matches_workspace_script(
-            component, script_path=script_path
-        )
-        if not matches:
-            raise RuntimeError(mismatch_message or "Drafting script mismatch")
-
-        preview_bundle_base64 = bundle_workspace_base64(workspace_root)
-        preview_script_path = str(script_path)
-    else:
-        preview_bundle_base64 = export_preview_scene_bundle(
-            component,
-            objectives=objectives,
-            workspace_root=workspace_root,
-        )
-        preview_script_path = "preview_scene.json"
+    preview_bundle_base64 = export_preview_scene_bundle(
+        component,
+        objectives=objectives,
+        workspace_root=workspace_root,
+    )
+    preview_script_path = "preview_scene.json"
 
     response = render_preview(
         bundle_base64=preview_bundle_base64,
@@ -185,27 +166,6 @@ def render_cad(
         payload_path=payload_path,
         drafting=drafting,
         rendering_type=rendering_type,
-        output_dir=output_dir,
-        objectives=objectives,
-        width=width,
-        height=height,
-    )
-
-
-def render_technical_drawing(
-    component: Part | Compound,
-    orbit_pitch: float | list[float] = 45.0,
-    orbit_yaw: float | list[float] = 45.0,
-    output_dir: Path | None = None,
-    objectives: BenchmarkDefinition | None = None,
-    width: int | None = None,
-    height: int | None = None,
-) -> PreviewDesignResponse:
-    return render_cad(
-        component,
-        orbit_pitch=orbit_pitch,
-        orbit_yaw=orbit_yaw,
-        drafting=True,
         output_dir=output_dir,
         objectives=objectives,
         width=width,
