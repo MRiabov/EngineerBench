@@ -775,25 +775,6 @@ def get_engineer_planner_tools(
             "benchmark_definition.yaml",
             "assembly_definition.yaml",
         ]
-        if _engineer_planner_drafting_required():
-            try:
-                await _publish_drafting_preview_bundle(fs, planner_node_type)
-            except Exception as exc:
-                result = PlannerSubmissionResult(
-                    ok=False,
-                    status="rejected",
-                    errors=[
-                        f"drafting preview publication failed: {exc}",
-                    ],
-                    node_type=planner_node_type,
-                )
-                return result.model_dump(mode="json")
-            required_files.extend(
-                str(path) for path in drafting_script_paths_for_agent(planner_node_type)
-            )
-            required_files.append(
-                str(drafting_render_manifest_path_for_agent(planner_node_type))
-            )
         artifacts: dict[str, str] = {}
         missing_files: list[str] = []
 
@@ -817,21 +798,6 @@ def get_engineer_planner_tools(
                 node_type=planner_node_type,
             )
             return result.model_dump(mode="json")
-
-        if _engineer_planner_drafting_required():
-            drafting_errors = await _validate_drafting_preview_artifacts(
-                fs,
-                planner_node_type,
-                artifacts,
-            )
-            if drafting_errors:
-                result = PlannerSubmissionResult(
-                    ok=False,
-                    status="rejected",
-                    errors=drafting_errors,
-                    node_type=planner_node_type,
-                )
-                return result.model_dump(mode="json")
 
         custom_config_text = await fs.client.read_file_optional(
             "manufacturing_config.yaml", bypass_agent_permissions=True
