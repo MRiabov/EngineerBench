@@ -109,29 +109,14 @@ def plan_artifact_candidates_for_agent(
 def technical_drawing_script_path_for_agent(
     agent_name: AgentName | str | None,
 ) -> Path:
-    normalized = _normalize_agent_name(agent_name)
-    if normalized in _BENCHMARK_ROLE_NAMES:
-        return _as_path(BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH)
-    if normalized in _ENGINEERING_ROLE_NAMES:
-        return _as_path(SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH)
     return authored_script_path_for_agent(agent_name)
 
 
 def drafting_script_paths_for_agent(
     agent_name: AgentName | str | None,
 ) -> tuple[Path, Path]:
-    normalized = _normalize_agent_name(agent_name)
-    if normalized in _BENCHMARK_ROLE_NAMES:
-        return (
-            _as_path(BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH),
-            _as_path(BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH),
-        )
-    if normalized in _ENGINEERING_ROLE_NAMES:
-        return (
-            _as_path(SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH),
-            _as_path(SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH),
-        )
-    return (_as_path(LEGACY_SCRIPT_PATH), _as_path(LEGACY_SCRIPT_PATH))
+    path = authored_script_path_for_agent(agent_name)
+    return (path, path)
 
 
 def planner_role_for_drafting_script_path(
@@ -141,9 +126,15 @@ def planner_role_for_drafting_script_path(
         return None
 
     script_name = Path(script_path).name
-    if script_name == BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH:
+    if script_name in {
+        BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
+        BENCHMARK_SCRIPT_PATH,
+    }:
         return AgentName.BENCHMARK_PLANNER
-    if script_name == SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH:
+    if script_name in {
+        SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
+        SOLUTION_SCRIPT_PATH,
+    }:
         return AgentName.ENGINEER_PLANNER
     return None
 

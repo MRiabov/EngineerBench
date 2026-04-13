@@ -45,9 +45,7 @@ from shared.observability.schemas import LintFailureDocsEvent, LogicFailureEvent
 from shared.script_contracts import (
     BENCHMARK_SCRIPT_PATH,
     SOLUTION_SCRIPT_PATH,
-    drafting_render_manifest_path_for_agent,
     plan_path_for_agent,
-    technical_drawing_script_path_for_agent,
 )
 from shared.simulation.schemas import SimulatorBackendType
 from shared.workers.schema import RenderManifest

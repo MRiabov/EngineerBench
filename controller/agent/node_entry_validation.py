@@ -50,7 +50,7 @@ from controller.clients.worker import WorkerClient
 from controller.config.settings import settings as controller_settings
 from controller.persistence.db import get_sessionmaker
 from controller.persistence.models import Episode
-from shared.agents.config import DraftingMode, load_agents_config
+from shared.agents.config import DraftingMode
 from shared.current_role import parse_current_role_manifest
 from shared.enums import AgentName, EntryFailureDisposition, EntryValidationSource
 from shared.models.schemas import (
@@ -213,31 +213,10 @@ _RENDER_EVIDENCE_EXTENSIONS = _RENDER_IMAGE_EXTENSIONS | {".mp4"}
 
 
 def _technical_drawing_mode_active(mode: DraftingMode) -> bool:
-    return mode in (DraftingMode.MINIMAL, DraftingMode.FULL)
+    return False
 
 
 def _technical_drawing_mode_for_node(node_type: AgentName) -> DraftingMode:
-    try:
-        config = load_agents_config()
-    except Exception:
-        return DraftingMode.OFF
-
-    if node_type in {
-        AgentName.BENCHMARK_PLANNER,
-        AgentName.BENCHMARK_PLAN_REVIEWER,
-        AgentName.BENCHMARK_CODER,
-        AgentName.BENCHMARK_REVIEWER,
-    }:
-        return config.get_technical_drawing_mode(AgentName.BENCHMARK_PLANNER)
-    if node_type in {
-        AgentName.ENGINEER_PLANNER,
-        AgentName.ENGINEER_PLAN_REVIEWER,
-        AgentName.ENGINEER_CODER,
-        AgentName.ENGINEER_EXECUTION_REVIEWER,
-        AgentName.ELECTRONICS_PLANNER,
-        AgentName.ELECTRONICS_REVIEWER,
-    }:
-        return config.get_technical_drawing_mode(AgentName.ENGINEER_PLANNER)
     return DraftingMode.OFF
 
 
