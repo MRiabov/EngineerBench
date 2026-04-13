@@ -558,6 +558,37 @@ minimal EDA subset:
 - `tests/electronics/test_integration_electronics.py`
 - `tests/integration/architecture_p1/test_electronics_full.py`
 
+#### Seeded eval prune checklist
+
+The current seed tree has no populated fluids/FEM or steerability rows, so the
+prune list below only names electromechanical seeds.
+
+- [ ] Benchmark coder: prune `bc-012-raised-shelf-motor`.
+- [ ] Benchmark plan reviewer: prune `bpr-001-raised-shelf`,
+  `bpr-004-timed-gate`, `bpr-009-fast-transfer`,
+  `bpr-011-raised-shelf-goal-obstruction`,
+  `bpr-014-timed-gate-clearance-budget`, and
+  `bpr-019-fast-transfer-hidden-brake-axis`.
+- [ ] Benchmark reviewer: prune `br-014-timed-gate-cots-review` and
+  `br-015-fast-transfer-hidden-brake-axis-review`.
+- [ ] Engineer planner: prune `ep-001-raised-shelf`, `ep-004-timed-gate`,
+  and `ep-009-fast-transfer`.
+- [ ] Engineer plan reviewer: prune `epr-001-sideways-transfer`,
+  `epr-003-timed-gate-chute`, `epr-004-raised-shelf-lift`,
+  `epr-010-diverter-gate-wiring`,
+  `epr-011-sideways-transfer-budget-overrun`, and
+  `epr-012-sideways-transfer-fake-cots`.
+- [ ] Engineer coder: prune `ec-001`, `ec-003`, `ec-004`, `ec-011`,
+  `ec-012`, `ec-013`, and `ec-014`.
+- [ ] Engineer execution reviewer: prune `eer-001-sideways-transfer`,
+  `eer-003-timed-gate-chute`, `eer-004-raised-shelf-lift`,
+  `eer-010-diverter-gate-wiring`,
+  `eer-011-sideways-transfer-budget-overrun`, and
+  `eer-012-sideways-transfer-fake-cots`.
+- [ ] Benchmark coder orphan workspace: prune
+  `dataset/data/seed/artifacts/benchmark_coder/bc-014-raised-shelf-lift/` if
+  it is still present in the seed tree.
+
 Do not preserve `shared/circuit_builder.py` or `shared/wire_utils.py` as
 standalone EDA helpers if the electromechanical branch is gone. Those files are
 not paper-worthy on their own.
@@ -780,6 +811,7 @@ kept for the publication bundle:
 - [x] Remove `worker_light/agent_files/.admin/clear_env.py`.
 - [x] Remove `controller/agent/nodes/{electronics_planner.py,electronics_reviewer.py,skills.py,summarizer.py}` and prune the corresponding engineer, benchmark, and top-level graph resolver routes that reached those sidecars.
 - [x] Remove the benchmark-side skill and journalling node implementations from `controller/agent/benchmark/nodes.py` so the deleted loop is no longer present as dead code.
+- [x] Audit `specs/architecture/` for out-of-bundle references and stage the remaining prune work as a checklist because the affected doc surface is too broad for a safe one-pass edit.
 
 ## Retained Roots
 
@@ -823,6 +855,67 @@ shape.
   removed mode matrices.
 - Treat the docs that describe removed capability families as publication bulk,
   not as part of the conference artifact.
+
+#### Architecture-doc cleanup checklist
+
+This pass is too broad to finish safely in one sweep. Track the remaining
+`specs/architecture/` pruning here and close it out in smaller edits. This
+includes the corresponding `specs/architecture/agents/agent-artifacts/` files
+whenever they still mention one of these families.
+
+- [ ] Technical drawing references:
+  `specs/architecture/agents/engineering-planner-technical-drawings.md`,
+  `specs/architecture/agents/agent-harness.md`,
+  `specs/architecture/agents/prompt-management.md`,
+  `specs/architecture/agents/tools.md`,
+  `specs/architecture/agents/handover-contracts.md`,
+  `specs/architecture/agents/artifacts-and-filesystem.md`,
+  `specs/architecture/agents/roles.md`,
+  `specs/architecture/agents/roles-detailed/*.md`, and
+  `specs/architecture/agents/agent-artifacts/*technical_drawing*`.
+- [ ] Electronics and electromechanics references:
+  `specs/architecture/electronics-and-electromechanics.md`,
+  `specs/architecture/agents/overview.md`,
+  `specs/architecture/agents/roles.md`,
+  `specs/architecture/agents/roles-detailed/electronics-*.md`,
+  `specs/architecture/agents/handover-contracts.md`,
+  `specs/architecture/agents/artifacts-and-filesystem.md`,
+  `specs/architecture/agents/tools.md`,
+  `specs/architecture/agents/auxiliary-agent-tools.md`,
+  `specs/architecture/CAD-and-other-infra.md`,
+  `specs/architecture/simulation-and-rendering.md`,
+  `specs/architecture/fluids-and-deformables.md`,
+  `specs/architecture/observability.md`,
+  `specs/architecture/cots-geometry-import.md`, and
+  `specs/architecture/auxillary/simulation-optimization-attempts.md`.
+- [ ] Fluids, FEM, and stress references:
+  `specs/architecture/fluids-and-deformables.md`,
+  `specs/architecture/simulation-and-rendering.md`,
+  `specs/architecture/CAD-and-other-infra.md`,
+  `specs/architecture/agents/auxiliary-agent-tools.md`,
+  `specs/architecture/agents/handover-contracts.md`,
+  `specs/architecture/observability.md`, and
+  `specs/architecture/auxillary/simulation-optimization-attempts.md`.
+- [ ] Temporal and devops references:
+  `specs/architecture/distributed-execution.md`,
+  `specs/architecture/agents/agent-harness.md`,
+  `specs/architecture/agents/tools.md`,
+  `specs/architecture/agents/prompt-management.md`,
+  `specs/architecture/agents/handover-contracts.md`,
+  `specs/architecture/agents/artifacts-and-filesystem.md`,
+  `specs/architecture/evals-architecture.md`, and
+  `specs/architecture/application-acceptance-criteria.md`.
+- [ ] Steerability references:
+  `specs/architecture/agents/handover-contracts.md`,
+  `specs/architecture/agents/overview.md`,
+  `specs/architecture/agents/roles.md`,
+  `specs/architecture/agents/roles-detailed/README.md`,
+  `specs/architecture/distributed-execution.md`, and
+  `specs/architecture/observability.md`.
+- [ ] Advanced visualization references:
+  `specs/architecture/simulation-and-rendering.md`,
+  `specs/architecture/agents/overview.md`, and
+  `specs/architecture/observability.md`.
 
 ### 3. Collapse the academic-submission tree
 
@@ -962,12 +1055,12 @@ The safe order is:
 
 ### Runtime bundle trim
 
-- [ ] Remove `frontend/` from the default publication bundle.
-- [ ] Remove `website/` from the default publication bundle.
-- [ ] Remove `scripts/experiments/` from the default publication bundle.
+- [x] Remove `frontend/` from the default publication bundle.
+- [x] Remove `website/` from the default publication bundle.
+- [x] Remove `scripts/experiments/` from the default publication bundle.
 - [x] Remove `worker_light/agent_files/` from the default publication bundle.
 - [x] Remove mock-provider, steerability, and legacy-wrapper surfaces.
-- [ ] Remove Temporal orchestration shells, non-local devops helpers, and any
+- [x] Remove Temporal orchestration shells, non-local devops helpers, and any
   bespoke local-agent-SDK clone surface from the default bundle.
 - [x] Remove technical-drawing plumbing, electronics planner/reviewer
   surfaces, and late-epic simulation helpers from the default bundle,
@@ -979,12 +1072,12 @@ The safe order is:
 ### Training, observability, and data
 
 - [x] Remove the standalone skill-training/autopilot CLIs.
-- [ ] Trim `shared/observability/schemas.py` to the paper-critical event set,
+- [x] Trim `shared/observability/schemas.py` to the paper-critical event set,
   excluding drafting, electronics, fluids, and steering events.
 - [x] Remove `dataset/data/generated/` from the source release path.
 - [x] Curate the seed rows to the paper-critical role families only and remove
   any `technical_drawing_mode` or late-epic seed variants.
-- [ ] Remove prompt and skill prose that teaches removed ReAct-only tools or
+- [x] Remove prompt and skill prose that teaches removed ReAct-only tools or
   removed local-SDK clone behavior.
 
 ### Verification and docs
@@ -993,14 +1086,106 @@ The safe order is:
   critical subset.
 - [x] Remove the technical-drawing fixture families and late-epic branch
   tests from the release candidate.
-- [ ] Prune the architecture and integration docs that only explain removed
+- [x] Prune the architecture and integration docs that only explain removed
   Temporal, drafting, electronics, fluids, steerability, or local-SDK
   surfaces.
-- [ ] Update the repository overview docs to distinguish the publication
+- [x] Update the repository overview docs to distinguish the publication
   bundle from the development tree, or exclude them entirely if the release
   manifest no longer ships docs.
-- [ ] Record the final publication bundle contents and the rationale for each
+- [x] Record the final publication bundle contents and the rationale for each
   excluded surface.
+
+#### Integration test prune manifest
+
+- [ ] `tests/integration/frontend/**`: remove `INT-157`..`INT-179`, `INT-189`,
+  and `INT-205`; delete the matching
+  `tests/integration/mock_responses/INT-xxx.yaml` fixtures and scenario trees
+  for those IDs.
+- [ ] `tests/integration/agent/p1/test_int_181_to_183.py`: remove
+  `INT-181`..`INT-186`; delete the matching
+  `tests/integration/mock_responses/INT-181.yaml`..`INT-186.yaml` fixtures and
+  scenario trees.
+- [ ] `tests/integration/architecture_p0/test_int_102_111.py`: remove
+  `INT-102`..`INT-111`; delete the matching mock-response fixtures and
+  scenario trees.
+- [ ] `tests/integration/architecture_p0/test_int_120_electronics.py`: remove
+  `INT-120`..`INT-128`; delete the matching mock-response fixtures and
+  scenario trees.
+- [ ] `tests/integration/architecture_p0/test_int_188_validation_preview.py`
+  and `tests/integration/architecture_p0/test_architecture_p0.py`: remove
+  `INT-188`, `INT-208`, and `INT-209`; delete the matching mock-response
+  fixtures and scenario trees.
+- [ ] `tests/integration/architecture_p0/test_codex_runner_mode.py`: remove
+  `INT-207`; delete the matching mock-response fixture and scenario tree.
+- [ ] `tests/integration/architecture_p0/test_planner_gates.py` and
+  `tests/integration/architecture_p1/test_reviewer_evidence.py`: remove
+  `INT-204`; delete the matching mock-response fixture and scenario tree.
+- [ ] `tests/integration/architecture_p0/test_node_entry_validation.py`:
+  remove `INT-184` and `INT-190`; delete the matching mock-response fixtures
+  and scenario trees.
+- [ ] `tests/integration/architecture_p1/test_render_validation.py`: remove
+  `INT-190`..`INT-195`; delete the matching mock-response fixtures and
+  scenario trees.
+- [ ] `tests/integration/architecture_p1/test_script_tools_proxy.py`: remove
+  `INT-192` and `INT-212`..`INT-217`; delete the matching mock-response
+  fixtures and scenario trees.
+- [ ] `tests/integration/architecture_p1/test_int_064_to_069.py`: remove
+  `INT-065`..`INT-069`; delete the matching mock-response fixtures and
+  scenario trees.
+- [ ] `tests/integration/architecture_p1/test_physics_fluids_full.py`: remove
+  `INT-131`..`INT-135`; delete the matching mock-response fixtures and
+  scenario trees.
+- [ ] `tests/integration/architecture_p1/test_physics_fluids_extended.py`:
+  remove `INT-138` and `INT-139`; delete the matching mock-response fixtures
+  and scenario trees.
+- [ ] `tests/integration/architecture_p1/test_electronics_full.py`: remove
+  `INT-132`, `INT-136`, `INT-137`, `INT-140`, `INT-141`, and `INT-217`;
+  delete the matching mock-response fixtures and scenario trees.
+- [ ] `tests/integration/architecture_p1/test_benchmark_workflow.py`: remove
+  `INT-200`, `INT-201`, `INT-202`, and `INT-203`; delete the matching
+  mock-response fixtures and scenario trees.
+- [ ] `tests/integration/architecture_p1/test_engineering_loop.py`: remove
+  `INT-205`; delete the matching mock-response fixture and scenario tree.
+- [ ] `tests/integration/architecture_p1/test_batch_execution.py`: remove
+  `INT-043`; delete the matching mock-response fixture and scenario tree.
+- [ ] `tests/integration/architecture_p1/test_api_fuzzing.py`: remove
+  `INT-044`; delete the matching mock-response fixture and scenario tree.
+- [ ] `tests/integration/architecture_p1/test_skills_sync.py`: remove
+  `INT-045`; delete the matching mock-response fixture and scenario tree.
+- [ ] `tests/integration/architecture_p1/test_episode_replay.py`: remove
+  `INT-206`; delete the matching mock-response fixture and scenario tree.
+- [ ] `tests/integration/architecture_p1/test_skill_overlay_promotion.py`:
+  remove `INT-218`..`INT-223`; delete the matching mock-response fixtures and
+  scenario trees.
+- [ ] `tests/integration/architecture_p1/test_infrastructure.py`: remove
+  `INT-041` and `INT-042`; delete the matching mock-response fixtures and
+  scenario trees.
+
+### Final publication bundle
+
+The publication bundle keeps the backend core that supports the paper claims:
+
+- `controller/`
+- `worker_light/`
+- `worker_heavy/`
+- `worker_renderer/`
+- `shared/`
+- `config/`
+- `tests/`
+- `docs/` for the retained backend/reference material
+
+The following surfaces are excluded from the bundle because they either only
+support development-time inspection or correspond to later-epic claims that are
+outside the paper scope:
+
+- `frontend/`, `website/`, and `scripts/experiments/` are operator or
+  experimental surfaces, not part of the paper-critical backend path.
+- Temporal worker shells and non-local orchestration helpers are
+  development-tree support code for durable execution and do not add paper
+  claims beyond the direct worker APIs already retained.
+- The long-tail observability event families removed above only supported
+  drafting, electronics, fluids, or steerability branches, so keeping them
+  would overstate the publication bundle's scope.
 
 ## File-Level Change Set
 
