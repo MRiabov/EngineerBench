@@ -16,7 +16,7 @@ import structlog
 import yaml
 from build123d import Compound
 
-from shared.agents.config import DraftingMode, load_agents_config
+from shared.agents.config import load_agents_config
 from shared.current_role import current_role_agent_name
 from shared.enums import (
     AgentName,
@@ -55,11 +55,7 @@ from shared.rendering import (
     select_scratch_preview_render_subdir,
 )
 from shared.script_contracts import (
-    drafting_render_manifest_path_for_agent,
-    plan_path_for_agent,
-    planner_role_for_drafting_script_path,
     role_family_for_agent,
-    technical_drawing_script_path_for_agent,
 )
 from shared.simulation.scene_builder import (
     MOVED_OBJECT_SCENE_PREFIX,
@@ -1459,87 +1455,6 @@ def validate_subprocess(
         message = (
             f"{message}; {fem_message}" if message and fem_message else fem_message
         )
-
-    planner_role = planner_role_for_drafting_script_path(script_path)
-    if planner_role is not None:
-        from worker_heavy.utils.file_validation import (
-            validate_benchmark_definition_yaml,
-            validate_planner_handoff_cross_contract,
-        )
-        from worker_heavy.workbenches.config import load_required_merged_config
-
-        session_root_path = Path(session_root)
-        benchmark_definition_path = session_root_path / "benchmark_definition.yaml"
-        assembly_definition_path = (
-            session_root_path / "benchmark_assembly_definition.yaml"
-            if planner_role == AgentName.BENCHMARK_PLANNER
-            else session_root_path / "assembly_definition.yaml"
-        )
-        plan_path = session_root_path / plan_path_for_agent(planner_role).as_posix()
-        legacy_plan_path = session_root_path / "plan.md"
-
-        if not benchmark_definition_path.exists():
-            return False, (
-                "benchmark_definition.yaml missing for planner drafting validation"
-            )
-        if not assembly_definition_path.exists():
-            return (
-                False,
-                f"{assembly_definition_path.name} missing for planner drafting validation",
-            )
-
-        benchmark_valid, benchmark_result = validate_benchmark_definition_yaml(
-            benchmark_definition_path.read_text(encoding="utf-8"),
-            session_id=session_id,
-        )
-        if not benchmark_valid:
-            return False, (
-                "benchmark_definition.yaml invalid: " + "; ".join(benchmark_result)
-            )
-
-        try:
-            assembly_definition = AssemblyDefinition.model_validate(
-                yaml.safe_load(assembly_definition_path.read_text(encoding="utf-8"))
-                or {}
-            )
-        except Exception as exc:
-            return False, f"{assembly_definition_path.name} invalid: {exc}"
-
-        manufacturing_config_path = session_root_path / "manufacturing_config.yaml"
-        if manufacturing_config_path.exists():
-            manufacturing_config = load_required_merged_config(
-                manufacturing_config_path
-            )
-        else:
-            manufacturing_config = load_required_merged_config()
-
-        plan_text = (
-            plan_path.read_text(encoding="utf-8")
-            if plan_path.exists()
-            else (
-                legacy_plan_path.read_text(encoding="utf-8")
-                if legacy_plan_path.exists()
-                else None
-            )
-        )
-        script_name = Path(script_path).name
-        drafted_script_path = session_root_path / script_name
-        if not drafted_script_path.exists() and Path(script_path).exists():
-            drafted_script_path = Path(script_path)
-
-        cross_contract_errors = validate_planner_handoff_cross_contract(
-            benchmark_definition=benchmark_result,
-            assembly_definition=assembly_definition,
-            manufacturing_config=manufacturing_config,
-            planner_node_type=planner_role,
-            plan_text=plan_text,
-            drafting_artifacts={
-                script_name: drafted_script_path.read_text(encoding="utf-8")
-            },
-        )
-        if cross_contract_errors:
-            is_valid = False
-            message = "; ".join(cross_contract_errors)
 
     return is_valid, message
 

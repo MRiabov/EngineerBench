@@ -4,9 +4,7 @@ from collections.abc import Iterable
 
 from shared.enums import AgentName
 from shared.script_contracts import (
-    BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
     CURRENT_ROLE_MANIFEST_PATH,
-    SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
 )
 
 _BENCHMARK_PLAN_BASE_FILES: tuple[str, ...] = (

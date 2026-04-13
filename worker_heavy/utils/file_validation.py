@@ -9,11 +9,9 @@ Validates the structure and content of:
 """
 
 # T015: Hashing for immutability checks
-import ast
 import hashlib
 import io
 import re
-import shutil
 import subprocess
 import tempfile
 import tokenize
@@ -30,9 +28,6 @@ from shared.enums import AgentName, BenchmarkAttachmentMethod, BenchmarkRefusalR
 from shared.models.schemas import (
     AssemblyDefinition,
     BenchmarkDefinition,
-    CotsPartEstimate,
-    DraftingSheet,
-    ManufacturedPartEstimate,
     MotionForecast,
     PartConfig,
     PayloadTrajectoryDefinition,
@@ -48,7 +43,6 @@ from shared.script_contracts import (
     plan_path_for_agent,
 )
 from shared.simulation.schemas import SimulatorBackendType
-from shared.workers.schema import RenderManifest
 from shared.workers.workbench_models import ManufacturingConfig
 from worker_heavy.utils.dfm import (
     validate_declared_assembly_cost,
@@ -60,11 +54,7 @@ from worker_heavy.utils.payload_trajectory_validation import (
     validate_payload_trajectory_swept_clearance,
 )
 from worker_heavy.utils.validation import (
-    _shape_volume,
     _validate_benchmark_definition_consistency,
-)
-from worker_heavy.utils.validation import (
-    validate as validate_component,
 )
 from worker_heavy.workbenches.config import load_config, load_merged_config
 
@@ -343,29 +333,6 @@ def _assembly_script_expected_tokens(
     return expected
 
 
-def _planner_drafting_script_names_for_node(
-    node_type: AgentName | str | None,
-) -> list[str]:
-    node_value = (
-        node_type.value if isinstance(node_type, AgentName) else str(node_type or "")
-    )
-    if node_value in {
-        AgentName.BENCHMARK_PLANNER.value,
-        AgentName.BENCHMARK_PLAN_REVIEWER.value,
-        AgentName.BENCHMARK_CODER.value,
-        AgentName.BENCHMARK_REVIEWER.value,
-    }:
-        return ["benchmark_plan_evidence_script.py"]
-    if node_value in {
-        AgentName.ENGINEER_PLANNER.value,
-        AgentName.ENGINEER_PLAN_REVIEWER.value,
-        AgentName.ELECTRONICS_PLANNER.value,
-        AgentName.ELECTRONICS_REVIEWER.value,
-    }:
-        return ["solution_plan_evidence_script.py"]
-    return []
-
-
 def validate_planner_evidence_script_layout_contract(
     *,
     artifact_name: str,
@@ -397,66 +364,6 @@ def _validate_exact_identifier_mentions(
                 f"{artifact_name}: missing exact identifier mention '{token}' "
                 f"(expected at least {expected_count}, found {actual_count})"
             )
-    return errors
-
-
-def _validate_drafting_artifact_inventory_exactness(
-    *,
-    artifact_name: str,
-    content: str,
-    expected_tokens: Counter[str],
-    expected_identity_pairs: Counter[tuple[str | None, str | None]] | None = None,
-) -> list[str]:
-    import tempfile
-
-    from shared.workers.loader import load_component_from_script
-
-    tmp_root = Path(tempfile.mkdtemp(prefix="problemologist_planner_drafting_"))
-    try:
-        script_path = tmp_root / artifact_name
-        script_path.write_text(content, encoding="utf-8")
-        component = load_component_from_script(
-            script_path=script_path,
-            session_root=tmp_root,
-        )
-    except Exception as exc:
-        return [
-            f"{artifact_name}: unable to load drafted component for inventory "
-            f"validation: {exc}"
-        ]
-    finally:
-        shutil.rmtree(tmp_root, ignore_errors=True)
-
-    return validate_component_inventory_exactness(
-        component=component,
-        expected_tokens=expected_tokens,
-        artifact_name=artifact_name,
-        expected_identity_pairs=expected_identity_pairs,
-    )
-
-
-def _validate_benchmark_drafting_no_cots_identity(
-    *,
-    artifact_name: str,
-    component: Any,
-) -> list[str]:
-    """Reject benchmark-owned drafting artifacts that smuggle COTS identity."""
-    errors: list[str] = []
-
-    def _visit(node: Any) -> None:
-        metadata = getattr(node, "metadata", None)
-        cots_id = getattr(metadata, "cots_id", None)
-        if isinstance(cots_id, str) and cots_id.strip():
-            label = getattr(node, "label", None) or "<unlabeled>"
-            errors.append(
-                f"{artifact_name}: benchmark-owned fixture '{label}' must not "
-                "declare cots_id; use label and material_id only"
-            )
-
-        for child in getattr(node, "children", ()) or ():
-            _visit(child)
-
-    _visit(component)
     return errors
 
 
@@ -689,383 +596,6 @@ _SUPPORTED_BENCHMARK_MOTION_TOKENS = {
     "slide_y",
     "slide_z",
 }
-
-def _validate_drafting_contract(
-    *,
-    assembly_definition: AssemblyDefinition,
-    planner_node_type: AgentName | str | None,
-) -> list[str]:
-    if assembly_definition.drafting is None:
-        return []
-    return [
-        "assembly_definition.drafting must be absent in the publication bundle"
-    ]
-
-
-def _zone_body_from_bounds(
-    bounds: Any,
-    *,
-    inflation_mm: float = 0.0,
-) -> Any:
-    from build123d import Align, Box, Location
-
-    min_xyz = tuple(float(value) for value in bounds.min)
-    max_xyz = tuple(float(value) for value in bounds.max)
-    size = tuple(
-        max(max_xyz[i] - min_xyz[i] + 2.0 * inflation_mm, 0.0) for i in range(3)
-    )
-    center = tuple((min_xyz[i] + max_xyz[i]) / 2.0 for i in range(3))
-    zone = Box(
-        size[0],
-        size[1],
-        size[2],
-        align=(Align.CENTER, Align.CENTER, Align.CENTER),
-    )
-    if any(abs(value) > 1e-12 for value in center):
-        zone = zone.move(Location(center))
-    return zone
-
-
-def _drafting_explicitly_allows_goal_zone_overlap(
-    drafting: DraftingSheet | None,
-    zone_name: str,
-    target_name: str,
-) -> bool:
-    if drafting is None:
-        return False
-
-    normalized_zone_name = zone_name.strip().lower()
-    normalized_target_name = target_name.strip().lower()
-    if not normalized_zone_name or not normalized_target_name:
-        return False
-
-    for allowance in drafting.goal_zone_overlap_intents:
-        if (
-            allowance.zone_name.strip().lower() == normalized_zone_name
-            and allowance.target.strip().lower() == normalized_target_name
-        ):
-            return True
-    return False
-
-
-def validate_planner_drafting_geometry_contract(
-    *,
-    benchmark_definition: BenchmarkDefinition,
-    drafting: DraftingSheet | None,
-    component: Any,
-    artifact_name: str,
-    session_id: str | None = None,
-) -> list[str]:
-    """Validate planner drafting geometry against backing objective zones."""
-    errors: list[str] = []
-
-    build_zone_error = None
-    try:
-        is_valid, message = validate_component(
-            component,
-            build_zone=benchmark_definition.objectives.build_zone.model_dump(),
-            session_id=session_id,
-        )
-        if not is_valid:
-            build_zone_error = message or "3D backing geometry validation failed"
-    except Exception as exc:
-        build_zone_error = str(exc)
-
-    if build_zone_error is not None:
-        return [f"{artifact_name}: {build_zone_error}"]
-
-    solids = list(component.solids())
-    if not solids:
-        return [f"{artifact_name}: drafted component contains no solid geometry"]
-
-    invalid_labels: list[str] = []
-    shapes_to_check = [component, *solids]
-    for shape in shapes_to_check:
-        try:
-            if hasattr(shape, "is_valid") and not shape.is_valid:
-                invalid_labels.append(getattr(shape, "label", None) or artifact_name)
-        except Exception as exc:
-            return [f"{artifact_name}: unable to evaluate geometry validity: {exc}"]
-
-    if invalid_labels:
-        return [
-            f"{artifact_name}: drafted geometry is invalid or self-intersecting "
-            f"(offending shape: {invalid_labels[0]})"
-        ]
-
-    goal_zone = benchmark_definition.objectives.goal_zone
-    goal_zone_body = _zone_body_from_bounds(goal_zone, inflation_mm=1e-6)
-    component_label = getattr(component, "label", None)
-    for solid in solids:
-        try:
-            goal_intersection = solid.intersect(goal_zone_body)
-        except Exception as exc:
-            return [f"{artifact_name}: unable to evaluate goal-zone overlap: {exc}"]
-        if _shape_volume(goal_intersection) > 0.0:
-            solid_label = (
-                getattr(solid, "label", None)
-                or component_label
-                or artifact_name.removesuffix(".py")
-                or "<unlabeled>"
-            )
-            if _drafting_explicitly_allows_goal_zone_overlap(
-                drafting, "goal_zone", solid_label
-            ):
-                continue
-            return [
-                f"{artifact_name}: 3D backing geometry overlaps goal zone "
-                f"(offending solid: {solid_label}); declare a matching "
-                f"drafting.goal_zone_overlap_intents entry in assembly_definition.yaml"
-            ]
-
-    for zone in benchmark_definition.objectives.forbid_zones:
-        zone_body = _zone_body_from_bounds(zone, inflation_mm=1e-6)
-        for solid in solids:
-            try:
-                intersection = solid.intersect(zone_body)
-            except Exception as exc:
-                return [
-                    f"{artifact_name}: unable to evaluate forbid-zone overlap "
-                    f"for '{zone.name}': {exc}"
-                ]
-            if _shape_volume(intersection) > 0.0:
-                solid_label = getattr(solid, "label", None) or "<unlabeled>"
-                return [
-                    f"{artifact_name}: 3D backing geometry intersects forbid "
-                    f"zone '{zone.name}' (offending solid: {solid_label})"
-                ]
-
-    return errors
-
-
-def _load_component_from_drafting_script_content(
-    *,
-    artifact_name: str,
-    content: str,
-    session_root: Path,
-) -> Any:
-    from shared.workers.loader import load_component_from_script
-
-    with tempfile.TemporaryDirectory(prefix="planner_drafting_") as tmpdir:
-        tmp_root = Path(tmpdir)
-        script_path = tmp_root / artifact_name
-        script_path.write_text(content, encoding="utf-8")
-        return load_component_from_script(
-            script_path=script_path,
-            session_root=session_root,
-        )
-
-
-def _drafting_script_paths_for_node(
-    node_type: AgentName | str | None,
-) -> tuple[str, str]:
-    node_value = (
-        node_type.value if isinstance(node_type, AgentName) else str(node_type or "")
-    )
-    if node_value in {
-        AgentName.BENCHMARK_PLANNER.value,
-        AgentName.BENCHMARK_PLAN_REVIEWER.value,
-        AgentName.BENCHMARK_CODER.value,
-        AgentName.BENCHMARK_REVIEWER.value,
-    }:
-        return ("benchmark_plan_evidence_script.py",)
-    if node_value in {
-        AgentName.ENGINEER_PLANNER.value,
-        AgentName.ENGINEER_PLAN_REVIEWER.value,
-        AgentName.ENGINEER_CODER.value,
-        AgentName.ENGINEER_EXECUTION_REVIEWER.value,
-        AgentName.ELECTRONICS_PLANNER.value,
-        AgentName.ELECTRONICS_REVIEWER.value,
-    }:
-        return ("solution_plan_evidence_script.py",)
-    return ("", "")
-
-
-def _drafting_render_manifest_path_for_node(
-    node_type: AgentName | str | None,
-) -> str:
-    node_value = (
-        node_type.value if isinstance(node_type, AgentName) else str(node_type or "")
-    )
-    if node_value in {
-        AgentName.BENCHMARK_PLANNER.value,
-        AgentName.BENCHMARK_PLAN_REVIEWER.value,
-        AgentName.BENCHMARK_CODER.value,
-        AgentName.BENCHMARK_REVIEWER.value,
-    }:
-        return str(drafting_render_manifest_path_for_agent(AgentName.BENCHMARK_PLANNER))
-    if node_value in {
-        AgentName.ENGINEER_PLANNER.value,
-        AgentName.ENGINEER_PLAN_REVIEWER.value,
-        AgentName.ENGINEER_CODER.value,
-        AgentName.ENGINEER_EXECUTION_REVIEWER.value,
-        AgentName.ELECTRONICS_PLANNER.value,
-        AgentName.ELECTRONICS_REVIEWER.value,
-    }:
-        return str(drafting_render_manifest_path_for_agent(AgentName.ENGINEER_PLANNER))
-    return ""
-
-
-def _technical_drawing_script_imports_and_calls_technical_drawing(
-    content: str,
-    *,
-    artifact_name: str,
-) -> list[str]:
-    try:
-        tree = ast.parse(content)
-    except SyntaxError as exc:
-        return [f"{artifact_name}: invalid Python syntax: {exc}"]
-
-    direct_import_names: set[str] = set()
-    module_aliases: set[str] = set()
-    imported_from_build123d = False
-
-    for node in ast.walk(tree):
-        if isinstance(node, ast.ImportFrom) and node.module:
-            module_root = node.module.split(".", 1)[0]
-            if module_root == "build123d":
-                imported_from_build123d = True
-                for alias in node.names:
-                    if alias.name == "TechnicalDrawing":
-                        direct_import_names.add(alias.asname or alias.name)
-        elif isinstance(node, ast.Import):
-            for alias in node.names:
-                if alias.name == "build123d":
-                    module_aliases.add(alias.asname or alias.name)
-
-    if not imported_from_build123d:
-        return [
-            f"{artifact_name}: must import build123d TechnicalDrawing before using it"
-        ]
-
-    class _TechnicalDrawingCallVisitor(ast.NodeVisitor):
-        def __init__(self) -> None:
-            self.found = False
-
-        def visit_Call(self, node: ast.Call) -> Any:  # type: ignore[override]
-            func = node.func
-            if (isinstance(func, ast.Name) and func.id in direct_import_names) or (
-                isinstance(func, ast.Attribute)
-                and isinstance(func.value, ast.Name)
-                and func.value.id in module_aliases
-                and func.attr == "TechnicalDrawing"
-            ):
-                self.found = True
-            self.generic_visit(node)
-
-    visitor = _TechnicalDrawingCallVisitor()
-    visitor.visit(tree)
-    if not visitor.found:
-        return [
-            f"{artifact_name}: must construct build123d TechnicalDrawing at least once"
-        ]
-    return []
-
-
-def validate_drafting_preview_manifest(
-    *,
-    manifest_content: str,
-    technical_drawing_script_content: str,
-    artifact_name: str,
-    workspace_root: Path | None = None,
-) -> list[str]:
-    try:
-        manifest = RenderManifest.model_validate_json(manifest_content)
-    except Exception as exc:
-        return [f"{artifact_name}: invalid render manifest: {exc}"]
-
-    errors: list[str] = []
-    if not manifest.drafting:
-        errors.append(
-            f"{artifact_name}: drafting preview manifest must set drafting=true"
-        )
-    if not manifest.source_script_sha256:
-        errors.append(
-            f"{artifact_name}: drafting preview manifest is missing source_script_sha256"
-        )
-    else:
-        expected_sha256 = hashlib.sha256(
-            technical_drawing_script_content.encode("utf-8")
-        ).hexdigest()
-        if manifest.source_script_sha256 != expected_sha256:
-            errors.append(
-                f"{artifact_name}: drafting preview manifest source_script_sha256 "
-                "does not match the current technical drawing script revision"
-            )
-    if not manifest.preview_evidence_paths:
-        errors.append(
-            f"{artifact_name}: drafting preview manifest must include preview_evidence_paths"
-        )
-    if not manifest.artifacts:
-        errors.append(f"{artifact_name}: drafting preview manifest artifacts are empty")
-    else:
-        artifact_png_paths = {
-            path for path in manifest.artifacts.keys() if path.endswith(".png")
-        }
-        preview_png_paths = {
-            path for path in manifest.preview_evidence_paths if path.endswith(".png")
-        }
-        if artifact_png_paths != preview_png_paths:
-            errors.append(
-                f"{artifact_name}: drafting preview manifest preview evidence paths "
-                "must match the PNG artifact paths"
-            )
-        for path, metadata in manifest.artifacts.items():
-            if not path.endswith(".png"):
-                errors.append(
-                    f"{artifact_name}: drafting preview manifest artifact '{path}' "
-                    "must be a PNG preview image"
-                )
-                continue
-            siblings = metadata.siblings
-            if not (siblings.svg or "").strip():
-                errors.append(
-                    f"{artifact_name}: drafting preview manifest artifact '{path}' is "
-                    "missing an SVG sidecar reference"
-                )
-            if not (siblings.dxf or "").strip():
-                errors.append(
-                    f"{artifact_name}: drafting preview manifest artifact '{path}' is "
-                    "missing a DXF sidecar reference"
-                )
-        if workspace_root is not None:
-            resolved_root = workspace_root.resolve()
-
-            def _resolve_manifest_path(raw_path: str) -> Path:
-                candidate = Path(raw_path)
-                return (
-                    candidate if candidate.is_absolute() else resolved_root / candidate
-                )
-
-            missing_evidence = sorted(
-                path
-                for path in preview_png_paths
-                if not _resolve_manifest_path(path).exists()
-            )
-            if missing_evidence:
-                errors.append(
-                    f"{artifact_name}: drafting preview manifest references missing "
-                    f"preview evidence files: {missing_evidence}"
-                )
-
-            missing_sidecars: list[str] = []
-            for path, metadata in manifest.artifacts.items():
-                if not path.endswith(".png"):
-                    continue
-                if metadata.siblings.svg:
-                    svg_path = _resolve_manifest_path(metadata.siblings.svg)
-                    if not svg_path.exists():
-                        missing_sidecars.append(f"{path} -> {metadata.siblings.svg}")
-                if metadata.siblings.dxf:
-                    dxf_path = _resolve_manifest_path(metadata.siblings.dxf)
-                    if not dxf_path.exists():
-                        missing_sidecars.append(f"{path} -> {metadata.siblings.dxf}")
-            if missing_sidecars:
-                errors.append(
-                    f"{artifact_name}: drafting preview manifest references missing "
-                    f"sidecar files: {missing_sidecars}"
-                )
-    return errors
 
 
 def _iter_benchmark_motion_configs(
@@ -2090,7 +1620,6 @@ def validate_planner_handoff_cross_contract(
     manufacturing_config: ManufacturingConfig,
     planner_node_type: AgentName | str | None = None,
     plan_text: str | None = None,
-    drafting_artifacts: dict[str, str] | None = None,
 ) -> list[str]:
     """Validate planner targets against benchmark caps and reject stale copies."""
     errors: list[str] = []
@@ -2255,12 +1784,6 @@ def validate_planner_handoff_cross_contract(
         validate_exact_planner_cost_contract(
             assembly_definition=assembly_definition,
             manufacturing_config=manufacturing_config,
-        )
-    )
-    errors.extend(
-        _validate_drafting_contract(
-            assembly_definition=assembly_definition,
-            planner_node_type=planner_node_type,
         )
     )
     return errors
@@ -2643,7 +2166,6 @@ def validate_node_output(
                 manufacturing_config=effective_config,
                 planner_node_type=node_type,
                 plan_text=plan_content,
-                drafting_artifacts=None,
             )
             if cross_contract_errors:
                 errors.extend(

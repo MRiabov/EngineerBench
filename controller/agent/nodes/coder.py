@@ -14,8 +14,6 @@ from shared.enums import AgentName
 from shared.script_contracts import (
     BENCHMARK_SCRIPT_PATH,
     SOLUTION_SCRIPT_PATH,
-    drafting_render_manifest_path_for_agent,
-    drafting_script_paths_for_agent,
 )
 from shared.type_checking import type_check
 
@@ -102,11 +100,6 @@ class CoderNode(BaseNode):
             BENCHMARK_SCRIPT_PATH,
             SOLUTION_SCRIPT_PATH,
             "benchmark_assembly_definition.yaml",
-            *[
-                str(path)
-                for path in drafting_script_paths_for_agent(AgentName.ENGINEER_PLANNER)
-            ],
-            str(drafting_render_manifest_path_for_agent(AgentName.ENGINEER_PLANNER)),
         ]
 
         prediction, _, journal_entry = await self._run_program(

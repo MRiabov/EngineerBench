@@ -28,7 +28,6 @@ def _planner_agent(workspace: Path | None = None) -> AgentName | None:
     if agent_name in {
         AgentName.BENCHMARK_PLANNER,
         AgentName.ENGINEER_PLANNER,
-        AgentName.ELECTRONICS_PLANNER,
     }:
         return agent_name
     return None
@@ -288,7 +287,7 @@ def submit_engineering_plan(workspace: Path | None = None) -> PlannerSubmissionR
     role_error = _planner_role_error(
         "submit_engineering_plan",
         _planner_agent(workspace),
-        (AgentName.ENGINEER_PLANNER, AgentName.ELECTRONICS_PLANNER),
+        (AgentName.ENGINEER_PLANNER,),
     )
     if role_error is not None:
         return role_error
@@ -303,7 +302,7 @@ def main() -> int:
         if agent_name == AgentName.BENCHMARK_PLANNER:
             helper_name = "submit_benchmark_plan"
             result = submit_benchmark_plan(workspace)
-        elif agent_name in {AgentName.ENGINEER_PLANNER, AgentName.ELECTRONICS_PLANNER}:
+        elif agent_name == AgentName.ENGINEER_PLANNER:
             helper_name = "submit_engineering_plan"
             result = submit_engineering_plan(workspace)
         else:

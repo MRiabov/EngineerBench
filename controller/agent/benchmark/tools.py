@@ -193,7 +193,6 @@ def get_benchmark_planner_tools(
         depth: bool | None = None,
         segmentation: bool | None = None,
         payload_path: bool = False,
-        drafting: bool = False,
         rendering_type: PreviewRenderingType | str | None = None,
         smoke_test_mode: bool | None = None,
     ):
@@ -205,7 +204,6 @@ def get_benchmark_planner_tools(
             depth=depth,
             segmentation=segmentation,
             payload_path=payload_path,
-            drafting=drafting,
             rendering_type=rendering_type,
             smoke_test_mode=smoke_test_mode,
             agent_role=AgentName.BENCHMARK_PLANNER,
@@ -219,19 +217,17 @@ def get_benchmark_planner_tools(
         depth: bool | None = None,
         segmentation: bool | None = None,
         payload_path: bool = False,
-        drafting: bool = False,
         rendering_type: PreviewRenderingType | str | None = None,
         smoke_test_mode: bool | None = None,
-        ):
-            return await render_cad(
-                script_path=script_path,
-                orbit_pitch=orbit_pitch,
-                orbit_yaw=orbit_yaw,
+    ):
+        return await render_cad(
+            script_path=script_path,
+            orbit_pitch=orbit_pitch,
+            orbit_yaw=orbit_yaw,
             rgb=rgb,
             depth=depth,
             segmentation=segmentation,
             payload_path=payload_path,
-            drafting=drafting,
             rendering_type=rendering_type,
             smoke_test_mode=smoke_test_mode,
         )

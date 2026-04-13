@@ -36,24 +36,6 @@ def _role_template_files(agent_name: AgentName) -> dict[str, str]:
             "engineer/engineering_plan.md": "engineering_plan.md",
             "engineer/todo.md": "todo.md",
             "engineer/assembly_definition.yaml": "assembly_definition.yaml",
-            "engineer/drafting/solution_plan_evidence_script.py": (
-                "solution_plan_evidence_script.py"
-            ),
-            "engineer/drafting/solution_plan_technical_drawing_script.py": (
-                "solution_plan_technical_drawing_script.py"
-            ),
-            "engineer/drafting/benchmark_plan_evidence_script.py": (
-                "benchmark_plan_evidence_script.py"
-            ),
-            "engineer/drafting/benchmark_plan_technical_drawing_script.py": (
-                "benchmark_plan_technical_drawing_script.py"
-            ),
-            "engineer/renders/engineer_plan_renders/render_manifest.json": (
-                "renders/engineer_plan_renders/render_manifest.json"
-            ),
-            "engineer/renders/benchmark_renders/render_manifest.json": (
-                "renders/benchmark_renders/render_manifest.json"
-            ),
         },
         AgentName.ENGINEER_CODER: {
             "engineer/benchmark_assembly_definition.yaml": (
@@ -66,19 +48,6 @@ def _role_template_files(agent_name: AgentName) -> dict[str, str]:
             ),
         },
         AgentName.ENGINEER_EXECUTION_REVIEWER: {
-            "engineer/benchmark_assembly_definition.yaml": (
-                "benchmark_assembly_definition.yaml"
-            ),
-        },
-        AgentName.ELECTRONICS_PLANNER: {
-            "engineer/engineering_plan.md": "engineering_plan.md",
-            "engineer/todo.md": "todo.md",
-            "engineer/assembly_definition.yaml": "assembly_definition.yaml",
-            "engineer/benchmark_assembly_definition.yaml": (
-                "benchmark_assembly_definition.yaml"
-            ),
-        },
-        AgentName.ELECTRONICS_REVIEWER: {
             "engineer/benchmark_assembly_definition.yaml": (
                 "benchmark_assembly_definition.yaml"
             ),

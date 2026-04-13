@@ -1,40 +1,17 @@
 from __future__ import annotations
 
-import os
-from enum import StrEnum
 from pathlib import Path
 from typing import Literal
 
 import structlog
 import yaml
-from pydantic import AliasChoices, BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from shared.enums import AgentName
 
 logger = structlog.get_logger(__name__)
 
 ReasoningEffortLevel = Literal["low", "medium", "high", "xhigh"]
-TECHNICAL_DRAWING_MODE_ENV = "PROBLEMOLOGIST_TECHNICAL_DRAWING_MODE"
-
-
-class DraftingMode(StrEnum):
-    OFF = "off"
-    MINIMAL = "minimal"
-    FULL = "full"
-    # Backward-compatible aliases for older config/code paths.
-    DRAFTING = MINIMAL
-    DRAWING = FULL
-
-    @classmethod
-    def _missing_(cls, value: object) -> DraftingMode | None:
-        if not isinstance(value, str):
-            return None
-        normalized = value.strip().lower()
-        legacy_aliases = {
-            "drafting": cls.MINIMAL,
-            "drawing": cls.FULL,
-        }
-        return legacy_aliases.get(normalized)
 
 
 class PathPolicy(BaseModel):
@@ -115,10 +92,6 @@ class AgentPolicy(BaseModel):
     allowed_during_unit_eval: list[AgentName] = Field(default_factory=list)
     visual_inspection: VisualInspectionPolicy = Field(
         default_factory=VisualInspectionPolicy
-    )
-    technical_drawing_mode: DraftingMode = Field(
-        default=DraftingMode.OFF,
-        validation_alias=AliasChoices("technical_drawing_mode", "drafting_mode"),
     )
 
     @field_validator("allowed_during_unit_eval", mode="before")
@@ -337,12 +310,6 @@ class AgentsConfig(BaseModel):
             return ()
         return tuple(policy.allowed_during_unit_eval)
 
-    def get_technical_drawing_mode(self, agent_role: AgentName | str) -> DraftingMode:
-        return DraftingMode.OFF
-
-    def get_drafting_mode(self, agent_role: AgentName | str) -> DraftingMode:
-        return DraftingMode.OFF
-
     def get_motion_forecast_policy(
         self, planner_role: AgentName | str
     ) -> MotionForecastBudget:
@@ -362,8 +329,6 @@ class AgentsConfig(BaseModel):
         if normalized in {
             AgentName.ENGINEER_PLANNER.value,
             AgentName.ENGINEER_PLAN_REVIEWER.value,
-            AgentName.ELECTRONICS_PLANNER.value,
-            AgentName.ELECTRONICS_REVIEWER.value,
         }:
             return self.motion_forecast.engineer_planner
         if normalized in {

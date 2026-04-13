@@ -233,7 +233,6 @@ async def preview_design_activity(params: HeavyPreviewParams) -> HeavyPreviewRes
         rgb=params.rgb,
         depth=params.depth,
         segmentation=params.segmentation,
-        drafting=params.drafting,
         rendering_type=params.rendering_type,
     )
 

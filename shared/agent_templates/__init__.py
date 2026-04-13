@@ -23,13 +23,6 @@ ROLE_TEMPLATE_FILES: dict[AgentName, tuple[str, ...]] = {
         "engineering_plan.md",
         "todo.md",
         "assembly_definition.yaml",
-        "drafting/solution_plan_evidence_script.py",
-        "drafting/benchmark_plan_evidence_script.py",
-    ),
-    AgentName.ELECTRONICS_PLANNER: (
-        "engineering_plan.md",
-        "todo.md",
-        "assembly_definition.yaml",
     ),
 }
 
@@ -98,7 +91,6 @@ def load_role_template_files(agent_name: AgentName) -> dict[str, str]:
     role_template_map: dict[AgentName, str] = {
         AgentName.BENCHMARK_PLANNER: "benchmark_generator",
         AgentName.ENGINEER_PLANNER: "engineer",
-        AgentName.ELECTRONICS_PLANNER: "engineer",
     }
     template_repo = role_template_map.get(agent_name)
     file_names = ROLE_TEMPLATE_FILES.get(agent_name)

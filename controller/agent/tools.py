@@ -16,7 +16,6 @@ from shared.enums import AgentName
 from shared.git_utils import repo_revision
 from shared.models.schemas import PlannerSubmissionResult
 from shared.observability.schemas import RunCommandToolEvent
-from shared.rendering import build_render_bundle_index_entry, build_render_manifest
 from shared.script_contracts import (
     authored_script_path_for_agent,
     plan_path_for_agent,
@@ -24,9 +23,6 @@ from shared.script_contracts import (
 from shared.workers.schema import (
     PlanReviewManifest,
     PreviewRenderingType,
-    RenderArtifactMetadata,
-    RenderManifest,
-    RenderSiblingPaths,
 )
 
 
@@ -73,273 +69,6 @@ def _rewrite_render_bundle_path(
     except ValueError:
         return candidate.as_posix()
     return (destination_bundle_root / relative_path).as_posix()
-
-
-def _rewrite_render_siblings(
-    siblings: RenderSiblingPaths,
-    *,
-    source_bundle_root: Path,
-    destination_bundle_root: Path,
-) -> RenderSiblingPaths:
-    return RenderSiblingPaths(
-        rgb=(
-            _rewrite_render_bundle_path(
-                siblings.rgb,
-                source_bundle_root=source_bundle_root,
-                destination_bundle_root=destination_bundle_root,
-            )
-            if siblings.rgb
-            else None
-        ),
-        svg=(
-            _rewrite_render_bundle_path(
-                siblings.svg,
-                source_bundle_root=source_bundle_root,
-                destination_bundle_root=destination_bundle_root,
-            )
-            if siblings.svg
-            else None
-        ),
-        dxf=(
-            _rewrite_render_bundle_path(
-                siblings.dxf,
-                source_bundle_root=source_bundle_root,
-                destination_bundle_root=destination_bundle_root,
-            )
-            if siblings.dxf
-            else None
-        ),
-    )
-
-
-async def _publish_drafting_preview_bundle(
-    fs: RemoteFilesystemMiddleware,
-    planner_role: AgentName,
-) -> str:
-    from worker_heavy.utils.file_validation import validate_drafting_preview_manifest
-
-    source_manifest_path = Path("renders/current-episode/render_manifest.json")
-    destination_manifest_path = drafting_render_manifest_path_for_agent(planner_role)
-    technical_drawing_script_path = technical_drawing_script_path_for_agent(
-        planner_role
-    )
-
-    technical_drawing_script_content = await fs.client.read_file_optional(
-        str(technical_drawing_script_path),
-        bypass_agent_permissions=True,
-    )
-    if technical_drawing_script_content is None:
-        raise FileNotFoundError(f"{technical_drawing_script_path} missing.")
-
-    source_manifest_raw = await fs.client.read_file_optional(
-        str(source_manifest_path),
-        bypass_agent_permissions=True,
-    )
-    if source_manifest_raw is None:
-        destination_manifest_raw = await fs.client.read_file_optional(
-            str(destination_manifest_path),
-            bypass_agent_permissions=True,
-        )
-        if destination_manifest_raw is not None:
-            manifest_errors = validate_drafting_preview_manifest(
-                manifest_content=destination_manifest_raw,
-                technical_drawing_script_content=technical_drawing_script_content,
-                artifact_name=str(destination_manifest_path),
-            )
-            if manifest_errors:
-                raise ValueError("; ".join(manifest_errors))
-            return str(destination_manifest_path)
-        raise FileNotFoundError(
-            f"{source_manifest_path} missing; call render_technical_drawing() before submit_engineering_plan()."
-        )
-
-    source_manifest = RenderManifest.model_validate_json(source_manifest_raw)
-    manifest_errors = validate_drafting_preview_manifest(
-        manifest_content=source_manifest_raw,
-        technical_drawing_script_content=technical_drawing_script_content,
-        artifact_name=str(source_manifest_path),
-    )
-    if manifest_errors:
-        raise ValueError("; ".join(manifest_errors))
-
-    current_revision = repo_revision(Path(__file__).resolve().parents[2])
-    if current_revision and source_manifest.revision:
-        if source_manifest.revision.strip().lower() != current_revision:
-            raise ValueError(
-                "drafting preview manifest revision does not match the current "
-                "repository revision; re-run render_technical_drawing() before submit_engineering_plan()."
-            )
-
-    source_bundle_root = source_manifest_path.parent
-    destination_bundle_root = destination_manifest_path.parent
-
-    source_render_paths: set[str] = set()
-    for artifact_path, metadata in source_manifest.artifacts.items():
-        normalized_artifact_path = Path(artifact_path).as_posix()
-        if not normalized_artifact_path:
-            continue
-        source_render_paths.add(normalized_artifact_path)
-        if metadata.siblings.rgb:
-            source_render_paths.add(Path(metadata.siblings.rgb).as_posix())
-        if metadata.siblings.svg:
-            source_render_paths.add(Path(metadata.siblings.svg).as_posix())
-        if metadata.siblings.dxf:
-            source_render_paths.add(Path(metadata.siblings.dxf).as_posix())
-
-    missing_source_paths = [
-        path
-        for path in sorted(source_render_paths)
-        if not await fs.client.exists(path, bypass_agent_permissions=True)
-    ]
-    if missing_source_paths:
-        raise FileNotFoundError(
-            f"drafting preview bundle is missing required files: {missing_source_paths}"
-        )
-
-    render_blobs = await fs.client.read_files_binary(
-        sorted(source_render_paths),
-        bypass_agent_permissions=True,
-    )
-    for source_path, blob in render_blobs.items():
-        destination_path = _rewrite_render_bundle_path(
-            source_path,
-            source_bundle_root=source_bundle_root,
-            destination_bundle_root=destination_bundle_root,
-        )
-        await fs.client.upload_file(
-            destination_path,
-            blob,
-            bypass_agent_permissions=True,
-        )
-
-    published_artifacts: dict[str, RenderArtifactMetadata] = {}
-    for source_path, metadata in source_manifest.artifacts.items():
-        destination_path = _rewrite_render_bundle_path(
-            source_path,
-            source_bundle_root=source_bundle_root,
-            destination_bundle_root=destination_bundle_root,
-        )
-        published_artifacts[destination_path] = metadata.model_copy(
-            update={
-                "siblings": _rewrite_render_siblings(
-                    metadata.siblings,
-                    source_bundle_root=source_bundle_root,
-                    destination_bundle_root=destination_bundle_root,
-                )
-            }
-        )
-
-    published_preview_paths = [
-        _rewrite_render_bundle_path(
-            path,
-            source_bundle_root=source_bundle_root,
-            destination_bundle_root=destination_bundle_root,
-        )
-        for path in source_manifest.preview_evidence_paths
-    ]
-    published_manifest = build_render_manifest(
-        published_artifacts,
-        episode_id=fs.client.session_id,
-        worker_session_id=fs.client.session_id,
-        revision=current_revision or source_manifest.revision,
-        environment_version=source_manifest.environment_version,
-        preview_evidence_paths=published_preview_paths,
-        bundle_path=destination_bundle_root.as_posix(),
-        scene_hash=source_manifest.scene_hash,
-        drafting=True,
-        source_script_sha256=source_manifest.source_script_sha256,
-    )
-    published_manifest_json = published_manifest.model_dump_json(indent=2)
-    existing_destination_manifest = await fs.client.read_file_optional(
-        str(destination_manifest_path),
-        bypass_agent_permissions=True,
-    )
-    if existing_destination_manifest == published_manifest_json:
-        return str(destination_manifest_path)
-
-    await fs.client.write_file(
-        str(destination_manifest_path),
-        published_manifest_json,
-        overwrite=True,
-        bypass_agent_permissions=True,
-    )
-    if destination_manifest_path != Path("renders/render_manifest.json"):
-        await fs.client.write_file(
-            "renders/render_manifest.json",
-            published_manifest_json,
-            overwrite=True,
-            bypass_agent_permissions=True,
-        )
-
-    published_index_entry = build_render_bundle_index_entry(
-        published_manifest,
-        manifest_path=str(destination_manifest_path),
-        primary_media_paths=published_preview_paths,
-    ).model_dump_json()
-    existing_index = await fs.client.read_file_optional(
-        "renders/render_index.jsonl",
-        bypass_agent_permissions=True,
-    )
-    await fs.client.write_file(
-        "renders/render_index.jsonl",
-        (existing_index or "") + published_index_entry + "\n",
-        overwrite=True,
-        bypass_agent_permissions=True,
-    )
-
-    return str(destination_manifest_path)
-
-
-async def _validate_drafting_preview_artifacts(
-    fs: RemoteFilesystemMiddleware,
-    planner_role: AgentName,
-    artifacts: dict[str, str],
-) -> list[str]:
-    from worker_heavy.utils.file_validation import validate_drafting_preview_manifest
-
-    drafting_script_path = str(technical_drawing_script_path_for_agent(planner_role))
-    drafting_manifest_path = str(drafting_render_manifest_path_for_agent(planner_role))
-
-    drafting_script_content = artifacts.get(drafting_script_path)
-    if drafting_script_content is None:
-        return [f"Missing required file: {drafting_script_path}"]
-
-    drafting_manifest_content = artifacts.get(drafting_manifest_path)
-    if drafting_manifest_content is None:
-        return [f"Missing required file: {drafting_manifest_path}"]
-
-    manifest_errors = validate_drafting_preview_manifest(
-        manifest_content=drafting_manifest_content,
-        technical_drawing_script_content=drafting_script_content,
-        artifact_name=drafting_manifest_path,
-    )
-    if manifest_errors:
-        return manifest_errors
-
-    manifest = RenderManifest.model_validate_json(drafting_manifest_content)
-
-    missing_preview_files: list[str] = []
-    for preview_path in manifest.preview_evidence_paths:
-        if not await fs.client.exists(preview_path):
-            missing_preview_files.append(preview_path)
-    if missing_preview_files:
-        return [
-            f"{drafting_manifest_path} references missing preview evidence files: {sorted(missing_preview_files)}"
-        ]
-
-    missing_sidecars: list[str] = []
-    for artifact_path, metadata in manifest.artifacts.items():
-        siblings = metadata.siblings
-        if siblings.svg and not await fs.client.exists(siblings.svg):
-            missing_sidecars.append(f"{artifact_path} -> {siblings.svg}")
-        if siblings.dxf and not await fs.client.exists(siblings.dxf):
-            missing_sidecars.append(f"{artifact_path} -> {siblings.dxf}")
-    if missing_sidecars:
-        return [
-            f"{drafting_manifest_path} references missing drafting sidecar files: {missing_sidecars}"
-        ]
-
-    return []
 
 
 async def run_validate_and_price_script(
@@ -489,7 +218,6 @@ def get_common_tools(fs: RemoteFilesystemMiddleware, session_id: str) -> list[Ca
         depth: bool | None = None,
         segmentation: bool | None = None,
         payload_path: bool = False,
-        drafting: bool = False,
         rendering_type: PreviewRenderingType | str | None = None,
         smoke_test_mode: bool | None = None,
     ):
@@ -502,7 +230,6 @@ def get_common_tools(fs: RemoteFilesystemMiddleware, session_id: str) -> list[Ca
             depth=depth,
             segmentation=segmentation,
             payload_path=payload_path,
-            drafting=drafting,
             rendering_type=rendering_type,
             smoke_test_mode=smoke_test_mode,
         )
@@ -515,7 +242,6 @@ def get_common_tools(fs: RemoteFilesystemMiddleware, session_id: str) -> list[Ca
         depth: bool | None = None,
         segmentation: bool | None = None,
         payload_path: bool = False,
-        drafting: bool = False,
         rendering_type: PreviewRenderingType | str | None = None,
         smoke_test_mode: bool | None = None,
     ):
@@ -527,7 +253,6 @@ def get_common_tools(fs: RemoteFilesystemMiddleware, session_id: str) -> list[Ca
             depth=depth,
             segmentation=segmentation,
             payload_path=payload_path,
-            drafting=drafting,
             rendering_type=rendering_type,
             smoke_test_mode=smoke_test_mode,
         )

@@ -831,7 +831,6 @@ async def _preview_async(
     depth: bool | None = None,
     segmentation: bool | None = None,
     payload_path: bool = False,
-    drafting: bool = False,
     rendering_type: PreviewRenderingType | str | None = None,
 ) -> PreviewDesignResponse:
     """Render an on-demand preview for a live build123d component."""
@@ -845,7 +844,7 @@ async def _preview_async(
             success=True,
             status_text=SCRIPT_IMPORT_DEFERRED_MESSAGE,
             message=SCRIPT_IMPORT_DEFERRED_MESSAGE,
-            drafting=drafting,
+            drafting=False,
             rendering_type=requested_rendering_type,
         )
     try:
@@ -879,7 +878,7 @@ async def _preview_async(
             success=False,
             status_text="Preview generation failed",
             message=str(exc),
-            drafting=drafting,
+            drafting=False,
             rendering_type=requested_rendering_type,
         )
     response = _call_worker_light_preview(
@@ -897,7 +896,7 @@ async def _preview_async(
             depth=depth,
             segmentation=segmentation,
             payload_path=payload_path,
-            drafting=drafting,
+            drafting=False,
             rendering_type=(
                 PreviewRenderingType(str(rendering_type))
                 if rendering_type is not None

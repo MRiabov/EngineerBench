@@ -17,7 +17,6 @@ from controller.agent.benchmark_handover_validation import (
 from controller.clients.worker import WorkerClient
 from controller.persistence.db import get_sessionmaker
 from controller.persistence.models import Asset, Episode
-from shared.agents.config import DraftingMode
 from shared.enums import AgentName, EpisodeStatus, EpisodeType, TerminalReason
 from shared.git_utils import repo_revision
 from shared.models.schemas import AssemblyDefinition, EpisodeMetadata
@@ -214,10 +213,6 @@ def _planner_role_for_reviewer_stage(reviewer_stage: AgentName) -> AgentName:
     if reviewer_stage == AgentName.BENCHMARK_REVIEWER:
         return AgentName.BENCHMARK_PLANNER
     return AgentName.ENGINEER_PLANNER
-
-
-def _drafting_mode_for_reviewer_stage(reviewer_stage: AgentName) -> DraftingMode:
-    return DraftingMode.OFF
 
 
 def _planner_submission_helper_name_for_stage(stage: PlanReviewerStage) -> str:
@@ -779,33 +774,12 @@ async def validate_planner_artifacts_cross_contract(
         plan_artifact_name,
         bypass_agent_permissions=True,
     )
-    drafting_artifacts: dict[str, str] = {}
-    script_names = (
-        (
-            "benchmark_plan_evidence_script.py",
-            "benchmark_plan_technical_drawing_script.py",
-        )
-        if expected_stage == AgentName.BENCHMARK_PLAN_REVIEWER
-        else (
-            "solution_plan_evidence_script.py",
-            "solution_plan_technical_drawing_script.py",
-        )
-    )
-    for artifact_name in script_names:
-        artifact_text = await worker_client.read_file_optional(
-            artifact_name,
-            bypass_agent_permissions=True,
-        )
-        if artifact_text is not None:
-            drafting_artifacts[artifact_name] = artifact_text
-
     cross_contract_errors = validate_planner_handoff_cross_contract(
         benchmark_definition=benchmark_definition,
         assembly_definition=assembly_definition,
         manufacturing_config=manufacturing_config,
         planner_node_type=expected_stage,
         plan_text=plan_text,
-        drafting_artifacts=drafting_artifacts or None,
     )
     if cross_contract_errors:
         return "; ".join(cross_contract_errors)

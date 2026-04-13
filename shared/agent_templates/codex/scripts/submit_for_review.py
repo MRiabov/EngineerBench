@@ -38,7 +38,6 @@ def _submission_agent(workspace: Path) -> AgentName | None:
         AgentName.BENCHMARK_REVIEWER,
         AgentName.ENGINEER_CODER,
         AgentName.ENGINEER_EXECUTION_REVIEWER,
-        AgentName.ELECTRONICS_REVIEWER,
     }:
         return agent
     return None
@@ -50,7 +49,6 @@ def _reviewer_stage_for_agent(agent_name: AgentName) -> AgentName:
         AgentName.BENCHMARK_REVIEWER: AgentName.BENCHMARK_REVIEWER,
         AgentName.ENGINEER_CODER: AgentName.ENGINEER_EXECUTION_REVIEWER,
         AgentName.ENGINEER_EXECUTION_REVIEWER: AgentName.ENGINEER_EXECUTION_REVIEWER,
-        AgentName.ELECTRONICS_REVIEWER: AgentName.ELECTRONICS_REVIEWER,
     }
     try:
         return stage_map[agent_name]
@@ -69,8 +67,6 @@ def _manifest_path_for_agent(agent_name: AgentName) -> Path:
         AgentName.ENGINEER_EXECUTION_REVIEWER,
     }:
         return Path(".manifests/engineering_execution_handoff_manifest.json")
-    if agent_name == AgentName.ELECTRONICS_REVIEWER:
-        return Path(".manifests/electronics_review_manifest.json")
     raise ValueError(f"Unsupported submission agent: {agent_name}")
 
 

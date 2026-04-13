@@ -535,7 +535,6 @@ async def api_preview(
                     orbit_pitch=request.orbit_pitch,
                     orbit_yaw=request.orbit_yaw,
                     rendering_type=request.rendering_type,
-                    drafting=request.drafting,
                     session_id=x_session_id,
                     agent_role=x_agent_role,
                     script_content=request.script_content,

@@ -677,7 +677,6 @@ def submit_for_review(
         manufacturing_config=dfm_config,
         planner_node_type=planner_node_type,
         plan_text=plan_content,
-        drafting_artifacts=None,
     )
     if cross_contract_errors:
         logger.warning(

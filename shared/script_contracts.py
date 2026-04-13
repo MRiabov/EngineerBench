@@ -106,50 +106,6 @@ def plan_artifact_candidates_for_agent(
     return (canonical, "plan.md")
 
 
-def technical_drawing_script_path_for_agent(
-    agent_name: AgentName | str | None,
-) -> Path:
-    return authored_script_path_for_agent(agent_name)
-
-
-def drafting_script_paths_for_agent(
-    agent_name: AgentName | str | None,
-) -> tuple[Path, Path]:
-    path = authored_script_path_for_agent(agent_name)
-    return (path, path)
-
-
-def planner_role_for_drafting_script_path(
-    script_path: str | Path | None,
-) -> AgentName | None:
-    if script_path is None:
-        return None
-
-    script_name = Path(script_path).name
-    if script_name in {
-        BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
-        BENCHMARK_SCRIPT_PATH,
-    }:
-        return AgentName.BENCHMARK_PLANNER
-    if script_name in {
-        SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
-        SOLUTION_SCRIPT_PATH,
-    }:
-        return AgentName.ENGINEER_PLANNER
-    return None
-
-
-def drafting_render_manifest_path_for_agent(
-    agent_name: AgentName | str | None,
-) -> Path:
-    normalized = _normalize_agent_name(agent_name)
-    if normalized in _BENCHMARK_ROLE_NAMES:
-        return Path("renders/benchmark_renders/render_manifest.json")
-    if normalized in _ENGINEERING_ROLE_NAMES:
-        return Path("renders/engineer_plan_renders/render_manifest.json")
-    return Path("renders/render_manifest.json")
-
-
 def authored_script_path_for_reviewer_stage(
     reviewer_stage: AgentName | str | None,
 ) -> Path:

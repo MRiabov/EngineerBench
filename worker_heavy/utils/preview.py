@@ -11,7 +11,6 @@ from deprecated import deprecated
 from shared.agents import get_image_render_resolution
 from shared.models.schemas import BenchmarkDefinition
 from shared.rendering import (
-    bundle_workspace_base64,
     export_preview_scene_bundle,
     materialize_preview_response,
     render_preview,
@@ -33,7 +32,6 @@ def preview(
     depth: bool | None = None,
     segmentation: bool | None = None,
     payload_path: bool = False,
-    drafting: bool = False,
     rendering_type: PreviewRenderingType | str | None = None,
     output_dir: Path | None = None,
     objectives: BenchmarkDefinition | None = None,
@@ -66,7 +64,6 @@ def preview(
         depth=depth,
         segmentation=segmentation,
         payload_path=payload_path,
-        drafting=drafting,
         rendering_type=(
             PreviewRenderingType(str(rendering_type))
             if rendering_type is not None
@@ -149,7 +146,6 @@ def render_cad(
     depth: bool | None = None,
     segmentation: bool | None = None,
     payload_path: bool = False,
-    drafting: bool = False,
     rendering_type: PreviewRenderingType | str | None = None,
     output_dir: Path | None = None,
     objectives: BenchmarkDefinition | None = None,
@@ -164,7 +160,6 @@ def render_cad(
         depth=depth,
         segmentation=segmentation,
         payload_path=payload_path,
-        drafting=drafting,
         rendering_type=rendering_type,
         output_dir=output_dir,
         objectives=objectives,
