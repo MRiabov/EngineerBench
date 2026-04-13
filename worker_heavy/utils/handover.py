@@ -6,18 +6,12 @@ from pathlib import Path
 import structlog
 from build123d import Compound, export_step
 
-from shared.agents.config import DraftingMode, load_agents_config
 from shared.current_role import current_role_agent_name
 from shared.enums import AgentName
 from shared.git_utils import repo_revision
 from shared.models.schemas import BenchmarkDefinition
 from shared.models.simulation import SimulationResult
-from shared.script_contracts import (
-    BENCHMARK_SCRIPT_PATH,
-    drafting_render_manifest_path_for_agent,
-    plan_path_for_reviewer_stage,
-    technical_drawing_script_path_for_agent,
-)
+from shared.script_contracts import BENCHMARK_SCRIPT_PATH, plan_path_for_reviewer_stage
 from shared.workers.loader import load_component_from_script
 from shared.workers.schema import (
     LEGACY_REVIEWER_STAGE_ALIASES,
@@ -35,10 +29,8 @@ from worker_heavy.utils.file_validation import (
     _assembly_script_expected_tokens,
     _benchmark_script_expected_identity_pairs,
     _benchmark_script_expected_tokens,
-    _technical_drawing_script_imports_and_calls_technical_drawing,
     validate_component_inventory_exactness,
     validate_declared_planner_cost_contract,
-    validate_drafting_preview_manifest,
     validate_environment_attachment_contract,
     validate_planner_handoff_cross_contract,
 )
@@ -328,14 +320,6 @@ def _expected_submission_stage_for_current_role(
     if current_role == AgentName.ELECTRONICS_REVIEWER:
         return AgentName.ELECTRONICS_REVIEWER
     return None
-
-
-def _drafting_mode_for_reviewer_stage(reviewer_stage: AgentName) -> DraftingMode:
-    planner_role = _planner_role_for_reviewer_stage(reviewer_stage)
-    try:
-        return load_agents_config().get_technical_drawing_mode(planner_role)
-    except Exception:
-        return DraftingMode.OFF
 
 
 def submit_for_review(
@@ -687,66 +671,13 @@ def submit_for_review(
         else AgentName.ELECTRONICS_PLANNER
     )
 
-    drafting_mode = _drafting_mode_for_reviewer_stage(normalized_stage)
-    if drafting_mode in (DraftingMode.MINIMAL, DraftingMode.FULL):
-        planner_role = _planner_role_for_reviewer_stage(normalized_stage)
-        drafting_script_path = cwd / technical_drawing_script_path_for_agent(
-            planner_role
-        )
-        drafting_manifest_path = cwd / drafting_render_manifest_path_for_agent(
-            planner_role
-        )
-        if not drafting_script_path.exists():
-            raise ValueError(
-                f"{drafting_script_path.name} is missing (required for submission)"
-            )
-        if not drafting_manifest_path.exists():
-            raise ValueError(
-                f"{drafting_manifest_path.name} is missing (required for submission)"
-            )
-
-        drafting_script_content = drafting_script_path.read_text(encoding="utf-8")
-        drafting_manifest_content = drafting_manifest_path.read_text(encoding="utf-8")
-        drafting_script_errors = (
-            _technical_drawing_script_imports_and_calls_technical_drawing(
-                drafting_script_content,
-                artifact_name=str(drafting_script_path.relative_to(cwd)),
-            )
-        )
-        if drafting_script_errors:
-            raise ValueError("; ".join(drafting_script_errors))
-
-        drafting_manifest_errors = validate_drafting_preview_manifest(
-            manifest_content=drafting_manifest_content,
-            technical_drawing_script_content=drafting_script_content,
-            artifact_name=str(drafting_manifest_path.relative_to(cwd)),
-            workspace_root=cwd,
-        )
-        if drafting_manifest_errors:
-            raise ValueError("; ".join(drafting_manifest_errors))
-
     cross_contract_errors = validate_planner_handoff_cross_contract(
         benchmark_definition=objectives_model,
         assembly_definition=estimation,
         manufacturing_config=dfm_config,
         planner_node_type=planner_node_type,
         plan_text=plan_content,
-        drafting_artifacts={
-            name: (cwd / name).read_text(encoding="utf-8")
-            for name in (
-                (
-                    "benchmark_plan_evidence_script.py",
-                    "benchmark_plan_technical_drawing_script.py",
-                )
-                if normalized_stage == AgentName.BENCHMARK_REVIEWER
-                else (
-                    "solution_plan_evidence_script.py",
-                    "solution_plan_technical_drawing_script.py",
-                )
-            )
-            if (cwd / name).exists()
-        }
-        or None,
+        drafting_artifacts=None,
     )
     if cross_contract_errors:
         logger.warning(

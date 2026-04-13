@@ -50,10 +50,6 @@ from evals.logic.codex_workspace import (
 )
 from evals.logic.models import EvalDatasetItem  # noqa: E402
 from evals.logic.startup_checks import fail_closed_if_integration_test_setup
-from shared.agents.config import (  # noqa: E402
-    TECHNICAL_DRAWING_MODE_ENV,
-    DraftingMode,
-)
 from shared.enums import AgentName  # noqa: E402
 from shared.logging import get_logger  # noqa: E402
 
@@ -172,20 +168,6 @@ def _parse_args() -> argparse.Namespace:
             "launches. Urgent demo use only; do not use this in normal runs."
         ),
     )
-    parser.add_argument(
-        "--technical-drawing-mode",
-        type=str,
-        default=DraftingMode.FULL.value,
-        choices=[
-            DraftingMode.OFF.value,
-            DraftingMode.MINIMAL.value,
-            DraftingMode.FULL.value,
-        ],
-        help=(
-            "Select the drawing-mode corpus to materialize (default: full). "
-            "Rows without technical_drawing_mode are skipped."
-        ),
-    )
     yolo_group = parser.add_mutually_exclusive_group(required=True)
     yolo_group.add_argument(
         "--yolo",
@@ -222,17 +204,6 @@ def _load_dataset(agent: AgentName) -> tuple[Path, list[dict[str, object]]]:
 
     rows = raw_rows
     return json_path, rows
-
-
-def _filter_rows_by_technical_drawing_mode(
-    rows: list[dict[str, object]], *, technical_drawing_mode: DraftingMode
-) -> list[dict[str, object]]:
-    return [
-        row
-        for row in rows
-        if row.get("technical_drawing_mode") is not None
-        and DraftingMode(row["technical_drawing_mode"]) == technical_drawing_mode
-    ]
 
 
 def _select_row(
@@ -286,8 +257,6 @@ def _env_up() -> None:
 
 def main() -> None:
     args = _parse_args()
-    technical_drawing_mode = DraftingMode(args.technical_drawing_mode)
-    os.environ[TECHNICAL_DRAWING_MODE_ENV] = technical_drawing_mode.value
     try:
         agent = AgentName(args.agent)
     except ValueError as exc:
@@ -302,9 +271,6 @@ def main() -> None:
     )
 
     json_path, rows = _load_dataset(agent)
-    rows = _filter_rows_by_technical_drawing_mode(
-        rows, technical_drawing_mode=technical_drawing_mode
-    )
     row_raw = _select_row(rows, task_id=args.task_id, agent=agent)
     seed_dataset = json_path.relative_to(ROOT)
     row = EvalDatasetItem.model_validate({**row_raw, "seed_dataset": seed_dataset})
@@ -364,7 +330,6 @@ def main() -> None:
                 agent=agent.value,
                 task_ids=[row.id],
                 levels=[],
-                technical_drawing_mode=technical_drawing_mode.value,
             ),
         )
         if lock_lease is None:

@@ -25,7 +25,7 @@ import structlog
 import yaml
 from pydantic import ValidationError
 
-from shared.agents.config import DraftingMode, load_agents_config
+from shared.agents.config import load_agents_config
 from shared.enums import AgentName, BenchmarkAttachmentMethod, BenchmarkRefusalReason
 from shared.models.schemas import (
     AssemblyDefinition,
@@ -357,20 +357,14 @@ def _planner_drafting_script_names_for_node(
         AgentName.BENCHMARK_CODER.value,
         AgentName.BENCHMARK_REVIEWER.value,
     }:
-        return [
-            "benchmark_plan_evidence_script.py",
-            "benchmark_plan_technical_drawing_script.py",
-        ]
+        return ["benchmark_plan_evidence_script.py"]
     if node_value in {
         AgentName.ENGINEER_PLANNER.value,
         AgentName.ENGINEER_PLAN_REVIEWER.value,
         AgentName.ELECTRONICS_PLANNER.value,
         AgentName.ELECTRONICS_REVIEWER.value,
     }:
-        return [
-            "solution_plan_evidence_script.py",
-            "solution_plan_technical_drawing_script.py",
-        ]
+        return ["solution_plan_evidence_script.py"]
     return []
 
 
@@ -698,145 +692,16 @@ _SUPPORTED_BENCHMARK_MOTION_TOKENS = {
     "slide_z",
 }
 
-_ENGINEER_DRAFTING_NODE_TYPES = {
-    AgentName.ENGINEER_PLANNER.value,
-    AgentName.ENGINEER_PLAN_REVIEWER.value,
-    AgentName.ENGINEER_CODER.value,
-    AgentName.ENGINEER_EXECUTION_REVIEWER.value,
-}
-
-_BENCHMARK_DRAFTING_NODE_TYPES = {
-    AgentName.BENCHMARK_PLANNER.value,
-    AgentName.BENCHMARK_PLAN_REVIEWER.value,
-    AgentName.BENCHMARK_CODER.value,
-    AgentName.BENCHMARK_REVIEWER.value,
-}
-
-_SUPPORTED_DRAFTING_PROJECTIONS = {"front", "top", "side"}
-
-
-def _technical_drawing_mode_for_node(
-    planner_node_type: AgentName | str | None,
-) -> DraftingMode:
-    node_key = (
-        planner_node_type.value
-        if isinstance(planner_node_type, AgentName)
-        else str(planner_node_type or "")
-    )
-    if node_key in _BENCHMARK_DRAFTING_NODE_TYPES:
-        planner_role = AgentName.BENCHMARK_PLANNER
-    elif node_key in _ENGINEER_DRAFTING_NODE_TYPES:
-        planner_role = AgentName.ENGINEER_PLANNER
-    else:
-        return DraftingMode.OFF
-    try:
-        return load_agents_config().get_technical_drawing_mode(planner_role)
-    except Exception:
-        return DraftingMode.OFF
-
-
-def _collect_assembly_target_names(assembly_definition: AssemblyDefinition) -> set[str]:
-    names: set[str] = set()
-
-    def _add_name(value: object) -> None:
-        text = str(value).strip()
-        if text:
-            names.add(text)
-
-    def _visit_item(item: object) -> None:
-        if isinstance(item, ManufacturedPartEstimate):
-            _add_name(item.part_name)
-            _add_name(item.part_id)
-        elif isinstance(item, CotsPartEstimate):
-            _add_name(item.part_id)
-        elif isinstance(item, PartConfig):
-            _add_name(item.name)
-        elif isinstance(item, SubassemblyEstimate):
-            _add_name(item.subassembly_id)
-            for part in item.parts:
-                _visit_item(part)
-
-    for part in assembly_definition.manufactured_parts:
-        _visit_item(part)
-    for part in assembly_definition.cots_parts:
-        _visit_item(part)
-    for item in assembly_definition.final_assembly:
-        _visit_item(item)
-    if assembly_definition.electronics:
-        for component in assembly_definition.electronics.components:
-            if component.assembly_part_ref:
-                _add_name(component.assembly_part_ref)
-    return names
-
-
-def _target_matches_known_assembly_target(target: str, known_targets: set[str]) -> bool:
-    normalized = target.strip()
-    if not normalized:
-        return False
-    if normalized in known_targets:
-        return True
-    return any(
-        normalized.startswith(f"{known_target}.")
-        or normalized.startswith(f"{known_target}/")
-        for known_target in known_targets
-    )
-
-
 def _validate_drafting_contract(
     *,
     assembly_definition: AssemblyDefinition,
     planner_node_type: AgentName | str | None,
 ) -> list[str]:
-    errors: list[str] = []
-    drafting = assembly_definition.drafting
-    drafting_mode = _technical_drawing_mode_for_node(planner_node_type)
-    drafting_required = drafting_mode in (
-        DraftingMode.MINIMAL,
-        DraftingMode.FULL,
-    )
-
-    if drafting is None:
-        if drafting_required:
-            errors.append(
-                "assembly_definition.drafting is required when drafting mode is active"
-            )
-        return errors
-
-    if not drafting_required:
-        errors.append(
-            "assembly_definition.drafting must be absent when drafting mode is off"
-        )
-        return errors
-
-    known_targets = _collect_assembly_target_names(assembly_definition)
-    for view in drafting.views:
-        if view.projection not in _SUPPORTED_DRAFTING_PROJECTIONS:
-            errors.append(
-                "drafting.views: projection "
-                f"'{view.projection}' is not supported by the current "
-                "orthographic drafting contract"
-            )
-        if not _target_matches_known_assembly_target(view.target, known_targets):
-            errors.append(
-                "drafting.views: target "
-                f"'{view.target}' is not tied to a declared assembly part"
-            )
-        for dimension in view.dimensions:
-            if not _target_matches_known_assembly_target(
-                dimension.target, known_targets
-            ):
-                errors.append(
-                    "drafting.views.dimensions: target "
-                    f"'{dimension.target}' is not tied to a declared assembly part"
-                )
-        for callout in view.callouts:
-            if not _target_matches_known_assembly_target(callout.target, known_targets):
-                errors.append(
-                    "drafting.views.callouts: target "
-                    f"'{callout.target}' is not tied to a declared assembly part"
-                )
-
-    return errors
+    if assembly_definition.drafting is None:
+        return []
+    return [
+        "assembly_definition.drafting must be absent in the publication bundle"
+    ]
 
 
 def _zone_body_from_bounds(
@@ -1005,10 +870,7 @@ def _drafting_script_paths_for_node(
         AgentName.BENCHMARK_CODER.value,
         AgentName.BENCHMARK_REVIEWER.value,
     }:
-        return (
-            "benchmark_plan_evidence_script.py",
-            "benchmark_plan_technical_drawing_script.py",
-        )
+        return ("benchmark_plan_evidence_script.py",)
     if node_value in {
         AgentName.ENGINEER_PLANNER.value,
         AgentName.ENGINEER_PLAN_REVIEWER.value,
@@ -1017,10 +879,7 @@ def _drafting_script_paths_for_node(
         AgentName.ELECTRONICS_PLANNER.value,
         AgentName.ELECTRONICS_REVIEWER.value,
     }:
-        return (
-            "solution_plan_evidence_script.py",
-            "solution_plan_technical_drawing_script.py",
-        )
+        return ("solution_plan_evidence_script.py",)
     return ("", "")
 
 
@@ -2293,78 +2152,6 @@ def validate_planner_handoff_cross_contract(
             )
         )
 
-    if drafting_artifacts:
-        if is_benchmark_planner:
-            script_tokens = _benchmark_script_expected_tokens(
-                benchmark_definition=benchmark_definition,
-                assembly_definition=assembly_definition,
-            )
-            script_identity_pairs = None
-        elif is_engineer_planner:
-            script_tokens = _assembly_script_expected_tokens(assembly_definition)
-            script_identity_pairs = _assembly_script_expected_identity_pairs(
-                assembly_definition
-            )
-        else:
-            script_tokens = Counter()
-            script_identity_pairs = None
-
-        for artifact_name, content in sorted(drafting_artifacts.items()):
-            if not content.strip():
-                continue
-            errors.extend(
-                validate_planner_evidence_script_layout_contract(
-                    artifact_name=artifact_name,
-                    content=content,
-                )
-            )
-            if artifact_name.endswith("_technical_drawing_script.py"):
-                errors.extend(
-                    _technical_drawing_script_imports_and_calls_technical_drawing(
-                        content,
-                        artifact_name=artifact_name,
-                    )
-                )
-            errors.extend(
-                _validate_drafting_artifact_inventory_exactness(
-                    artifact_name=artifact_name,
-                    content=content,
-                    expected_tokens=script_tokens,
-                    expected_identity_pairs=script_identity_pairs,
-                )
-            )
-
-            try:
-                component = _load_component_from_drafting_script_content(
-                    artifact_name=artifact_name,
-                    content=content,
-                    session_root=Path(__file__).resolve().parents[2],
-                )
-            except Exception as exc:
-                errors.append(
-                    f"{artifact_name}: unable to load drafted component for "
-                    f"geometry validation: {exc}"
-                )
-                continue
-
-            if artifact_name.startswith("benchmark_"):
-                errors.extend(
-                    _validate_benchmark_drafting_no_cots_identity(
-                        artifact_name=artifact_name,
-                        component=component,
-                    )
-                )
-
-            errors.extend(
-                validate_planner_drafting_geometry_contract(
-                    benchmark_definition=benchmark_definition,
-                    drafting=assembly_definition.drafting,
-                    component=component,
-                    artifact_name=artifact_name,
-                    session_id=None,
-                )
-            )
-
     planner_cap_pairs = (
         (
             "benchmark_definition.constraints.max_unit_cost",
@@ -2753,27 +2540,6 @@ def validate_node_output(
             ],
         }.get(node_type, [])
 
-    drafting_mode = _technical_drawing_mode_for_node(
-        node_enum if node_enum is not None else node_type
-    )
-    drafting_required = drafting_mode in (DraftingMode.MINIMAL, DraftingMode.FULL)
-    drafting_manifest_path = ""
-    if drafting_required:
-        drafting_script_a, drafting_script_b = _drafting_script_paths_for_node(
-            node_enum if node_enum is not None else node_type
-        )
-        drafting_manifest_path = _drafting_render_manifest_path_for_node(
-            node_enum if node_enum is not None else node_type
-        )
-        required_files = list(required_files)
-        for path in (
-            drafting_script_a,
-            drafting_script_b,
-            drafting_manifest_path,
-        ):
-            if path and path not in required_files:
-                required_files.append(path)
-
     for req_file in required_files:
         if _missing_file(req_file):
             errors.append(f"Missing required file: {req_file}")
@@ -2858,30 +2624,6 @@ def validate_node_output(
                         errors.extend([f"{filename}: {e}" for e in motion_errors])
         elif filename == "payload_trajectory_definition.yaml":
             payload_trajectory_definition_content = content
-        elif drafting_required and filename.endswith("_technical_drawing_script.py"):
-            errors.extend(
-                _technical_drawing_script_imports_and_calls_technical_drawing(
-                    content,
-                    artifact_name=filename,
-                )
-            )
-        elif drafting_required and filename == drafting_manifest_path:
-            drafting_script_path = technical_drawing_script_path_for_agent(
-                node_enum if node_enum is not None else node_type
-            )
-            script_content = files_content_map.get(str(drafting_script_path))
-            if script_content is None:
-                errors.append(
-                    f"{filename}: missing current technical drawing script content"
-                )
-            else:
-                errors.extend(
-                    validate_drafting_preview_manifest(
-                        manifest_content=content,
-                        technical_drawing_script_content=script_content,
-                        artifact_name=filename,
-                    )
-                )
         elif filename == "plan_refusal.md":
             is_valid, refusal_res = validate_plan_refusal(
                 content, session_id=session_id
@@ -2897,20 +2639,13 @@ def validate_node_output(
         if effective_config is None:
             effective_config = load_config()
         for filename, assembly_definition_model in assembly_definition_models.items():
-            drafting_artifacts = {
-                artifact_name: files_content_map[artifact_name]
-                for artifact_name in _planner_drafting_script_names_for_node(
-                    node_enum if node_enum is not None else node_type
-                )
-                if artifact_name in files_content_map
-            }
             cross_contract_errors = validate_planner_handoff_cross_contract(
                 benchmark_definition=benchmark_definition_model,
                 assembly_definition=assembly_definition_model,
                 manufacturing_config=effective_config,
                 planner_node_type=node_type,
                 plan_text=plan_content,
-                drafting_artifacts=drafting_artifacts or None,
+                drafting_artifacts=None,
             )
             if cross_contract_errors:
                 errors.extend(

@@ -15,7 +15,6 @@ if str(ROOT) not in sys.path:
 
 from evals.logic.models import E2EResumeStageRecord, EvalDatasetItem  # noqa: E402
 from evals.logic.temp_paths import mkdtemp_in_eval_temp_root  # noqa: E402
-from shared.agents.config import DraftingMode  # noqa: E402
 from shared.enums import AgentName, ReviewDecision  # noqa: E402
 from shared.logging import get_logger  # noqa: E402
 
@@ -188,7 +187,6 @@ def _build_base_item(seed_dir: Path, prompt_text: str) -> EvalDatasetItem:
             "complexity_level": 0,
             "seed_dataset": seed_dataset,
             "seed_artifact_dir": seed_dir,
-            "technical_drawing_mode": DraftingMode.FULL,
         }
     )
 

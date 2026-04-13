@@ -69,7 +69,6 @@ from worker_renderer.utils.rendering import (
     select_static_preview_render_subdir,
 )
 from worker_renderer.utils.scene_builder import normalize_preview_label
-from worker_renderer.utils.technical_drawing import render_technical_drawing_preview
 
 logger = structlog.get_logger(__name__)
 renderer_router = APIRouter()
@@ -1037,20 +1036,6 @@ async def api_preview(
         async with render_operation_admission("preview", x_session_id):
             with _bundle_context(request.bundle_base64) as root:
                 with _event_file_context(root):
-                    if request.drafting:
-                        response = await asyncio.to_thread(
-                            render_technical_drawing_preview,
-                            root=root,
-                            script_path=request.script_path,
-                            session_id=x_session_id,
-                            agent_role=x_agent_role,
-                            script_content=request.script_content,
-                        )
-                        response.events = collect_and_cleanup_events(
-                            root, session_id=x_session_id
-                        )
-                        return response
-
                     objectives = _load_workspace_benchmark_definition(
                         root, session_id=x_session_id
                     )

@@ -18,16 +18,13 @@ ROLE_TEMPLATE_FILES: dict[AgentName, tuple[str, ...]] = {
         "benchmark_definition.yaml",
         "benchmark_assembly_definition.yaml",
         "benchmark_plan_evidence_script.py",
-        "benchmark_plan_technical_drawing_script.py",
     ),
     AgentName.ENGINEER_PLANNER: (
         "engineering_plan.md",
         "todo.md",
         "assembly_definition.yaml",
         "drafting/solution_plan_evidence_script.py",
-        "drafting/solution_plan_technical_drawing_script.py",
         "drafting/benchmark_plan_evidence_script.py",
-        "drafting/benchmark_plan_technical_drawing_script.py",
     ),
     AgentName.ELECTRONICS_PLANNER: (
         "engineering_plan.md",

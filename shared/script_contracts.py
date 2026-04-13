@@ -22,18 +22,12 @@ _ENGINEERING_ROLE_NAMES = {
 BENCHMARK_SCRIPT_PATH = "benchmark_script.py"
 BENCHMARK_PLAN_PATH = "benchmark_plan.md"
 BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH = "benchmark_plan_evidence_script.py"
-BENCHMARK_PLAN_TECHNICAL_DRAWING_SCRIPT_PATH = (
-    "benchmark_plan_technical_drawing_script.py"
-)
 PAYLOAD_TRAJECTORY_DEFINITION_PATH = "payload_trajectory_definition.yaml"
 # Compatibility alias for older imports during the rename rollout.
 PRECISE_PATH_DEFINITION_PATH = PAYLOAD_TRAJECTORY_DEFINITION_PATH
 SOLUTION_SCRIPT_PATH = "solution_script.py"
 ENGINEERING_PLAN_PATH = "engineering_plan.md"
 SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH = "solution_plan_evidence_script.py"
-SOLUTION_PLAN_TECHNICAL_DRAWING_SCRIPT_PATH = (
-    "solution_plan_technical_drawing_script.py"
-)
 LEGACY_SCRIPT_PATH = "script.py"
 CURRENT_ROLE_MANIFEST_PATH = Path(".manifests/current_role.json")
 
@@ -117,9 +111,9 @@ def technical_drawing_script_path_for_agent(
 ) -> Path:
     normalized = _normalize_agent_name(agent_name)
     if normalized in _BENCHMARK_ROLE_NAMES:
-        return _as_path(BENCHMARK_PLAN_TECHNICAL_DRAWING_SCRIPT_PATH)
+        return _as_path(BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH)
     if normalized in _ENGINEERING_ROLE_NAMES:
-        return _as_path(SOLUTION_PLAN_TECHNICAL_DRAWING_SCRIPT_PATH)
+        return _as_path(SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH)
     return authored_script_path_for_agent(agent_name)
 
 
@@ -130,12 +124,12 @@ def drafting_script_paths_for_agent(
     if normalized in _BENCHMARK_ROLE_NAMES:
         return (
             _as_path(BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH),
-            _as_path(BENCHMARK_PLAN_TECHNICAL_DRAWING_SCRIPT_PATH),
+            _as_path(BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH),
         )
     if normalized in _ENGINEERING_ROLE_NAMES:
         return (
             _as_path(SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH),
-            _as_path(SOLUTION_PLAN_TECHNICAL_DRAWING_SCRIPT_PATH),
+            _as_path(SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH),
         )
     return (_as_path(LEGACY_SCRIPT_PATH), _as_path(LEGACY_SCRIPT_PATH))
 
@@ -147,15 +141,9 @@ def planner_role_for_drafting_script_path(
         return None
 
     script_name = Path(script_path).name
-    if script_name in {
-        BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
-        BENCHMARK_PLAN_TECHNICAL_DRAWING_SCRIPT_PATH,
-    }:
+    if script_name == BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH:
         return AgentName.BENCHMARK_PLANNER
-    if script_name in {
-        SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
-        SOLUTION_PLAN_TECHNICAL_DRAWING_SCRIPT_PATH,
-    }:
+    if script_name == SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH:
         return AgentName.ENGINEER_PLANNER
     return None
 
