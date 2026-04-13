@@ -1,5 +1,3 @@
-import asyncio
-import os
 from contextlib import asynccontextmanager
 
 import structlog
@@ -22,19 +20,7 @@ logger = structlog.get_logger(__name__)
 async def lifespan(app: FastAPI):
     settings.skills_dir.mkdir(parents=True, exist_ok=True)
 
-    # WP11: Support Temporal worker in unified mode
-    if os.getenv("WORKER_TYPE") == "unified":
-        try:
-            from worker_heavy.temporal_worker import main as heavy_temporal_worker_main
-
-            app.state.temporal_task = asyncio.create_task(heavy_temporal_worker_main())
-        except ImportError:
-            pass
-
     yield
-    # Shutdown
-    if hasattr(app.state, "temporal_task"):
-        app.state.temporal_task.cancel()
 
 
 app = FastAPI(

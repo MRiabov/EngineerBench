@@ -8,7 +8,6 @@ from sqlalchemy import delete
 from sqlalchemy.exc import IntegrityError
 from temporalio.client import Client
 
-from controller.api import ops
 from controller.api.manager import task_tracker
 from controller.api.routes import (
     benchmark,
@@ -121,7 +120,6 @@ app.include_router(benchmark.router, prefix="/api")
 app.include_router(datasets.router, prefix="/api")
 app.include_router(script_tools.router, prefix="/api")
 app.include_router(skills.router, prefix="/api")
-app.include_router(ops.router, prefix="/api")
 app.include_router(cots.router, prefix="/api")
 # Backward compatibility for integration tests and legacy clients that use
 # unprefixed controller routes.
@@ -130,7 +128,6 @@ app.include_router(benchmark.router)
 app.include_router(datasets.router)
 app.include_router(script_tools.router)
 app.include_router(skills.router)
-app.include_router(ops.router)
 app.include_router(cots.router)
 from controller.api.routes import simulation
 
