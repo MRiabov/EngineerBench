@@ -22,21 +22,13 @@ from controller.agent.config import (
     build_dspy_lm,
     settings,
 )
-from controller.agent.context_usage import (
-    estimate_text_tokens,
-    update_episode_context_usage,
-)
 from controller.agent.nodes.base import BaseNode, SharedNodeContext
 from controller.agent.tools import filter_tools_for_agent
-from controller.observability.middleware_helper import record_events
 from controller.observability.tracing import record_worker_events
 from shared.enums import AgentName, ReviewDecision, SessionStatus
 from shared.models.schemas import ReviewResult
 from shared.models.simulation import SimulationResult
-from shared.observability.schemas import (
-    ConversationLengthExceededEvent,
-    ReviewDecisionEvent,
-)
+from shared.observability.schemas import ReviewDecisionEvent
 from shared.script_contracts import (
     BENCHMARK_PLAN_PATH,
     BENCHMARK_SCRIPT_PATH,
@@ -1844,101 +1836,6 @@ async def cots_search_node(state: BenchmarkGeneratorState) -> BenchmarkGenerator
         AIMessage(content=f"COTS Search summary: {summary or 'No summary provided.'}")
     )
     return state
-
-
-async def skills_node(state: BenchmarkGeneratorState) -> BenchmarkGeneratorState:
-    # No changes needed
-    return state
-
-
-class SummarizerSignature(dspy.Signature):
-    """DSPy signature for the benchmark journalling agent."""
-
-    journal = dspy.InputField()
-    summarized_journal = dspy.OutputField(desc="A concise summary of the journal")
-
-
-@type_check
-class BenchmarkSummarizerNode(BaseNode):
-    """
-    Summarizer node: Compresses the journal when it exceeds length limits.
-    """
-
-    async def __call__(self, state: BenchmarkGeneratorState) -> BenchmarkGeneratorState:
-        threshold = settings.context_compaction_threshold_tokens
-        if not state.journal or estimate_text_tokens(state.journal) < threshold:
-            return state
-
-        logger.info(
-            "summarizing_benchmark_journal",
-            journal_length=len(state.journal),
-            session_id=str(state.session.session_id),
-        )
-
-        inputs = {"journal": state.journal}
-
-        prediction, _, _ = await self._run_program(
-            dspy.ReAct,
-            SummarizerSignature,
-            state,
-            inputs,
-            lambda _fs, _sid: [],
-            [],
-            AgentName.JOURNALLING_AGENT,
-        )
-
-        summarized = getattr(prediction, "summarized_journal", state.journal)
-
-        if state.episode_id:
-            try:
-                await record_events(
-                    episode_id=state.episode_id,
-                    events=[
-                        ConversationLengthExceededEvent(
-                            previous_length=estimate_text_tokens(state.journal),
-                            threshold=threshold,
-                            compacted_length=estimate_text_tokens(summarized),
-                            agent_id=AgentName.JOURNALLING_AGENT.value,
-                            user_session_id=str(state.session.session_id),
-                            episode_id=state.episode_id,
-                        )
-                    ],
-                )
-                await update_episode_context_usage(
-                    episode_id=state.episode_id,
-                    used_tokens=estimate_text_tokens(summarized),
-                    max_tokens=threshold,
-                )
-            except Exception as exc:
-                logger.warning(
-                    "conversation_length_event_emit_failed",
-                    error=str(exc),
-                    episode_id=state.episode_id,
-                )
-
-        logger.info(
-            "benchmark_journal_summarized",
-            old_length=len(state.journal),
-            new_length=len(summarized),
-        )
-
-        state.journal = f"[Summarized Journal]\n{summarized}"
-        return state
-
-
-@type_check
-async def summarizer_node(state: BenchmarkGeneratorState) -> BenchmarkGeneratorState:
-    from controller.config.settings import settings as global_settings
-
-    worker_light_url = global_settings.worker_light_url
-    ctx = SharedNodeContext.create(
-        worker_light_url=worker_light_url,
-        session_id=_benchmark_worker_session_id(state),
-        episode_id=state.episode_id,
-        agent_role=AgentName.JOURNALLING_AGENT,
-    )
-    node = BenchmarkSummarizerNode(context=ctx)
-    return await node(state)
 
 
 class BenchmarkReviewerSignature(dspy.Signature):

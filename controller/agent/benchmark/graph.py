@@ -85,8 +85,6 @@ from .nodes import (
     plan_reviewer_node,
     planner_node,
     reviewer_node,
-    skills_node,
-    summarizer_node,
 )
 from .state import BenchmarkGeneratorState
 from .storage import BenchmarkStorage
@@ -846,14 +844,6 @@ def define_graph():
         AgentName.COTS_SEARCH,
         _guarded_node(AgentName.COTS_SEARCH, cots_search_node),
     )
-    workflow.add_node(
-        AgentName.SKILL_AGENT,
-        _guarded_node(AgentName.SKILL_AGENT, skills_node),
-    )
-    workflow.add_node(
-        AgentName.JOURNALLING_AGENT,
-        _guarded_node(AgentName.JOURNALLING_AGENT, summarizer_node),
-    )
 
     # Define transitions
     def route_start(
@@ -1008,15 +998,13 @@ def define_graph():
     ) -> Literal[
         AgentName.BENCHMARK_REVIEWER,
         AgentName.BENCHMARK_CODER,
-        AgentName.SKILL_AGENT,
+        END,
     ]:
         if state.session.status == SessionStatus.REJECTED:
             return AgentName.BENCHMARK_CODER
 
         if state.session.status == SessionStatus.FAILED:
-            if await _sidecars_disabled_for_state(state):
-                return END
-            return AgentName.SKILL_AGENT
+            return END
 
         return AgentName.BENCHMARK_REVIEWER
 
@@ -1026,7 +1014,6 @@ def define_graph():
         {
             AgentName.BENCHMARK_REVIEWER: AgentName.BENCHMARK_REVIEWER,
             AgentName.BENCHMARK_CODER: AgentName.BENCHMARK_CODER,
-            AgentName.SKILL_AGENT: AgentName.SKILL_AGENT,
             END: END,
         },
     )
@@ -1038,8 +1025,7 @@ def define_graph():
         AgentName.BENCHMARK_REVIEWER,
         AgentName.BENCHMARK_CODER,
         AgentName.BENCHMARK_PLANNER,
-        AgentName.SKILL_AGENT,
-        AgentName.JOURNALLING_AGENT,
+        END,
     ]:
         if state.episode_id:
             try:
@@ -1057,14 +1043,6 @@ def define_graph():
                     episode_id=state.episode_id,
                 )
 
-        # Check for summarization need
-        if (
-            not await _sidecars_disabled_for_state(state)
-            and estimate_text_tokens(state.journal or "")
-            > agent_settings.context_compaction_threshold_tokens
-        ):
-            return AgentName.JOURNALLING_AGENT
-
         hard_fail = await evaluate_agent_hard_fail(
             agent_name=AgentName.BENCHMARK_CODER,
             episode_id=state.episode_id,
@@ -1076,9 +1054,7 @@ def define_graph():
             state.session.validation_logs.append(
                 hard_fail.message or "Agent hard-fail limit reached."
             )
-            if await _sidecars_disabled_for_state(state):
-                return END
-            return AgentName.SKILL_AGENT
+            return END
 
         feedback = (state.review_feedback or "").upper()
         if feedback.startswith("REVIEWER OUTPUT INVALID:"):
@@ -1087,13 +1063,9 @@ def define_graph():
         # Use structured decision if available
         if state.review_decision:
             if state.review_decision == ReviewDecision.APPROVED:
-                if await _sidecars_disabled_for_state(state):
-                    return END
-                return AgentName.SKILL_AGENT
+                return END
             if state.review_decision == ReviewDecision.CONFIRM_PLAN_REFUSAL:
-                if await _sidecars_disabled_for_state(state):
-                    return END
-                return AgentName.SKILL_AGENT
+                return END
             if state.review_decision == ReviewDecision.REJECT_PLAN:
                 return AgentName.BENCHMARK_PLANNER
             if state.review_decision == ReviewDecision.REJECT_PLAN_REFUSAL:
@@ -1109,14 +1081,9 @@ def define_graph():
             AgentName.BENCHMARK_REVIEWER: AgentName.BENCHMARK_REVIEWER,
             AgentName.BENCHMARK_CODER: AgentName.BENCHMARK_CODER,
             AgentName.BENCHMARK_PLANNER: AgentName.BENCHMARK_PLANNER,
-            AgentName.SKILL_AGENT: AgentName.SKILL_AGENT,
-            AgentName.JOURNALLING_AGENT: AgentName.JOURNALLING_AGENT,
             END: END,
         },
     )
-
-    workflow.add_edge(AgentName.SKILL_AGENT, END)
-    workflow.add_edge(AgentName.JOURNALLING_AGENT, AgentName.BENCHMARK_PLANNER)
 
     # cots_search can be reached from planner or coder if we add those edges
     workflow.add_edge(AgentName.COTS_SEARCH, AgentName.BENCHMARK_PLANNER)
@@ -1161,7 +1128,6 @@ async def _execute_graph_streaming(
                         "plan_reviewer": AgentName.BENCHMARK_PLAN_REVIEWER,
                         "coder": AgentName.BENCHMARK_CODER,
                         "reviewer": AgentName.BENCHMARK_REVIEWER,
-                        "skills": AgentName.SKILL_AGENT,
                     }
                     normalized_node_name = legacy_node_aliases.get(node_name)
 
@@ -1372,13 +1338,6 @@ async def _execute_graph_streaming(
                         handoff_block_count=final_state.reviewer_handoff_block_count,
                         review_feedback=final_state.review_feedback,
                     )
-
-            elif (
-                normalized_node_name == AgentName.SKILL_AGENT
-                and final_state.session.status == SessionStatus.ACCEPTED
-            ):
-                new_status = SessionStatus.ACCEPTED
-                terminal_reason = TerminalReason.APPROVED
 
             repeated_failure_stages = {
                 AgentName.BENCHMARK_PLANNER,
