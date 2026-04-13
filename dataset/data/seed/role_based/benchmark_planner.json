@@ -6,58 +6,10 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan includes forbid zone AABB between spawn and goal, plus feasible build zone and objective definitions."
   },
   {
-    "id": "bp-001-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where the ball must avoid a forbid zone (obstacle) to reach the goal. Split variant for `bp-001-forbid-zone`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bp-001-forbid-zone",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan includes forbid zone AABB between spawn and goal, plus feasible build zone and objective definitions. Split variant for `bp-001-forbid-zone`. Technical drawing mode: off."
-  },
-  {
-    "id": "bp-001-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where the ball must avoid a forbid zone (obstacle) to reach the goal. Split variant for `bp-001-forbid-zone`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bp-001-forbid-zone",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan includes forbid zone AABB between spawn and goal, plus feasible build zone and objective definitions. Split variant for `bp-001-forbid-zone`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bp-001-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where the ball must avoid a forbid zone (obstacle) to reach the goal. Split variant for `bp-001-forbid-zone`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bp-001-forbid-zone",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan includes forbid zone AABB between spawn and goal, plus feasible build zone and objective definitions. Split variant for `bp-001-forbid-zone`. Technical drawing mode: full."
-  },
-  {
     "id": "bp-002-sideways-ball",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. We need to move a steel ball 40mm radius, 1m sideways. Start with a ball in one side of the simulation space and make a goal in the other. Make a benchmark that would test a machine that does it.",
     "complexity_level": 0,
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines payload as steel sphere (40mm radius), clearly separated start/goal zones about 1000mm apart on the lateral axis, realistic build/simulation bounds, and success criteria."
-  },
-  {
-    "id": "bp-002-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. We need to move a steel ball 40mm radius, 1m sideways. Start with a ball in one side of the simulation space and make a goal in the other. Make a benchmark that would test a machine that does it. Split variant for `bp-002-sideways-ball`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bp-002-sideways-ball",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines payload as steel sphere (40mm radius), clearly separated start/goal zones about 1000mm apart on the lateral axis, realistic build/simulation bounds, and success criteria. Split variant for `bp-002-sideways-ball`. Technical drawing mode: off."
-  },
-  {
-    "id": "bp-002-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. We need to move a steel ball 40mm radius, 1m sideways. Start with a ball in one side of the simulation space and make a goal in the other. Make a benchmark that would test a machine that does it. Split variant for `bp-002-sideways-ball`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bp-002-sideways-ball",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines payload as steel sphere (40mm radius), clearly separated start/goal zones about 1000mm apart on the lateral axis, realistic build/simulation bounds, and success criteria. Split variant for `bp-002-sideways-ball`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bp-002-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. We need to move a steel ball 40mm radius, 1m sideways. Start with a ball in one side of the simulation space and make a goal in the other. Make a benchmark that would test a machine that does it. Split variant for `bp-002-sideways-ball`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bp-002-sideways-ball",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines payload as steel sphere (40mm radius), clearly separated start/goal zones about 1000mm apart on the lateral axis, realistic build/simulation bounds, and success criteria. Split variant for `bp-002-sideways-ball`. Technical drawing mode: full."
   },
   {
     "id": "bp-003-gap-cube-transfer",
@@ -66,58 +18,10 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines payload as a 60mm cube, explicit left and right platforms separated by about 180mm of empty space, a fall/forbid region under the gap, realistic build and simulation bounds, and success criteria based on the cube ending on the landing platform."
   },
   {
-    "id": "bp-003-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a 60mm HDPE cube starts on a left platform and must be moved across a 180mm-wide floor gap to a right landing platform at the same height. The machine should have to bridge, hand off, or otherwise transfer the cube without dropping it into the gap. Split variant for `bp-003-gap-cube-transfer`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bp-003-gap-cube-transfer",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines payload as a 60mm cube, explicit left and right platforms separated by about 180mm of empty space, a fall/forbid region under the gap, realistic build and simulation bounds, and success criteria based on the cube ending on the landing platform. Split variant for `bp-003-gap-cube-transfer`. Technical drawing mode: off."
-  },
-  {
-    "id": "bp-003-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a 60mm HDPE cube starts on a left platform and must be moved across a 180mm-wide floor gap to a right landing platform at the same height. The machine should have to bridge, hand off, or otherwise transfer the cube without dropping it into the gap. Split variant for `bp-003-gap-cube-transfer`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bp-003-gap-cube-transfer",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines payload as a 60mm cube, explicit left and right platforms separated by about 180mm of empty space, a fall/forbid region under the gap, realistic build and simulation bounds, and success criteria based on the cube ending on the landing platform. Split variant for `bp-003-gap-cube-transfer`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bp-003-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a 60mm HDPE cube starts on a left platform and must be moved across a 180mm-wide floor gap to a right landing platform at the same height. The machine should have to bridge, hand off, or otherwise transfer the cube without dropping it into the gap. Split variant for `bp-003-gap-cube-transfer`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bp-003-gap-cube-transfer",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines payload as a 60mm cube, explicit left and right platforms separated by about 180mm of empty space, a fall/forbid region under the gap, realistic build and simulation bounds, and success criteria based on the cube ending on the landing platform. Split variant for `bp-003-gap-cube-transfer`. Technical drawing mode: full."
-  },
-  {
     "id": "bp-004-cylinder-low-bar",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where an aluminum cylinder 35mm radius and 120mm long starts on one side of the workspace and must be moved through a low-clearance gate into a goal zone beyond it. The gate should force the solution to respect vertical clearance rather than just pushing straight through bulky geometry.",
     "complexity_level": 1,
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a cylindrical payload with the stated dimensions, a divider or gate with a clear low-bar opening, realistic start and goal placement on opposite sides of the gate, feasible build bounds, and success criteria that require the cylinder to finish beyond the gate."
-  },
-  {
-    "id": "bp-004-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where an aluminum cylinder 35mm radius and 120mm long starts on one side of the workspace and must be moved through a low-clearance gate into a goal zone beyond it. The gate should force the solution to respect vertical clearance rather than just pushing straight through bulky geometry. Split variant for `bp-004-cylinder-low-bar`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bp-004-cylinder-low-bar",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a cylindrical payload with the stated dimensions, a divider or gate with a clear low-bar opening, realistic start and goal placement on opposite sides of the gate, feasible build bounds, and success criteria that require the cylinder to finish beyond the gate. Split variant for `bp-004-cylinder-low-bar`. Technical drawing mode: off."
-  },
-  {
-    "id": "bp-004-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where an aluminum cylinder 35mm radius and 120mm long starts on one side of the workspace and must be moved through a low-clearance gate into a goal zone beyond it. The gate should force the solution to respect vertical clearance rather than just pushing straight through bulky geometry. Split variant for `bp-004-cylinder-low-bar`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bp-004-cylinder-low-bar",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a cylindrical payload with the stated dimensions, a divider or gate with a clear low-bar opening, realistic start and goal placement on opposite sides of the gate, feasible build bounds, and success criteria that require the cylinder to finish beyond the gate. Split variant for `bp-004-cylinder-low-bar`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bp-004-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where an aluminum cylinder 35mm radius and 120mm long starts on one side of the workspace and must be moved through a low-clearance gate into a goal zone beyond it. The gate should force the solution to respect vertical clearance rather than just pushing straight through bulky geometry. Split variant for `bp-004-cylinder-low-bar`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bp-004-cylinder-low-bar",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a cylindrical payload with the stated dimensions, a divider or gate with a clear low-bar opening, realistic start and goal placement on opposite sides of the gate, feasible build bounds, and success criteria that require the cylinder to finish beyond the gate. Split variant for `bp-004-cylinder-low-bar`. Technical drawing mode: full."
   },
   {
     "id": "bp-005-puck-up-ramp",
@@ -126,58 +30,10 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a disc or puck payload, a raised goal platform about 250mm above the start level, realistic workspace bounds for the elevation change, and success criteria requiring the puck to end inside a goal zone on the upper shelf."
   },
   {
-    "id": "bp-005-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where an 80mm-diameter rubber puck starts on the floor and must be moved onto a raised shelf 250mm higher and roughly 600mm away horizontally. The benchmark should test uphill transport against gravity rather than a flat push. Split variant for `bp-005-puck-up-ramp`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bp-005-puck-up-ramp",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a disc or puck payload, a raised goal platform about 250mm above the start level, realistic workspace bounds for the elevation change, and success criteria requiring the puck to end inside a goal zone on the upper shelf. Split variant for `bp-005-puck-up-ramp`. Technical drawing mode: off."
-  },
-  {
-    "id": "bp-005-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where an 80mm-diameter rubber puck starts on the floor and must be moved onto a raised shelf 250mm higher and roughly 600mm away horizontally. The benchmark should test uphill transport against gravity rather than a flat push. Split variant for `bp-005-puck-up-ramp`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bp-005-puck-up-ramp",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a disc or puck payload, a raised goal platform about 250mm above the start level, realistic workspace bounds for the elevation change, and success criteria requiring the puck to end inside a goal zone on the upper shelf. Split variant for `bp-005-puck-up-ramp`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bp-005-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where an 80mm-diameter rubber puck starts on the floor and must be moved onto a raised shelf 250mm higher and roughly 600mm away horizontally. The benchmark should test uphill transport against gravity rather than a flat push. Split variant for `bp-005-puck-up-ramp`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bp-005-puck-up-ramp",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a disc or puck payload, a raised goal platform about 250mm above the start level, realistic workspace bounds for the elevation change, and success criteria requiring the puck to end inside a goal zone on the upper shelf. Split variant for `bp-005-puck-up-ramp`. Technical drawing mode: full."
-  },
-  {
     "id": "bp-006-ball-into-bin",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a 30mm-radius steel ball starts on an elevated ledge and must be delivered into a catch bin that is about 250mm sideways and 400mm lower. The benchmark should test controlled release or redirection into a lower target rather than simple flat transport.",
     "complexity_level": 1,
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a steel spherical payload, an elevated start, a lower goal zone or bin offset sideways from the start, realistic gravity-aware bounds, and success criteria requiring the ball to come to rest in the catch region."
-  },
-  {
-    "id": "bp-006-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a 30mm-radius steel ball starts on an elevated ledge and must be delivered into a catch bin that is about 250mm sideways and 400mm lower. The benchmark should test controlled release or redirection into a lower target rather than simple flat transport. Split variant for `bp-006-ball-into-bin`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bp-006-ball-into-bin",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a steel spherical payload, an elevated start, a lower goal zone or bin offset sideways from the start, realistic gravity-aware bounds, and success criteria requiring the ball to come to rest in the catch region. Split variant for `bp-006-ball-into-bin`. Technical drawing mode: off."
-  },
-  {
-    "id": "bp-006-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a 30mm-radius steel ball starts on an elevated ledge and must be delivered into a catch bin that is about 250mm sideways and 400mm lower. The benchmark should test controlled release or redirection into a lower target rather than simple flat transport. Split variant for `bp-006-ball-into-bin`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bp-006-ball-into-bin",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a steel spherical payload, an elevated start, a lower goal zone or bin offset sideways from the start, realistic gravity-aware bounds, and success criteria requiring the ball to come to rest in the catch region. Split variant for `bp-006-ball-into-bin`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bp-006-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a 30mm-radius steel ball starts on an elevated ledge and must be delivered into a catch bin that is about 250mm sideways and 400mm lower. The benchmark should test controlled release or redirection into a lower target rather than simple flat transport. Split variant for `bp-006-ball-into-bin`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bp-006-ball-into-bin",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a steel spherical payload, an elevated start, a lower goal zone or bin offset sideways from the start, realistic gravity-aware bounds, and success criteria requiring the ball to come to rest in the catch region. Split variant for `bp-006-ball-into-bin`. Technical drawing mode: full."
   },
   {
     "id": "bp-007-rod-through-window",
@@ -186,58 +42,10 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a long cylindrical payload, a divider wall with a clearly specified pass-through opening, realistic start and goal zones on opposite sides, feasible build bounds that accommodate the rod length, and success criteria based on the rod ending beyond the divider."
   },
   {
-    "id": "bp-007-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a wooden rod 300mm long and 30mm in diameter starts on one side of a divider wall and must be moved through a rectangular window in the wall into a goal zone on the other side. The benchmark should require clearance-aware manipulation of a long object, not just translating a compact part. Split variant for `bp-007-rod-through-window`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bp-007-rod-through-window",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a long cylindrical payload, a divider wall with a clearly specified pass-through opening, realistic start and goal zones on opposite sides, feasible build bounds that accommodate the rod length, and success criteria based on the rod ending beyond the divider. Split variant for `bp-007-rod-through-window`. Technical drawing mode: off."
-  },
-  {
-    "id": "bp-007-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a wooden rod 300mm long and 30mm in diameter starts on one side of a divider wall and must be moved through a rectangular window in the wall into a goal zone on the other side. The benchmark should require clearance-aware manipulation of a long object, not just translating a compact part. Split variant for `bp-007-rod-through-window`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bp-007-rod-through-window",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a long cylindrical payload, a divider wall with a clearly specified pass-through opening, realistic start and goal zones on opposite sides, feasible build bounds that accommodate the rod length, and success criteria based on the rod ending beyond the divider. Split variant for `bp-007-rod-through-window`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bp-007-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a wooden rod 300mm long and 30mm in diameter starts on one side of a divider wall and must be moved through a rectangular window in the wall into a goal zone on the other side. The benchmark should require clearance-aware manipulation of a long object, not just translating a compact part. Split variant for `bp-007-rod-through-window`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bp-007-rod-through-window",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a long cylindrical payload, a divider wall with a clearly specified pass-through opening, realistic start and goal zones on opposite sides, feasible build bounds that accommodate the rod length, and success criteria based on the rod ending beyond the divider. Split variant for `bp-007-rod-through-window`. Technical drawing mode: full."
-  },
-  {
     "id": "bp-008-ring-to-post",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a steel ring with about 120mm outer diameter and 70mm inner diameter starts on the floor and must be moved to a goal region centered around a vertical post on the far side of the workspace. The benchmark should encourage alignment and controlled placement around a fixed obstacle at the goal.",
     "complexity_level": 1,
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines an annular payload, a fixed post or goal fixture near the goal, realistic clearance and workspace bounds, and success criteria based on the ring reaching a goal zone around the post without impossible geometry."
-  },
-  {
-    "id": "bp-008-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a steel ring with about 120mm outer diameter and 70mm inner diameter starts on the floor and must be moved to a goal region centered around a vertical post on the far side of the workspace. The benchmark should encourage alignment and controlled placement around a fixed obstacle at the goal. Split variant for `bp-008-ring-to-post`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bp-008-ring-to-post",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines an annular payload, a fixed post or goal fixture near the goal, realistic clearance and workspace bounds, and success criteria based on the ring reaching a goal zone around the post without impossible geometry. Split variant for `bp-008-ring-to-post`. Technical drawing mode: off."
-  },
-  {
-    "id": "bp-008-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a steel ring with about 120mm outer diameter and 70mm inner diameter starts on the floor and must be moved to a goal region centered around a vertical post on the far side of the workspace. The benchmark should encourage alignment and controlled placement around a fixed obstacle at the goal. Split variant for `bp-008-ring-to-post`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bp-008-ring-to-post",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines an annular payload, a fixed post or goal fixture near the goal, realistic clearance and workspace bounds, and success criteria based on the ring reaching a goal zone around the post without impossible geometry. Split variant for `bp-008-ring-to-post`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bp-008-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a steel ring with about 120mm outer diameter and 70mm inner diameter starts on the floor and must be moved to a goal region centered around a vertical post on the far side of the workspace. The benchmark should encourage alignment and controlled placement around a fixed obstacle at the goal. Split variant for `bp-008-ring-to-post`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bp-008-ring-to-post",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines an annular payload, a fixed post or goal fixture near the goal, realistic clearance and workspace bounds, and success criteria based on the ring reaching a goal zone around the post without impossible geometry. Split variant for `bp-008-ring-to-post`. Technical drawing mode: full."
   },
   {
     "id": "bp-009-s-curve-block",
@@ -246,87 +54,15 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a cubic payload, two offset forbid zones or obstacle blocks that force an S-shaped route, clear start and goal zones, realistic build bounds, and success criteria based on the cube ending at the goal without infeasible obstacle overlap."
   },
   {
-    "id": "bp-009-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a 50mm cube must move about 800mm to the goal while routing around two offset rectangular obstacles that create an S-shaped corridor. The benchmark should test planning through constrained free space rather than a direct line transfer. Split variant for `bp-009-s-curve-block`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bp-009-s-curve-block",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a cubic payload, two offset forbid zones or obstacle blocks that force an S-shaped route, clear start and goal zones, realistic build bounds, and success criteria based on the cube ending at the goal without infeasible obstacle overlap. Split variant for `bp-009-s-curve-block`. Technical drawing mode: off."
-  },
-  {
-    "id": "bp-009-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a 50mm cube must move about 800mm to the goal while routing around two offset rectangular obstacles that create an S-shaped corridor. The benchmark should test planning through constrained free space rather than a direct line transfer. Split variant for `bp-009-s-curve-block`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bp-009-s-curve-block",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a cubic payload, two offset forbid zones or obstacle blocks that force an S-shaped route, clear start and goal zones, realistic build bounds, and success criteria based on the cube ending at the goal without infeasible obstacle overlap. Split variant for `bp-009-s-curve-block`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bp-009-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a 50mm cube must move about 800mm to the goal while routing around two offset rectangular obstacles that create an S-shaped corridor. The benchmark should test planning through constrained free space rather than a direct line transfer. Split variant for `bp-009-s-curve-block`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bp-009-s-curve-block",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a cubic payload, two offset forbid zones or obstacle blocks that force an S-shaped route, clear start and goal zones, realistic build bounds, and success criteria based on the cube ending at the goal without infeasible obstacle overlap. Split variant for `bp-009-s-curve-block`. Technical drawing mode: full."
-  },
-  {
     "id": "bp-010-ball-over-speed-bump",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a steel ball 25mm radius starts on flat ground and must be moved 700mm to a goal, but a rounded speed bump or ridge sits midway between start and goal. The benchmark should force the machine to handle a terrain discontinuity rather than a frictionless flat push.",
     "complexity_level": 1,
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a steel spherical payload, a midpoint ridge or bump with realistic dimensions, start and goal zones on opposite sides of the terrain feature, feasible simulation bounds, and success criteria based on the ball finishing beyond the bump in the goal zone."
   },
   {
-    "id": "bp-010-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a steel ball 25mm radius starts on flat ground and must be moved 700mm to a goal, but a rounded speed bump or ridge sits midway between start and goal. The benchmark should force the machine to handle a terrain discontinuity rather than a frictionless flat push. Split variant for `bp-010-ball-over-speed-bump`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bp-010-ball-over-speed-bump",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a steel spherical payload, a midpoint ridge or bump with realistic dimensions, start and goal zones on opposite sides of the terrain feature, feasible simulation bounds, and success criteria based on the ball finishing beyond the bump in the goal zone. Split variant for `bp-010-ball-over-speed-bump`. Technical drawing mode: off."
-  },
-  {
-    "id": "bp-010-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a steel ball 25mm radius starts on flat ground and must be moved 700mm to a goal, but a rounded speed bump or ridge sits midway between start and goal. The benchmark should force the machine to handle a terrain discontinuity rather than a frictionless flat push. Split variant for `bp-010-ball-over-speed-bump`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bp-010-ball-over-speed-bump",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a steel spherical payload, a midpoint ridge or bump with realistic dimensions, start and goal zones on opposite sides of the terrain feature, feasible simulation bounds, and success criteria based on the ball finishing beyond the bump in the goal zone. Split variant for `bp-010-ball-over-speed-bump`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bp-010-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a steel ball 25mm radius starts on flat ground and must be moved 700mm to a goal, but a rounded speed bump or ridge sits midway between start and goal. The benchmark should force the machine to handle a terrain discontinuity rather than a frictionless flat push. Split variant for `bp-010-ball-over-speed-bump`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bp-010-ball-over-speed-bump",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a steel spherical payload, a midpoint ridge or bump with realistic dimensions, start and goal zones on opposite sides of the terrain feature, feasible simulation bounds, and success criteria based on the ball finishing beyond the bump in the goal zone. Split variant for `bp-010-ball-over-speed-bump`. Technical drawing mode: full."
-  },
-  {
     "id": "bp-014-raised-shelf-lift",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where an ABS ball (~45mm radius) starts near floor level at approximately (-200, 0, 60) and must be moved onto a raised shelf goal zone centered around (375, 0, 260). A vertical shelf-support keepout volume between x=180 and x=280 must remain clear. The benchmark should test uphill elevation transport with a clearance constraint rather than a flat push.",
     "complexity_level": 1,
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a spherical payload with ABS material, an elevated goal zone roughly 160mm above the start level, a vertical forbid zone representing shelf-support clearance, realistic build and simulation bounds, planner estimate fields for cost and weight, and success criteria requiring the ball to end inside the raised goal zone."
-  },
-  {
-    "id": "bp-014-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where an ABS ball (~45mm radius) starts near floor level at approximately (-200, 0, 60) and must be moved onto a raised shelf goal zone centered around (375, 0, 260). A vertical shelf-support keepout volume between x=180 and x=280 must remain clear. The benchmark should test uphill elevation transport with a clearance constraint rather than a flat push. Split variant for `bp-014-raised-shelf-lift`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bp-014-raised-shelf-lift",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a spherical payload with ABS material, an elevated goal zone roughly 160mm above the start level, a vertical forbid zone representing shelf-support clearance, realistic build and simulation bounds, planner estimate fields for cost and weight, and success criteria requiring the ball to end inside the raised goal zone. Split variant for `bp-014-raised-shelf-lift`. Technical drawing mode: off."
-  },
-  {
-    "id": "bp-014-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where an ABS ball (~45mm radius) starts near floor level at approximately (-200, 0, 60) and must be moved onto a raised shelf goal zone centered around (375, 0, 260). A vertical shelf-support keepout volume between x=180 and x=280 must remain clear. The benchmark should test uphill elevation transport with a clearance constraint rather than a flat push. Split variant for `bp-014-raised-shelf-lift`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bp-014-raised-shelf-lift",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a spherical payload with ABS material, an elevated goal zone roughly 160mm above the start level, a vertical forbid zone representing shelf-support clearance, realistic build and simulation bounds, planner estimate fields for cost and weight, and success criteria requiring the ball to end inside the raised goal zone. Split variant for `bp-014-raised-shelf-lift`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bp-014-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where an ABS ball (~45mm radius) starts near floor level at approximately (-200, 0, 60) and must be moved onto a raised shelf goal zone centered around (375, 0, 260). A vertical shelf-support keepout volume between x=180 and x=280 must remain clear. The benchmark should test uphill elevation transport with a clearance constraint rather than a flat push. Split variant for `bp-014-raised-shelf-lift`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bp-014-raised-shelf-lift",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a spherical payload with ABS material, an elevated goal zone roughly 160mm above the start level, a vertical forbid zone representing shelf-support clearance, realistic build and simulation bounds, planner estimate fields for cost and weight, and success criteria requiring the ball to end inside the raised goal zone. Split variant for `bp-014-raised-shelf-lift`. Technical drawing mode: full."
   }
 ]

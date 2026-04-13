@@ -8,72 +8,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability."
   },
   {
-    "id": "eer-001-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the motorized sideways transfer. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether the implemented roller lane stays aligned with the approved single-motor transfer strategy and uses the catalog-backed DS3218 motor proxy robustly under spawn jitter. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-001-sideways-transfer`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-001-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "eer-001-sideways-transfer",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-001-sideways-transfer`. Technical drawing mode: off."
-  },
-  {
-    "id": "eer-001-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the motorized sideways transfer. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether the implemented roller lane stays aligned with the approved single-motor transfer strategy and uses the catalog-backed DS3218 motor proxy robustly under spawn jitter. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-001-sideways-transfer`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-001-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "eer-001-sideways-transfer",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-001-sideways-transfer`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "eer-001-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the motorized sideways transfer. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether the implemented roller lane stays aligned with the approved single-motor transfer strategy and uses the catalog-backed DS3218 motor proxy robustly under spawn jitter. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-001-sideways-transfer`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-001-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "eer-001-sideways-transfer",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-001-sideways-transfer`. Technical drawing mode: full."
-  },
-  {
     "id": "eer-002-gap-bridge",
     "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the gap bridge transfer. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented bridge geometry preserves the approved passive handoff across the gap and does not introduce unnecessary motion. Return a structured engineering execution review decision grounded in the seeded evidence.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-002-gap-bridge",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability."
-  },
-  {
-    "id": "eer-002-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the gap bridge transfer. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented bridge geometry preserves the approved passive handoff across the gap and does not introduce unnecessary motion. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-002-gap-bridge`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-002-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "eer-002-gap-bridge",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-002-gap-bridge`. Technical drawing mode: off."
-  },
-  {
-    "id": "eer-002-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the gap bridge transfer. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented bridge geometry preserves the approved passive handoff across the gap and does not introduce unnecessary motion. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-002-gap-bridge`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-002-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "eer-002-gap-bridge",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-002-gap-bridge`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "eer-002-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the gap bridge transfer. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented bridge geometry preserves the approved passive handoff across the gap and does not introduce unnecessary motion. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-002-gap-bridge`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-002-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "eer-002-gap-bridge",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-002-gap-bridge`. Technical drawing mode: full."
   },
   {
     "id": "eer-003-timed-gate-chute",
@@ -84,72 +24,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability."
   },
   {
-    "id": "eer-003-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the timed gate chute. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented gate timing hardware remains faithful to the approved metering concept, uses the catalog-backed motor proxy, and avoids extra DOFs or unsupported mechanisms. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-003-timed-gate-chute`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-003-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "eer-003-timed-gate-chute",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-003-timed-gate-chute`. Technical drawing mode: off."
-  },
-  {
-    "id": "eer-003-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the timed gate chute. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented gate timing hardware remains faithful to the approved metering concept, uses the catalog-backed motor proxy, and avoids extra DOFs or unsupported mechanisms. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-003-timed-gate-chute`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-003-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "eer-003-timed-gate-chute",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-003-timed-gate-chute`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "eer-003-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the timed gate chute. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented gate timing hardware remains faithful to the approved metering concept, uses the catalog-backed motor proxy, and avoids extra DOFs or unsupported mechanisms. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-003-timed-gate-chute`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-003-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "eer-003-timed-gate-chute",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-003-timed-gate-chute`. Technical drawing mode: full."
-  },
-  {
     "id": "eer-004-raised-shelf-lift",
     "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the raised shelf lift. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented lift carriage matches the approved single-axis elevation strategy, uses the catalog-backed lift motor proxy, and stays robust against the shelf handoff tolerances. Return a structured engineering execution review decision grounded in the seeded evidence.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-004-raised-shelf-lift",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability."
-  },
-  {
-    "id": "eer-004-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the raised shelf lift. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented lift carriage matches the approved single-axis elevation strategy, uses the catalog-backed lift motor proxy, and stays robust against the shelf handoff tolerances. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-004-raised-shelf-lift`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-004-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "eer-004-raised-shelf-lift",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-004-raised-shelf-lift`. Technical drawing mode: off."
-  },
-  {
-    "id": "eer-004-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the raised shelf lift. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented lift carriage matches the approved single-axis elevation strategy, uses the catalog-backed lift motor proxy, and stays robust against the shelf handoff tolerances. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-004-raised-shelf-lift`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-004-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "eer-004-raised-shelf-lift",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-004-raised-shelf-lift`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "eer-004-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the raised shelf lift. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented lift carriage matches the approved single-axis elevation strategy, uses the catalog-backed lift motor proxy, and stays robust against the shelf handoff tolerances. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-004-raised-shelf-lift`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-004-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "eer-004-raised-shelf-lift",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-004-raised-shelf-lift`. Technical drawing mode: full."
   },
   {
     "id": "eer-005-central-forbid-route",
@@ -160,72 +40,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability."
   },
   {
-    "id": "eer-005-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the central forbid route. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented guide rails follow the approved around-obstacle route and preserve the intended passive transport behavior. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-005-central-forbid-route`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-005-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "eer-005-central-forbid-route",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-005-central-forbid-route`. Technical drawing mode: off."
-  },
-  {
-    "id": "eer-005-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the central forbid route. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented guide rails follow the approved around-obstacle route and preserve the intended passive transport behavior. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-005-central-forbid-route`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-005-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "eer-005-central-forbid-route",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-005-central-forbid-route`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "eer-005-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the central forbid route. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented guide rails follow the approved around-obstacle route and preserve the intended passive transport behavior. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-005-central-forbid-route`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-005-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "eer-005-central-forbid-route",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-005-central-forbid-route`. Technical drawing mode: full."
-  },
-  {
     "id": "eer-006-no-drill-transfer",
     "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the freestanding no-drill transfer. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented ballast and transfer geometry preserves the approved no-drill concept without hidden supports. Return a structured engineering execution review decision grounded in the seeded evidence.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-006-no-drill-transfer",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability."
-  },
-  {
-    "id": "eer-006-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the freestanding no-drill transfer. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented ballast and transfer geometry preserves the approved no-drill concept without hidden supports. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-006-no-drill-transfer`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-006-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "eer-006-no-drill-transfer",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-006-no-drill-transfer`. Technical drawing mode: off."
-  },
-  {
-    "id": "eer-006-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the freestanding no-drill transfer. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented ballast and transfer geometry preserves the approved no-drill concept without hidden supports. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-006-no-drill-transfer`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-006-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "eer-006-no-drill-transfer",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-006-no-drill-transfer`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "eer-006-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the freestanding no-drill transfer. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented ballast and transfer geometry preserves the approved no-drill concept without hidden supports. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-006-no-drill-transfer`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-006-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "eer-006-no-drill-transfer",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-006-no-drill-transfer`. Technical drawing mode: full."
   },
   {
     "id": "eer-007-low-friction-cube",
@@ -236,72 +56,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability."
   },
   {
-    "id": "eer-007-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the low-friction cube guide. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented guide walls and capture pocket match the approved low-friction cube strategy and maintain manufacturable simplicity. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-007-low-friction-cube`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-007-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "eer-007-low-friction-cube",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-007-low-friction-cube`. Technical drawing mode: off."
-  },
-  {
-    "id": "eer-007-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the low-friction cube guide. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented guide walls and capture pocket match the approved low-friction cube strategy and maintain manufacturable simplicity. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-007-low-friction-cube`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-007-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "eer-007-low-friction-cube",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-007-low-friction-cube`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "eer-007-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the low-friction cube guide. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented guide walls and capture pocket match the approved low-friction cube strategy and maintain manufacturable simplicity. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-007-low-friction-cube`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-007-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "eer-007-low-friction-cube",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-007-low-friction-cube`. Technical drawing mode: full."
-  },
-  {
     "id": "eer-008-lift-platform-handoff",
     "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the lift-platform handoff guide. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented handoff surfaces remain faithful to the approved moving-platform clearance strategy and avoid extra actuation. Return a structured engineering execution review decision grounded in the seeded evidence.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-008-lift-platform-handoff",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability."
-  },
-  {
-    "id": "eer-008-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the lift-platform handoff guide. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented handoff surfaces remain faithful to the approved moving-platform clearance strategy and avoid extra actuation. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-008-lift-platform-handoff`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-008-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "eer-008-lift-platform-handoff",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-008-lift-platform-handoff`. Technical drawing mode: off."
-  },
-  {
-    "id": "eer-008-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the lift-platform handoff guide. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented handoff surfaces remain faithful to the approved moving-platform clearance strategy and avoid extra actuation. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-008-lift-platform-handoff`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-008-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "eer-008-lift-platform-handoff",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-008-lift-platform-handoff`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "eer-008-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the lift-platform handoff guide. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented handoff surfaces remain faithful to the approved moving-platform clearance strategy and avoid extra actuation. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-008-lift-platform-handoff`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-008-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "eer-008-lift-platform-handoff",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-008-lift-platform-handoff`. Technical drawing mode: full."
   },
   {
     "id": "eer-009-narrow-goal-funnel",
@@ -312,72 +72,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability."
   },
   {
-    "id": "eer-009-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the narrow goal funnel. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented alignment throat and goal pocket preserve the approved precision-guidance concept without introducing fragile extras. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-009-narrow-goal-funnel`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-009-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "eer-009-narrow-goal-funnel",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-009-narrow-goal-funnel`. Technical drawing mode: off."
-  },
-  {
-    "id": "eer-009-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the narrow goal funnel. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented alignment throat and goal pocket preserve the approved precision-guidance concept without introducing fragile extras. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-009-narrow-goal-funnel`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-009-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "eer-009-narrow-goal-funnel",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-009-narrow-goal-funnel`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "eer-009-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the narrow goal funnel. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented alignment throat and goal pocket preserve the approved precision-guidance concept without introducing fragile extras. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-009-narrow-goal-funnel`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-009-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "eer-009-narrow-goal-funnel",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-009-narrow-goal-funnel`. Technical drawing mode: full."
-  },
-  {
     "id": "eer-010-diverter-gate-wiring",
     "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the electronics-powered diverter gate. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether the implemented powered diverter preserves the approved left-wall cable corridor, current limits, and single-motor gate behavior with a catalog-backed gate motor proxy. Return a structured engineering execution review decision grounded in the seeded evidence.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-010-diverter-gate-wiring",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability."
-  },
-  {
-    "id": "eer-010-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the electronics-powered diverter gate. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether the implemented powered diverter preserves the approved left-wall cable corridor, current limits, and single-motor gate behavior with a catalog-backed gate motor proxy. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-010-diverter-gate-wiring`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-010-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "eer-010-diverter-gate-wiring",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-010-diverter-gate-wiring`. Technical drawing mode: off."
-  },
-  {
-    "id": "eer-010-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the electronics-powered diverter gate. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether the implemented powered diverter preserves the approved left-wall cable corridor, current limits, and single-motor gate behavior with a catalog-backed gate motor proxy. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-010-diverter-gate-wiring`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-010-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "eer-010-diverter-gate-wiring",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-010-diverter-gate-wiring`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "eer-010-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the electronics-powered diverter gate. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether the implemented powered diverter preserves the approved left-wall cable corridor, current limits, and single-motor gate behavior with a catalog-backed gate motor proxy. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-010-diverter-gate-wiring`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-010-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "eer-010-diverter-gate-wiring",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability. Split variant for `eer-010-diverter-gate-wiring`. Technical drawing mode: full."
   },
   {
     "id": "eer-011-sideways-transfer-budget-overrun",
@@ -388,71 +88,11 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer rejects implementations that still function but materially diverge from the approved plan by exceeding the seeded cost budget, even when the read-only benchmark geometry source is present."
   },
   {
-    "id": "eer-011-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the sideways transfer budget-overrun variant. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether the implemented assembly still respects the approved plan budget after the added guarding hardware while keeping the catalog-backed motor geometry intact. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-011-sideways-transfer-budget-overrun`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-011-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "eer-011-sideways-transfer-budget-overrun",
-    "expected_decision": "REJECT_CODE",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer rejects implementations that still function but materially diverge from the approved plan by exceeding the seeded cost budget, even when the read-only benchmark geometry source is present. Split variant for `eer-011-sideways-transfer-budget-overrun`. Technical drawing mode: off."
-  },
-  {
-    "id": "eer-011-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the sideways transfer budget-overrun variant. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether the implemented assembly still respects the approved plan budget after the added guarding hardware while keeping the catalog-backed motor geometry intact. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-011-sideways-transfer-budget-overrun`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-011-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "eer-011-sideways-transfer-budget-overrun",
-    "expected_decision": "REJECT_CODE",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer rejects implementations that still function but materially diverge from the approved plan by exceeding the seeded cost budget, even when the read-only benchmark geometry source is present. Split variant for `eer-011-sideways-transfer-budget-overrun`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "eer-011-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the sideways transfer budget-overrun variant. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether the implemented assembly still respects the approved plan budget after the added guarding hardware while keeping the catalog-backed motor geometry intact. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-011-sideways-transfer-budget-overrun`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-011-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "eer-011-sideways-transfer-budget-overrun",
-    "expected_decision": "REJECT_CODE",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer rejects implementations that still function but materially diverge from the approved plan by exceeding the seeded cost budget, even when the read-only benchmark geometry source is present. Split variant for `eer-011-sideways-transfer-budget-overrun`. Technical drawing mode: full."
-  },
-  {
     "id": "eer-012-sideways-transfer-fake-cots",
     "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the sideways transfer fake-COTS variant. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether the implemented assembly still uses real catalog-backed COTS hardware rather than invented placeholders. Return a structured engineering execution review decision grounded in the seeded evidence.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-012-sideways-transfer-fake-cots",
     "expected_decision": "REJECT_CODE",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer rejects implementations that replace approved catalog-backed components with invented or non-reproducible COTS parts, even when the benchmark geometry source is available read-only."
-  },
-  {
-    "id": "eer-012-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the sideways transfer fake-COTS variant. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether the implemented assembly still uses real catalog-backed COTS hardware rather than invented placeholders. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-012-sideways-transfer-fake-cots`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-012-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "eer-012-sideways-transfer-fake-cots",
-    "expected_decision": "REJECT_CODE",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer rejects implementations that replace approved catalog-backed components with invented or non-reproducible COTS parts, even when the benchmark geometry source is available read-only. Split variant for `eer-012-sideways-transfer-fake-cots`. Technical drawing mode: off."
-  },
-  {
-    "id": "eer-012-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the sideways transfer fake-COTS variant. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether the implemented assembly still uses real catalog-backed COTS hardware rather than invented placeholders. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-012-sideways-transfer-fake-cots`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-012-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "eer-012-sideways-transfer-fake-cots",
-    "expected_decision": "REJECT_CODE",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer rejects implementations that replace approved catalog-backed components with invented or non-reproducible COTS parts, even when the benchmark geometry source is available read-only. Split variant for `eer-012-sideways-transfer-fake-cots`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "eer-012-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the sideways transfer fake-COTS variant. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, simulation result, and any latest render bundle evidence all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether the implemented assembly still uses real catalog-backed COTS hardware rather than invented placeholders. Return a structured engineering execution review decision grounded in the seeded evidence. Split variant for `eer-012-sideways-transfer-fake-cots`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-012-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "eer-012-sideways-transfer-fake-cots",
-    "expected_decision": "REJECT_CODE",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer rejects implementations that replace approved catalog-backed components with invented or non-reproducible COTS parts, even when the benchmark geometry source is available read-only. Split variant for `eer-012-sideways-transfer-fake-cots`. Technical drawing mode: full."
   }
 ]

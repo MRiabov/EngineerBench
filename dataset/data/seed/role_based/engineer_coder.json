@@ -7,100 +7,11 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed planner package, implements a manufacturable single-motor sideways-transfer solution in `solution_script.py`, and preserves planner consistency while updating execution progress."
   },
   {
-    "id": "ec-001-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the motorized sideways-transfer mechanism in `solution_script.py`. Keep planner-owned files semantically consistent, preserve the single-motor and wiring-corridor assumptions from the reviewed package, and update `todo.md` and `journal.md` as you work unless you need to refuse the plan with evidence. Start by reading `ec001_run_hints.md` in the workspace for the last useful `ec-001` run notes before you make geometry changes. Split variant for `ec-001`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-001-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ec-001",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed planner package, implements a manufacturable single-motor sideways-transfer solution in `solution_script.py`, and preserves planner consistency while updating execution progress. Split variant for `ec-001`. Technical drawing mode: off."
-  },
-  {
-    "id": "ec-001-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the motorized sideways-transfer mechanism in `solution_script.py`. Keep planner-owned files semantically consistent, preserve the single-motor and wiring-corridor assumptions from the reviewed package, and update `todo.md` and `journal.md` as you work unless you need to refuse the plan with evidence. Start by reading `ec001_run_hints.md` in the workspace for the last useful `ec-001` run notes before you make geometry changes. Split variant for `ec-001`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-001-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ec-001",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed planner package, implements a manufacturable single-motor sideways-transfer solution in `solution_script.py`, and preserves planner consistency while updating execution progress. Split variant for `ec-001`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ec-001-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the motorized sideways-transfer mechanism in `solution_script.py`. Keep planner-owned files semantically consistent, preserve the single-motor and wiring-corridor assumptions from the reviewed package, and update `todo.md` and `journal.md` as you work unless you need to refuse the plan with evidence. Start by reading `ec001_run_hints.md` in the workspace for the last useful `ec-001` run notes before you make geometry changes. Treat the coarse `motion_forecast` in `assembly_definition.yaml` as the starting trajectory, then narrow the same `transfer_lane` motion in `payload_trajectory_definition.yaml`. Split variant for `ec-001`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-001-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ec-001",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed planner package, implements a manufacturable single-motor sideways-transfer solution in `solution_script.py`, and preserves planner consistency while using the coarse `motion_forecast` plus the new `payload_trajectory_definition.yaml` refinement to guide execution. Split variant for `ec-001`. Technical drawing mode: full."
-  },
-  {
-    "id": "ec-002",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded, planner-reviewed engineering handoff package in the workspace to implement the passive gap-bridge solution in `solution_script.py`. Respect the read-only benchmark fixtures (`left_start_deck`, `right_goal_deck`, `bridge_reference_table`, `gap_floor_guard`), keep the reviewed planner files coherent, and only diverge from the plan when the workspace evidence justifies it.",
-    "complexity_level": 0,
-    "technical_drawing_mode": "off",
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-002-gap-bridge",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins with planner-reviewed artifacts, implements the passive bridge package in `solution_script.py`, and updates execution artifacts without breaking the planner contract."
-  },
-  {
-    "id": "ec-002-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded, planner-reviewed engineering handoff package in the workspace to implement the passive gap-bridge solution in `solution_script.py`. Respect the read-only benchmark fixtures (`left_start_deck`, `right_goal_deck`, `bridge_reference_table`, `gap_floor_guard`), keep the reviewed planner files coherent, and only diverge from the plan when the workspace evidence justifies it. Split variant for `ec-002`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-002-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ec-002",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins with planner-reviewed artifacts, implements the passive bridge package in `solution_script.py`, and updates execution artifacts without breaking the planner contract. Split variant for `ec-002`. Technical drawing mode: off."
-  },
-  {
-    "id": "ec-002-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded, planner-reviewed engineering handoff package in the workspace to implement the passive gap-bridge solution in `solution_script.py`. Respect the read-only benchmark fixtures (`left_start_deck`, `right_goal_deck`, `bridge_reference_table`, `gap_floor_guard`), keep the reviewed planner files coherent, and only diverge from the plan when the workspace evidence justifies it. Split variant for `ec-002`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-002-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ec-002",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins with planner-reviewed artifacts, implements the passive bridge package in `solution_script.py`, and updates execution artifacts without breaking the planner contract. Split variant for `ec-002`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ec-002-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded, planner-reviewed engineering handoff package in the workspace to implement the deployable gap-bridge solution in `solution_script.py`. Respect the read-only benchmark fixtures (`left_start_deck`, `right_goal_deck`, `bridge_reference_table`, `gap_floor_guard`), keep the reviewed planner files coherent, and only diverge from the plan when the workspace evidence justifies it. Start from the benchmark definition's high-level transfer objective, then follow the coarse `motion_forecast` in `assembly_definition.yaml`, and finally narrow the same `bridge_deck` deployment in `payload_trajectory_definition.yaml`. Split variant for `ec-002`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-002-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ec-002",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins with planner-reviewed artifacts, implements the deployable bridge package in `solution_script.py`, and updates execution artifacts without breaking the planner contract. Split variant for `ec-002`. Technical drawing mode: full. The seed carries the benchmark trajectory context, the coarse `assembly_definition.yaml.motion_forecast`, and the refined `payload_trajectory_definition.yaml` deployment path in that order."
-  },
-  {
     "id": "ec-003",
     "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the timed-gate metering solution in `solution_script.py`. Keep the planner-owned artifacts aligned with the reviewed plan, preserve the seeded single-motor and wiring-corridor assumptions around the gate keep-out, and update `todo.md` and `journal.md` as execution progresses.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-003-timed-gate-chute",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed timed-gate handoff package, implements a gate-compatible single-motor metering assembly in `solution_script.py`, and preserves the seeded planning contract while progressing execution."
-  },
-  {
-    "id": "ec-003-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the timed-gate metering solution in `solution_script.py`. Keep the planner-owned artifacts aligned with the reviewed plan, preserve the seeded single-motor and wiring-corridor assumptions around the gate keep-out, and update `todo.md` and `journal.md` as execution progresses. Split variant for `ec-003`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-003-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ec-003",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed timed-gate handoff package, implements a gate-compatible single-motor metering assembly in `solution_script.py`, and preserves the seeded planning contract while progressing execution. Split variant for `ec-003`. Technical drawing mode: off."
-  },
-  {
-    "id": "ec-003-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the timed-gate metering solution in `solution_script.py`. Keep the planner-owned artifacts aligned with the reviewed plan, preserve the seeded single-motor and wiring-corridor assumptions around the gate keep-out, and update `todo.md` and `journal.md` as execution progresses. Split variant for `ec-003`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-003-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ec-003",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed timed-gate handoff package, implements a gate-compatible single-motor metering assembly in `solution_script.py`, and preserves the seeded planning contract while progressing execution. Split variant for `ec-003`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ec-003-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the timed-gate metering solution in `solution_script.py`. Keep the planner-owned artifacts aligned with the reviewed plan, start from the benchmark definition's high-level gate objective context, then carry the coarse `motion_forecast` from `assembly_definition.yaml` as the planner-level trajectory, and finally narrow the same moving-part path in `payload_trajectory_definition.yaml` without changing the single-motor and wiring-corridor assumptions around the gate keep-out. Update `todo.md` and `journal.md` as execution progresses. Split variant for `ec-003`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-003-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ec-003",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed timed-gate handoff package, implements a gate-compatible single-motor metering assembly in `solution_script.py`, and preserves the seeded planning contract while using the benchmark definition context, the coarse `motion_forecast` in `assembly_definition.yaml`, and the new `payload_trajectory_definition.yaml` path contract in that order. Split variant for `ec-003`. Technical drawing mode: full."
   },
   {
     "id": "ec-004",
@@ -110,100 +21,11 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed raised-shelf handoff package, implements a single-motor shelf-lift solution in `solution_script.py`, and preserves the seeded planning contract while progressing execution."
   },
   {
-    "id": "ec-004-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the raised-shelf lift solution in `solution_script.py`. Preserve the reviewed planner files, keep the motorized lift geometry inside the build zone, and update `todo.md` and `journal.md` while maintaining the seeded cost, weight, and single-DOF assumptions. Split variant for `ec-004`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-004-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ec-004",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed raised-shelf handoff package, implements a single-motor shelf-lift solution in `solution_script.py`, and preserves the seeded planning contract while progressing execution. Split variant for `ec-004`. Technical drawing mode: off."
-  },
-  {
-    "id": "ec-004-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the raised-shelf lift solution in `solution_script.py`. Preserve the reviewed planner files, keep the motorized lift geometry inside the build zone, and update `todo.md` and `journal.md` while maintaining the seeded cost, weight, and single-DOF assumptions. Split variant for `ec-004`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-004-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ec-004",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed raised-shelf handoff package, implements a single-motor shelf-lift solution in `solution_script.py`, and preserves the seeded planning contract while progressing execution. Split variant for `ec-004`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ec-004-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the raised-shelf lift solution in `solution_script.py`. Preserve the reviewed planner files, keep the motorized lift geometry inside the build zone, and update `todo.md`, `journal.md`, `assembly_definition.yaml.motion_forecast`, and `payload_trajectory_definition.yaml` while maintaining the seeded cost, weight, and single-DOF assumptions. Split variant for `ec-004`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-004-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ec-004",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed raised-shelf handoff package, carries the coarse `motion_forecast` in `assembly_definition.yaml` into a narrower `payload_trajectory_definition.yaml`, implements a single-motor shelf-lift solution in `solution_script.py`, and preserves the seeded planning contract while progressing execution. Split variant for `ec-004`. Technical drawing mode: full."
-  },
-  {
-    "id": "ec-005",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the around-obstacle route for the central-forbid benchmark in `solution_script.py`. Keep the reviewed planner artifacts coherent, preserve the planned passive routing strategy, and update `todo.md` and `journal.md` as execution progresses.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-005-drawing-full",
-    "technical_drawing_mode": "full",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins from a reviewed around-obstacle handoff package, implements the routed transport path in `solution_script.py`, and preserves the planner contract and clearance assumptions."
-  },
-  {
-    "id": "ec-005-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the around-obstacle route for the central-forbid benchmark in `solution_script.py`. Keep the reviewed planner artifacts coherent, preserve the planned passive routing strategy, and update `todo.md` and `journal.md` as execution progresses. Split variant for `ec-005`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-005-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ec-005",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins from a reviewed around-obstacle handoff package, implements the routed transport path in `solution_script.py`, and preserves the planner contract and clearance assumptions. Split variant for `ec-005`. Technical drawing mode: off."
-  },
-  {
-    "id": "ec-005-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the around-obstacle route for the central-forbid benchmark in `solution_script.py`. Keep the reviewed planner artifacts coherent, preserve the planned passive routing strategy, and update `todo.md` and `journal.md` as execution progresses. Split variant for `ec-005`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-005-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ec-005",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins from a reviewed around-obstacle handoff package, implements the routed transport path in `solution_script.py`, and preserves the planner contract and clearance assumptions. Split variant for `ec-005`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ec-005-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the around-obstacle route for the central-forbid benchmark in `solution_script.py`. Keep the reviewed planner artifacts coherent, preserve the planned passive routing strategy, and update `todo.md` and `journal.md` as execution progresses. Split variant for `ec-005`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-005-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ec-005",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins from a reviewed around-obstacle handoff package, implements the routed transport path in `solution_script.py`, and preserves the planner contract and clearance assumptions. Split variant for `ec-005`. Technical drawing mode: full."
-  },
-  {
     "id": "ec-006",
     "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the freestanding no-drill transfer in `solution_script.py`. Respect the no-attachment constraint from the reviewed package, keep the planner files semantically consistent, and update `todo.md` and `journal.md` during implementation.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-006-no-drill-transfer",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed freestanding handoff package, implements the no-drill transfer solution in `solution_script.py`, and preserves the seeded planner contract while updating execution progress."
-  },
-  {
-    "id": "ec-006-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the freestanding no-drill transfer in `solution_script.py`. Respect the no-attachment constraint from the reviewed package, keep the planner files semantically consistent, and update `todo.md` and `journal.md` during implementation. Split variant for `ec-006`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-006-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ec-006",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed freestanding handoff package, implements the no-drill transfer solution in `solution_script.py`, and preserves the seeded planner contract while updating execution progress. Split variant for `ec-006`. Technical drawing mode: off."
-  },
-  {
-    "id": "ec-006-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the freestanding no-drill transfer in `solution_script.py`. Respect the no-attachment constraint from the reviewed package, keep the planner files semantically consistent, and update `todo.md` and `journal.md` during implementation. Split variant for `ec-006`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-006-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ec-006",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed freestanding handoff package, implements the no-drill transfer solution in `solution_script.py`, and preserves the seeded planner contract while updating execution progress. Split variant for `ec-006`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ec-006-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the freestanding no-drill transfer in `solution_script.py`. Respect the no-attachment constraint from the reviewed package, keep the planner files semantically consistent, and update `todo.md` and `journal.md` during implementation. Split variant for `ec-006`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-006-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ec-006",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed freestanding handoff package, implements the no-drill transfer solution in `solution_script.py`, and preserves the seeded planner contract while updating execution progress. Split variant for `ec-006`. Technical drawing mode: full."
   },
   {
     "id": "ec-007",
@@ -213,65 +35,11 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins from a reviewed low-friction cube package, implements the guide geometry in `solution_script.py`, and preserves the planner contract and seeded routing assumptions."
   },
   {
-    "id": "ec-007-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the low-friction cube guide in `solution_script.py`. Preserve the reviewed planner artifacts, keep the guide geometry matched to the low-friction slip assumptions, and update `todo.md` and `journal.md` as execution progresses. Split variant for `ec-007`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-007-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ec-007",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins from a reviewed low-friction cube package, implements the guide geometry in `solution_script.py`, and preserves the planner contract and seeded routing assumptions. Split variant for `ec-007`. Technical drawing mode: off."
-  },
-  {
-    "id": "ec-007-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the low-friction cube guide in `solution_script.py`. Preserve the reviewed planner artifacts, keep the guide geometry matched to the low-friction slip assumptions, and update `todo.md` and `journal.md` as execution progresses. Split variant for `ec-007`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-007-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ec-007",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins from a reviewed low-friction cube package, implements the guide geometry in `solution_script.py`, and preserves the planner contract and seeded routing assumptions. Split variant for `ec-007`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ec-007-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the low-friction cube guide in `solution_script.py`. Preserve the reviewed planner artifacts, keep the guide geometry matched to the low-friction slip assumptions, and update `todo.md` and `journal.md` as execution progresses. Split variant for `ec-007`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-007-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ec-007",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins from a reviewed low-friction cube package, implements the guide geometry in `solution_script.py`, and preserves the planner contract and seeded routing assumptions. Split variant for `ec-007`. Technical drawing mode: full."
-  },
-  {
     "id": "ec-008",
     "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the lift-platform handoff guide in `solution_script.py`. Keep the reviewed planner files coherent, preserve the passive handoff strategy around the moving benchmark platform, and update `todo.md` and `journal.md` while the implementation progresses.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-008-lift-platform-handoff",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed lift-platform handoff package, implements the passive catch-and-guide assembly in `solution_script.py`, and preserves the planner contract and platform-clearance assumptions."
-  },
-  {
-    "id": "ec-008-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the lift-platform handoff guide in `solution_script.py`. Keep the reviewed planner files coherent, preserve the passive handoff strategy around the moving benchmark platform, and update `todo.md` and `journal.md` while the implementation progresses. Split variant for `ec-008`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-008-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ec-008",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed lift-platform handoff package, implements the passive catch-and-guide assembly in `solution_script.py`, and preserves the planner contract and platform-clearance assumptions. Split variant for `ec-008`. Technical drawing mode: off."
-  },
-  {
-    "id": "ec-008-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the lift-platform handoff guide in `solution_script.py`. Keep the reviewed planner files coherent, preserve the passive handoff strategy around the moving benchmark platform, and update `todo.md` and `journal.md` while the implementation progresses. Split variant for `ec-008`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-008-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ec-008",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed lift-platform handoff package, implements the passive catch-and-guide assembly in `solution_script.py`, and preserves the planner contract and platform-clearance assumptions. Split variant for `ec-008`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ec-008-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the lift-platform handoff guide in `solution_script.py`. Keep the reviewed planner files coherent, preserve the passive handoff strategy around the moving benchmark platform, and update `todo.md` and `journal.md` while the implementation progresses. Split variant for `ec-008`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-008-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ec-008",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed lift-platform handoff package, implements the passive catch-and-guide assembly in `solution_script.py`, and preserves the planner contract and platform-clearance assumptions. Split variant for `ec-008`. Technical drawing mode: full."
   },
   {
     "id": "ec-009",
@@ -281,65 +49,11 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins from a reviewed narrow-goal handoff package, implements the precision funnel in `solution_script.py`, and preserves the planner contract and seeded budget assumptions."
   },
   {
-    "id": "ec-009-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the narrow-goal funnel solution in `solution_script.py`. Preserve the reviewed planner files, keep the precision-guidance geometry consistent with the seeded tolerance assumptions, and update `todo.md` and `journal.md` during execution. Split variant for `ec-009`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-009-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ec-009",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins from a reviewed narrow-goal handoff package, implements the precision funnel in `solution_script.py`, and preserves the planner contract and seeded budget assumptions. Split variant for `ec-009`. Technical drawing mode: off."
-  },
-  {
-    "id": "ec-009-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the narrow-goal funnel solution in `solution_script.py`. Preserve the reviewed planner files, keep the precision-guidance geometry consistent with the seeded tolerance assumptions, and update `todo.md` and `journal.md` during execution. Split variant for `ec-009`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-009-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ec-009",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins from a reviewed narrow-goal handoff package, implements the precision funnel in `solution_script.py`, and preserves the planner contract and seeded budget assumptions. Split variant for `ec-009`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ec-009-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the narrow-goal funnel solution in `solution_script.py`. Preserve the reviewed planner files, keep the precision-guidance geometry consistent with the seeded tolerance assumptions, and update `todo.md` and `journal.md` during execution. Split variant for `ec-009`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-009-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ec-009",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins from a reviewed narrow-goal handoff package, implements the precision funnel in `solution_script.py`, and preserves the planner contract and seeded budget assumptions. Split variant for `ec-009`. Technical drawing mode: full."
-  },
-  {
     "id": "ec-010",
     "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the lower-bin deflector in `solution_script.py`. Keep the reviewed planner artifacts aligned with the passive drop-redirection strategy, respect the dead-zone keepout, and update `todo.md` and `journal.md` as execution progresses.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-010-lower-bin-deflector",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed lower-bin handoff package, implements the passive deflector assembly in `solution_script.py`, and preserves the seeded planner contract and dead-zone constraints."
-  },
-  {
-    "id": "ec-010-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the lower-bin deflector in `solution_script.py`. Keep the reviewed planner artifacts aligned with the passive drop-redirection strategy, respect the dead-zone keepout, and update `todo.md` and `journal.md` as execution progresses. Split variant for `ec-010`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-010-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ec-010",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed lower-bin handoff package, implements the passive deflector assembly in `solution_script.py`, and preserves the seeded planner contract and dead-zone constraints. Split variant for `ec-010`. Technical drawing mode: off."
-  },
-  {
-    "id": "ec-010-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the lower-bin deflector in `solution_script.py`. Keep the reviewed planner artifacts aligned with the passive drop-redirection strategy, respect the dead-zone keepout, and update `todo.md` and `journal.md` as execution progresses. Split variant for `ec-010`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-010-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ec-010",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed lower-bin handoff package, implements the passive deflector assembly in `solution_script.py`, and preserves the seeded planner contract and dead-zone constraints. Split variant for `ec-010`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ec-010-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the lower-bin deflector in `solution_script.py`. Keep the reviewed planner artifacts aligned with the passive drop-redirection strategy, respect the dead-zone keepout, and update `todo.md` and `journal.md` as execution progresses. Split variant for `ec-010`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-010-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ec-010",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed lower-bin handoff package, implements the passive deflector assembly in `solution_script.py`, and preserves the seeded planner contract and dead-zone constraints. Split variant for `ec-010`. Technical drawing mode: full."
   },
   {
     "id": "ec-011",
@@ -349,65 +63,11 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed diverter-gate handoff package, completes the electromechanical implementation in the workspace files, adds a valid single-motor power path, and preserves the seeded routing and supply constraints."
   },
   {
-    "id": "ec-011-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded reviewed handoff package in the workspace to finish the single-motor diverter-gate implementation in `solution_script.py` and complete the electromechanical updates required by the plan. Keep the design on one 12V DC supply with at most 2.0A available, route both power and return wires through the left-wall cable corridor, update `assembly_definition.yaml`, and preserve the reviewed planner artifacts while you update `todo.md` and `journal.md`. Split variant for `ec-011`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-011-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ec-011",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed diverter-gate handoff package, completes the electromechanical implementation in the workspace files, adds a valid single-motor power path, and preserves the seeded routing and supply constraints. Split variant for `ec-011`. Technical drawing mode: off."
-  },
-  {
-    "id": "ec-011-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded reviewed handoff package in the workspace to finish the single-motor diverter-gate implementation in `solution_script.py` and complete the electromechanical updates required by the plan. Keep the design on one 12V DC supply with at most 2.0A available, route both power and return wires through the left-wall cable corridor, update `assembly_definition.yaml`, and preserve the reviewed planner artifacts while you update `todo.md` and `journal.md`. Split variant for `ec-011`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-011-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ec-011",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed diverter-gate handoff package, completes the electromechanical implementation in the workspace files, adds a valid single-motor power path, and preserves the seeded routing and supply constraints. Split variant for `ec-011`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ec-011-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded reviewed handoff package in the workspace to finish the single-motor diverter-gate implementation in `solution_script.py` and complete the electromechanical updates required by the plan. Keep the design on one 12V DC supply with at most 2.0A available, route both power and return wires through the left-wall cable corridor, update `assembly_definition.yaml`, and preserve the reviewed planner artifacts while you update `todo.md` and `journal.md`. Split variant for `ec-011`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-011-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ec-011",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed diverter-gate handoff package, completes the electromechanical implementation in the workspace files, adds a valid single-motor power path, and preserves the seeded routing and supply constraints. Split variant for `ec-011`. Technical drawing mode: full."
-  },
-  {
     "id": "ec-012",
     "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the dual-stage return-gate mechanism in `solution_script.py`. Keep the two motorized gate stages, relay, and switch inside the rear-left service corridor, preserve the dead-zone clearance and the reviewed planner files, and update `todo.md` and `journal.md` while you work.",
     "complexity_level": 2,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-012-dual-stage-return-gate",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed dual-stage return-gate handoff package, implements the two-stage motorized redirector in `solution_script.py`, and preserves the planner budget, wiring corridor, and dead-zone constraints."
-  },
-  {
-    "id": "ec-012-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the dual-stage return-gate mechanism in `solution_script.py`. Keep the two motorized gate stages, relay, and switch inside the rear-left service corridor, preserve the dead-zone clearance and the reviewed planner files, and update `todo.md` and `journal.md` while you work. Split variant for `ec-012`. Technical drawing mode: off.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-012-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ec-012",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed dual-stage return-gate handoff package, implements the two-stage motorized redirector in `solution_script.py`, and preserves the planner budget, wiring corridor, and dead-zone constraints. Split variant for `ec-012`. Technical drawing mode: off."
-  },
-  {
-    "id": "ec-012-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the dual-stage return-gate mechanism in `solution_script.py`. Keep the two motorized gate stages, relay, and switch inside the rear-left service corridor, preserve the dead-zone clearance and the reviewed planner files, and update `todo.md` and `journal.md` while you work. Split variant for `ec-012`. Technical drawing mode: minimal.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-012-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ec-012",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed dual-stage return-gate handoff package, implements the two-stage motorized redirector in `solution_script.py`, and preserves the planner budget, wiring corridor, and dead-zone constraints. Split variant for `ec-012`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ec-012-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the dual-stage return-gate mechanism in `solution_script.py`. Keep the two motorized gate stages, relay, and switch inside the rear-left service corridor, preserve the dead-zone clearance and the reviewed planner files, and update `todo.md` and `journal.md` while you work. Split variant for `ec-012`. Technical drawing mode: full.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-012-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ec-012",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed dual-stage return-gate handoff package, implements the two-stage motorized redirector in `solution_script.py`, and preserves the planner budget, wiring corridor, and dead-zone constraints. Split variant for `ec-012`. Technical drawing mode: full."
   },
   {
     "id": "ec-013",
@@ -417,64 +77,10 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed raised-return-bridge handoff package, implements the incline lift and upper tray in `solution_script.py`, and preserves the planner budget, guide-rail alignment, and left-side wiring corridor."
   },
   {
-    "id": "ec-013-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the raised-return bridge in `solution_script.py`. Keep the lift frame, guide rail, motor mount, relay, and switch aligned with the shelf-height goal, preserve the reviewed planner artifacts, and update `todo.md` and `journal.md` as you progress. Split variant for `ec-013`. Technical drawing mode: off.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-013-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ec-013",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed raised-return-bridge handoff package, implements the incline lift and upper tray in `solution_script.py`, and preserves the planner budget, guide-rail alignment, and left-side wiring corridor. Split variant for `ec-013`. Technical drawing mode: off."
-  },
-  {
-    "id": "ec-013-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the raised-return bridge in `solution_script.py`. Keep the lift frame, guide rail, motor mount, relay, and switch aligned with the shelf-height goal, preserve the reviewed planner artifacts, and update `todo.md` and `journal.md` as you progress. Split variant for `ec-013`. Technical drawing mode: minimal.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-013-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ec-013",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed raised-return-bridge handoff package, implements the incline lift and upper tray in `solution_script.py`, and preserves the planner budget, guide-rail alignment, and left-side wiring corridor. Split variant for `ec-013`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ec-013-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the raised-return bridge in `solution_script.py`. Keep the lift frame, guide rail, motor mount, relay, and switch aligned with the shelf-height goal, preserve the reviewed planner artifacts, and update `todo.md` and `journal.md` as you progress. Split variant for `ec-013`. Technical drawing mode: full.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-013-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ec-013",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed raised-return-bridge handoff package, implements the incline lift and upper tray in `solution_script.py`, and preserves the planner budget, guide-rail alignment, and left-side wiring corridor. Split variant for `ec-013`. Technical drawing mode: full."
-  },
-  {
     "id": "ec-014",
     "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the timed diverter latch in `solution_script.py`. Keep the diverter gate, latch leaf, motor mounts, and control box clear of the moving benchmark guard arm, preserve the reviewed planner artifacts, and update `todo.md` and `journal.md` while you work.",
     "complexity_level": 2,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-014-timed-diverter-latch",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed timed-diverter handoff package, implements the diverter and latch assembly in `solution_script.py`, and preserves the benchmark guard-arm sweep clearance plus the rear-left wire corridor."
-  },
-  {
-    "id": "ec-014-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the timed diverter latch in `solution_script.py`. Keep the diverter gate, latch leaf, motor mounts, and control box clear of the moving benchmark guard arm, preserve the reviewed planner artifacts, and update `todo.md` and `journal.md` while you work. Split variant for `ec-014`. Technical drawing mode: off.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-014-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ec-014",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed timed-diverter handoff package, implements the diverter and latch assembly in `solution_script.py`, and preserves the benchmark guard-arm sweep clearance plus the rear-left wire corridor. Split variant for `ec-014`. Technical drawing mode: off."
-  },
-  {
-    "id": "ec-014-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the timed diverter latch in `solution_script.py`. Keep the diverter gate, latch leaf, motor mounts, and control box clear of the moving benchmark guard arm, preserve the reviewed planner artifacts, and update `todo.md` and `journal.md` while you work. Split variant for `ec-014`. Technical drawing mode: minimal.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-014-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ec-014",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed timed-diverter handoff package, implements the diverter and latch assembly in `solution_script.py`, and preserves the benchmark guard-arm sweep clearance plus the rear-left wire corridor. Split variant for `ec-014`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ec-014-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the timed diverter latch in `solution_script.py`. Keep the diverter gate, latch leaf, motor mounts, and control box clear of the moving benchmark guard arm, preserve the reviewed planner artifacts, and update `todo.md` and `journal.md` while you work. Split variant for `ec-014`. Technical drawing mode: full.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-014-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ec-014",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed timed-diverter handoff package, implements the diverter and latch assembly in `solution_script.py`, and preserves the benchmark guard-arm sweep clearance plus the rear-left wire corridor. Split variant for `ec-014`. Technical drawing mode: full."
   }
 ]

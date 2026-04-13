@@ -8,72 +8,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer returns structured decision, flags infeasibility if present, and approves only if constraints/objectives are coherent."
   },
   {
-    "id": "br-011-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the sideways-ball benchmark. Validate feasibility, objective consistency, and obvious simulation blockers using the existing handoff artifacts. Split variant for `br-011-sideways-ball-review`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-011-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "br-011-sideways-ball-review",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer returns structured decision, flags infeasibility if present, and approves only if constraints/objectives are coherent. Split variant for `br-011-sideways-ball-review`. Technical drawing mode: off."
-  },
-  {
-    "id": "br-011-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the sideways-ball benchmark. Validate feasibility, objective consistency, and obvious simulation blockers using the existing handoff artifacts. Split variant for `br-011-sideways-ball-review`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-011-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "br-011-sideways-ball-review",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer returns structured decision, flags infeasibility if present, and approves only if constraints/objectives are coherent. Split variant for `br-011-sideways-ball-review`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "br-011-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the sideways-ball benchmark. Validate feasibility, objective consistency, and obvious simulation blockers using the existing handoff artifacts. Split variant for `br-011-sideways-ball-review`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-011-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "br-011-sideways-ball-review",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer returns structured decision, flags infeasibility if present, and approves only if constraints/objectives are coherent. Split variant for `br-011-sideways-ball-review`. Technical drawing mode: full."
-  },
-  {
     "id": "br-012-sideways-ball-infeasible-goal",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the sideways-ball infeasible-goal variant. Validate feasibility, objective consistency, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the seeded goal zone remains inside the benchmark build and simulation envelope.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-012-sideways-ball-infeasible-goal",
     "expected_decision": "REJECTED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer rejects benchmark packages when the seeded goal definition is internally inconsistent with the feasible build and simulation envelope."
-  },
-  {
-    "id": "br-012-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the sideways-ball infeasible-goal variant. Validate feasibility, objective consistency, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the seeded goal zone remains inside the benchmark build and simulation envelope. Split variant for `br-012-sideways-ball-infeasible-goal`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-012-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "br-012-sideways-ball-infeasible-goal",
-    "expected_decision": "REJECTED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer rejects benchmark packages when the seeded goal definition is internally inconsistent with the feasible build and simulation envelope. Split variant for `br-012-sideways-ball-infeasible-goal`. Technical drawing mode: off."
-  },
-  {
-    "id": "br-012-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the sideways-ball infeasible-goal variant. Validate feasibility, objective consistency, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the seeded goal zone remains inside the benchmark build and simulation envelope. Split variant for `br-012-sideways-ball-infeasible-goal`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-012-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "br-012-sideways-ball-infeasible-goal",
-    "expected_decision": "REJECTED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer rejects benchmark packages when the seeded goal definition is internally inconsistent with the feasible build and simulation envelope. Split variant for `br-012-sideways-ball-infeasible-goal`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "br-012-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the sideways-ball infeasible-goal variant. Validate feasibility, objective consistency, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the seeded goal zone remains inside the benchmark build and simulation envelope. Split variant for `br-012-sideways-ball-infeasible-goal`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-012-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "br-012-sideways-ball-infeasible-goal",
-    "expected_decision": "REJECTED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer rejects benchmark packages when the seeded goal definition is internally inconsistent with the feasible build and simulation envelope. Split variant for `br-012-sideways-ball-infeasible-goal`. Technical drawing mode: full."
   },
   {
     "id": "br-013-sideways-ball-overlapping-goal-forbid",
@@ -84,72 +24,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer rejects benchmark packages when seeded objective geometry is self-contradictory, including goal and forbid zone overlap."
   },
   {
-    "id": "br-013-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the sideways-ball overlapping-goal-forbid variant. Validate feasibility, objective consistency, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the seeded goal zone overlaps any forbid zone. Split variant for `br-013-sideways-ball-overlapping-goal-forbid`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-013-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "br-013-sideways-ball-overlapping-goal-forbid",
-    "expected_decision": "REJECTED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer rejects benchmark packages when seeded objective geometry is self-contradictory, including goal and forbid zone overlap. Split variant for `br-013-sideways-ball-overlapping-goal-forbid`. Technical drawing mode: off."
-  },
-  {
-    "id": "br-013-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the sideways-ball overlapping-goal-forbid variant. Validate feasibility, objective consistency, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the seeded goal zone overlaps any forbid zone. Split variant for `br-013-sideways-ball-overlapping-goal-forbid`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-013-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "br-013-sideways-ball-overlapping-goal-forbid",
-    "expected_decision": "REJECTED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer rejects benchmark packages when seeded objective geometry is self-contradictory, including goal and forbid zone overlap. Split variant for `br-013-sideways-ball-overlapping-goal-forbid`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "br-013-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the sideways-ball overlapping-goal-forbid variant. Validate feasibility, objective consistency, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the seeded goal zone overlaps any forbid zone. Split variant for `br-013-sideways-ball-overlapping-goal-forbid`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-013-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "br-013-sideways-ball-overlapping-goal-forbid",
-    "expected_decision": "REJECTED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer rejects benchmark packages when seeded objective geometry is self-contradictory, including goal and forbid zone overlap. Split variant for `br-013-sideways-ball-overlapping-goal-forbid`. Technical drawing mode: full."
-  },
-  {
     "id": "br-014-timed-gate-cots-review",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the timed-gate benchmark with a catalog-backed servo import. Validate feasibility, objective consistency, render-bundle history, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the servo-backed gate motion, the planner drafting companions, and the current render bundle are internally consistent.",
     "complexity_level": 2,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-014-timed-gate-cots-review",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer approves only when the benchmark package is schema-valid, the ServoMotor_DS3218 import is explicit, the gate motion is coherent, and the render bundle evidence is internally consistent."
-  },
-  {
-    "id": "br-014-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the timed-gate benchmark with a catalog-backed servo import. Validate feasibility, objective consistency, render-bundle history, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the servo-backed gate motion, the planner drafting companions, and the current render bundle are internally consistent. Split variant for `br-014-timed-gate-cots-review`. Technical drawing mode: off.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-014-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "br-014-timed-gate-cots-review",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer approves only when the benchmark package is schema-valid, the ServoMotor_DS3218 import is explicit, the gate motion is coherent, and the render bundle evidence is internally consistent. Split variant for `br-014-timed-gate-cots-review`. Technical drawing mode: off."
-  },
-  {
-    "id": "br-014-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the timed-gate benchmark with a catalog-backed servo import. Validate feasibility, objective consistency, render-bundle history, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the servo-backed gate motion, the planner drafting companions, and the current render bundle are internally consistent. Split variant for `br-014-timed-gate-cots-review`. Technical drawing mode: minimal.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-014-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "br-014-timed-gate-cots-review",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer approves only when the benchmark package is schema-valid, the ServoMotor_DS3218 import is explicit, the gate motion is coherent, and the render bundle evidence is internally consistent. Split variant for `br-014-timed-gate-cots-review`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "br-014-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the timed-gate benchmark with a catalog-backed servo import. Validate feasibility, objective consistency, render-bundle history, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the servo-backed gate motion, the planner drafting companions, and the current render bundle are internally consistent. Split variant for `br-014-timed-gate-cots-review`. Technical drawing mode: full.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-014-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "br-014-timed-gate-cots-review",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer approves only when the benchmark package is schema-valid, the ServoMotor_DS3218 import is explicit, the gate motion is coherent, and the render bundle evidence is internally consistent. Split variant for `br-014-timed-gate-cots-review`. Technical drawing mode: full."
   },
   {
     "id": "br-015-fast-transfer-hidden-brake-axis-review",
@@ -160,71 +40,11 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer rejects benchmark packages when a passive-looking brake tray hides an extra benchmark-side moving axis or the render history does not line up with the latest revision."
   },
   {
-    "id": "br-015-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the fast-transfer benchmark with a hidden brake tray improvement. Validate feasibility, objective consistency, render-bundle history, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the passive-looking brake tray stays passive, the current render bundle matches the indexed history, and the benchmark assembly does not quietly introduce a second motion axis. Split variant for `br-015-fast-transfer-hidden-brake-axis-review`. Technical drawing mode: off.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-015-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "br-015-fast-transfer-hidden-brake-axis-review",
-    "expected_decision": "REJECTED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer rejects benchmark packages when a passive-looking brake tray hides an extra benchmark-side moving axis or the render history does not line up with the latest revision. Split variant for `br-015-fast-transfer-hidden-brake-axis-review`. Technical drawing mode: off."
-  },
-  {
-    "id": "br-015-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the fast-transfer benchmark with a hidden brake tray improvement. Validate feasibility, objective consistency, render-bundle history, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the passive-looking brake tray stays passive, the current render bundle matches the indexed history, and the benchmark assembly does not quietly introduce a second motion axis. Split variant for `br-015-fast-transfer-hidden-brake-axis-review`. Technical drawing mode: minimal.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-015-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "br-015-fast-transfer-hidden-brake-axis-review",
-    "expected_decision": "REJECTED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer rejects benchmark packages when a passive-looking brake tray hides an extra benchmark-side moving axis or the render history does not line up with the latest revision. Split variant for `br-015-fast-transfer-hidden-brake-axis-review`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "br-015-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the fast-transfer benchmark with a hidden brake tray improvement. Validate feasibility, objective consistency, render-bundle history, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the passive-looking brake tray stays passive, the current render bundle matches the indexed history, and the benchmark assembly does not quietly introduce a second motion axis. Split variant for `br-015-fast-transfer-hidden-brake-axis-review`. Technical drawing mode: full.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-015-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "br-015-fast-transfer-hidden-brake-axis-review",
-    "expected_decision": "REJECTED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer rejects benchmark packages when a passive-looking brake tray hides an extra benchmark-side moving axis or the render history does not line up with the latest revision. Split variant for `br-015-fast-transfer-hidden-brake-axis-review`. Technical drawing mode: full."
-  },
-  {
     "id": "br-016-lower-bin-unreachable-redirection-review",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the lower-bin redirection benchmark with a steeper deflector and a raised dead-zone shield. Validate feasibility, objective consistency, render-bundle history, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the revised redirection path remains physically plausible for the seeded ball envelope instead of forcing a direct drop through the dead zone.",
     "complexity_level": 2,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-016-lower-bin-unreachable-redirection-review",
     "expected_decision": "REJECTED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer rejects benchmark packages when the lower-bin path becomes physically implausible despite otherwise schema-valid files."
-  },
-  {
-    "id": "br-016-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the lower-bin redirection benchmark with a steeper deflector and a raised dead-zone shield. Validate feasibility, objective consistency, render-bundle history, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the revised redirection path remains physically plausible for the seeded ball envelope instead of forcing a direct drop through the dead zone. Split variant for `br-016-lower-bin-unreachable-redirection-review`. Technical drawing mode: off.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-016-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "br-016-lower-bin-unreachable-redirection-review",
-    "expected_decision": "REJECTED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer rejects benchmark packages when the lower-bin path becomes physically implausible despite otherwise schema-valid files. Split variant for `br-016-lower-bin-unreachable-redirection-review`. Technical drawing mode: off."
-  },
-  {
-    "id": "br-016-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the lower-bin redirection benchmark with a steeper deflector and a raised dead-zone shield. Validate feasibility, objective consistency, render-bundle history, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the revised redirection path remains physically plausible for the seeded ball envelope instead of forcing a direct drop through the dead zone. Split variant for `br-016-lower-bin-unreachable-redirection-review`. Technical drawing mode: minimal.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-016-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "br-016-lower-bin-unreachable-redirection-review",
-    "expected_decision": "REJECTED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer rejects benchmark packages when the lower-bin path becomes physically implausible despite otherwise schema-valid files. Split variant for `br-016-lower-bin-unreachable-redirection-review`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "br-016-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the lower-bin redirection benchmark with a steeper deflector and a raised dead-zone shield. Validate feasibility, objective consistency, render-bundle history, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the revised redirection path remains physically plausible for the seeded ball envelope instead of forcing a direct drop through the dead zone. Split variant for `br-016-lower-bin-unreachable-redirection-review`. Technical drawing mode: full.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-016-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "br-016-lower-bin-unreachable-redirection-review",
-    "expected_decision": "REJECTED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer rejects benchmark packages when the lower-bin path becomes physically implausible despite otherwise schema-valid files. Split variant for `br-016-lower-bin-unreachable-redirection-review`. Technical drawing mode: full."
   }
 ]

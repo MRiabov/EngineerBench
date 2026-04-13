@@ -7,65 +7,11 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Writes contract-valid `plan.md`, `todo.md`, `assembly_definition.yaml`, and updated `benchmark_definition.yaml` for a raised-shelf transfer, with a feasible single-DOF lift strategy, cable-routing awareness, exact COTS motor provenance, sketching companion context kept aligned with the same geometry, and planner budgets below the benchmark caps."
   },
   {
-    "id": "ep-001-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a raised-shelf solution that uses one motorized lift axis and leaves a clean wiring corridor for downstream electronics work. Source any motorized COTS parts through the catalog, keep their exact pricing and provenance in the plan, treat the benchmark cost and weight values in `benchmark_definition.yaml` as hard customer caps, set tighter planner-owned budgets under those caps, and keep the mechanism manufacturable, sketch-aware, and robust to the listed runtime jitter. Split variant for `ep-001`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-001-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ep-001",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Writes contract-valid `plan.md`, `todo.md`, `assembly_definition.yaml`, and updated `benchmark_definition.yaml` for a raised-shelf transfer, with a feasible single-DOF lift strategy, cable-routing awareness, exact COTS motor provenance, sketching companion context kept aligned with the same geometry, and planner budgets below the benchmark caps. Split variant for `ep-001`. Technical drawing mode: off."
-  },
-  {
-    "id": "ep-001-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a raised-shelf solution that uses one motorized lift axis and leaves a clean wiring corridor for downstream electronics work. Source any motorized COTS parts through the catalog, keep their exact pricing and provenance in the plan, treat the benchmark cost and weight values in `benchmark_definition.yaml` as hard customer caps, set tighter planner-owned budgets under those caps, and keep the mechanism manufacturable, sketch-aware, and robust to the listed runtime jitter. Split variant for `ep-001`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-001-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ep-001",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Writes contract-valid `plan.md`, `todo.md`, `assembly_definition.yaml`, and updated `benchmark_definition.yaml` for a raised-shelf transfer, with a feasible single-DOF lift strategy, cable-routing awareness, exact COTS motor provenance, sketching companion context kept aligned with the same geometry, and planner budgets below the benchmark caps. Split variant for `ep-001`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ep-001-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a raised-shelf solution that uses one motorized lift axis and leaves a clean wiring corridor for downstream electronics work. Source any motorized COTS parts through the catalog, keep their exact pricing and provenance in the plan, treat the benchmark cost and weight values in `benchmark_definition.yaml` as hard customer caps, set tighter planner-owned budgets under those caps, and keep the mechanism manufacturable, sketch-aware, and robust to the listed runtime jitter. Split variant for `ep-001`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-001-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ep-001",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Writes contract-valid `plan.md`, `todo.md`, `assembly_definition.yaml`, and updated `benchmark_definition.yaml` for a raised-shelf transfer, with a feasible single-DOF lift strategy, cable-routing awareness, exact COTS motor provenance, sketching companion context kept aligned with the same geometry, and planner budgets below the benchmark caps. Split variant for `ep-001`. Technical drawing mode: full."
-  },
-  {
     "id": "ep-002",
     "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a stable bridge or guided transfer that carries the low-friction cube across the central gap into the far goal zone. Keep the design inside the build zone, account for the gap forbid zone, and produce planner artifacts that an engineer coder can implement without re-planning.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-002-gap-launch",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts define a realistic cube gap-crossing mechanism, keep all budgets under the benchmark caps, and provide implementation-ready costing and TODO steps."
-  },
-  {
-    "id": "ep-002-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a stable bridge or guided transfer that carries the low-friction cube across the central gap into the far goal zone. Keep the design inside the build zone, account for the gap forbid zone, and produce planner artifacts that an engineer coder can implement without re-planning. Split variant for `ep-002`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-002-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ep-002",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts define a realistic cube gap-crossing mechanism, keep all budgets under the benchmark caps, and provide implementation-ready costing and TODO steps. Split variant for `ep-002`. Technical drawing mode: off."
-  },
-  {
-    "id": "ep-002-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a stable bridge or guided transfer that carries the low-friction cube across the central gap into the far goal zone. Keep the design inside the build zone, account for the gap forbid zone, and produce planner artifacts that an engineer coder can implement without re-planning. Split variant for `ep-002`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-002-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ep-002",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts define a realistic cube gap-crossing mechanism, keep all budgets under the benchmark caps, and provide implementation-ready costing and TODO steps. Split variant for `ep-002`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ep-002-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a stable bridge or guided transfer that carries the low-friction cube across the central gap into the far goal zone. Keep the design inside the build zone, account for the gap forbid zone, and produce planner artifacts that an engineer coder can implement without re-planning. Split variant for `ep-002`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-002-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ep-002",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts define a realistic cube gap-crossing mechanism, keep all budgets under the benchmark caps, and provide implementation-ready costing and TODO steps. Split variant for `ep-002`. Technical drawing mode: full."
   },
   {
     "id": "ep-003",
@@ -75,65 +21,11 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts describe a robust around-obstacle transport mechanism, include explicit risk mitigation for the forbid zone and jitter, and keep `assembly_definition.yaml` minimal in DOFs and within budget."
   },
   {
-    "id": "ep-003-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a route that gets the projectile ball around the central forbid zone and into the goal zone. The design must absorb the listed spawn jitter instead of depending on lucky bounces, and the final assembly should avoid unnecessary moving DOFs. Split variant for `ep-003`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-003-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ep-003",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts describe a robust around-obstacle transport mechanism, include explicit risk mitigation for the forbid zone and jitter, and keep `assembly_definition.yaml` minimal in DOFs and within budget. Split variant for `ep-003`. Technical drawing mode: off."
-  },
-  {
-    "id": "ep-003-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a route that gets the projectile ball around the central forbid zone and into the goal zone. The design must absorb the listed spawn jitter instead of depending on lucky bounces, and the final assembly should avoid unnecessary moving DOFs. Split variant for `ep-003`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-003-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ep-003",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts describe a robust around-obstacle transport mechanism, include explicit risk mitigation for the forbid zone and jitter, and keep `assembly_definition.yaml` minimal in DOFs and within budget. Split variant for `ep-003`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ep-003-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a route that gets the projectile ball around the central forbid zone and into the goal zone. The design must absorb the listed spawn jitter instead of depending on lucky bounces, and the final assembly should avoid unnecessary moving DOFs. Split variant for `ep-003`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-003-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ep-003",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts describe a robust around-obstacle transport mechanism, include explicit risk mitigation for the forbid zone and jitter, and keep `assembly_definition.yaml` minimal in DOFs and within budget. Split variant for `ep-003`. Technical drawing mode: full."
-  },
-  {
     "id": "ep-004",
     "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` and plan for a benchmark that also contains a rotating gate near the middle of the route. Reserve space for one powered escapement or roller assist, keep wiring out of the gate swing keep-out, and explain how the mechanism times or buffers the ball so it can pass the gate cleanly while staying within the seeded benchmark caps and build zone.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-004-timed-gate",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts reference timed-gate timing and electrical-routing risk explicitly, produce a feasible single-motor metering concept that clears the gate, and keep planner-owned budgets under the benchmark caps."
-  },
-  {
-    "id": "ep-004-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` and plan for a benchmark that also contains a rotating gate near the middle of the route. Reserve space for one powered escapement or roller assist, keep wiring out of the gate swing keep-out, and explain how the mechanism times or buffers the ball so it can pass the gate cleanly while staying within the seeded benchmark caps and build zone. Split variant for `ep-004`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-004-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ep-004",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts reference timed-gate timing and electrical-routing risk explicitly, produce a feasible single-motor metering concept that clears the gate, and keep planner-owned budgets under the benchmark caps. Split variant for `ep-004`. Technical drawing mode: off."
-  },
-  {
-    "id": "ep-004-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` and plan for a benchmark that also contains a rotating gate near the middle of the route. Reserve space for one powered escapement or roller assist, keep wiring out of the gate swing keep-out, and explain how the mechanism times or buffers the ball so it can pass the gate cleanly while staying within the seeded benchmark caps and build zone. Split variant for `ep-004`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-004-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ep-004",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts reference timed-gate timing and electrical-routing risk explicitly, produce a feasible single-motor metering concept that clears the gate, and keep planner-owned budgets under the benchmark caps. Split variant for `ep-004`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ep-004-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` and plan for a benchmark that also contains a rotating gate near the middle of the route. Reserve space for one powered escapement or roller assist, keep wiring out of the gate swing keep-out, and explain how the mechanism times or buffers the ball so it can pass the gate cleanly while staying within the seeded benchmark caps and build zone. Split variant for `ep-004`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-004-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ep-004",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts reference timed-gate timing and electrical-routing risk explicitly, produce a feasible single-motor metering concept that clears the gate, and keep planner-owned budgets under the benchmark caps. Split variant for `ep-004`. Technical drawing mode: full."
   },
   {
     "id": "ep-005",
@@ -143,65 +35,11 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts describe a manufacturable freestanding mechanism, avoid environment attachment assumptions, and keep costs and weight under the seeded benchmark caps."
   },
   {
-    "id": "ep-005-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a freestanding transfer from the left start area to the right goal zone. No drilling, clamping, or attachment to the surrounding environment is allowed, so the plan must stay self-supporting inside the build zone and remain stable under runtime jitter. Split variant for `ep-005`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-005-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ep-005",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts describe a manufacturable freestanding mechanism, avoid environment attachment assumptions, and keep costs and weight under the seeded benchmark caps. Split variant for `ep-005`. Technical drawing mode: off."
-  },
-  {
-    "id": "ep-005-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a freestanding transfer from the left start area to the right goal zone. No drilling, clamping, or attachment to the surrounding environment is allowed, so the plan must stay self-supporting inside the build zone and remain stable under runtime jitter. Split variant for `ep-005`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-005-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ep-005",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts describe a manufacturable freestanding mechanism, avoid environment attachment assumptions, and keep costs and weight under the seeded benchmark caps. Split variant for `ep-005`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ep-005-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a freestanding transfer from the left start area to the right goal zone. No drilling, clamping, or attachment to the surrounding environment is allowed, so the plan must stay self-supporting inside the build zone and remain stable under runtime jitter. Split variant for `ep-005`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-005-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ep-005",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts describe a manufacturable freestanding mechanism, avoid environment attachment assumptions, and keep costs and weight under the seeded benchmark caps. Split variant for `ep-005`. Technical drawing mode: full."
-  },
-  {
     "id": "ep-006",
     "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a solution for the low-friction cube. The cube must avoid the seeded forbid zone and still reach the goal reliably, so the plan should account for low-friction slip and guide geometry instead of assuming ideal sticking contact.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-006-low-friction-cube",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts select geometry appropriate for a low-friction cube, account for the forbid zone, and produce consistent costed parts plus implementation-ready TODO items."
-  },
-  {
-    "id": "ep-006-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a solution for the low-friction cube. The cube must avoid the seeded forbid zone and still reach the goal reliably, so the plan should account for low-friction slip and guide geometry instead of assuming ideal sticking contact. Split variant for `ep-006`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-006-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ep-006",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts select geometry appropriate for a low-friction cube, account for the forbid zone, and produce consistent costed parts plus implementation-ready TODO items. Split variant for `ep-006`. Technical drawing mode: off."
-  },
-  {
-    "id": "ep-006-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a solution for the low-friction cube. The cube must avoid the seeded forbid zone and still reach the goal reliably, so the plan should account for low-friction slip and guide geometry instead of assuming ideal sticking contact. Split variant for `ep-006`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-006-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ep-006",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts select geometry appropriate for a low-friction cube, account for the forbid zone, and produce consistent costed parts plus implementation-ready TODO items. Split variant for `ep-006`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ep-006-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a solution for the low-friction cube. The cube must avoid the seeded forbid zone and still reach the goal reliably, so the plan should account for low-friction slip and guide geometry instead of assuming ideal sticking contact. Split variant for `ep-006`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-006-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ep-006",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts select geometry appropriate for a low-friction cube, account for the forbid zone, and produce consistent costed parts plus implementation-ready TODO items. Split variant for `ep-006`. Technical drawing mode: full."
   },
   {
     "id": "ep-007",
@@ -211,65 +49,11 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts explain the platform handoff, keep the mechanism mostly passive unless motion is justified, and produce valid budgets and assembly data under the benchmark caps."
   },
   {
-    "id": "ep-007-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a mechanism that receives the payload from an external lift platform and guides it into the elevated goal zone. The plan should describe the handoff strategy clearly, stay inside the build zone, and avoid adding unnecessary actuation on top of the moving benchmark fixture. Split variant for `ep-007`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-007-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ep-007",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts explain the platform handoff, keep the mechanism mostly passive unless motion is justified, and produce valid budgets and assembly data under the benchmark caps. Split variant for `ep-007`. Technical drawing mode: off."
-  },
-  {
-    "id": "ep-007-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a mechanism that receives the payload from an external lift platform and guides it into the elevated goal zone. The plan should describe the handoff strategy clearly, stay inside the build zone, and avoid adding unnecessary actuation on top of the moving benchmark fixture. Split variant for `ep-007`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-007-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ep-007",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts explain the platform handoff, keep the mechanism mostly passive unless motion is justified, and produce valid budgets and assembly data under the benchmark caps. Split variant for `ep-007`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ep-007-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a mechanism that receives the payload from an external lift platform and guides it into the elevated goal zone. The plan should describe the handoff strategy clearly, stay inside the build zone, and avoid adding unnecessary actuation on top of the moving benchmark fixture. Split variant for `ep-007`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-007-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ep-007",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts explain the platform handoff, keep the mechanism mostly passive unless motion is justified, and produce valid budgets and assembly data under the benchmark caps. Split variant for `ep-007`. Technical drawing mode: full."
-  },
-  {
     "id": "ep-008",
     "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan for a narrow, precision goal zone. The mechanism should widen the capture area upstream and then funnel the object into the narrow goal without violating the build zone or the seeded cost and weight caps.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-008-narrow-goal",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts include a realistic precision-guidance strategy, mention tolerance and jitter risks explicitly, and produce contract-valid handoff files with tighter planner budgets."
-  },
-  {
-    "id": "ep-008-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan for a narrow, precision goal zone. The mechanism should widen the capture area upstream and then funnel the object into the narrow goal without violating the build zone or the seeded cost and weight caps. Split variant for `ep-008`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-008-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ep-008",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts include a realistic precision-guidance strategy, mention tolerance and jitter risks explicitly, and produce contract-valid handoff files with tighter planner budgets. Split variant for `ep-008`. Technical drawing mode: off."
-  },
-  {
-    "id": "ep-008-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan for a narrow, precision goal zone. The mechanism should widen the capture area upstream and then funnel the object into the narrow goal without violating the build zone or the seeded cost and weight caps. Split variant for `ep-008`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-008-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ep-008",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts include a realistic precision-guidance strategy, mention tolerance and jitter risks explicitly, and produce contract-valid handoff files with tighter planner budgets. Split variant for `ep-008`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ep-008-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan for a narrow, precision goal zone. The mechanism should widen the capture area upstream and then funnel the object into the narrow goal without violating the build zone or the seeded cost and weight caps. Split variant for `ep-008`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-008-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ep-008",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts include a realistic precision-guidance strategy, mention tolerance and jitter risks explicitly, and produce contract-valid handoff files with tighter planner budgets. Split variant for `ep-008`. Technical drawing mode: full."
   },
   {
     "id": "ep-009",
@@ -279,64 +63,10 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts emphasize fast but controllable transfer, call out overshoot, obstacle, and power-routing risks, and produce a manufacturable costed assembly that stays under the seeded caps."
   },
   {
-    "id": "ep-009-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a fast-transfer mechanism that reaches the goal within roughly five seconds after simulation start. The benchmark allows one motorized accelerator module, so reserve its power and cable path in the plan and balance speed with control instead of just maximizing slope around the central obstacle region. Split variant for `ep-009`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-009-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ep-009",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts emphasize fast but controllable transfer, call out overshoot, obstacle, and power-routing risks, and produce a manufacturable costed assembly that stays under the seeded caps. Split variant for `ep-009`. Technical drawing mode: off."
-  },
-  {
-    "id": "ep-009-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a fast-transfer mechanism that reaches the goal within roughly five seconds after simulation start. The benchmark allows one motorized accelerator module, so reserve its power and cable path in the plan and balance speed with control instead of just maximizing slope around the central obstacle region. Split variant for `ep-009`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-009-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ep-009",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts emphasize fast but controllable transfer, call out overshoot, obstacle, and power-routing risks, and produce a manufacturable costed assembly that stays under the seeded caps. Split variant for `ep-009`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ep-009-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a fast-transfer mechanism that reaches the goal within roughly five seconds after simulation start. The benchmark allows one motorized accelerator module, so reserve its power and cable path in the plan and balance speed with control instead of just maximizing slope around the central obstacle region. Split variant for `ep-009`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-009-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ep-009",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts emphasize fast but controllable transfer, call out overshoot, obstacle, and power-routing risks, and produce a manufacturable costed assembly that stays under the seeded caps. Split variant for `ep-009`. Technical drawing mode: full."
-  },
-  {
     "id": "ep-010",
     "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a controlled drop or redirection that sends the projectile ball from the elevated start region into the lower bin goal zone. The plan should handle the vertical drop cleanly, remain manufacturable, and stay within the benchmark cost and weight caps.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-010-lower-bin",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts define a gravity-aware lower-bin solution, include concrete risk mitigations for bounce and escape, and produce valid engineering handoff files under the benchmark caps."
-  },
-  {
-    "id": "ep-010-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a controlled drop or redirection that sends the projectile ball from the elevated start region into the lower bin goal zone. The plan should handle the vertical drop cleanly, remain manufacturable, and stay within the benchmark cost and weight caps. Split variant for `ep-010`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-010-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "ep-010",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts define a gravity-aware lower-bin solution, include concrete risk mitigations for bounce and escape, and produce valid engineering handoff files under the benchmark caps. Split variant for `ep-010`. Technical drawing mode: off."
-  },
-  {
-    "id": "ep-010-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a controlled drop or redirection that sends the projectile ball from the elevated start region into the lower bin goal zone. The plan should handle the vertical drop cleanly, remain manufacturable, and stay within the benchmark cost and weight caps. Split variant for `ep-010`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-010-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "ep-010",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts define a gravity-aware lower-bin solution, include concrete risk mitigations for bounce and escape, and produce valid engineering handoff files under the benchmark caps. Split variant for `ep-010`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "ep-010-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a controlled drop or redirection that sends the projectile ball from the elevated start region into the lower bin goal zone. The plan should handle the vertical drop cleanly, remain manufacturable, and stay within the benchmark cost and weight caps. Split variant for `ep-010`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-010-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "ep-010",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts define a gravity-aware lower-bin solution, include concrete risk mitigations for bounce and escape, and produce valid engineering handoff files under the benchmark caps. Split variant for `ep-010`. Technical drawing mode: full."
   }
 ]

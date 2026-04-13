@@ -8,72 +8,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the motorized sideways transfer and issues a structured decision tied to feasibility, budgets, and justified DOFs."
   },
   {
-    "id": "epr-001-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the motorized sideways transfer. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that single driven roller lane remains the only justified DOF and the reserved wiring corridor stays intact, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-001-sideways-transfer`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-001-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "epr-001-sideways-transfer",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the motorized sideways transfer and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-001-sideways-transfer`. Technical drawing mode: off."
-  },
-  {
-    "id": "epr-001-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the motorized sideways transfer. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that single driven roller lane remains the only justified DOF and the reserved wiring corridor stays intact, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-001-sideways-transfer`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-001-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "epr-001-sideways-transfer",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the motorized sideways transfer and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-001-sideways-transfer`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "epr-001-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the motorized sideways transfer. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that single driven roller lane remains the only justified DOF and the reserved wiring corridor stays intact, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-001-sideways-transfer`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-001-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "epr-001-sideways-transfer",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the motorized sideways transfer and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-001-sideways-transfer`. Technical drawing mode: full."
-  },
-  {
     "id": "epr-002-gap-bridge",
     "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the gap bridge transfer. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that bridge spans the seeded gap without invented actuators and still respects the landing clearances, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-002-gap-bridge",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the gap bridge transfer and issues a structured decision tied to feasibility, budgets, and justified DOFs."
-  },
-  {
-    "id": "epr-002-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the gap bridge transfer. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that bridge spans the seeded gap without invented actuators and still respects the landing clearances, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-002-gap-bridge`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-002-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "epr-002-gap-bridge",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the gap bridge transfer and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-002-gap-bridge`. Technical drawing mode: off."
-  },
-  {
-    "id": "epr-002-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the gap bridge transfer. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that bridge spans the seeded gap without invented actuators and still respects the landing clearances, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-002-gap-bridge`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-002-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "epr-002-gap-bridge",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the gap bridge transfer and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-002-gap-bridge`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "epr-002-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the gap bridge transfer. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that bridge spans the seeded gap without invented actuators and still respects the landing clearances, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-002-gap-bridge`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-002-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "epr-002-gap-bridge",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the gap bridge transfer and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-002-gap-bridge`. Technical drawing mode: full."
   },
   {
     "id": "epr-003-timed-gate-chute",
@@ -84,72 +24,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the timed gate chute and issues a structured decision tied to feasibility, budgets, and justified DOFs."
   },
   {
-    "id": "epr-003-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the timed gate chute. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that the gate uses only the planned motorized axis, stays outside the keep-out volume, and preserves the wiring corridor assumptions, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-003-timed-gate-chute`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-003-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "epr-003-timed-gate-chute",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the timed gate chute and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-003-timed-gate-chute`. Technical drawing mode: off."
-  },
-  {
-    "id": "epr-003-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the timed gate chute. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that the gate uses only the planned motorized axis, stays outside the keep-out volume, and preserves the wiring corridor assumptions, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-003-timed-gate-chute`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-003-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "epr-003-timed-gate-chute",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the timed gate chute and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-003-timed-gate-chute`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "epr-003-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the timed gate chute. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that the gate uses only the planned motorized axis, stays outside the keep-out volume, and preserves the wiring corridor assumptions, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-003-timed-gate-chute`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-003-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "epr-003-timed-gate-chute",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the timed gate chute and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-003-timed-gate-chute`. Technical drawing mode: full."
-  },
-  {
     "id": "epr-004-raised-shelf-lift",
     "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the raised shelf lift. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that lift motion is limited to the planned axis, remains under budget, and fits the raised-shelf build envelope, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-004-raised-shelf-lift",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the raised shelf lift and issues a structured decision tied to feasibility, budgets, and justified DOFs."
-  },
-  {
-    "id": "epr-004-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the raised shelf lift. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that lift motion is limited to the planned axis, remains under budget, and fits the raised-shelf build envelope, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-004-raised-shelf-lift`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-004-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "epr-004-raised-shelf-lift",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the raised shelf lift and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-004-raised-shelf-lift`. Technical drawing mode: off."
-  },
-  {
-    "id": "epr-004-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the raised shelf lift. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that lift motion is limited to the planned axis, remains under budget, and fits the raised-shelf build envelope, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-004-raised-shelf-lift`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-004-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "epr-004-raised-shelf-lift",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the raised shelf lift and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-004-raised-shelf-lift`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "epr-004-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the raised shelf lift. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that lift motion is limited to the planned axis, remains under budget, and fits the raised-shelf build envelope, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-004-raised-shelf-lift`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-004-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "epr-004-raised-shelf-lift",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the raised shelf lift and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-004-raised-shelf-lift`. Technical drawing mode: full."
   },
   {
     "id": "epr-005-central-forbid-route",
@@ -160,72 +40,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the central forbid route and issues a structured decision tied to feasibility, budgets, and justified DOFs."
   },
   {
-    "id": "epr-005-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the central forbid route. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that passive routing stays clear of the central forbid zone without inventing powered subsystems, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-005-central-forbid-route`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-005-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "epr-005-central-forbid-route",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the central forbid route and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-005-central-forbid-route`. Technical drawing mode: off."
-  },
-  {
-    "id": "epr-005-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the central forbid route. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that passive routing stays clear of the central forbid zone without inventing powered subsystems, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-005-central-forbid-route`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-005-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "epr-005-central-forbid-route",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the central forbid route and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-005-central-forbid-route`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "epr-005-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the central forbid route. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that passive routing stays clear of the central forbid zone without inventing powered subsystems, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-005-central-forbid-route`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-005-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "epr-005-central-forbid-route",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the central forbid route and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-005-central-forbid-route`. Technical drawing mode: full."
-  },
-  {
     "id": "epr-006-no-drill-transfer",
     "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the freestanding no-drill transfer. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that the design remains freestanding and does not smuggle in forbidden attachments or drill-based assumptions, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-006-no-drill-transfer",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the freestanding no-drill transfer and issues a structured decision tied to feasibility, budgets, and justified DOFs."
-  },
-  {
-    "id": "epr-006-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the freestanding no-drill transfer. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that the design remains freestanding and does not smuggle in forbidden attachments or drill-based assumptions, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-006-no-drill-transfer`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-006-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "epr-006-no-drill-transfer",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the freestanding no-drill transfer and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-006-no-drill-transfer`. Technical drawing mode: off."
-  },
-  {
-    "id": "epr-006-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the freestanding no-drill transfer. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that the design remains freestanding and does not smuggle in forbidden attachments or drill-based assumptions, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-006-no-drill-transfer`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-006-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "epr-006-no-drill-transfer",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the freestanding no-drill transfer and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-006-no-drill-transfer`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "epr-006-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the freestanding no-drill transfer. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that the design remains freestanding and does not smuggle in forbidden attachments or drill-based assumptions, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-006-no-drill-transfer`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-006-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "epr-006-no-drill-transfer",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the freestanding no-drill transfer and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-006-no-drill-transfer`. Technical drawing mode: full."
   },
   {
     "id": "epr-007-low-friction-cube",
@@ -236,72 +56,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the low-friction cube guide and issues a structured decision tied to feasibility, budgets, and justified DOFs."
   },
   {
-    "id": "epr-007-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the low-friction cube guide. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that guide geometry actually manages the seeded low-friction slip assumptions instead of relying on wishful contact behavior, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-007-low-friction-cube`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-007-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "epr-007-low-friction-cube",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the low-friction cube guide and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-007-low-friction-cube`. Technical drawing mode: off."
-  },
-  {
-    "id": "epr-007-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the low-friction cube guide. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that guide geometry actually manages the seeded low-friction slip assumptions instead of relying on wishful contact behavior, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-007-low-friction-cube`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-007-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "epr-007-low-friction-cube",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the low-friction cube guide and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-007-low-friction-cube`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "epr-007-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the low-friction cube guide. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that guide geometry actually manages the seeded low-friction slip assumptions instead of relying on wishful contact behavior, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-007-low-friction-cube`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-007-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "epr-007-low-friction-cube",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the low-friction cube guide and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-007-low-friction-cube`. Technical drawing mode: full."
-  },
-  {
     "id": "epr-008-lift-platform-handoff",
     "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the lift-platform handoff guide. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that passive catcher geometry respects the benchmark platform motion envelope rather than colliding with it, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-008-lift-platform-handoff",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the lift-platform handoff guide and issues a structured decision tied to feasibility, budgets, and justified DOFs."
-  },
-  {
-    "id": "epr-008-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the lift-platform handoff guide. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that passive catcher geometry respects the benchmark platform motion envelope rather than colliding with it, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-008-lift-platform-handoff`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-008-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "epr-008-lift-platform-handoff",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the lift-platform handoff guide and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-008-lift-platform-handoff`. Technical drawing mode: off."
-  },
-  {
-    "id": "epr-008-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the lift-platform handoff guide. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that passive catcher geometry respects the benchmark platform motion envelope rather than colliding with it, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-008-lift-platform-handoff`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-008-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "epr-008-lift-platform-handoff",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the lift-platform handoff guide and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-008-lift-platform-handoff`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "epr-008-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the lift-platform handoff guide. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that passive catcher geometry respects the benchmark platform motion envelope rather than colliding with it, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-008-lift-platform-handoff`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-008-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "epr-008-lift-platform-handoff",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the lift-platform handoff guide and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-008-lift-platform-handoff`. Technical drawing mode: full."
   },
   {
     "id": "epr-009-narrow-goal-funnel",
@@ -312,72 +72,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the narrow goal funnel and issues a structured decision tied to feasibility, budgets, and justified DOFs."
   },
   {
-    "id": "epr-009-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the narrow goal funnel. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that precision funnel geometry remains complete and feasible under the seeded tolerance and budget constraints, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-009-narrow-goal-funnel`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-009-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "epr-009-narrow-goal-funnel",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the narrow goal funnel and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-009-narrow-goal-funnel`. Technical drawing mode: off."
-  },
-  {
-    "id": "epr-009-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the narrow goal funnel. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that precision funnel geometry remains complete and feasible under the seeded tolerance and budget constraints, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-009-narrow-goal-funnel`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-009-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "epr-009-narrow-goal-funnel",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the narrow goal funnel and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-009-narrow-goal-funnel`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "epr-009-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the narrow goal funnel. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that precision funnel geometry remains complete and feasible under the seeded tolerance and budget constraints, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-009-narrow-goal-funnel`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-009-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "epr-009-narrow-goal-funnel",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the narrow goal funnel and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-009-narrow-goal-funnel`. Technical drawing mode: full."
-  },
-  {
     "id": "epr-010-diverter-gate-wiring",
     "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the electronics-powered diverter gate. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that the 12V power budget, wire corridor, and single rotate_z gate motion remain internally consistent across the seeded handoff artifacts, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-010-diverter-gate-wiring",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the electronics-powered diverter gate and issues a structured decision tied to feasibility, budgets, and justified DOFs."
-  },
-  {
-    "id": "epr-010-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the electronics-powered diverter gate. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that the 12V power budget, wire corridor, and single rotate_z gate motion remain internally consistent across the seeded handoff artifacts, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-010-diverter-gate-wiring`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-010-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "epr-010-diverter-gate-wiring",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the electronics-powered diverter gate and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-010-diverter-gate-wiring`. Technical drawing mode: off."
-  },
-  {
-    "id": "epr-010-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the electronics-powered diverter gate. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that the 12V power budget, wire corridor, and single rotate_z gate motion remain internally consistent across the seeded handoff artifacts, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-010-diverter-gate-wiring`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-010-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "epr-010-diverter-gate-wiring",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the electronics-powered diverter gate and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-010-diverter-gate-wiring`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "epr-010-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the electronics-powered diverter gate. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that the 12V power budget, wire corridor, and single rotate_z gate motion remain internally consistent across the seeded handoff artifacts, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-010-diverter-gate-wiring`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-010-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "epr-010-diverter-gate-wiring",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the electronics-powered diverter gate and issues a structured decision tied to feasibility, budgets, and justified DOFs. Split variant for `epr-010-diverter-gate-wiring`. Technical drawing mode: full."
   },
   {
     "id": "epr-011-sideways-transfer-budget-overrun",
@@ -388,71 +88,11 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer rejects planner handoffs when the seeded assembly metadata introduces extra or unjustified DOFs that conflict with the single-axis plan."
   },
   {
-    "id": "epr-011-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the sideways transfer reviewer stress case. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, identify whether the final assembly metadata sneaks in extra motion beyond the planned single driven roller axis, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-011-sideways-transfer-budget-overrun`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-011-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "epr-011-sideways-transfer-budget-overrun",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer rejects planner handoffs when the seeded assembly metadata introduces extra or unjustified DOFs that conflict with the single-axis plan. Split variant for `epr-011-sideways-transfer-budget-overrun`. Technical drawing mode: off."
-  },
-  {
-    "id": "epr-011-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the sideways transfer reviewer stress case. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, identify whether the final assembly metadata sneaks in extra motion beyond the planned single driven roller axis, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-011-sideways-transfer-budget-overrun`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-011-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "epr-011-sideways-transfer-budget-overrun",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer rejects planner handoffs when the seeded assembly metadata introduces extra or unjustified DOFs that conflict with the single-axis plan. Split variant for `epr-011-sideways-transfer-budget-overrun`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "epr-011-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the sideways transfer reviewer stress case. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, identify whether the final assembly metadata sneaks in extra motion beyond the planned single driven roller axis, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-011-sideways-transfer-budget-overrun`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-011-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "epr-011-sideways-transfer-budget-overrun",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer rejects planner handoffs when the seeded assembly metadata introduces extra or unjustified DOFs that conflict with the single-axis plan. Split variant for `epr-011-sideways-transfer-budget-overrun`. Technical drawing mode: full."
-  },
-  {
     "id": "epr-012-sideways-transfer-fake-cots",
     "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the sideways transfer fake-COTS variant. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that the selected motor remains a real catalog-backed COTS part rather than an invented placeholder, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-012-sideways-transfer-fake-cots",
     "expected_decision": "REJECT_PLAN",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer rejects planner handoffs when the seeded assembly references invented or non-catalog COTS parts."
-  },
-  {
-    "id": "epr-012-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the sideways transfer fake-COTS variant. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that the selected motor remains a real catalog-backed COTS part rather than an invented placeholder, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-012-sideways-transfer-fake-cots`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-012-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "epr-012-sideways-transfer-fake-cots",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer rejects planner handoffs when the seeded assembly references invented or non-catalog COTS parts. Split variant for `epr-012-sideways-transfer-fake-cots`. Technical drawing mode: off."
-  },
-  {
-    "id": "epr-012-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the sideways transfer fake-COTS variant. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that the selected motor remains a real catalog-backed COTS part rather than an invented placeholder, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-012-sideways-transfer-fake-cots`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-012-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "epr-012-sideways-transfer-fake-cots",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer rejects planner handoffs when the seeded assembly references invented or non-catalog COTS parts. Split variant for `epr-012-sideways-transfer-fake-cots`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "epr-012-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the sideways transfer fake-COTS variant. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that the selected motor remains a real catalog-backed COTS part rather than an invented placeholder, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence. Split variant for `epr-012-sideways-transfer-fake-cots`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-012-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "epr-012-sideways-transfer-fake-cots",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer rejects planner handoffs when the seeded assembly references invented or non-catalog COTS parts. Split variant for `epr-012-sideways-transfer-fake-cots`. Technical drawing mode: full."
   }
 ]

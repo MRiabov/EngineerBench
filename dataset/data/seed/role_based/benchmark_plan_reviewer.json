@@ -8,72 +8,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid raised-shelf planner handoff, checks cross-artifact geometry/objective consistency plus minimal benchmark-side DOFs, and issues a structured review decision."
   },
   {
-    "id": "bpr-001-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the raised-shelf transfer benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the single lift carriage is the only justified benchmark-side motion, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-001-raised-shelf`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-001-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bpr-001-raised-shelf",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid raised-shelf planner handoff, checks cross-artifact geometry/objective consistency plus minimal benchmark-side DOFs, and issues a structured review decision. Split variant for `bpr-001-raised-shelf`. Technical drawing mode: off."
-  },
-  {
-    "id": "bpr-001-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the raised-shelf transfer benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the single lift carriage is the only justified benchmark-side motion, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-001-raised-shelf`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-001-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bpr-001-raised-shelf",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid raised-shelf planner handoff, checks cross-artifact geometry/objective consistency plus minimal benchmark-side DOFs, and issues a structured review decision. Split variant for `bpr-001-raised-shelf`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bpr-001-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the raised-shelf transfer benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the single lift carriage is the only justified benchmark-side motion, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-001-raised-shelf`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-001-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bpr-001-raised-shelf",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid raised-shelf planner handoff, checks cross-artifact geometry/objective consistency plus minimal benchmark-side DOFs, and issues a structured review decision. Split variant for `bpr-001-raised-shelf`. Technical drawing mode: full."
-  },
-  {
     "id": "bpr-002-gap-bridge",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the gap-bridge cube transfer benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the gap forbid zone, landing deck, and static bridge geometry stay coherent without invented moving parts, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-002-gap-bridge",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid gap-bridge planner handoff, checks object references and objective clearances, and issues a structured review decision."
-  },
-  {
-    "id": "bpr-002-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the gap-bridge cube transfer benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the gap forbid zone, landing deck, and static bridge geometry stay coherent without invented moving parts, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-002-gap-bridge`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-002-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bpr-002-gap-bridge",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid gap-bridge planner handoff, checks object references and objective clearances, and issues a structured review decision. Split variant for `bpr-002-gap-bridge`. Technical drawing mode: off."
-  },
-  {
-    "id": "bpr-002-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the gap-bridge cube transfer benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the gap forbid zone, landing deck, and static bridge geometry stay coherent without invented moving parts, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-002-gap-bridge`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-002-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bpr-002-gap-bridge",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid gap-bridge planner handoff, checks object references and objective clearances, and issues a structured review decision. Split variant for `bpr-002-gap-bridge`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bpr-002-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the gap-bridge cube transfer benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the gap forbid zone, landing deck, and static bridge geometry stay coherent without invented moving parts, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-002-gap-bridge`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-002-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bpr-002-gap-bridge",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid gap-bridge planner handoff, checks object references and objective clearances, and issues a structured review decision. Split variant for `bpr-002-gap-bridge`. Technical drawing mode: full."
   },
   {
     "id": "bpr-003-central-forbid-route",
@@ -84,72 +24,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid around-obstacle planner handoff, checks non-ambiguity and geometry coherence, and issues a structured review decision."
   },
   {
-    "id": "bpr-003-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the central-forbid-route ball transfer benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the central blocker and the around-obstacle routing geometry remain coherent with the seeded build and goal zones, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-003-central-forbid-route`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-003-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bpr-003-central-forbid-route",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid around-obstacle planner handoff, checks non-ambiguity and geometry coherence, and issues a structured review decision. Split variant for `bpr-003-central-forbid-route`. Technical drawing mode: off."
-  },
-  {
-    "id": "bpr-003-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the central-forbid-route ball transfer benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the central blocker and the around-obstacle routing geometry remain coherent with the seeded build and goal zones, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-003-central-forbid-route`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-003-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bpr-003-central-forbid-route",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid around-obstacle planner handoff, checks non-ambiguity and geometry coherence, and issues a structured review decision. Split variant for `bpr-003-central-forbid-route`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bpr-003-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the central-forbid-route ball transfer benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the central blocker and the around-obstacle routing geometry remain coherent with the seeded build and goal zones, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-003-central-forbid-route`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-003-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bpr-003-central-forbid-route",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid around-obstacle planner handoff, checks non-ambiguity and geometry coherence, and issues a structured review decision. Split variant for `bpr-003-central-forbid-route`. Technical drawing mode: full."
-  },
-  {
     "id": "bpr-004-timed-gate",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the timed-gate benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the benchmark uses only the planned single rotating gate axis and keeps the gate swing keep-out and wiring restrictions coherent, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-004-timed-gate",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid timed-gate planner handoff, checks motion minimization and plan completeness, and issues a structured review decision."
-  },
-  {
-    "id": "bpr-004-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the timed-gate benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the benchmark uses only the planned single rotating gate axis and keeps the gate swing keep-out and wiring restrictions coherent, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-004-timed-gate`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-004-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bpr-004-timed-gate",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid timed-gate planner handoff, checks motion minimization and plan completeness, and issues a structured review decision. Split variant for `bpr-004-timed-gate`. Technical drawing mode: off."
-  },
-  {
-    "id": "bpr-004-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the timed-gate benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the benchmark uses only the planned single rotating gate axis and keeps the gate swing keep-out and wiring restrictions coherent, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-004-timed-gate`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-004-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bpr-004-timed-gate",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid timed-gate planner handoff, checks motion minimization and plan completeness, and issues a structured review decision. Split variant for `bpr-004-timed-gate`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bpr-004-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the timed-gate benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the benchmark uses only the planned single rotating gate axis and keeps the gate swing keep-out and wiring restrictions coherent, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-004-timed-gate`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-004-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bpr-004-timed-gate",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid timed-gate planner handoff, checks motion minimization and plan completeness, and issues a structured review decision. Split variant for `bpr-004-timed-gate`. Technical drawing mode: full."
   },
   {
     "id": "bpr-005-no-drill-transfer",
@@ -160,72 +40,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid no-drill planner handoff, checks feasibility and environment-attachment assumptions, and issues a structured review decision."
   },
   {
-    "id": "bpr-005-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the freestanding no-drill transfer benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the environment stays fully freestanding with no hidden attachment assumptions, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-005-no-drill-transfer`. Technical drawing mode: off.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-005-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bpr-005-no-drill-transfer",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid no-drill planner handoff, checks feasibility and environment-attachment assumptions, and issues a structured review decision. Split variant for `bpr-005-no-drill-transfer`. Technical drawing mode: off."
-  },
-  {
-    "id": "bpr-005-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the freestanding no-drill transfer benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the environment stays fully freestanding with no hidden attachment assumptions, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-005-no-drill-transfer`. Technical drawing mode: minimal.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-005-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bpr-005-no-drill-transfer",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid no-drill planner handoff, checks feasibility and environment-attachment assumptions, and issues a structured review decision. Split variant for `bpr-005-no-drill-transfer`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bpr-005-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the freestanding no-drill transfer benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the environment stays fully freestanding with no hidden attachment assumptions, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-005-no-drill-transfer`. Technical drawing mode: full.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-005-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bpr-005-no-drill-transfer",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid no-drill planner handoff, checks feasibility and environment-attachment assumptions, and issues a structured review decision. Split variant for `bpr-005-no-drill-transfer`. Technical drawing mode: full."
-  },
-  {
     "id": "bpr-006-low-friction-cube",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the low-friction cube guide benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the guide geometry and center blocker stay coherent with the low-friction cube assumptions and forbid-zone routing, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-006-low-friction-cube",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid low-friction cube planner handoff, checks geometry/objective consistency and plan clarity, and issues a structured review decision."
-  },
-  {
-    "id": "bpr-006-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the low-friction cube guide benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the guide geometry and center blocker stay coherent with the low-friction cube assumptions and forbid-zone routing, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-006-low-friction-cube`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-006-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bpr-006-low-friction-cube",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid low-friction cube planner handoff, checks geometry/objective consistency and plan clarity, and issues a structured review decision. Split variant for `bpr-006-low-friction-cube`. Technical drawing mode: off."
-  },
-  {
-    "id": "bpr-006-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the low-friction cube guide benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the guide geometry and center blocker stay coherent with the low-friction cube assumptions and forbid-zone routing, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-006-low-friction-cube`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-006-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bpr-006-low-friction-cube",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid low-friction cube planner handoff, checks geometry/objective consistency and plan clarity, and issues a structured review decision. Split variant for `bpr-006-low-friction-cube`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bpr-006-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the low-friction cube guide benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the guide geometry and center blocker stay coherent with the low-friction cube assumptions and forbid-zone routing, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-006-low-friction-cube`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-006-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bpr-006-low-friction-cube",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid low-friction cube planner handoff, checks geometry/objective consistency and plan clarity, and issues a structured review decision. Split variant for `bpr-006-low-friction-cube`. Technical drawing mode: full."
   },
   {
     "id": "bpr-007-lift-platform-handoff",
@@ -236,72 +56,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid lift-platform handoff planner handoff, checks benchmark-side motion limits and objective clearance, and issues a structured review decision."
   },
   {
-    "id": "bpr-007-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lift-platform handoff benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the moving platform uses only the planned lift axis and that the platform travel clearance remains coherent across all seeded artifacts, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-007-lift-platform-handoff`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-007-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bpr-007-lift-platform-handoff",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid lift-platform handoff planner handoff, checks benchmark-side motion limits and objective clearance, and issues a structured review decision. Split variant for `bpr-007-lift-platform-handoff`. Technical drawing mode: off."
-  },
-  {
-    "id": "bpr-007-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lift-platform handoff benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the moving platform uses only the planned lift axis and that the platform travel clearance remains coherent across all seeded artifacts, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-007-lift-platform-handoff`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-007-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bpr-007-lift-platform-handoff",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid lift-platform handoff planner handoff, checks benchmark-side motion limits and objective clearance, and issues a structured review decision. Split variant for `bpr-007-lift-platform-handoff`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bpr-007-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lift-platform handoff benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the moving platform uses only the planned lift axis and that the platform travel clearance remains coherent across all seeded artifacts, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-007-lift-platform-handoff`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-007-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bpr-007-lift-platform-handoff",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid lift-platform handoff planner handoff, checks benchmark-side motion limits and objective clearance, and issues a structured review decision. Split variant for `bpr-007-lift-platform-handoff`. Technical drawing mode: full."
-  },
-  {
     "id": "bpr-008-narrow-goal",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the narrow-goal funnel benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the wide capture region, narrowing throat, and final goal sleeve remain coherent under the seeded runtime jitter assumptions, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-008-narrow-goal",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid narrow-goal planner handoff, checks precision-geometry feasibility and plan completeness, and issues a structured review decision."
-  },
-  {
-    "id": "bpr-008-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the narrow-goal funnel benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the wide capture region, narrowing throat, and final goal sleeve remain coherent under the seeded runtime jitter assumptions, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-008-narrow-goal`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-008-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bpr-008-narrow-goal",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid narrow-goal planner handoff, checks precision-geometry feasibility and plan completeness, and issues a structured review decision. Split variant for `bpr-008-narrow-goal`. Technical drawing mode: off."
-  },
-  {
-    "id": "bpr-008-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the narrow-goal funnel benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the wide capture region, narrowing throat, and final goal sleeve remain coherent under the seeded runtime jitter assumptions, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-008-narrow-goal`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-008-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bpr-008-narrow-goal",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid narrow-goal planner handoff, checks precision-geometry feasibility and plan completeness, and issues a structured review decision. Split variant for `bpr-008-narrow-goal`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bpr-008-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the narrow-goal funnel benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the wide capture region, narrowing throat, and final goal sleeve remain coherent under the seeded runtime jitter assumptions, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-008-narrow-goal`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-008-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bpr-008-narrow-goal",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid narrow-goal planner handoff, checks precision-geometry feasibility and plan completeness, and issues a structured review decision. Split variant for `bpr-008-narrow-goal`. Technical drawing mode: full."
   },
   {
     "id": "bpr-009-fast-transfer",
@@ -312,72 +72,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid fast-transfer planner handoff, checks motion minimization and timing-oriented geometry coherence, and issues a structured review decision."
   },
   {
-    "id": "bpr-009-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the fast-transfer benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the benchmark-side accelerator uses only the planned single driven roller and preserves the speed-bump keep-out and cable-routing assumptions, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-009-fast-transfer`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-009-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bpr-009-fast-transfer",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid fast-transfer planner handoff, checks motion minimization and timing-oriented geometry coherence, and issues a structured review decision. Split variant for `bpr-009-fast-transfer`. Technical drawing mode: off."
-  },
-  {
-    "id": "bpr-009-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the fast-transfer benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the benchmark-side accelerator uses only the planned single driven roller and preserves the speed-bump keep-out and cable-routing assumptions, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-009-fast-transfer`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-009-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bpr-009-fast-transfer",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid fast-transfer planner handoff, checks motion minimization and timing-oriented geometry coherence, and issues a structured review decision. Split variant for `bpr-009-fast-transfer`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bpr-009-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the fast-transfer benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the benchmark-side accelerator uses only the planned single driven roller and preserves the speed-bump keep-out and cable-routing assumptions, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-009-fast-transfer`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-009-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bpr-009-fast-transfer",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid fast-transfer planner handoff, checks motion minimization and timing-oriented geometry coherence, and issues a structured review decision. Split variant for `bpr-009-fast-transfer`. Technical drawing mode: full."
-  },
-  {
     "id": "bpr-010-lower-bin",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lower-bin redirection benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the deflector, lower-bin goal, and direct-drop dead zone remain coherent and feasible under the seeded ball randomization, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-010-lower-bin",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid lower-bin planner handoff, checks gravity-aware feasibility and cross-artifact consistency, and issues a structured review decision."
-  },
-  {
-    "id": "bpr-010-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lower-bin redirection benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the deflector, lower-bin goal, and direct-drop dead zone remain coherent and feasible under the seeded ball randomization, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-010-lower-bin`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-010-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bpr-010-lower-bin",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid lower-bin planner handoff, checks gravity-aware feasibility and cross-artifact consistency, and issues a structured review decision. Split variant for `bpr-010-lower-bin`. Technical drawing mode: off."
-  },
-  {
-    "id": "bpr-010-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lower-bin redirection benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the deflector, lower-bin goal, and direct-drop dead zone remain coherent and feasible under the seeded ball randomization, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-010-lower-bin`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-010-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bpr-010-lower-bin",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid lower-bin planner handoff, checks gravity-aware feasibility and cross-artifact consistency, and issues a structured review decision. Split variant for `bpr-010-lower-bin`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bpr-010-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lower-bin redirection benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the deflector, lower-bin goal, and direct-drop dead zone remain coherent and feasible under the seeded ball randomization, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-010-lower-bin`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-010-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bpr-010-lower-bin",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid lower-bin planner handoff, checks gravity-aware feasibility and cross-artifact consistency, and issues a structured review decision. Split variant for `bpr-010-lower-bin`. Technical drawing mode: full."
   },
   {
     "id": "bpr-011-raised-shelf-goal-obstruction",
@@ -388,72 +88,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the tightened raised-shelf geometry leaves the goal volume materially obstructed despite otherwise valid planner files."
   },
   {
-    "id": "bpr-011-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the raised-shelf transfer variant where the support tower and shelf lip were tightened to save space. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify whether the revised tower and shelf geometry still leave a truly usable goal capture volume under the seeded ball size and lift travel assumptions, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-011-raised-shelf-goal-obstruction`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-011-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bpr-011-raised-shelf-goal-obstruction",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the tightened raised-shelf geometry leaves the goal volume materially obstructed despite otherwise valid planner files. Split variant for `bpr-011-raised-shelf-goal-obstruction`. Technical drawing mode: off."
-  },
-  {
-    "id": "bpr-011-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the raised-shelf transfer variant where the support tower and shelf lip were tightened to save space. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify whether the revised tower and shelf geometry still leave a truly usable goal capture volume under the seeded ball size and lift travel assumptions, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-011-raised-shelf-goal-obstruction`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-011-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bpr-011-raised-shelf-goal-obstruction",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the tightened raised-shelf geometry leaves the goal volume materially obstructed despite otherwise valid planner files. Split variant for `bpr-011-raised-shelf-goal-obstruction`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bpr-011-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the raised-shelf transfer variant where the support tower and shelf lip were tightened to save space. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify whether the revised tower and shelf geometry still leave a truly usable goal capture volume under the seeded ball size and lift travel assumptions, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-011-raised-shelf-goal-obstruction`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-011-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bpr-011-raised-shelf-goal-obstruction",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the tightened raised-shelf geometry leaves the goal volume materially obstructed despite otherwise valid planner files. Split variant for `bpr-011-raised-shelf-goal-obstruction`. Technical drawing mode: full."
-  },
-  {
     "id": "bpr-012-gap-bridge-hidden-dof",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the gap-bridge cube transfer variant that adds a small self-centering correction on the bridge reference table. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the bridge really remains a passive benchmark fixture or whether the seeded motion metadata introduces unsupported benchmark-side actuation, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-012-gap-bridge-hidden-dof",
     "expected_decision": "REJECT_PLAN",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the bridge package hides an unjustified benchmark-side alignment DOF inside an otherwise passive gap-crossing plan."
-  },
-  {
-    "id": "bpr-012-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the gap-bridge cube transfer variant that adds a small self-centering correction on the bridge reference table. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the bridge really remains a passive benchmark fixture or whether the seeded motion metadata introduces unsupported benchmark-side actuation, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-012-gap-bridge-hidden-dof`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-012-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bpr-012-gap-bridge-hidden-dof",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the bridge package hides an unjustified benchmark-side alignment DOF inside an otherwise passive gap-crossing plan. Split variant for `bpr-012-gap-bridge-hidden-dof`. Technical drawing mode: off."
-  },
-  {
-    "id": "bpr-012-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the gap-bridge cube transfer variant that adds a small self-centering correction on the bridge reference table. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the bridge really remains a passive benchmark fixture or whether the seeded motion metadata introduces unsupported benchmark-side actuation, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-012-gap-bridge-hidden-dof`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-012-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bpr-012-gap-bridge-hidden-dof",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the bridge package hides an unjustified benchmark-side alignment DOF inside an otherwise passive gap-crossing plan. Split variant for `bpr-012-gap-bridge-hidden-dof`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bpr-012-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the gap-bridge cube transfer variant that adds a small self-centering correction on the bridge reference table. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the bridge really remains a passive benchmark fixture or whether the seeded motion metadata introduces unsupported benchmark-side actuation, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-012-gap-bridge-hidden-dof`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-012-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bpr-012-gap-bridge-hidden-dof",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the bridge package hides an unjustified benchmark-side alignment DOF inside an otherwise passive gap-crossing plan. Split variant for `bpr-012-gap-bridge-hidden-dof`. Technical drawing mode: full."
   },
   {
     "id": "bpr-013-central-route-pinch-clearance",
@@ -464,72 +104,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the narrowed route pinch leaves no robust clearance margin once the declared ball size and runtime jitter are considered."
   },
   {
-    "id": "bpr-013-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the central-forbid-route ball transfer variant with a narrowed downstream pinch. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the declared guide-wall pinch still remains robust for the worst-case ball diameter and runtime jitter rather than only the nominal path, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-013-central-route-pinch-clearance`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-013-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bpr-013-central-route-pinch-clearance",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the narrowed route pinch leaves no robust clearance margin once the declared ball size and runtime jitter are considered. Split variant for `bpr-013-central-route-pinch-clearance`. Technical drawing mode: off."
-  },
-  {
-    "id": "bpr-013-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the central-forbid-route ball transfer variant with a narrowed downstream pinch. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the declared guide-wall pinch still remains robust for the worst-case ball diameter and runtime jitter rather than only the nominal path, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-013-central-route-pinch-clearance`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-013-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bpr-013-central-route-pinch-clearance",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the narrowed route pinch leaves no robust clearance margin once the declared ball size and runtime jitter are considered. Split variant for `bpr-013-central-route-pinch-clearance`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bpr-013-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the central-forbid-route ball transfer variant with a narrowed downstream pinch. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the declared guide-wall pinch still remains robust for the worst-case ball diameter and runtime jitter rather than only the nominal path, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-013-central-route-pinch-clearance`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-013-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bpr-013-central-route-pinch-clearance",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the narrowed route pinch leaves no robust clearance margin once the declared ball size and runtime jitter are considered. Split variant for `bpr-013-central-route-pinch-clearance`. Technical drawing mode: full."
-  },
-  {
     "id": "bpr-014-timed-gate-clearance-budget",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the timed-gate variant that tightens the gate opening and timing window to make the challenge harder. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the resulting gate clearance and timing budget remain feasible for the seeded ball envelope rather than only for an ideal centerline pass, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-014-timed-gate-clearance-budget",
     "expected_decision": "REJECT_PLAN",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the tightened gate opening leaves an unrealistic clearance and timing margin for the declared ball size and jitter."
-  },
-  {
-    "id": "bpr-014-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the timed-gate variant that tightens the gate opening and timing window to make the challenge harder. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the resulting gate clearance and timing budget remain feasible for the seeded ball envelope rather than only for an ideal centerline pass, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-014-timed-gate-clearance-budget`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-014-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bpr-014-timed-gate-clearance-budget",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the tightened gate opening leaves an unrealistic clearance and timing margin for the declared ball size and jitter. Split variant for `bpr-014-timed-gate-clearance-budget`. Technical drawing mode: off."
-  },
-  {
-    "id": "bpr-014-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the timed-gate variant that tightens the gate opening and timing window to make the challenge harder. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the resulting gate clearance and timing budget remain feasible for the seeded ball envelope rather than only for an ideal centerline pass, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-014-timed-gate-clearance-budget`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-014-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bpr-014-timed-gate-clearance-budget",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the tightened gate opening leaves an unrealistic clearance and timing margin for the declared ball size and jitter. Split variant for `bpr-014-timed-gate-clearance-budget`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bpr-014-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the timed-gate variant that tightens the gate opening and timing window to make the challenge harder. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the resulting gate clearance and timing budget remain feasible for the seeded ball envelope rather than only for an ideal centerline pass, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-014-timed-gate-clearance-budget`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-014-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bpr-014-timed-gate-clearance-budget",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the tightened gate opening leaves an unrealistic clearance and timing margin for the declared ball size and jitter. Split variant for `bpr-014-timed-gate-clearance-budget`. Technical drawing mode: full."
   },
   {
     "id": "bpr-015-no-drill-overhang",
@@ -540,72 +120,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the revised freestanding geometry quietly exceeds the allowed build envelope while claiming to remain no-drill and self-contained."
   },
   {
-    "id": "bpr-015-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the freestanding no-drill transfer variant with a farther-right goal cradle and longer chute. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the freestanding geometry still stays inside the benchmark build envelope instead of quietly overhanging it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-015-no-drill-overhang`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-015-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bpr-015-no-drill-overhang",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the revised freestanding geometry quietly exceeds the allowed build envelope while claiming to remain no-drill and self-contained. Split variant for `bpr-015-no-drill-overhang`. Technical drawing mode: off."
-  },
-  {
-    "id": "bpr-015-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the freestanding no-drill transfer variant with a farther-right goal cradle and longer chute. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the freestanding geometry still stays inside the benchmark build envelope instead of quietly overhanging it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-015-no-drill-overhang`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-015-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bpr-015-no-drill-overhang",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the revised freestanding geometry quietly exceeds the allowed build envelope while claiming to remain no-drill and self-contained. Split variant for `bpr-015-no-drill-overhang`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bpr-015-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the freestanding no-drill transfer variant with a farther-right goal cradle and longer chute. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the freestanding geometry still stays inside the benchmark build envelope instead of quietly overhanging it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-015-no-drill-overhang`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-015-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bpr-015-no-drill-overhang",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the revised freestanding geometry quietly exceeds the allowed build envelope while claiming to remain no-drill and self-contained. Split variant for `bpr-015-no-drill-overhang`. Technical drawing mode: full."
-  },
-  {
     "id": "bpr-016-low-friction-pocket-tolerance",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the low-friction cube guide variant with a tighter goal pocket. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the tapered guide and goal pocket still allow a low-friction cube to settle reliably under the seeded jitter instead of only barely fitting nominally, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-016-low-friction-pocket-tolerance",
     "expected_decision": "REJECT_PLAN",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the tightened low-friction goal pocket leaves an unrealistically small tolerance margin for reliable capture."
-  },
-  {
-    "id": "bpr-016-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the low-friction cube guide variant with a tighter goal pocket. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the tapered guide and goal pocket still allow a low-friction cube to settle reliably under the seeded jitter instead of only barely fitting nominally, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-016-low-friction-pocket-tolerance`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-016-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bpr-016-low-friction-pocket-tolerance",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the tightened low-friction goal pocket leaves an unrealistically small tolerance margin for reliable capture. Split variant for `bpr-016-low-friction-pocket-tolerance`. Technical drawing mode: off."
-  },
-  {
-    "id": "bpr-016-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the low-friction cube guide variant with a tighter goal pocket. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the tapered guide and goal pocket still allow a low-friction cube to settle reliably under the seeded jitter instead of only barely fitting nominally, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-016-low-friction-pocket-tolerance`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-016-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bpr-016-low-friction-pocket-tolerance",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the tightened low-friction goal pocket leaves an unrealistically small tolerance margin for reliable capture. Split variant for `bpr-016-low-friction-pocket-tolerance`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bpr-016-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the low-friction cube guide variant with a tighter goal pocket. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the tapered guide and goal pocket still allow a low-friction cube to settle reliably under the seeded jitter instead of only barely fitting nominally, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-016-low-friction-pocket-tolerance`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-016-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bpr-016-low-friction-pocket-tolerance",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the tightened low-friction goal pocket leaves an unrealistically small tolerance margin for reliable capture. Split variant for `bpr-016-low-friction-pocket-tolerance`. Technical drawing mode: full."
   },
   {
     "id": "bpr-017-platform-sweep-bridge-collision",
@@ -616,72 +136,12 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the extended bridge encroaches on the benchmark platform sweep envelope despite the planner claiming single-axis lift motion remains clear."
   },
   {
-    "id": "bpr-017-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lift-platform handoff variant with a longer bridge into the receiving shelf. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the longer bridge still respects the moving platform sweep and declared travel-clearance envelope rather than intruding into it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-017-platform-sweep-bridge-collision`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-017-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bpr-017-platform-sweep-bridge-collision",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the extended bridge encroaches on the benchmark platform sweep envelope despite the planner claiming single-axis lift motion remains clear. Split variant for `bpr-017-platform-sweep-bridge-collision`. Technical drawing mode: off."
-  },
-  {
-    "id": "bpr-017-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lift-platform handoff variant with a longer bridge into the receiving shelf. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the longer bridge still respects the moving platform sweep and declared travel-clearance envelope rather than intruding into it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-017-platform-sweep-bridge-collision`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-017-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bpr-017-platform-sweep-bridge-collision",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the extended bridge encroaches on the benchmark platform sweep envelope despite the planner claiming single-axis lift motion remains clear. Split variant for `bpr-017-platform-sweep-bridge-collision`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bpr-017-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lift-platform handoff variant with a longer bridge into the receiving shelf. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the longer bridge still respects the moving platform sweep and declared travel-clearance envelope rather than intruding into it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-017-platform-sweep-bridge-collision`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-017-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bpr-017-platform-sweep-bridge-collision",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the extended bridge encroaches on the benchmark platform sweep envelope despite the planner claiming single-axis lift motion remains clear. Split variant for `bpr-017-platform-sweep-bridge-collision`. Technical drawing mode: full."
-  },
-  {
     "id": "bpr-018-narrow-goal-throat-mismatch",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the narrow-goal funnel variant with a more aggressive throat squeeze. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the throat still admits the seeded worst-case ball geometry with any meaningful tolerance instead of collapsing below it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-018-narrow-goal-throat-mismatch",
     "expected_decision": "REJECT_PLAN",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the narrowed funnel throat is below the declared worst-case payload envelope."
-  },
-  {
-    "id": "bpr-018-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the narrow-goal funnel variant with a more aggressive throat squeeze. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the throat still admits the seeded worst-case ball geometry with any meaningful tolerance instead of collapsing below it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-018-narrow-goal-throat-mismatch`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-018-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bpr-018-narrow-goal-throat-mismatch",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the narrowed funnel throat is below the declared worst-case payload envelope. Split variant for `bpr-018-narrow-goal-throat-mismatch`. Technical drawing mode: off."
-  },
-  {
-    "id": "bpr-018-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the narrow-goal funnel variant with a more aggressive throat squeeze. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the throat still admits the seeded worst-case ball geometry with any meaningful tolerance instead of collapsing below it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-018-narrow-goal-throat-mismatch`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-018-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bpr-018-narrow-goal-throat-mismatch",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the narrowed funnel throat is below the declared worst-case payload envelope. Split variant for `bpr-018-narrow-goal-throat-mismatch`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bpr-018-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the narrow-goal funnel variant with a more aggressive throat squeeze. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the throat still admits the seeded worst-case ball geometry with any meaningful tolerance instead of collapsing below it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-018-narrow-goal-throat-mismatch`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-018-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bpr-018-narrow-goal-throat-mismatch",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the narrowed funnel throat is below the declared worst-case payload envelope. Split variant for `bpr-018-narrow-goal-throat-mismatch`. Technical drawing mode: full."
   },
   {
     "id": "bpr-019-fast-transfer-hidden-brake-axis",
@@ -692,71 +152,11 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the brake package hides an extra benchmark-side moving axis beyond the single justified roller DOF."
   },
   {
-    "id": "bpr-019-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the fast-transfer variant with an added passive-looking brake tray improvement. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the seeded brake feature really remains passive or whether the motion metadata quietly adds a second benchmark-side axis beyond the single allowed driven roller, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-019-fast-transfer-hidden-brake-axis`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-019-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bpr-019-fast-transfer-hidden-brake-axis",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the brake package hides an extra benchmark-side moving axis beyond the single justified roller DOF. Split variant for `bpr-019-fast-transfer-hidden-brake-axis`. Technical drawing mode: off."
-  },
-  {
-    "id": "bpr-019-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the fast-transfer variant with an added passive-looking brake tray improvement. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the seeded brake feature really remains passive or whether the motion metadata quietly adds a second benchmark-side axis beyond the single allowed driven roller, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-019-fast-transfer-hidden-brake-axis`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-019-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bpr-019-fast-transfer-hidden-brake-axis",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the brake package hides an extra benchmark-side moving axis beyond the single justified roller DOF. Split variant for `bpr-019-fast-transfer-hidden-brake-axis`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bpr-019-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the fast-transfer variant with an added passive-looking brake tray improvement. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the seeded brake feature really remains passive or whether the motion metadata quietly adds a second benchmark-side axis beyond the single allowed driven roller, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-019-fast-transfer-hidden-brake-axis`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-019-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bpr-019-fast-transfer-hidden-brake-axis",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the brake package hides an extra benchmark-side moving axis beyond the single justified roller DOF. Split variant for `bpr-019-fast-transfer-hidden-brake-axis`. Technical drawing mode: full."
-  },
-  {
     "id": "bpr-020-lower-bin-unreachable-redirection",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lower-bin redirection variant that steepens the deflector and raises the dead-zone shield. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the revised redirection geometry still yields a plausible path into the lower bin instead of forcing the ball through the dead zone or into an unplanned second bounce, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-020-lower-bin-unreachable-redirection",
     "expected_decision": "REJECT_PLAN",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the revised deflector and shield geometry make the lower-bin capture path physically implausible despite otherwise contract-valid files."
-  },
-  {
-    "id": "bpr-020-drawing-off",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lower-bin redirection variant that steepens the deflector and raises the dead-zone shield. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the revised redirection geometry still yields a plausible path into the lower bin instead of forcing the ball through the dead zone or into an unplanned second bounce, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-020-lower-bin-unreachable-redirection`. Technical drawing mode: off.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-020-drawing-off",
-    "technical_drawing_mode": "off",
-    "split_source_task_id": "bpr-020-lower-bin-unreachable-redirection",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the revised deflector and shield geometry make the lower-bin capture path physically implausible despite otherwise contract-valid files. Split variant for `bpr-020-lower-bin-unreachable-redirection`. Technical drawing mode: off."
-  },
-  {
-    "id": "bpr-020-drawing-minimal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lower-bin redirection variant that steepens the deflector and raises the dead-zone shield. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the revised redirection geometry still yields a plausible path into the lower bin instead of forcing the ball through the dead zone or into an unplanned second bounce, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-020-lower-bin-unreachable-redirection`. Technical drawing mode: minimal.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-020-drawing-minimal",
-    "technical_drawing_mode": "minimal",
-    "split_source_task_id": "bpr-020-lower-bin-unreachable-redirection",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the revised deflector and shield geometry make the lower-bin capture path physically implausible despite otherwise contract-valid files. Split variant for `bpr-020-lower-bin-unreachable-redirection`. Technical drawing mode: minimal."
-  },
-  {
-    "id": "bpr-020-drawing-full",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lower-bin redirection variant that steepens the deflector and raises the dead-zone shield. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the revised redirection geometry still yields a plausible path into the lower bin instead of forcing the ball through the dead zone or into an unplanned second bounce, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts. Split variant for `bpr-020-lower-bin-unreachable-redirection`. Technical drawing mode: full.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-020-drawing-full",
-    "technical_drawing_mode": "full",
-    "split_source_task_id": "bpr-020-lower-bin-unreachable-redirection",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the revised deflector and shield geometry make the lower-bin capture path physically implausible despite otherwise contract-valid files. Split variant for `bpr-020-lower-bin-unreachable-redirection`. Technical drawing mode: full."
   }
 ]
