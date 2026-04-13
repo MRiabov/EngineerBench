@@ -6,7 +6,7 @@
 - Defines what artifacts the platform is meant to produce across benchmark generation, engineering, and data collection.
 - This file is mostly for humans and alignment between humans; if LLM reads it, ignore it and focus on other parts of documentation.
 
-We are to create a benchmark and a training dataset for evaluating LLM models on creating and solving dynamics and electronics problems.
+We are to create a benchmark and a training dataset for evaluating LLM models on creating and solving dynamics and mechanical engineering problems.
 
 ### Outputs and end project goals
 

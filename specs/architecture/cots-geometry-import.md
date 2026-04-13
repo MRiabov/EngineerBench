@@ -6,7 +6,7 @@
 - Defines the typed class registry behind catalog-aware construction and the fidelity contract for imported proxy geometry.
 - Sets the MVP policy that motors are first priority and that imported geometry should be interface-faithful, not vendor-faithful.
 - Covers provenance, ownership, and verification expectations for imported COTS geometry.
-- Does not define catalog search, electrical behavior, or simulation physics; those concerns remain in the COTS search, electronics, and simulation architecture docs.
+- Does not define catalog search or simulation physics; those concerns remain in the COTS search and simulation architecture docs.
 
 This document assumes the authored-script split already exists. It does not redefine `benchmark_script.py` or `solution_script.py`; it defines the COTS geometry import layer those scripts may call.
 
@@ -29,7 +29,7 @@ The current codebase already has the right ingredients, but they are not yet wir
 
 1. `shared/cots/runtime.py` resolves catalog rows and carries provenance metadata.
 2. `shared/cots/indexer.py` generates `import_recipe` strings and populates catalog entries.
-3. `shared/cots/parts/motors.py` and `shared/cots/parts/electronics.py` contain hand-authored proxy geometry for a few families.
+3. `shared/cots/parts/motors.py` contains hand-authored proxy geometry for a few families.
 4. `shared/workers/loader.py` executes authored scripts and extracts their result objects, but it does not resolve catalog parts into concrete COTS classes.
 5. `worker_heavy/utils/validation.py` and related costing code use COTS data for pricing and provenance, not for geometry construction.
 6. `shared/cots/base.py` already emits usage events when a COTS instance is constructed, which gives the class-first contract a natural place to prove that a declared part was actually instantiated.
@@ -160,7 +160,7 @@ provider; it lives in the motion or joint contract.
 
 ### Current provider seeds
 
-The current hand-authored classes in `shared/cots/parts/motors.py` and `shared/cots/parts/electronics.py` are the initial seed providers.
+The current hand-authored classes in `shared/cots/parts/motors.py` are the initial seed providers.
 
 For the MVP, the motor proxy provider should be the first fully supported family. The existing `ServoMotor` implementation can be treated as the seed geometry source and may later gain a `from_catalog_id(...)` class-aware factory if the implementation needs exact catalog resolution.
 
@@ -170,7 +170,7 @@ Later provider families may include:
 
 1. `bd_warehouse`-backed standard parts where the external library already matches the needed family,
 2. vendor asset imports when a trustworthy STEP or mesh asset exists,
-3. other COTS families such as PSU, relay, connector, and wire.
+3. other COTS families when the registry needs to expand.
 
 Those later providers must follow the same typed registry contract and the same fail-closed resolution rules.
 
@@ -183,8 +183,7 @@ Motors are the first priority because they are the most obvious cross-cutting CO
 They drive three different concerns:
 
 1. physical fit and mounting,
-2. electromechanical behavior,
-3. benchmark fixture realism.
+2. benchmark fixture realism.
 
 That makes them the best first slice for proving the import architecture without broadening scope.
 
@@ -405,7 +404,7 @@ This document intentionally does not require:
 3. runtime execution of `import_recipe` text,
 4. a generic importer for every COTS family on day one,
 5. editing base authored files at startup,
-6. replacing the separate electronics and simulation contracts,
+6. replacing the separate geometry and simulation contracts,
 7. geometry details that do not affect fit, preview, or behavior.
 
 Those items are valid future work, but they are not part of the MVP.

@@ -122,7 +122,7 @@ We track the following structured domain events to compute the evaluation metric
 
     - if planner tried submitting the result without `benchmark_plan.md`, `benchmark_definition.yaml`, or benchmark-owned `benchmark_assembly_definition.yaml`, or if they were left equal to their templates (don't allow submission), and note an event.
 
-22. Submission from reviewers - Review decision events for every reviewer stage (Benchmark Plan Reviewer, Benchmark Reviewer, Engineering Plan Reviewer, Engineering Execution Reviewer, Electronics Reviewer) with decision, reason category, reviewer manifest filename, persisted review decision filepath, persisted review comments filepath, and evidence used (images viewed count, video viewed, files checked).
+22. Submission from reviewers - Review decision events for every reviewer stage (Benchmark Plan Reviewer, Benchmark Reviewer, Engineering Plan Reviewer, Engineering Execution Reviewer) with decision, reason category, reviewer manifest filename, persisted review decision filepath, persisted review comments filepath, and evidence used (images viewed count, video viewed, files checked).
 
 23. Plan refusal events with explicit refusal reasons (array), `agent_role`, and proof-of-impossibility evidence from `plan_refusal.md`
 

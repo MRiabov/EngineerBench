@@ -12,12 +12,7 @@
 
 ### 2026-04-01
 
-- `worker_heavy.utils.validation.define_fluid(...)` exists and is re-exported
-  through `worker_heavy.utils`.
-- `worker_heavy.utils.validation.preview_stress(...)` exists and is re-exported
-  through `worker_heavy.utils`.
-
-## Deferred items
-
 - `shared.utils.agent.refuse_plan(...)` exists, but it is intentionally kept out
   of scope for this list for now.
+
+## Deferred items

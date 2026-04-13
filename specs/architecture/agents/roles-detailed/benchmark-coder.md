@@ -22,7 +22,6 @@ The Benchmark Coder turns an approved benchmark handoff into `benchmark_script.p
 - `benchmark_assembly_definition.yaml`
 - `benchmark_script.py` when it already exists
 - `benchmark_plan_evidence_script.py`
-- `benchmark_plan_technical_drawing_script.py`
 - `plan_refusal.md` when present
 - `validation_results.json`
 - `simulation_result.json`
@@ -45,14 +44,13 @@ The Benchmark Coder turns an approved benchmark handoff into `benchmark_script.p
 ## Runtime Helpers To Use From Scripts
 
 - `from utils.submission import validate_benchmark, simulate_benchmark, submit_benchmark_for_review`
-- `from utils.preview import render_cad, render_technical_drawing, objectives_geometry, list_render_bundles, query_render_bundle, pick_preview_pixel, pick_preview_pixels`
+- `from utils.preview import render_cad, objectives_geometry, list_render_bundles, query_render_bundle, pick_preview_pixel, pick_preview_pixels`
 
 ## What Humans Must Tell It
 
 - `benchmark_definition.yaml` and `benchmark_assembly_definition.yaml` are read-only context after plan approval.
 - The benchmark coder preserves the approved labels, repeated quantities, and COTS identities exactly.
 - `benchmark_plan_evidence_script.py` is the inspectable source of the approved geometry; do not reinterpret it.
-- `benchmark_plan_technical_drawing_script.py` is the presentation companion, not a second geometry contract.
 - The coder should validate and simulate the latest revision with `validate_benchmark()` / `simulate_benchmark()` before any review handoff, where `simulate_benchmark()` is a stability/evidence pass rather than a goal-reaching pass, then call `submit_benchmark_for_review()`.
 - If render images or simulation video exist, the coder must inspect them before finishing.
 - If bug-report mode is enabled and runtime plumbing blocks progress, write `bug_report.md` at the workspace root, keep `journal.md` for task-facing notes, and continue working unless the task is genuinely blocked.

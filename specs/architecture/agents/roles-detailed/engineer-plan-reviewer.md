@@ -17,11 +17,9 @@ The Engineering Plan Reviewer checks the plan before engineering implementation 
 - `benchmark_assembly_definition.yaml`
 - `benchmark_script.py` when it exists
 - `benchmark_plan_evidence_script.py` when it exists
-- `benchmark_plan_technical_drawing_script.py` when it exists
 - `assembly_definition.yaml`
 - `solution_script.py` when it exists
 - `solution_plan_evidence_script.py`
-- `solution_plan_technical_drawing_script.py`
 - `payload_trajectory_definition.yaml` when present
 - `plan_refusal.md` when present
 - `renders/benchmark_renders/**`
@@ -69,7 +67,4 @@ The Engineering Plan Reviewer checks the plan before engineering implementation 
 - `.agents/skills/render-evidence/SKILL.md`
 - `.agents/skills/mechanical-engineering/SKILL.md`
 - `.agents/skills/cots-parts/SKILL.md`
-- `.agents/skills/build123d-technical-drawing/SKILL.md`
 - `.agents/skills/runtime-script-contract/SKILL.md`
-- `.agents/skills/electronics-engineering/SKILL.md` when explicit electronics exist
-- `.agents/skills/electromechanics-syntax/SKILL.md` when explicit moving electrical parts exist

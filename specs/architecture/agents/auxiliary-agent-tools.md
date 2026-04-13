@@ -36,8 +36,6 @@
 | Namespace | Current helper surface | Status | Ownership / notes |
 | -- | -- | -- | -- |
 | `shared.utils.agent` | `refuse_plan(reason)` | Auxiliary wrapper | Writes a refusal artifact or forwards to the heavy-worker refusal path. The other proxy wrappers in this module are core and stay documented in `tools.md`. |
-| `worker_heavy.utils.validation` | `define_fluid(...)`, `get_stress_report(...)`, `preview_stress(...)`, `set_soft_mesh(...)` | Experimental / diagnostic | `define_fluid()` mutates `benchmark_definition.yaml`. `get_stress_report()` and `preview_stress()` require `simulation_result.json`. `set_soft_mesh()` toggles FEM intent and can switch the benchmark backend to Genesis. |
-| `worker_heavy.utils.electronics` | `calculate_power_budget(...)`, `create_circuit(...)`, `route_wire(...)`, `simulate_circuit_transient(...)`, `validate_circuit(...)` | Support namespace | Used by the electromechanical workflow as helper functions, not as separate high-level agent capabilities. |
 | `controller.agent.tools` | `run_validate_and_price_script(fs)` | Internal bridge | Runs the checked-in planner pricing script. The exposed planner gate is `validate_costing_and_price()`, which uses this bridge. |
 | `controller.agent.nodes.skills` | `save_suggested_skill(title, content)` | Skill-training staging helper | Writes staged skill drafts into the session-local `suggested_skills/` worktree/checkpoint for the standalone training loop. It is a compatibility write primitive, not evidence that a separate `skill_agent` is required by the target architecture. |
 
@@ -49,10 +47,9 @@
 
 ## Experimental surfaces
 
-- The current experimental cluster is the fluid/FEM/stress helper set in `worker_heavy.utils.validation`.
-- The next auxiliary cluster is the render-query helper family in `worker_light.utils.render_query`. It depends on the render bundle contract owned by the rendering architecture docs.
-- Those helpers already have dedicated integration coverage in `specs/integration-test-list.md`, including the fluid workflow and stress-heatmap workflow, which is why they remain tracked as real runtime surfaces instead of being treated as throwaway snippets.
-- They are still opt-in helpers. A benchmark or engineering task only uses them when the benchmark contract explicitly requires fluids, deformables, or stress diagnostics.
+- The current experimental cluster is the render-query helper family in `worker_light.utils.render_query`.
+- The next auxiliary cluster is the same render-query helper family, which depends on the render bundle contract owned by the rendering architecture docs.
+- Those helpers are still opt-in. A benchmark or engineering task only uses them when the task needs bundle lookup or point-pick resolution.
 - The prompt surface should not advertise them as universal capabilities for every task.
 
 ## Backend plumbing

@@ -5,7 +5,6 @@
 - Primary focus: physics simulation contract, backend split, and rendering behavior.
 - Defines constraints realism rules, allowed mechanisms/components, and CAD-joint-to-simulator mapping.
 - Specifies simulation constants, backend assumptions, and validation expectations.
-- Detailed fluids/deformables and electromechanical modality contracts live in [fluids-and-deformables.md](./fluids-and-deformables.md) and [electronics-and-electromechanics.md](./electronics-and-electromechanics.md).
 - Use this file for changes related to simulation semantics, constraints, or rendering logic.
 
 ## Dedicated render services
@@ -42,7 +41,7 @@ The practical consequence is that the renderer image must contain the required M
 
 ## Genesis for simulation
 
-While this platform has notable downsides for future use, we pick Genesis because it supports fluid interaction and Finite Element analysis; being fast enough to work.
+While this platform has notable downsides for future use, we pick Genesis because it provides the simulation backend we need and is fast enough to work.
 
 Operational benchmarking notes, runtime optimization attempts, and dated performance measurements for the simulation stack are tracked in [auxillary/simulation-optimization-attempts.md](./auxillary/simulation-optimization-attempts.md).
 
@@ -141,7 +140,7 @@ We do not use one backend for every purpose.
 The backend contract is:
 
 1. `physics.backend` selects the physics simulation backend.
-2. Genesis remains the backend for Genesis-only simulation behavior such as FEM and fluids.
+2. Genesis remains the backend for Genesis-only simulation behavior.
 3. Explicit preview rendering uses the renderer worker's selected preview backend and is executed by the renderer worker.
 4. The explicit preview path is a fast geometry/context artifact path, not a Genesis-runtime proof path.
 5. Manual render evidence is written into `renders/current-episode/` during the active stage, while the 24-view handoff bundles are written separately under `renders/benchmark_renders/`, `renders/engineer_plan_renders/`, or `renders/final_solution_submission_renders/` depending on the workflow.
@@ -197,18 +196,11 @@ Agent-facing inspection of persisted simulation video is config-driven. When `co
 
 The low-frequency simulation-time frame sync path is now supported as an opt-in websocket stream for simulation evidence. The stream targets roughly one PNG every 0.5s of simulated time and is designed to stay manageable because the cadence is low; the final MP4 remains the canonical persisted artifact. Incremental S3 upload of those live frames remains an extension point if a future revision needs bundle-backed persistence for the stream itself.
 
-<!-- Downsides of MuJoCo?
-
-- we won't support deformation (finite element analysis)
-- we won't support fluids-->
-
 ## Simulation constants and assumptions
 
 We operate in a real-world-like scenario, with rigid bodies, gravity, real-world materials, and standard properties like friction and restitution (bounciness).
 
 Benchmark-owned fixtures may be fixed, partially constrained, motorized, or fully free when they are part of the benchmark contract. That benchmark-side contract can be weaker than the engineer-solution contract, but it still must stay deterministic, reviewable, and compatible with the simulation evidence path. Benchmark-side simulation validates the declared fixture motion and stability; it does not ask the benchmark generator to solve the benchmark. The benchmark payload observation window is policy-driven through `config/agents_config.yaml`, and the late-drift exception applies only to the payload, not to benchmark-owned fixtures or simulation bounds. Engineer-authored objects remain physically realistic and must satisfy the normal constraint rules.
-
-Benchmarked time of execution for Genesis, simulating one-two FEM parts - 20s on dev mode.
 
 ### Physically-realistic constraints
 
@@ -415,8 +407,6 @@ For benchmark-owned fixtures, the rule is explicit-motion validation:
 3. a fully free rigid part has 6 DOF,
 4. reviewers validate the declared motion against the handoff artifacts and dynamic evidence,
 5. reviewers reject benchmark fixtures whose motion cannot be reconstructed from the declared contract or whose evidence contradicts the declaration.
-
-Notably this will also be affected when we will (later) transfer to deformable body simulation and we'll need to find ways how to make simulation stronger:
 
 Map of joints to Genesis (which has parity with MuJoCo) constraints and their uses:
 

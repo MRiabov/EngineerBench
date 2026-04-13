@@ -11,7 +11,6 @@ It is worth being a dedicated artifact because reviewer-stage routing must fail 
 - `.manifests/benchmark_review_manifest.json`
 - `.manifests/engineering_plan_review_manifest.json`
 - `.manifests/engineering_execution_handoff_manifest.json`
-- `.manifests/electronics_review_manifest.json`
 
 Older references in the repo may still use the legacy `engineering_execution_review_manifest.json` wording.
 The live runtime contract uses the handoff name above.

@@ -16,7 +16,6 @@ The Benchmark Plan Reviewer checks the planner handoff before implementation sta
 - `benchmark_definition.yaml`
 - `benchmark_assembly_definition.yaml`
 - `benchmark_plan_evidence_script.py`
-- `benchmark_plan_technical_drawing_script.py`
 - `renders/benchmark_renders/**` when available
 - `renders/current-episode/**` when it exists
 - `.manifests/benchmark_plan_review_manifest.json`
@@ -37,7 +36,6 @@ The Benchmark Plan Reviewer checks the planner handoff before implementation sta
 - Review the latest planner revision only.
 - Check exact inventory grounding across the markdown, YAML, and planner scripts.
 - Reject unsupported geometry claims, hidden motion, and free-form XYZ placement as the primary layout mechanism.
-- The technical-drawing companion is presentation-only; it must preserve the same labels, repeated quantities, and COTS identities as the planner handoff and cannot define a second geometry contract.
 - If render images exist, inspect at least one before approval.
 - If the benchmark has moving fixtures, require motion-visible handoff facts, not just prose.
 - If bug-report mode is enabled and runtime plumbing blocks the review, write `bug_report.md` at the workspace root and continue unless the reviewer is actually blocked.
@@ -57,7 +55,6 @@ The Benchmark Plan Reviewer checks the planner handoff before implementation sta
 - `.agents/skills/benchmark-plan-reviewer/SKILL.md`
 - `.agents/skills/render-evidence/SKILL.md`
 - `.agents/skills/build123d-cad-drafting-skill/SKILL.md`
-- `.agents/skills/build123d-technical-drawing/SKILL.md`
 - `.agents/skills/runtime-script-contract/SKILL.md`
 - `.agents/skills/mechanical-engineering/SKILL.md`
 - `.agents/skills/cots-parts/SKILL.md` when benchmark-owned fixtures are catalog-backed

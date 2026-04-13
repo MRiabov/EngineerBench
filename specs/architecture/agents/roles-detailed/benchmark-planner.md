@@ -11,7 +11,6 @@ The Benchmark Planner turns a problem brief into a benchmark handoff package. It
 - `benchmark_definition.yaml`
 - `benchmark_assembly_definition.yaml`
 - `benchmark_plan_evidence_script.py`
-- `benchmark_plan_technical_drawing_script.py`
 - `journal.md`
 - `renders/benchmark_renders/` persistent render evidence
 - `renders/current-episode/` scratch evidence during the active run
@@ -40,14 +39,12 @@ The Benchmark Planner turns a problem brief into a benchmark handoff package. It
 - `execute_command`
 - `inspect_topology`
 - `invoke_cots_search_subagent`
-- `render_technical_drawing`
 - `submit_benchmark_plan`
 
 ## Runtime Helpers To Use From Scripts
 
 - `render_cad(...)` for a live benchmark scene with objective overlays
 - `objectives_geometry()` for reconstructed objective bodies
-- `render_technical_drawing()` when inspecting the drafted drawing package
 
 ## What Humans Must Tell It
 
@@ -59,7 +56,6 @@ The Benchmark Planner turns a problem brief into a benchmark handoff package. It
 - If bug-report mode is enabled and runtime plumbing blocks progress, write `bug_report.md` at the workspace root and keep working unless the task is genuinely blocked.
 - If render images already exist for the current revision, inspect them with `inspect_media()` before submission.
 - Do not expect `benchmark_script.py` in the workspace until after plan approval.
-- Treat `benchmark_plan_technical_drawing_script.py` as the presentation companion, not a second geometry contract.
 - `invoke_cots_search_subagent` is for engineer-side candidate parts, not for benchmark-owned fixtures.
 - `submit_benchmark_plan()` is the only completion gate; do not hand off before the package is internally consistent.
 
@@ -68,14 +64,12 @@ The Benchmark Planner turns a problem brief into a benchmark handoff package. It
 - The benchmark is a valid problem instance for the engineering graph.
 - The geometry is valid and the objective bodies do not overlap the forbidden or spawn regions.
 - The planner scripts preserve the same labels, repeated quantities, and COTS identities as the plan.
-- Drafting mode, when enabled, has been inspected with `render_technical_drawing()`.
 - The planner wrote realistic estimated cost and weight values before submission.
 
 ## Related Skills
 
 - `.agents/skills/benchmark-planner/SKILL.md`
 - `.agents/skills/build123d-cad-drafting-skill/SKILL.md`
-- `.agents/skills/build123d-technical-drawing/SKILL.md`
 - `.agents/skills/runtime-script-contract/SKILL.md`
 - `.agents/skills/mechanical-engineering/SKILL.md`
 - `.agents/skills/manufacturing-knowledge/SKILL.md`

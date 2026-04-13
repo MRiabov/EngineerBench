@@ -18,7 +18,7 @@ Metadata validation is ownership-sensitive:
 
 1. Engineer-created manufactured parts and planner-declared manufactured parts must carry the manufacturing/workbench metadata required for manufacturability validation and pricing.
 2. Benchmark-owned environment geometry, benchmark input objects, and benchmark objective markers are not treated as manufactured outputs.
-3. Benchmark-owned COTS fixtures such as motors, bearings, or electronics remain benchmark fixtures even when they carry `cots_id`; they are excluded from engineer manufacturability validation and engineer pricing.
+3. Benchmark-owned COTS fixtures such as motors or bearings remain benchmark fixtures even when they carry `cots_id`; they are excluded from engineer manufacturability validation and engineer pricing.
 4. Those benchmark-owned read-only fixtures may carry physics/render metadata, but they are excluded from manufacturability validation and pricing.
 5. Missing `manufacturing_method` / `material_id` is therefore a hard validation failure only for engineer-owned manufactured parts (and planner-owned manufactured-part definitions), not for benchmark fixtures.
 
@@ -82,7 +82,7 @@ The rendering backend is not a single global choice. We split rendering by purpo
 
 1. Explicit preview renders use the renderer worker's selected backend inside `worker-renderer`.
 2. Simulation-video rendering is a switchable contract; the current implementation keeps it on `worker-heavy`/MuJoCo because that was the lowest-overhead route.
-3. Genesis-native visual outputs follow the selected simulation backend when the artifact depends on Genesis-only behavior such as FEM, fluids, or backend-native stress/state output.
+3. Genesis-native visual outputs follow the selected simulation backend when the artifact depends on backend-native simulation state output.
 
 This split is intentional. Preview evidence does not require Genesis runtime features and therefore stays on the renderer-worker preview path, but it is produced only on demand through the dedicated render worker boundary.
 
@@ -98,7 +98,7 @@ I presume the model will need to render a view or a set of views to get an under
 Preview evidence is generated explicitly, not as a validation side effect. The default policy is:
 
 1. `/benchmark/validate` performs validation only and does not generate preview artifacts by default.
-2. `render_cad(...)` and `render_technical_drawing(...)` generate ephemeral manual render evidence under `renders/current-episode/` for the active stage.
+2. `render_cad(...)` generates ephemeral manual render evidence under `renders/current-episode/` for the active stage.
 3. Stage handoffs generate 24-view persistent bundles separately under:
    1. benchmark render evidence under `renders/benchmark_renders/`,
    2. engineering planner handoff evidence under `renders/engineer_plan_renders/`,

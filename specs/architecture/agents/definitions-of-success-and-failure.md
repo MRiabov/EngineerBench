@@ -89,9 +89,6 @@ Failure is achieved via either of:
 
 5. Any part is broken:
 
-   - With "passive/static" parts: break upon stress which is higher than max stress - safety factor(note: not applicable for now as we are simulating rigid-body only).
-   - Some parts have custom breaking logic - e.g. motors can be overloaded on shaft.
-
 6. The runtime-spawned moved object overlaps benchmark-owned fixture geometry at its declared start pose.
 
    - This is a startup validation failure, not a physics-side collision event.
@@ -118,27 +115,6 @@ The mesh is unbounded in vertex counts because we are simulating engineering-gra
 - **Smoke Test Optimization**: When `smoke_test_mode=True` is requested, the system automatically increases the CAD-to-STL export tolerance (e.g., from 0.1 to 1.0). This generates coarser meshes that are drastically faster for the physics engine (especially Genesis on CPU) to voxelize, enabling rapid stability and multitenancy checks.
 - **Dynamic Manufacturing Resolution**: Simulation and validation logic must dynamically resolve the manufacturing method from CAD metadata. This ensures that validation rules (like CNC undercut detection) are only applied when appropriate for the chosen production process.
 
-<!-- For rigid mesh only - not for deformable materials(!), we do this:
-The mesh is unbounded in vertex counts because we are simulating engineering-grade materials. However, to ensure **simulation stability** and **performance**, we use a dual-mesh strategy:
-
-1. **Visual Mesh**: High-quality, high-poly mesh (e.g., `angular_deflection=0.1`).
-    - Used for rendering and visual inspection.
-    - Preserves cosmetic details.
-2. **Collision Mesh**: Simplified, decimated mesh (e.g., `angular_deflection=0.5` or `trimesh.decimate`).
-    - Used for physics calculation and V-HACD decomposition.
-    - **Loss**: Curved surfaces become faceted (spheres look like polyhedrons). Small features (threads, text) are smoothed over.
-    - **Gain**: 10x-100x faster collision detection, fewer "thin triangle" artifacts, more stable contacts.
-
-**Implementation**:
-
-- `builder.py` exports two OBJ files per part: `part_visual.obj` and `part_collision.obj`.
-- V-HACD is run ONLY on the collision mesh.
-- MuJoCo XML references the collision mesh for `<geom class="collision">` and visual mesh for `<geom class="visual">`.
-
-Watertightness is required for both. -->
-
-<!-- Note: when implementing this logic, don't overcomplicate it. We'll migrate to native logic in Genesis relatively soon (which simplifies it without any extra config at all, including mesh decomposition). I don't care too -->
-
 ## Materials
 
 We have a set of materials defined in `manufacturing_config.yaml`, which defines: `materials` section, and which materials can be used for the simulation - their weight, price, and cost per KG. The config is auto-validated with unit tests (e.g., can't reference and inexisting material).
@@ -162,7 +138,7 @@ manufacturing_processes:
 materials:
   alu-6061:
     color: #
-    elongation_stress:
+    yield_strength:
     restitution: 
     friction_coef: 
     # and others

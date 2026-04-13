@@ -29,7 +29,7 @@ When humans revise a prompt or skill, tell the agent at least these things:
 - which runtime helpers it should use from authored scripts,
 - which evidence must be inspected before approval,
 - which submission gate closes the role,
-- whether drafting mode, motion proof, electronics, verification, or COTS identity rules apply.
+- whether motion proof, verification, or COTS identity rules apply.
 
 ## Role Index
 
@@ -41,8 +41,6 @@ When humans revise a prompt or skill, tell the agent at least these things:
 - [Engineering Plan Reviewer](./engineer-plan-reviewer.md)
 - [Engineering Coder](./engineer-coder.md)
 - [Engineering Execution Reviewer](./engineer-execution-reviewer.md)
-- [Electronics Planner](./electronics-planner.md)
-- [Electronics Reviewer](./electronics-reviewer.md)
 - [COTS Search](./cots-search.md)
 - [Journalling Agent](./journalling-agent.md)
 - [Skill Agent](./skill-agent.md)

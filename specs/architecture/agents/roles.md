@@ -17,7 +17,6 @@
 - Reviewers write the stage YAML pair and then run `bash scripts/submit_review.sh`.
 - Coder roles validate and simulate the latest revision before calling their role-scoped review helper (`submit_benchmark_for_review()` or `submit_solution_for_review()`).
 - Coder roles may write `plan_refusal.md` only when the approved plan is genuinely infeasible.
-- Technical-drawing companions are presentation layers, not second geometry contracts.
 - When bug-report mode is enabled, any prompt-bearing role may file `bug_report.md` at the workspace root for infrastructure or runtime blockers. The report is diagnostic, not terminal, and it does not replace `journal.md`, `plan_refusal.md`, or review artifacts.
 - When a role has render, drawing, or simulation evidence, inspect it after any significant blocker or repeated failure on the same issue before the next attempt. If the same issue has failed more than three times in a row, inspect render evidence on every subsequent retry until the blocker changes. Use `.agents/skills/render-evidence/SKILL.md` as the visual-inspection playbook.
 
@@ -35,10 +34,8 @@
 | Role | Responsibility | Detailed Sheet |
 | -- | -- | -- |
 | `Engineering Planner` | Turns benchmark context into an implementation-ready engineering plan. | [engineer-planner.md](./roles-detailed/engineer-planner.md) |
-| `Electronics Planner` | Adds explicit electromechanical planning when the handoff actually requires it. | [electronics-planner.md](./roles-detailed/electronics-planner.md) |
 | `Engineering Plan Reviewer` | Reviews the planner handoff before engineering implementation starts. | [engineer-plan-reviewer.md](./roles-detailed/engineer-plan-reviewer.md) |
 | `Engineering Coder` | Implements the approved engineering plan in `solution_script.py`. | [engineer-coder.md](./roles-detailed/engineer-coder.md) |
-| `Electronics Reviewer` | Reviews explicit electronics work after coding. | [electronics-reviewer.md](./roles-detailed/electronics-reviewer.md) |
 | `Engineering Execution Reviewer` | Performs the final execution review after validation and simulation. | [engineer-execution-reviewer.md](./roles-detailed/engineer-execution-reviewer.md) |
 
 ## Helper Roles
@@ -58,7 +55,7 @@
 - The runtime helpers that belong in authored scripts or supporting probes.
 - The evidence inspection rule for the current revision.
 - The submission gate that closes the role.
-- Any special contract, such as COTS identity, motion proof, drafting mode, electronics, or verification.
+- Any special contract, such as COTS identity, motion proof, or verification.
 
 ## Detailed Sheets
 

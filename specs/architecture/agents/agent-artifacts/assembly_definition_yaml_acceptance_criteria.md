@@ -13,7 +13,6 @@ It is worth being a dedicated agent artifact because it is the main binding betw
 - `final_assembly` includes the subassemblies, reuse, and joints that the solution actually exposes.
 - Planner-owned caps from `benchmark_definition.yaml` are copied through exactly and remain internally consistent.
 - Planner-target unit cost and weight fields are derived from validated totals, not invented later.
-- Electronics fields appear when the role explicitly requires them.
 - Motion anchors in `motion_forecast` name explicit `rot_deg` poses, and an omitted rotation is a validation failure rather than an implied identity pose.
 - The file stays internally consistent with `engineering_plan.md`, `todo.md`, and `benchmark_definition.yaml`.
 
@@ -36,4 +35,3 @@ It is worth being a dedicated agent artifact because it is the main binding betw
 - `specs/architecture/agents/handover-contracts.md`
 - `specs/architecture/agents/artifacts-and-filesystem.md`
 - `specs/architecture/CAD-and-other-infra.md`
-- `specs/architecture/electronics-and-electromechanics.md`

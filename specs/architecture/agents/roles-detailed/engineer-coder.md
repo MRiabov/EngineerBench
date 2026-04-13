@@ -23,10 +23,8 @@ The Engineering Coder turns the approved engineering handoff into `solution_scri
 - `benchmark_assembly_definition.yaml`
 - `benchmark_script.py` when it exists
 - `benchmark_plan_evidence_script.py` when it exists
-- `benchmark_plan_technical_drawing_script.py` when it exists
 - `plan_refusal.md` when present
 - `solution_plan_evidence_script.py`
-- `solution_plan_technical_drawing_script.py`
 - `validation_results.json`
 - `simulation_result.json`
 - `scene.json`
@@ -50,14 +48,13 @@ The Engineering Coder turns the approved engineering handoff into `solution_scri
 ## Runtime Helpers To Use From Scripts
 
 - `from utils.submission import validate_engineering, simulate_engineering, submit_solution_for_review`
-- `from utils.preview import render_cad, render_technical_drawing, objectives_geometry, list_render_bundles, query_render_bundle, pick_preview_pixel, pick_preview_pixels`
+- `from utils.preview import render_cad, objectives_geometry, list_render_bundles, query_render_bundle, pick_preview_pixel, pick_preview_pixels`
 
 ## What Humans Must Tell It
 
 - The approved plan package is the binding contract.
-- `assembly_definition.yaml`, `benchmark_definition.yaml`, `benchmark_assembly_definition.yaml`, and the planner drafting scripts are read-only context after plan approval.
+- `assembly_definition.yaml`, `benchmark_definition.yaml`, `benchmark_assembly_definition.yaml`, and the planner evidence scripts are read-only context after plan approval.
 - The coder preserves the exact labels, repeated quantities, COTS identities, budgets, and geometry relationships in the handoff.
-- `solution_plan_technical_drawing_script.py` is the presentation companion, not a second geometry contract.
 - Validate and simulate the latest revision with `validate_engineering()` / `simulate_engineering()` before requesting review, then call `submit_solution_for_review()`.
 - Inspect render or video evidence when it exists; do not rely on text-only summaries.
 - If bug-report mode is enabled and runtime plumbing blocks progress, write `bug_report.md` at the workspace root, keep `journal.md` for task-facing notes, and continue working unless the task is genuinely blocked.
@@ -81,4 +78,3 @@ The Engineering Coder turns the approved engineering handoff into `solution_scri
 - `.agents/skills/cots-parts/SKILL.md`
 - `.agents/skills/manufacturing-knowledge/SKILL.md`
 - `.agents/skills/render-evidence/SKILL.md`
-- `.agents/skills/electronics-engineering/SKILL.md` when explicit electronics exist

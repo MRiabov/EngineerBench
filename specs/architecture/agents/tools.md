@@ -178,7 +178,6 @@ I propose the following set of tools (their usage is below). Notably, the tools 
 <!-- Same: what's in the compound? -->
 
 - `render_cad(component: Part|Compound, orbit_pitch: float|list[float] = 45.0, orbit_yaw: float|list[float] = 45.0, rgb: bool = True, depth: bool = True, segmentation: bool = False, payload_path: bool = False) -> PreviewJobAck` - async on-demand preview submission for benchmark, engineer, and reviewer nodes. The runtime normalizes scalar camera inputs to lists, zip-pairs views by index, enforces the 64-view cap, and streams queued/view-ready/completed status over the worker-light control path while `worker-renderer` materializes the images into `renders/current-episode/`. When `payload_path=True`, the render bundle also includes a static payload-path overlay rendered from the finest available payload-trajectory artifact for the current workflow, preferring engineer-coder `payload_trajectory_definition.yaml` when present and otherwise the coarse planner `motion_forecast` or benchmark motion evidence as applicable. The helper returns a structured job ack; controller/API-backed multimodal runs use `inspect_media(...)` to view the resulting images. Benchmark callers compose benchmark `build()` output with objective overlays from `utils.objectives_geometry()` before previewing benchmark context.
-- `render_technical_drawing(...)` - async on-demand preview submission for technical drawing packages authored by planners and consumed by coders/reviewers. The runtime renders the drafting package, 2D projection set, and any vector sidecars needed for review, then persists the result into `renders/current-episode/` for the active stage. The tool is for inspection, not source authoring; controller/API-backed runs use `inspect_media(...)` to view the persisted render files. Drafting-enabled roles must call it at least once before their node can pass validation; missing calls fail closed and route the node back through the normal retry loop. The implementation may use `TechnicalDrawing`, `project_to_viewport()`, `ExportSVG`, and `ExportDXF`, but those names are implementation details rather than the agent-facing contract. When a workspace starts from the convenience scaffold, that scaffold is the reusable default 3-view orthographic template, not a separate authoring path.
 - `objectives_geometry()` - a zero-argument utility re-exported by the public `utils` package, alongside `render_cad()` and `validate_benchmark()`, that reconstructs the benchmark objective overlay geometry from the `objectives` section of the canonical `benchmark_definition.yaml` path for the current workspace. It is shared runtime utility, not agent-authored geometry code. Preview callers combine its output with benchmark `build()` output before rendering benchmark context.
 
 #### Reviewer / media-inspection tool
@@ -246,7 +245,6 @@ I propose the following set of tools (their usage is below). Notably, the tools 
 #### Shared preview tools
 
 - `render_cad(component: Part|Compound, orbit_pitch: float|list[float] = 45.0, orbit_yaw: float|list[float] = 45.0, rgb: bool = True, depth: bool = True, segmentation: bool = False, payload_path: bool = False) -> PreviewJobAck` - async on-demand preview submission for benchmark, engineer, and reviewer nodes. The runtime normalizes scalar camera inputs to lists, zip-pairs views by index, enforces the 64-view cap, and streams queued/view-ready/completed status over the worker-light control path while `worker-renderer` materializes the images into `renders/current-episode/`. When `payload_path=True`, the render bundle also includes a static payload-path overlay rendered from the finest available payload-trajectory artifact for the current workflow, preferring engineer-coder `payload_trajectory_definition.yaml` when present and otherwise the coarse planner `motion_forecast` or benchmark motion evidence as applicable. The helper returns a structured job ack; controller/API-backed multimodal runs use `inspect_media(...)` to view the resulting images. Benchmark callers compose benchmark `build()` output with objective overlays from `utils.objectives_geometry()` before previewing benchmark context.
-- `render_technical_drawing(...)` - async on-demand preview submission for technical drawing packages authored by planners and consumed by coders/reviewers. The runtime renders the drafting package, 2D projection set, and any vector sidecars needed for review, then persists the result into `renders/current-episode/` for the active stage. The tool is for inspection, not source authoring; controller/API-backed runs use `inspect_media(...)` to view the persisted render files. Drafting-enabled roles must call it at least once before their node can pass validation; missing calls fail closed and route the node back through the normal retry loop. The implementation may use `TechnicalDrawing`, `project_to_viewport()`, `ExportSVG`, and `ExportDXF`, but those names are implementation details rather than the agent-facing contract. When a workspace starts from the convenience scaffold, that scaffold is the reusable default 3-view orthographic template, not a separate authoring path.
 - `objectives_geometry()` - a zero-argument utility re-exported by the public `utils` package, alongside `render_cad()` and `validate_benchmark()`, that reconstructs the benchmark objective overlay geometry from the `objectives` section of the canonical `benchmark_definition.yaml` path for the current workspace. It is shared runtime utility, not agent-authored geometry code. Preview callers combine its output with benchmark `build()` output before rendering benchmark context.
 
 #### Engineering tools
@@ -270,7 +268,7 @@ I propose the following set of tools (their usage is below). Notably, the tools 
 
 `submit_benchmark_plan()` / `submit_engineering_plan()`. Will:
 
-01. Validate planner-required files for the planner role (Engineering Planner/Electronics Planner/Benchmark Planner).
+01. Validate planner-required files for the planner role (Engineering Planner/Benchmark Planner).
 02. Return structured submission status (`ok`, `status`, `errors`) to the ReAct loop.
 03. Be mandatory before planner completion/handoff.
 04. Be the only valid planner completion gate: planner transitions are `PLANNED` only when `ok=true`.
@@ -308,7 +306,7 @@ Run the workbench interface to validate the part for manufacturability; if passe
 3. Split the assembly into benchmark-owned read-only fixtures versus engineer-owned manufactured parts / COTS parts.
 4. Validate manufacturability as per the Workbench interface only for engineer-owned manufactured parts. Do not reject because benchmark environment/input-objective fixtures lack manufacturing metadata.
 5. Validate full-assembly placement and build-zone bounds, including interactions with the benchmark environment/objectives.
-6. Determine cost for engineer-owned manufactured parts and selected COTS parts only. Benchmark-owned COTS fixtures and benchmark-owned electronics never flow into engineer solution pricing,
+6. Determine cost for engineer-owned manufactured parts and selected COTS parts only. Benchmark-owned fixtures never flow into engineer solution pricing,
 7. Validate for cost,
 8. Validate for weight.
 
@@ -334,7 +332,7 @@ Submission-stage contract:
 
 1. The submission call is reviewer-stage explicit; runtime must not guess a default reviewer stage when review submission is requested.
 2. Benchmark submissions target `Benchmark Reviewer` and resolve `benchmark_assembly_definition.yaml` as the stage-correct assembly artifact.
-3. Engineering and electronics submissions target `assembly_definition.yaml` as the stage-correct assembly artifact.
+3. Engineering submissions target `assembly_definition.yaml` as the stage-correct assembly artifact.
 
 ## Prompt vs skill guidance
 
@@ -352,7 +350,6 @@ Manifest persistence contract:
 2. Exactly one reviewer-stage manifest is persisted per submission:
    - Benchmark Reviewer submission: `.manifests/benchmark_review_manifest.json`
    - Engineering Execution Reviewer submission: `.manifests/engineering_execution_handoff_manifest.json`
-   - Electronics Reviewer submission: `.manifests/electronics_review_manifest.json`
 3. Planner `submit_benchmark_plan()` / `submit_engineering_plan()` persist the plan-review manifest:
    - Benchmark Plan Reviewer: `.manifests/benchmark_plan_review_manifest.json`
    - Engineering Plan Reviewer: `.manifests/engineering_plan_review_manifest.json`

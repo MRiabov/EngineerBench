@@ -27,10 +27,9 @@ The unified prompt manager treats these inputs as authoritative:
 
 - `config/prompts.yaml`: structured role prompts and appendix fragments.
 - `shared/agent_templates/`: prompt-context files, helper scripts, and boilerplate that belong in the workspace context.
-- `shared/assets/template_repos/`: role-scoped starter workspace material copied into the run-local workspace, including the reusable drafting scaffold when the technical-drawing mode is enabled.
+- `shared/assets/template_repos/`: role-scoped starter workspace material copied into the run-local workspace.
 - the checked-in `.agents/skills/` tree and its workspace materializations, as described in [agent-skill.md](./agent-skill.md), plus any compact generated index derived from the active skill tree when the backend needs one. When a skill-training run materializes a session-local `suggested_skills/` overlay/worktree, that overlay is the active skill tree for that run. Those runtime copies are inputs to the agent, not a separate prompt source.
 - backends that know the session-local overlay root may surface it through `PROBLEMOLOGIST_SKILL_OVERLAY_ROOT` so catalog helpers can render overlay-first skill references without duplicating the resolution rule.
-- planner-authored drafting scripts, when present, are prompt-context inputs too: `benchmark_plan_evidence_script.py`, `benchmark_plan_technical_drawing_script.py`, `solution_plan_evidence_script.py`, and `solution_plan_technical_drawing_script.py`.
 - `worker_light/agent_files/`: legacy compatibility mirror only.
 - runtime-generated context: task text, agent identity, task ID, workspace state, backend selection, and tool registration.
 
@@ -44,7 +43,7 @@ For the core benchmark graph, the order is: `benchmark_planner` -> `benchmark_pl
 
 For the core engineering graph, the order is: `engineer_planner` -> `engineer_plan_reviewer` -> `engineer_coder` -> `engineer_execution_reviewer`.
 
-Any other first-class role family, including electronics roles if they remain active, follows the same runtime-order rule.
+Any other first-class role family follows the same runtime-order rule.
 
 Helper agents should follow the same rule: place them where the runtime calls them, and keep them grouped after the core graphs when that does not conflict with execution order.
 
@@ -54,16 +53,15 @@ The PromptManager is the only component that merges prompt fragments into final 
 
 It must:
 
-01. read the shared source model,
-02. choose the backend family,
-03. render the active role prompt,
-04. add the shared appendix,
-05. add the bug-report appendix when the global bug-report mode is active,
-06. add the drafting appendix when drafting mode is active for the planner family,
-07. add the backend appendix,
-08. add the CLI-provider appendix when the backend family is `cli_based`,
-09. append runtime-generated context,
-10. append a compact generated skill index when the backend family needs one, preferably derived from the active skill tree for the current session.
+1. read the shared source model,
+2. choose the backend family,
+3. render the active role prompt,
+4. add the shared appendix,
+5. add the bug-report appendix when the global bug-report mode is active,
+6. add the backend appendix,
+7. add the CLI-provider appendix when the backend family is `cli_based`,
+8. append runtime-generated context,
+9. append a compact generated skill index when the backend family needs one, preferably derived from the active skill tree for the current session.
 
 The backend choice selects which appendix branch is used. It does not select a different prompt manager or a different prompt source model.
 
@@ -75,7 +73,7 @@ Role prompts define the agent identity and the minimum operating contract for th
 
 They should stay close to the current engineer_coder style: compact, direct, and workspace-aware.
 
-Role prompts should name the authored source file, the read-only context files, the planner technical drawing evidence/drawing scripts when those are enabled, and the submission path when that matters for the role. They should not restate the full workflow that already lives in skills or runtime contracts.
+Role prompts should name the authored source file, the read-only context files, and the submission path when that matters for the role. They should not restate the full workflow that already lives in skills or runtime contracts.
 
 ### Shared appendices
 
@@ -86,14 +84,6 @@ They should cover rules such as workspace-relative paths, system-owned metadata,
 Bug-report appendices are also global, but they are conditional: PromptManager appends them only when the top-level bug-report mode is enabled in `config/agents_config.yaml`.
 
 If a rule is universal but long, it probably belongs in the relevant runtime contract or skill instead of the shared appendix.
-
-### Drafting appendices
-
-Drafting appendices are conditional role-scoped additions that only appear when the planner technical drawing mode is enabled in `config/agents_config.yaml`.
-
-They belong in `config/prompts.yaml` and should stay focused on the planner-authored technical drawing contract, the reviewer checks that apply to that contract, and the read-only context the coder should preserve.
-
-If technical drawing mode is off, PromptManager must omit the appendix entirely so the planner does not learn the drafting contract by accident.
 
 ### Backend appendices
 
@@ -149,11 +139,10 @@ The final prompt should read in this order:
 1. role prompt
 2. shared appendix
 3. bug-report appendix, when active
-4. drafting appendix, when active
-5. backend appendix
-6. CLI-provider appendix, when active
-7. runtime-generated context
-8. compact generated skill index, when needed
+4. backend appendix
+5. CLI-provider appendix, when active
+6. runtime-generated context
+7. compact generated skill index, when needed
 
 That order keeps the base prompt stable while still allowing backend-specific and runtime-specific context to appear in a predictable place.
 
@@ -237,7 +226,7 @@ appendices:
         Qwen-specific reminder: use `render_cad(...)` for CAD geometry, then inspect the generated render files with `read_file` even if you think you do not have a dedicated image tool. Reread the active workspace state before answering and do not rely on memory across turns.
 ```
 
-The shape above is illustrative, not exhaustive. The concrete YAML layout must include any active role families, including electronics planner/reviewer roles and helper agents if they remain first-class, but the ownership model should remain the same.
+The shape above is illustrative, not exhaustive. The concrete YAML layout must include any active role families and helper agents if they remain first-class, but the ownership model should remain the same.
 
 ## Prompt optimization
 
