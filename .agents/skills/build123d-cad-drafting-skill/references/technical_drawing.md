@@ -7,8 +7,6 @@ Use this reference when a build123d task moves from solid modeling into sheet la
 - `ExtensionLine(...)` and `Text(...)` add dimensions and labels.
 - `Draft(...)` controls dimension formatting.
 - `ExportSVG(...)` writes the authoritative vector sheet; `ExportDXF(...)` is useful when downstream CAD needs DXF.
-- For the full drawing workflow, use the companion [build123d-technical-drawing](../../build123d-technical-drawing/SKILL.md) skill.
-
 Official tutorial:
 
 - https://build123d.readthedocs.io/en/latest/tech_drawing_tutorial.html

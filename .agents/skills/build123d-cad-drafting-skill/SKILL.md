@@ -20,8 +20,6 @@ Read this skill and the relevant reference files below before planning any `buil
 09. **Intersection Checks**: For pairwise geometry, use `shape_a.intersect(shape_b)`. The returned shape has a `.volume` property; if that volume is greater than zero, the shapes intersect, and you can inspect or render the returned intersection shape for debugging. For grouped children, wrap the parts in `Compound(children=[...])` and call `do_children_intersect()` on the compound; in this runtime it returns `(intersects, (shape_a, shape_b), volume)`, so unpack it for logging.
 10. **COTS Parts**: If the geometry includes catalog-backed components, load `skills/cots-parts/SKILL.md` and keep the concrete COTS instance intact. Do not strip provenance or replace it with anonymous solids when the task still depends on part identity.
 
-For orthographic sheets, title blocks, and vector export, use the companion [build123d-technical-drawing](../build123d-technical-drawing/SKILL.md) skill and the technical-drawing reference below. Keep the 3D model authoritative; drawings are projections, not a second source of truth.
-
 ## Positioning Hierarchy
 
 - If environment fixtures are available for attachment, prefer faces, edges, and other fixture features over raw coordinates.

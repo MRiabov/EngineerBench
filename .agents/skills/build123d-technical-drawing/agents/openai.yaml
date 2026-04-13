@@ -1,4 +1,0 @@
-interface:
-  display_name: "Build123d Technical Drawing"
-  short_description: "Author build123d orthographic drawing sheets."
-  default_prompt: "Use this skill when creating or editing build123d technical drawing scripts. Start from the authoritative 3D model, choose standard orthographic views, build the border with TechnicalDrawing, add only grounded dimensions and labels, keep visible and hidden lines legible, and export or preview the drawing before finishing."
