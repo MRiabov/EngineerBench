@@ -1,12 +1,9 @@
-import asyncio
-import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import delete
 from sqlalchemy.exc import IntegrityError
-from temporalio.client import Client
 
 from controller.api.manager import task_tracker
 from controller.api.routes import (
@@ -34,50 +31,9 @@ try:
 except Exception as e:
     logger.warning("failed_to_initialize_langfuse_globally", error=str(e))
 
-TEMPORAL_URL = settings.temporal_url
-WORKER_LIGHT_URL = settings.worker_light_url
-TEMPORAL_CONNECT_MAX_ATTEMPTS = int(os.getenv("TEMPORAL_CONNECT_MAX_ATTEMPTS", "120"))
-TEMPORAL_CONNECT_RETRY_SECONDS = float(
-    os.getenv("TEMPORAL_CONNECT_RETRY_SECONDS", "1.0")
-)
-
-# Temporal client
-temporal_client_instance: Client = None
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global temporal_client_instance
-    try:
-        attempt = 0
-        while True:
-            try:
-                temporal_client_instance = await Client.connect(TEMPORAL_URL)
-                break
-            except Exception as exc:
-                attempt += 1
-                if attempt >= TEMPORAL_CONNECT_MAX_ATTEMPTS:
-                    raise RuntimeError(
-                        f"Failed to connect to Temporal at {TEMPORAL_URL} "
-                        f"after {TEMPORAL_CONNECT_MAX_ATTEMPTS} attempts"
-                    ) from exc
-                wait_s = min(TEMPORAL_CONNECT_RETRY_SECONDS * attempt, 10.0)
-                logger.warning(
-                    "temporal_connect_retry",
-                    attempt=attempt,
-                    max_attempts=TEMPORAL_CONNECT_MAX_ATTEMPTS,
-                    error=str(exc),
-                    retry_in_seconds=wait_s,
-                    session_id="system",
-                )
-                await asyncio.sleep(wait_s)
-
-        app.state.temporal_client = temporal_client_instance
-        logger.info("connected_to_temporal", url=TEMPORAL_URL)
-    except Exception as e:
-        logger.error("failed_to_connect_to_temporal", error=str(e), session_id="system")
-        raise
-
     yield
 
     await dispose_all_engines()

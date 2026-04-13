@@ -1,25 +1,13 @@
 import asyncio
 import base64
-import json
 import uuid
 from contextlib import suppress
 from datetime import UTC, datetime
-from hashlib import sha256
 from pathlib import Path
 from typing import Any, Literal
 
 import httpx
 import structlog
-from controller.workflows.execution import ScriptExecutionWorkflow
-from controller.workflows.heavy import (
-    HeavySimulationWorkflow,
-    HeavySubmitWorkflow,
-    HeavyVerifyWorkflow,
-)
-from controller.workflows.preview import PreviewWorkflow
-from temporalio.client import Client
-from temporalio.common import WorkflowIDConflictPolicy
-from temporalio.exceptions import WorkflowAlreadyStartedError
 
 from controller.agent.runtime_models import FileListEntry
 from controller.clients.worker import WorkerClient
@@ -33,20 +21,13 @@ from controller.persistence.models import Asset
 from shared.agents.config import resolve_agents_config_path
 from shared.enums import AgentName, EpisodeStatus, ManufacturingMethod
 from shared.observability.schemas import (
-    EditFileToolEvent,
-    GrepToolEvent,
     InspectMediaToolEvent,
-    LibraryUsageEvent,
-    LsFilesToolEvent,
     ManufacturabilityCheckEvent,
     MediaInspectionEvent,
     PlanSubmissionBenchmarkEvent,
     PlanSubmissionEngineerEvent,
-    ReadFileToolEvent,
-    RunCommandToolEvent,
     SimulationRequestEvent,
-    SkillReadEvent,
-    WriteFileToolEvent,
+    ToolInvocationEvent,
 )
 from shared.simulation.schemas import (
     SimulatorBackendType,
@@ -60,17 +41,12 @@ from shared.workers.schema import (
     EditOp,
     ExecuteResponse,
     GrepMatch,
-    HeavySimulationParams,
-    HeavySubmitParams,
-    HeavyVerifyParams,
     InspectTopologyResponse,
     MediaInspectionResult,
     PreviewDesignResponse,
     PreviewRenderingType,
-    PreviewWorkflowParams,
     RenderArtifactMetadata,
     RenderManifest,
-    ScriptExecutionRequest,
 )
 from worker_heavy.config import settings as worker_settings
 
@@ -84,81 +60,6 @@ _IMAGE_MEDIA_TYPES = {
 _VIDEO_MEDIA_TYPES = {
     ".mp4": "video/mp4",
 }
-
-
-def _skill_read_event_name(path_str: str) -> str | None:
-    normalized = path_str.lstrip("/")
-    if normalized.startswith(".agents/skills/"):
-        parts = normalized.split("/")
-        return parts[2] if len(parts) > 2 else parts[-1]
-    return None
-
-
-def _library_usage_name(path_str: str) -> str | None:
-    normalized = path_str.lstrip("/")
-    if normalized.startswith(".agents/skills/"):
-        parts = normalized.split("/")
-        return parts[2] if len(parts) > 2 else parts[-1]
-    if normalized.startswith("utils/"):
-        parts = normalized.split("/")
-        return parts[1] if len(parts) > 1 else parts[0]
-    return None
-
-
-def _bundle_workflow_id(prefix: str, session_id: str, bundle: bytes) -> str:
-    """Derive a deterministic workflow id from the exact workspace bundle."""
-    return f"{prefix}-{session_id}-{sha256(bundle).hexdigest()}"
-
-
-def _preview_workflow_id(
-    session_id: str,
-    bundle: bytes,
-    request: Any,
-) -> str:
-    """Derive a deterministic workflow id for preview requests."""
-    request_model = getattr(request, "request", request)
-    if isinstance(request_model, dict):
-        request_payload = {
-            "script_path": request_model.get("script_path"),
-            "orbit_pitch": request_model.get("orbit_pitch")
-            if "orbit_pitch" in request_model
-            else request_model.get("pitch"),
-            "orbit_yaw": request_model.get("orbit_yaw")
-            if "orbit_yaw" in request_model
-            else request_model.get("yaw"),
-            "rgb": request_model.get("rgb"),
-            "depth": request_model.get("depth"),
-            "segmentation": request_model.get("segmentation"),
-            "payload_path": request_model.get("payload_path"),
-            "drafting": request_model.get("drafting"),
-            "rendering_type": str(request_model.get("rendering_type", "")),
-            "script_content": request_model.get("script_content"),
-            "smoke_test_mode": request_model.get("smoke_test_mode"),
-        }
-    else:
-        request_payload = {
-            "script_path": getattr(request_model, "script_path", None),
-            "orbit_pitch": getattr(
-                request_model,
-                "orbit_pitch",
-                getattr(request_model, "pitch", None),
-            ),
-            "orbit_yaw": getattr(
-                request_model,
-                "orbit_yaw",
-                getattr(request_model, "yaw", None),
-            ),
-            "rgb": getattr(request_model, "rgb", None),
-            "depth": getattr(request_model, "depth", None),
-            "segmentation": getattr(request_model, "segmentation", None),
-            "payload_path": getattr(request_model, "payload_path", None),
-            "drafting": getattr(request_model, "drafting", None),
-            "rendering_type": str(getattr(request_model, "rendering_type", "")),
-            "script_content": getattr(request_model, "script_content", None),
-            "smoke_test_mode": getattr(request_model, "smoke_test_mode", None),
-        }
-    digest_source = bundle + json.dumps(request_payload, sort_keys=True).encode("utf-8")
-    return f"preview-{session_id}-{sha256(digest_source).hexdigest()}"
 
 
 # Global policy instance (cached)
@@ -177,36 +78,19 @@ def get_fs_policy() -> FilesystemPolicy:
 
 class RemoteFilesystemMiddleware:
     """
-    Middleware that proxies filesystem operations to a remote Worker,
-    with durable execution via Temporal.
+    Middleware that proxies filesystem operations to a remote Worker.
     """
 
     def __init__(
         self,
         client: WorkerClient,
-        temporal_client: Client | None = None,
         agent_role: AgentName = AgentName.ENGINEER_CODER,
         episode_id: str | None = None,
     ):
         self.client = client
-        self.temporal_client = temporal_client
         self.agent_role = agent_role
         self.episode_id = episode_id or client.session_id
         self.policy = get_fs_policy()
-
-    def _require_temporal_for_heavy_operation(self, operation: str) -> None:
-        if self.temporal_client is None:
-            error = ValueError(
-                f"deprecated functionality removed: direct {operation} fallback without Temporal"
-            )
-            logger.error(
-                "temporal_required_for_heavy_operation",
-                operation=operation,
-                session_id=self.client.session_id,
-                episode_id=self.episode_id,
-                error=str(error),
-            )
-            raise error
 
     def _check_perm(self, action: Literal["read", "write"], path: str | Path) -> None:
         """Check if action is allowed by policy."""
@@ -284,31 +168,6 @@ class RemoteFilesystemMiddleware:
     def _can_read(self, path: str | Path) -> bool:
         """Boolean read check helper to avoid raising during result filtering."""
         return self.policy.check_permission(self.agent_role, "read", path)
-
-    async def _execute_or_use_existing_workflow(
-        self,
-        workflow: Any,
-        workflow_id: str,
-        params: Any,
-        *,
-        result_type: type | None = None,
-    ) -> Any:
-        """Start a workflow or attach to the running execution for the same ID."""
-        try:
-            return await self.temporal_client.execute_workflow(
-                workflow,
-                params,
-                id=workflow_id,
-                task_queue="simulation-task-queue",
-                result_type=result_type,
-                id_conflict_policy=WorkflowIDConflictPolicy.USE_EXISTING,
-            )
-        except WorkflowAlreadyStartedError:
-            handle = self.temporal_client.get_workflow_handle(
-                workflow_id,
-                result_type=result_type,
-            )
-            return await handle.result()
 
     @staticmethod
     def _normalized_suffix(path: str | Path) -> str:
@@ -404,7 +263,12 @@ class RemoteFilesystemMiddleware:
         self._check_perm("read", path)
         await record_events(
             episode_id=self.episode_id,
-            events=[LsFilesToolEvent(path=str(path))],
+            events=[
+                ToolInvocationEvent(
+                    tool_name="list_files",
+                    arguments={"path": str(path)},
+                )
+            ],
         )
         entries = await self.client.list_files(str(path))
 
@@ -450,28 +314,15 @@ class RemoteFilesystemMiddleware:
                 session_id=self.client.session_id,
             )
             raise ValueError(msg)
-        p_str = str(path).lstrip("/")
-        events = [ReadFileToolEvent(path=p_str)]
-        skill_name = _skill_read_event_name(p_str)
-        if skill_name is not None:
-            # Simple heuristic for skill name
-            events.append(SkillReadEvent(skill_path=path, skill_name=skill_name))
-
         await record_events(
             episode_id=self.episode_id,
-            events=events,
+            events=[
+                ToolInvocationEvent(
+                    tool_name="read_file",
+                    arguments={"path": str(path).lstrip("/")},
+                )
+            ],
         )
-
-        module_name = _library_usage_name(p_str)
-        if module_name is not None:
-            await record_events(
-                episode_id=self.episode_id,
-                events=[
-                    LibraryUsageEvent(
-                        module_name=module_name, usage_type="reused", path=p_str
-                    )
-                ],
-            )
 
         return await self.client.read_file(str(path))
 
@@ -500,27 +351,15 @@ class RemoteFilesystemMiddleware:
             )
             raise ValueError(msg)
 
-        p_str = str(path).lstrip("/")
-        events = [ReadFileToolEvent(path=p_str)]
-        skill_name = _skill_read_event_name(p_str)
-        if skill_name is not None:
-            events.append(SkillReadEvent(skill_path=path, skill_name=skill_name))
-
         await record_events(
             episode_id=self.episode_id,
-            events=events,
+            events=[
+                ToolInvocationEvent(
+                    tool_name="read_file_optional",
+                    arguments={"path": str(path).lstrip("/")},
+                )
+            ],
         )
-
-        module_name = _library_usage_name(p_str)
-        if module_name is not None:
-            await record_events(
-                episode_id=self.episode_id,
-                events=[
-                    LibraryUsageEvent(
-                        module_name=module_name, usage_type="reused", path=p_str
-                    )
-                ],
-            )
 
         return await self.client.read_file_optional(
             str(path),
@@ -722,28 +561,15 @@ class RemoteFilesystemMiddleware:
         await record_events(
             episode_id=self.episode_id,
             events=[
-                WriteFileToolEvent(
-                    path=p_str, content_snippet=content[:100], overwrite=overwrite
+                ToolInvocationEvent(
+                    tool_name="write_file",
+                    arguments={"path": p_str, "overwrite": overwrite},
                 )
             ],
         )
         success = await self.client.write_file(p_str, content, overwrite=overwrite)
 
         if success:
-            # Track library usage (new)
-            p_str = path.as_posix().lstrip("/")
-            module_name = _library_usage_name(p_str)
-            if module_name is not None:
-                from shared.observability.schemas import LibraryUsageEvent
-
-                await record_events(
-                    episode_id=self.episode_id,
-                    events=[
-                        LibraryUsageEvent(
-                            module_name=module_name, usage_type="new", path=p_str
-                        )
-                    ],
-                )
             # WP06: Detect COTS selections in assembly definition artifacts.
             if p_str in {
                 "assembly_definition.yaml",
@@ -797,7 +623,12 @@ class RemoteFilesystemMiddleware:
 
         await record_events(
             episode_id=self.episode_id,
-            events=[EditFileToolEvent(path=p_str, num_edits=len(edits))],
+            events=[
+                ToolInvocationEvent(
+                    tool_name="edit_file",
+                    arguments={"path": p_str, "num_edits": len(edits)},
+                )
+            ],
         )
         success = await self.client.edit_file(p_str, edits)
         if success:
@@ -814,35 +645,22 @@ class RemoteFilesystemMiddleware:
     async def run_command(
         self, command: str, timeout: int | None = None
     ) -> ExecuteResponse:
-        """
-        Execute a shell command via the Worker client, wrapped in Temporal for
-        durability.
-        """
+        """Execute a shell command via the Worker client."""
         if timeout is None:
             timeout = self.policy.get_execution_policy(self.agent_role).timeout_seconds
 
         await record_events(
             episode_id=self.episode_id,
-            events=[RunCommandToolEvent(command=command)],
+            events=[
+                ToolInvocationEvent(
+                    tool_name="run_command",
+                    arguments={"command": command, "timeout": timeout},
+                )
+            ],
         )
         max_attempts = 3
         for attempt in range(1, max_attempts + 1):
             try:
-                if self.temporal_client:
-                    # Wrap in Temporal workflow for durability
-                    return await self.temporal_client.execute_workflow(
-                        ScriptExecutionWorkflow.run,
-                        ScriptExecutionRequest(
-                            code=command,
-                            session_id=self.client.session_id,
-                            timeout=timeout,
-                            episode_id=self.episode_id,
-                        ),
-                        id=f"exec-{self.client.session_id}-{hash(command) % 10**8}",
-                        task_queue="simulation-task-queue",
-                        id_conflict_policy=WorkflowIDConflictPolicy.USE_EXISTING,
-                    )
-                # Fallback to direct client call if Temporal is not available
                 return await self.client.execute_command(
                     command, timeout=timeout, episode_id=self.episode_id
                 )
@@ -901,7 +719,12 @@ class RemoteFilesystemMiddleware:
         p_str = str(path) if path else None
         await record_events(
             episode_id=self.episode_id,
-            events=[GrepToolEvent(pattern=pattern, path=p_str, glob=glob)],
+            events=[
+                ToolInvocationEvent(
+                    tool_name="grep",
+                    arguments={"pattern": pattern, "path": p_str, "glob": glob},
+                )
+            ],
         )
         matches = await self.client.grep(pattern, path=p_str, glob=glob)
         # Defense in depth: even if worker grep searches too broadly, only return
@@ -927,29 +750,17 @@ class RemoteFilesystemMiddleware:
             episode_id=self.episode_id,
             events=[SimulationRequestEvent(script_path=p_str)],
         )
-
-        self._require_temporal_for_heavy_operation("simulate")
-
-        # Bundle from light worker
-        bundle = (
-            base64.b64decode(bundle_base64)
-            if bundle_base64 is not None
-            else await self.client.bundle_session()
-        )
-        workflow_id = _bundle_workflow_id("sim", self.client.session_id, bundle)
-        res = await self._execute_or_use_existing_workflow(
-            HeavySimulationWorkflow.run,
-            workflow_id,
-            HeavySimulationParams(
-                bundle_base64=base64.b64encode(bundle).decode("utf-8"),
-                script_path=p_str,
-                backend=resolved_backend,
-                smoke_test_mode=smoke_test_mode,
+        if bundle_base64 is not None:
+            logger.debug(
+                "simulate_bundle_base64_ignored_for_direct_worker_call",
                 session_id=self.client.session_id,
                 episode_id=self.episode_id,
-                stream_render_frames=stream_render_frames,
-            ),
-            result_type=BenchmarkToolResponse,
+            )
+        res = await self.client.simulate(
+            script_path=p_str,
+            backend=resolved_backend,
+            smoke_test_mode=smoke_test_mode,
+            stream_render_frames=stream_render_frames,
         )
         await record_simulation_result(self.episode_id, res)
         return res
@@ -969,7 +780,7 @@ class RemoteFilesystemMiddleware:
         smoke_test_mode: bool | None = None,
         script_content: str | None = None,
     ) -> PreviewDesignResponse:
-        """Trigger CAD preview through the Temporal-backed preview workflow."""
+        """Trigger CAD preview through the worker client."""
         p_str = str(script_path)
 
         async def _broadcast_preview_phase(
@@ -1014,17 +825,9 @@ class RemoteFilesystemMiddleware:
                 },
             )
 
-        self._require_temporal_for_heavy_operation("preview")
         await _broadcast_preview_phase("queued")
-
-        if bundle_base64 is not None:
-            bundle = base64.b64decode(bundle_base64)
-        else:
-            bundle = await self.client.bundle_session()
-            bundle_base64 = base64.b64encode(bundle).decode("utf-8")
-
-        request = PreviewWorkflowParams(
-            bundle_base64=bundle_base64,
+        await _broadcast_preview_phase("running")
+        result = await self.client.render_cad(
             script_path=p_str,
             script_content=script_content,
             orbit_pitch=orbit_pitch,
@@ -1033,23 +836,10 @@ class RemoteFilesystemMiddleware:
             depth=depth,
             segmentation=segmentation,
             payload_path=payload_path,
-            drafting=drafting,
-            rendering_type=PreviewRenderingType(str(rendering_type))
-            if rendering_type is not None
-            else None,
+            rendering_type=rendering_type,
+            bundle_base64=bundle_base64,
             smoke_test_mode=smoke_test_mode,
-            session_id=self.client.session_id,
-            agent_role=str(self.agent_role.value)
-            if isinstance(self.agent_role, AgentName)
-            else str(self.agent_role),
-        )
-        workflow_id = _preview_workflow_id(self.client.session_id, bundle, request)
-        await _broadcast_preview_phase("running")
-        result = await self._execute_or_use_existing_workflow(
-            PreviewWorkflow.run,
-            workflow_id,
-            request,
-            result_type=PreviewDesignResponse,
+            agent_role=self.agent_role,
         )
         await _broadcast_preview_phase("view_ready", response=result)
         return result
@@ -1129,30 +919,14 @@ class RemoteFilesystemMiddleware:
                 smoke_test_mode,
                 integration_enabled=worker_settings.is_integration_test,
             )
-        self._require_temporal_for_heavy_operation("verify")
-
-        bundle = await self.client.bundle_session()
-        workflow_id = _bundle_workflow_id("ver", self.client.session_id, bundle)
-        params: dict[str, Any] = {
-            "bundle_base64": base64.b64encode(bundle).decode("utf-8"),
-            "script_path": str(script_path),
-            "backend": backend or get_default_simulator_backend(),
-            "smoke_test_mode": smoke_test_mode,
-            "session_id": self.client.session_id,
-        }
-        if jitter_range is not None:
-            params["jitter_range"] = jitter_range
-        if num_scenes is not None:
-            params["num_scenes"] = num_scenes
-        if duration is not None:
-            params["duration"] = duration
-        if seed is not None:
-            params["seed"] = seed
-        return await self._execute_or_use_existing_workflow(
-            HeavyVerifyWorkflow.run,
-            workflow_id,
-            HeavyVerifyParams(**params),
-            result_type=BenchmarkToolResponse,
+        return await self.client.verify(
+            script_path=str(script_path),
+            backend=backend,
+            jitter_range=jitter_range,
+            num_scenes=num_scenes,
+            duration=duration,
+            seed=seed,
+            smoke_test_mode=smoke_test_mode,
         )
 
     async def submit(
@@ -1168,30 +942,16 @@ class RemoteFilesystemMiddleware:
             role_to_stage: dict[AgentName, AgentName] = {
                 AgentName.BENCHMARK_CODER: AgentName.BENCHMARK_REVIEWER,
                 AgentName.BENCHMARK_REVIEWER: AgentName.BENCHMARK_REVIEWER,
-                AgentName.ELECTRONICS_REVIEWER: AgentName.ELECTRONICS_REVIEWER,
                 AgentName.ENGINEER_CODER: AgentName.ENGINEER_EXECUTION_REVIEWER,
                 AgentName.ENGINEER_EXECUTION_REVIEWER: AgentName.ENGINEER_EXECUTION_REVIEWER,
             }
             effective_stage = role_to_stage.get(self.agent_role)
 
-        self._require_temporal_for_heavy_operation("submit")
-
-        bundle = (
-            base64.b64decode(bundle_base64)
-            if bundle_base64 is not None
-            else await self.client.bundle_session()
-        )
-        workflow_id = _bundle_workflow_id("sub", self.client.session_id, bundle)
-        res = await self._execute_or_use_existing_workflow(
-            HeavySubmitWorkflow.run,
-            workflow_id,
-            HeavySubmitParams(
-                bundle_base64=base64.b64encode(bundle).decode("utf-8"),
-                script_path=p_str,
-                reviewer_stage=effective_stage or AgentName.ENGINEER_EXECUTION_REVIEWER,
-                session_id=self.client.session_id,
-                episode_id=self.episode_id,
-            ),
+        res = await self.client.submit(
+            script_path=p_str,
+            bundle_base64=bundle_base64,
+            reviewer_stage=effective_stage or AgentName.ENGINEER_EXECUTION_REVIEWER,
+            episode_id=self.episode_id,
         )
 
         benchmark_roles = {

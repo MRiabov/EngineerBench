@@ -90,7 +90,6 @@ async def _controller_script_middleware(
         )
         middleware = RemoteFilesystemMiddleware(
             client,
-            temporal_client=getattr(request.app.state, "temporal_client", None),
             agent_role=agent_role,
             episode_id=str(identity.episode_id),
         )
