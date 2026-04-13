@@ -17,16 +17,12 @@ from controller.agent.benchmark_handover_validation import (
 from controller.clients.worker import WorkerClient
 from controller.persistence.db import get_sessionmaker
 from controller.persistence.models import Asset, Episode
-from shared.agents.config import DraftingMode, load_agents_config
+from shared.agents.config import DraftingMode
 from shared.enums import AgentName, EpisodeStatus, EpisodeType, TerminalReason
 from shared.git_utils import repo_revision
 from shared.models.schemas import AssemblyDefinition, EpisodeMetadata
 from shared.models.simulation import SimulationResult
-from shared.script_contracts import (
-    drafting_render_manifest_path_for_agent,
-    plan_path_for_reviewer_stage,
-    technical_drawing_script_path_for_agent,
-)
+from shared.script_contracts import plan_path_for_reviewer_stage
 from shared.workers.schema import (
     PlanReviewManifest,
     RenderManifest,
@@ -34,10 +30,8 @@ from shared.workers.schema import (
     ValidationResultRecord,
 )
 from worker_heavy.utils.file_validation import (
-    _technical_drawing_script_imports_and_calls_technical_drawing,
     validate_benchmark_assembly_motion_contract,
     validate_benchmark_definition_yaml,
-    validate_drafting_preview_manifest,
     validate_environment_attachment_contract,
     validate_planner_handoff_cross_contract,
 )
@@ -223,11 +217,7 @@ def _planner_role_for_reviewer_stage(reviewer_stage: AgentName) -> AgentName:
 
 
 def _drafting_mode_for_reviewer_stage(reviewer_stage: AgentName) -> DraftingMode:
-    planner_role = _planner_role_for_reviewer_stage(reviewer_stage)
-    try:
-        return load_agents_config().get_technical_drawing_mode(planner_role)
-    except Exception:
-        return DraftingMode.OFF
+    return DraftingMode.OFF
 
 
 def _planner_submission_helper_name_for_stage(stage: PlanReviewerStage) -> str:
@@ -477,65 +467,6 @@ async def validate_reviewer_handover(
             f"re-run validate, simulate, and "
             f"{_review_submission_helper_name_for_stage(expected_stage)}(compound)."
         )
-
-    drafting_mode = _drafting_mode_for_reviewer_stage(expected_stage)
-    if drafting_mode in (DraftingMode.MINIMAL, DraftingMode.FULL):
-        planner_role = _planner_role_for_reviewer_stage(expected_stage)
-        drafting_script_path = technical_drawing_script_path_for_agent(planner_role)
-        drafting_manifest_path = drafting_render_manifest_path_for_agent(planner_role)
-
-        drafting_script_content = await worker_client.read_file_optional(
-            str(drafting_script_path)
-        )
-        if drafting_script_content is None:
-            return f"{drafting_script_path} missing."
-
-        drafting_manifest_raw = await worker_client.read_file_optional(
-            str(drafting_manifest_path)
-        )
-        if drafting_manifest_raw is None:
-            return f"{drafting_manifest_path} missing."
-
-        drafting_script_errors = (
-            _technical_drawing_script_imports_and_calls_technical_drawing(
-                drafting_script_content,
-                artifact_name=str(drafting_script_path),
-            )
-        )
-        if drafting_script_errors:
-            return "; ".join(drafting_script_errors)
-
-        drafting_manifest_errors = validate_drafting_preview_manifest(
-            manifest_content=drafting_manifest_raw,
-            technical_drawing_script_content=drafting_script_content,
-            artifact_name=str(drafting_manifest_path),
-        )
-        if drafting_manifest_errors:
-            return "; ".join(drafting_manifest_errors)
-
-        drafting_manifest = RenderManifest.model_validate_json(drafting_manifest_raw)
-        missing_preview_files: list[str] = []
-        for preview_path in drafting_manifest.preview_evidence_paths:
-            if not await worker_client.exists(preview_path):
-                missing_preview_files.append(preview_path)
-        if missing_preview_files:
-            return (
-                f"{drafting_manifest_path} references missing preview evidence files: "
-                f"{sorted(missing_preview_files)}"
-            )
-
-        missing_sidecars: list[str] = []
-        for artifact_path, metadata in drafting_manifest.artifacts.items():
-            siblings = metadata.siblings
-            if siblings.svg and not await worker_client.exists(siblings.svg):
-                missing_sidecars.append(f"{artifact_path} -> {siblings.svg}")
-            if siblings.dxf and not await worker_client.exists(siblings.dxf):
-                missing_sidecars.append(f"{artifact_path} -> {siblings.dxf}")
-        if missing_sidecars:
-            return (
-                f"{drafting_manifest_path} references missing drafting sidecar files: "
-                f"{missing_sidecars}"
-            )
 
     if require_verification_result is None:
         require_verification_result = (
