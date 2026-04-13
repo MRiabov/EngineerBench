@@ -388,7 +388,7 @@ async def test_int_074_engineering_dof_minimization_review_gate():
         await seed_execution_reviewer_handover(
             client,
             session_id=justified_session,
-            int_id="INT-181",
+            int_id="INT-075",
         )
         justified_episode = await _run_and_wait(
             client,

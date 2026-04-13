@@ -1,2 +1,0 @@
-- [x] Draft planner artifacts
-- [x] Submit planner handoff

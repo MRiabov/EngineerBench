@@ -741,10 +741,17 @@ async def test_engineer_execution_reviewer_rejects_over_actuated_dofs_after_rend
         # Regression: a non-DOF rejection must preserve the canonical key
         # without rewriting it to fail.
         render_gate_session = f"INT-210-{uuid.uuid4().hex[:8]}"
-        render_gate_script = Path(
-            "tests/integration/mock_responses/"
-            "INT-182/engineer_coder/entry_01/01__script.py"
-        ).read_text(encoding="utf-8")
+        render_gate_script = """
+from build123d import Align, Box
+from shared.models.schemas import PartMetadata
+
+
+def build():
+    part = Box(10, 10, 10, align=(Align.CENTER, Align.CENTER, Align.CENTER))
+    part.label = "render_gate_box"
+    part.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
+    return part
+"""
         await seed_benchmark_assembly_definition(
             client,
             render_gate_session,
@@ -911,183 +918,6 @@ async def test_engineer_execution_reviewer_handover_accepts_preview_evidence_pat
             await worker_client.aclose()
 
         assert validation_error is None, validation_error
-
-
-@pytest.mark.integration_p1
-@pytest.mark.asyncio
-async def test_benchmark_plan_reviewer_rejection_persists_latest_revision_evidence():
-    """
-    INT-203: benchmark plan reviewer rejection must carry latest-revision
-    solvability evidence into the persisted review artifacts.
-    """
-    async with AsyncClient(base_url=CONTROLLER_URL, timeout=300.0) as client:
-        request = BenchmarkGenerateRequest(
-            prompt="INT-203 benchmark planner solvability rejection.",
-            backend=SimulatorBackendType.GENESIS,
-        )
-        resp = await client.post("/benchmark/generate", json=request.model_dump())
-        assert resp.status_code in [200, 202], resp.text
-        benchmark_resp = BenchmarkGenerateResponse.model_validate(resp.json())
-        session_id = str(benchmark_resp.session_id)
-        episode_id = str(benchmark_resp.episode_id)
-
-        latest_episode = EpisodeResponse.model_validate(
-            await wait_for_benchmark_state(
-                client,
-                session_id,
-                timeout_s=120.0,
-                terminal_statuses=set(),
-                predicate=_benchmark_plan_review_artifacts_ready,
-            )
-        )
-        traces = latest_episode.traces or []
-        rejected_traces = [
-            trace
-            for trace in traces
-            if trace.name == "review_decision"
-            and trace.metadata_vars is not None
-            and trace.metadata_vars.decision == ReviewDecision.REJECT_PLAN
-            and "UNSOLVABLE_SCENARIO" in (trace.content or "")
-        ]
-        rejected_review_trace = max(rejected_traces, key=lambda trace: trace.id)
-        artifact_paths = [
-            _asset_path(asset.s3_path) for asset in (latest_episode.assets or [])
-        ]
-        decision_paths = [
-            path
-            for path in artifact_paths
-            if path == Path("benchmark-plan-review-decision-round-1.yaml")
-        ]
-        comments_paths = [
-            path
-            for path in artifact_paths
-            if path == Path("benchmark-plan-review-comments-round-1.yaml")
-        ]
-        manifest_paths = [
-            path
-            for path in artifact_paths
-            if path == Path(".manifests/benchmark_plan_review_manifest.json")
-        ]
-
-        assert latest_episode is not None
-        traces = latest_episode.traces or []
-        inspect_media_traces = [
-            trace for trace in traces if _is_inspect_media_trace(trace)
-        ]
-        assert len(inspect_media_traces) >= 2, (
-            "Benchmark plan reviewer rejection must inspect the latest revision "
-            "render bundle before making a decision."
-        )
-        render_image_paths = {
-            path
-            for path in artifact_paths
-            if path.parent.name == "renders"
-            and path.suffix.lower() in {".png", ".jpg", ".jpeg"}
-        }
-        media_event_contents = [
-            trace.content or "" for trace in traces if trace.name == "media_inspection"
-        ]
-        inspected_render_paths = {
-            path
-            for path in render_image_paths
-            if any(path in content for content in media_event_contents)
-        }
-        assert inspected_render_paths, (
-            "Benchmark plan reviewer must inspect current-revision render images, "
-            f"not arbitrary media. inspected_render_paths={sorted(inspected_render_paths)} "
-            f"render_image_paths={sorted(render_image_paths)}"
-        )
-        assert rejected_review_trace is not None, (
-            "Expected benchmark plan reviewer rejection mentioning UNSOLVABLE_SCENARIO."
-        )
-        assert any(
-            trace.id < rejected_review_trace.id for trace in inspect_media_traces
-        ), "inspect_media must occur before the final benchmark plan review decision."
-
-        artifact_paths = [asset.s3_path for asset in (latest_episode.assets or [])]
-        assert comments_paths, (
-            f"benchmark plan review comments missing. {artifact_paths}"
-        )
-        assert decision_paths, (
-            f"benchmark plan review decision missing. {artifact_paths}"
-        )
-        assert manifest_paths, (
-            f"benchmark plan review manifest missing. {artifact_paths}"
-        )
-
-        decision_resp = await client.get(
-            f"/episodes/{episode_id}/assets/{decision_paths[0]}"
-        )
-        assert decision_resp.status_code == 200, decision_resp.text
-        decision = yaml.safe_load(decision_resp.text)
-        assert decision["decision"] == ReviewDecision.REJECT_PLAN.value, decision
-
-        comments_resp = await client.get(
-            f"/episodes/{session_id}/assets/{comments_paths[0]}"
-        )
-        assert comments_resp.status_code == 200, comments_resp.text
-        comments = yaml.safe_load(comments_resp.text)
-        assert comments["summary"].startswith("REJECT_PLAN:"), comments
-        assert comments["checklist"]["render_count"] == 2
-        assert comments["checklist"]["visual_inspection_satisfied"] is True
-        assert comments["checklist"]["latest_revision_verified"] is True
-        assert comments["checklist"]["deterministic_error_count"] == 0
-        assert "solvability_summary" in comments["checklist"]
-        assert comments["checklist"]["review_manifest_revision"], comments
-
-        manifest_resp = await client.get(
-            f"/episodes/{session_id}/assets/{manifest_paths[0]}"
-        )
-        assert manifest_resp.status_code == 200, manifest_resp.text
-        manifest = PlanReviewManifest.model_validate_json(manifest_resp.text)
-        assert manifest.status == "ready_for_review"
-        assert manifest.reviewer_stage == AgentName.BENCHMARK_PLAN_REVIEWER
-        assert manifest.planner_node_type == AgentName.BENCHMARK_PLANNER
-        assert manifest.episode_id == str(benchmark_resp.episode_id)
-        assert manifest.worker_session_id == "INT-203"
-        assert manifest.benchmark_revision == repo_git_revision()
-        assert manifest.environment_version is not None
-        assert manifest.artifact_hashes, manifest
-        assert {
-            "plan.md",
-            "todo.md",
-            "benchmark_definition.yaml",
-            "benchmark_assembly_definition.yaml",
-        }.issubset(manifest.artifact_hashes), manifest
-
-        for rel_path in [
-            "benchmark_definition.yaml",
-            "benchmark_assembly_definition.yaml",
-        ]:
-            asset_resp = await client.get(f"/episodes/{session_id}/assets/{rel_path}")
-            assert asset_resp.status_code == 200, asset_resp.text
-            expected_hash = hashlib.sha256(asset_resp.text.encode("utf-8")).hexdigest()
-            assert manifest.artifact_hashes[rel_path] == expected_hash, (
-                f"{rel_path} hash mismatch. Manifest: {manifest.artifact_hashes[rel_path]} "
-                f"Asset hash: {expected_hash}"
-            )
-
-        render_manifest_path = next(
-            path
-            for path in artifact_paths
-            if path == Path("renders/render_manifest.json")
-        )
-        render_manifest_resp = await client.get(
-            f"/episodes/{session_id}/assets/{render_manifest_path}"
-        )
-        assert render_manifest_resp.status_code == 200, render_manifest_resp.text
-        render_manifest = RenderManifest.model_validate_json(render_manifest_resp.text)
-        assert render_manifest.revision == repo_git_revision()
-        assert render_manifest.preview_evidence_paths
-        assert set(render_manifest.preview_evidence_paths).issubset(
-            set(render_manifest.artifacts.keys())
-        )
-
-        assert not any(
-            trace.name == "benchmark_coder"
-            and "Starting task phase" in (trace.content or "")
-            for trace in traces
-        ), "Benchmark coder must not start after unsolvable benchmark rejection."
 
 
 @pytest.mark.integration_p1

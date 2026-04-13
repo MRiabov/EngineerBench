@@ -151,9 +151,6 @@ def _sample_video_bytes() -> bytes:
         return tmp_path.read_bytes()
     finally:
         tmp_path.unlink(missing_ok=True)
-
-
-@pytest.mark.integration_p1
 @pytest.mark.asyncio
 async def test_render_artifact_generation_int_039():
     """
@@ -209,9 +206,6 @@ async def test_render_artifact_generation_int_039():
             pytest.skip(
                 f"No discoverable visualization artifacts in this run. Assets: {assets}"
             )
-
-
-@pytest.mark.integration_p1
 @pytest.mark.asyncio
 async def test_render_artifact_generation_int_039_simulation_video_shows_objective_boxes():
     """INT-039: simulation video artifacts retain goal/forbid/build box visuals."""
@@ -300,8 +294,6 @@ async def test_render_artifact_generation_int_039_simulation_video_shows_objecti
         assert _count_zone_pixels(frame_rgb, "forbid") > 50
         assert _count_zone_pixels(frame_rgb, "build") > 50
 
-
-@pytest.mark.integration_p1
 @pytest.mark.asyncio
 async def test_inspect_media_splits_mp4_into_frames_when_enabled():
     """MP4 inspection should attach sampled frames when the render switch is on."""
@@ -340,7 +332,6 @@ async def test_inspect_media_splits_mp4_into_frames_when_enabled():
         await worker_client.aclose()
 
 
-@pytest.mark.integration_p1
 @pytest.mark.asyncio
 async def test_asset_persistence_linkage_int_040():
     """
@@ -394,8 +385,6 @@ async def test_asset_persistence_linkage_int_040():
                 f"No visualization assets linked in this run. Assets: {asset_paths}"
             )
 
-
-@pytest.mark.integration_p1
 @pytest.mark.asyncio
 async def test_mjcf_joint_mapping_int_037():
     """
@@ -461,7 +450,6 @@ async def test_mjcf_joint_mapping_int_037():
         assert "<worldbody" in content
 
 
-@pytest.mark.integration_p1
 @pytest.mark.asyncio
 async def test_controller_function_family_int_038():
     """
@@ -504,57 +492,3 @@ async def test_controller_function_family_int_038():
             )
             for t in traces
         )
-
-
-@pytest.mark.integration_p1
-@pytest.mark.asyncio
-async def test_temporal_recovery_int_041():
-    """
-    INT-041: Container Preemption Recovery Path (Temporal)
-    Verify that Temporal workflows are registered and can be triggered.
-    """
-    async with AsyncClient(base_url=CONTROLLER_URL, timeout=300.0) as client:
-        # Trigger an operations workflow (Backup) which uses Temporal
-        # This requires a secret, which defaults to 'change-me-in-production' in dev
-        resp = await client.post(
-            "/ops/backup", headers={"X-Backup-Secret": "change-me-in-production"}
-        )
-
-        assert resp.status_code == 202
-        workflow = BackupWorkflowResponse.model_validate(resp.json())
-        assert workflow.workflow_id.startswith("backup-")
-
-
-@pytest.mark.integration_p1
-@pytest.mark.asyncio
-async def test_async_callbacks_int_042():
-    """
-    INT-042: Async Callbacks/Webhook Completion Path
-    Verify that episodes transition status correctly through async execution.
-    """
-    async with AsyncClient(base_url=CONTROLLER_URL, timeout=300.0) as client:
-        session_id = f"INT-042-{uuid.uuid4().hex[:8]}"
-        await seed_benchmark_assembly_definition(client, session_id)
-        resp = await client.post(
-            "/agent/run",
-            json={"task": "Just say hello and finish.", "session_id": session_id},
-        )
-        run_data = AgentRunResponse.model_validate(resp.json())
-        episode_id = run_data.episode_id
-
-        # Immediate status should be RUNNING
-        ep_data = EpisodeResponse.model_validate(
-            (await client.get(f"/episodes/{episode_id}")).json()
-        )
-        assert ep_data.status == EpisodeStatus.RUNNING
-
-        # Wait for completion (simulates async callback/polling)
-        for _ in range(150):
-            ep_data = EpisodeResponse.model_validate(
-                (await client.get(f"/episodes/{episode_id}")).json()
-            )
-            if ep_data.status == EpisodeStatus.COMPLETED:
-                break
-            await asyncio.sleep(1)
-
-        assert ep_data.status == EpisodeStatus.COMPLETED

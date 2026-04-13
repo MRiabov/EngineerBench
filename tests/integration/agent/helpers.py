@@ -1019,20 +1019,6 @@ async def run_agent_episode(
     session_id = f"{int_id}-{uuid.uuid4().hex[:8]}"
     workspace_session_id = integration_workspace_session_id(task, session_id)
 
-    if int_id in {"INT-181", "INT-182", "INT-183", "INT-185", "INT-186"}:
-        await seed_engineer_planner_handover(
-            client,
-            session_id=workspace_session_id,
-            int_id=int_id,
-        )
-        await seed_benchmark_assembly_definition(client, workspace_session_id)
-    if int_id in {"INT-181", "INT-182", "INT-183", "INT-185", "INT-186"}:
-        await seed_execution_reviewer_handover(
-            client,
-            session_id=workspace_session_id,
-            int_id=int_id,
-        )
-
     resp = await client.post(
         f"{CONTROLLER_URL}/api/agent/run",
         json={
