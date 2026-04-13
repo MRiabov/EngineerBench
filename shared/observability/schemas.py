@@ -1,6 +1,6 @@
 from datetime import UTC, datetime
 from enum import StrEnum
-from typing import Any, Literal
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -46,42 +46,12 @@ class ObservabilityEventType(StrEnum):
     ESCALATION_REQUEST = "escalation_request"
     # 13. Price/weight failure escalation decision (reviewer)
     ESCALATION_DECISION = "escalation_decision"
-    # 14. Lint failure - code
-    LINT_FAILURE_CODE = "lint_failure_code"
-    # 15. Lint failure - Markdown/YAML
-    LINT_FAILURE_DOCS = "lint_failure_docs"
-    # 16. Logic/constraint failure - YAML
-    LOGIC_FAILURE = "logic_failure"
-    # 17. Skill edit (skill editing agent)
-    SKILL_EDIT = "skill_edit"
-    # 18. Skill read (used as context)
-    SKILL_READ = "skill_read"
-    # 19. Codex skill loop self-reflection turn
-    SKILL_SELF_REFLECTION = "skill_self_reflection"
-    # 20. Codex skill loop skill-update turn
-    SKILL_UPDATE = "skill_update"
-    # 21. Codex skill loop skill-promotion turn
-    SKILL_PROMOTION = "skill_promotion"
-    # 19. Tool-specific events for easier navigation/aggregation
-    TOOL_LS_FILES = "ls_files_tool"
-    TOOL_GREP = "grep_tool"
-    TOOL_READ_FILE = "read_file_tool"
     TOOL_INSPECT_MEDIA = "inspect_media_tool"
-    TOOL_WRITE_FILE = "write_file_tool"
-    TOOL_EDIT_FILE = "edit_files_tool"
-    TOOL_RUN_COMMAND = "run_command_tool"
-    TOOL_GIT_INIT = "git_init_tool"
-    TOOL_GIT_COMMIT = "git_commit_tool"
-
-    # 20. Simulation instability
-    SIMULATION_INSTABILITY = "simulation_instability"
-    # 21. Submission validation
+    # 14. Submission validation
     SUBMISSION_VALIDATION = "submission_validation"
-    # 22. Cost/weight delta heuristic
+    # 15. Cost/weight delta heuristic
     COST_WEIGHT_DELTA = "cost_weight_delta"
-    # 23. Library usage
-    LIBRARY_USAGE = "library_usage"
-    # 24. Review decision (full details)
+    # 16. Review decision (full details)
     REVIEW_DECISION = "review_decision"
     EXCESSIVE_DOF_DETECTED = "excessive_dof_detected"
 
@@ -231,101 +201,6 @@ class EscalationDecisionEvent(BaseEvent):
     comments: list[str] = Field(default_factory=list)
 
 
-class LintFailureCodeEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.LINT_FAILURE_CODE
-    file_path: str
-    errors: list[str]
-
-
-class LintFailureDocsEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.LINT_FAILURE_DOCS
-    file_path: str
-    errors: list[str]
-
-
-class LogicFailureEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.LOGIC_FAILURE
-    file_path: str
-    constraint_name: str
-    error_message: str
-
-
-class SkillEditEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.SKILL_EDIT
-    skill_name: str
-    action: str  # "create", "update", "delete"
-    lines_changed: int
-
-
-class SkillReadEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.SKILL_READ
-    skill_path: str
-    skill_name: str
-
-
-class SkillSelfReflectionEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.SKILL_SELF_REFLECTION
-    codex_session_id: str
-    task_id: str
-    agent_name: str
-    stage: str = "self_analysis"
-    trigger_reason: str
-    prompt_path: str | None = None
-    output_path: str | None = None
-    reflection_text: str
-    simulation_success: bool | None = None
-    verification_success: bool | None = None
-    reasoning_effort: str = "xhigh"
-
-
-class SkillUpdateEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.SKILL_UPDATE
-    codex_session_id: str
-    task_id: str
-    agent_name: str
-    stage: str = "skill_update"
-    trigger_reason: str
-    prompt_path: str | None = None
-    output_path: str | None = None
-    skill_update_text: str
-    updated_skill_paths: list[str] = Field(default_factory=list)
-    simulation_success: bool | None = None
-    verification_success: bool | None = None
-    reasoning_effort: str = "xhigh"
-
-
-class SkillPromotionEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.SKILL_PROMOTION
-    codex_session_id: str | None = None
-    active_overlay_path: str
-    approved_base_commit: str | None = None
-    target_repo: str = "skills"
-    target_branch: str | None = None
-    merge_strategy: str | None = None
-    outcome: Literal["published", "conflict", "escalated", "rejected"]
-    promotion_commit: str | None = None
-    promotion_record_path: str | None = None
-    conflicting_skill_paths: list[str] = Field(default_factory=list)
-    reason: str | None = None
-
-
-class LsFilesToolEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.TOOL_LS_FILES
-    path: str
-
-
-class GrepToolEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.TOOL_GREP
-    pattern: str
-    path: str | None = None
-    glob: str | None = None
-
-
-class ReadFileToolEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.TOOL_READ_FILE
-    path: str
-
-
 class InspectMediaToolEvent(BaseEvent):
     event_type: ObservabilityEventType = ObservabilityEventType.TOOL_INSPECT_MEDIA
     path: str
@@ -333,41 +208,6 @@ class InspectMediaToolEvent(BaseEvent):
     media_kind: str
     attached_to_model: bool = False
     attached_media_count: int = 0
-
-
-class WriteFileToolEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.TOOL_WRITE_FILE
-    path: str
-    content_snippet: str | None = None  # First 100 chars or so
-    overwrite: bool = True
-
-
-class EditFileToolEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.TOOL_EDIT_FILE
-    path: str
-    num_edits: int
-
-
-class RunCommandToolEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.TOOL_RUN_COMMAND
-    command: str
-
-
-class GitInitToolEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.TOOL_GIT_INIT
-
-
-class GitCommitToolEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.TOOL_GIT_COMMIT
-    message: str
-
-
-class SimulationInstabilityEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.SIMULATION_INSTABILITY
-    instability_type: str  # "nan", "penetration", "joint_violation"
-    part_ids: list[str] = Field(default_factory=list)
-    value: float | None = None
-    message: str | None = None
 
 
 class SubmissionValidationEvent(BaseEvent):
@@ -385,13 +225,6 @@ class CostWeightDeltaEvent(BaseEvent):
     final_cost: float
     final_weight_g: float
     is_worse: bool
-
-
-class LibraryUsageEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.LIBRARY_USAGE
-    module_name: str
-    usage_type: str  # "new", "reused"
-    path: str
 
 
 class ReviewEvidenceStats(BaseModel):

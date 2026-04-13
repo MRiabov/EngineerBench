@@ -8,10 +8,7 @@ import structlog
 from controller.observability.broadcast import EpisodeBroadcaster
 from controller.observability.tracing import record_worker_events, sync_asset
 from shared.enums import FailureReason as SimulationFailureMode
-from shared.observability.schemas import (
-    SimulationInstabilityEvent,
-    SimulationResultEvent,
-)
+from shared.observability.schemas import SimulationResultEvent
 
 logger = structlog.get_logger(__name__)
 
@@ -142,28 +139,6 @@ async def record_simulation_result(episode_id: str, res: Any):
         ],
     )
 
-    # Detect instability
-    if not res_dict.get("success", True):
-        raw_reason = str(res_dict.get("failure_reason") or "").lower()
-        if any(
-            word in raw_reason
-            for word in ["nan", "penetration", "instability", "joint violation"]
-        ):
-            instability_type = "unknown"
-            if "nan" in raw_reason:
-                instability_type = "nan"
-            elif "penetration" in raw_reason:
-                instability_type = "penetration"
-            elif "joint violation" in raw_reason:
-                instability_type = "joint_violation"
-
-            await record_worker_events(
-                episode_id=episode_id,
-                events=[
-                    SimulationInstabilityEvent(
-                        instability_type=instability_type,
-                        part_ids=res_dict.get("offending_parts", []),
-                        message=res_dict.get("failure_reason"),
-                    )
-                ],
-            )
+    # Instability long-tail telemetry is intentionally omitted in the pruned
+    # publication bundle; the structured simulation result is the retained
+    # observability surface.
