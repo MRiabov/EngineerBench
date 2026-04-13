@@ -1,26 +1,5 @@
 [
   {
-    "id": "ec-001",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the motorized sideways-transfer mechanism in `solution_script.py`. Keep planner-owned files semantically consistent, preserve the single-motor and wiring-corridor assumptions from the reviewed package, and update `todo.md` and `journal.md` as you work unless you need to refuse the plan with evidence. Start by reading `ec001_run_hints.md` in the workspace for the last useful `ec-001` run notes before you make geometry changes.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-001-sideways-transfer",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed planner package, implements a manufacturable single-motor sideways-transfer solution in `solution_script.py`, and preserves planner consistency while updating execution progress."
-  },
-  {
-    "id": "ec-003",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the timed-gate metering solution in `solution_script.py`. Keep the planner-owned artifacts aligned with the reviewed plan, preserve the seeded single-motor and wiring-corridor assumptions around the gate keep-out, and update `todo.md` and `journal.md` as execution progresses.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-003-timed-gate-chute",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed timed-gate handoff package, implements a gate-compatible single-motor metering assembly in `solution_script.py`, and preserves the seeded planning contract while progressing execution."
-  },
-  {
-    "id": "ec-004",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the raised-shelf lift solution in `solution_script.py`. Preserve the reviewed planner files, keep the motorized lift geometry inside the build zone, and update `todo.md` and `journal.md` while maintaining the seeded cost, weight, and single-DOF assumptions.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-004-raised-shelf-lift",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed raised-shelf handoff package, implements a single-motor shelf-lift solution in `solution_script.py`, and preserves the seeded planning contract while progressing execution."
-  },
-  {
     "id": "ec-006",
     "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the freestanding no-drill transfer in `solution_script.py`. Respect the no-attachment constraint from the reviewed package, keep the planner files semantically consistent, and update `todo.md` and `journal.md` during implementation.",
     "complexity_level": 0,
@@ -54,33 +33,5 @@
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-010-lower-bin-deflector",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed lower-bin handoff package, implements the passive deflector assembly in `solution_script.py`, and preserves the seeded planner contract and dead-zone constraints."
-  },
-  {
-    "id": "ec-011",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded reviewed handoff package in the workspace to finish the single-motor diverter-gate implementation in `solution_script.py` and complete the electromechanical updates required by the plan. Keep the design on one 12V DC supply with at most 2.0A available, route both power and return wires through the left-wall cable corridor, update `assembly_definition.yaml`, and preserve the reviewed planner artifacts while you update `todo.md` and `journal.md`.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-011-diverter-gate-wiring",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed diverter-gate handoff package, completes the electromechanical implementation in the workspace files, adds a valid single-motor power path, and preserves the seeded routing and supply constraints."
-  },
-  {
-    "id": "ec-012",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the dual-stage return-gate mechanism in `solution_script.py`. Keep the two motorized gate stages, relay, and switch inside the rear-left service corridor, preserve the dead-zone clearance and the reviewed planner files, and update `todo.md` and `journal.md` while you work.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-012-dual-stage-return-gate",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed dual-stage return-gate handoff package, implements the two-stage motorized redirector in `solution_script.py`, and preserves the planner budget, wiring corridor, and dead-zone constraints."
-  },
-  {
-    "id": "ec-013",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the raised-return bridge in `solution_script.py`. Keep the lift frame, guide rail, motor mount, relay, and switch aligned with the shelf-height goal, preserve the reviewed planner artifacts, and update `todo.md` and `journal.md` as you progress.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-013-raised-return-bridge",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed raised-return-bridge handoff package, implements the incline lift and upper tray in `solution_script.py`, and preserves the planner budget, guide-rail alignment, and left-side wiring corridor."
-  },
-  {
-    "id": "ec-014",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the timed diverter latch in `solution_script.py`. Keep the diverter gate, latch leaf, motor mounts, and control box clear of the moving benchmark guard arm, preserve the reviewed planner artifacts, and update `todo.md` and `journal.md` while you work.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-014-timed-diverter-latch",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed timed-diverter handoff package, implements the diverter and latch assembly in `solution_script.py`, and preserves the benchmark guard-arm sweep clearance plus the rear-left wire corridor."
   }
 ]

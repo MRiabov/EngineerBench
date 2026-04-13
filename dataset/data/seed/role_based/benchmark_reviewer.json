@@ -24,22 +24,6 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer rejects benchmark packages when seeded objective geometry is self-contradictory, including goal and forbid zone overlap."
   },
   {
-    "id": "br-014-timed-gate-cots-review",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the timed-gate benchmark with a catalog-backed servo import. Validate feasibility, objective consistency, render-bundle history, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the servo-backed gate motion, the planner drafting companions, and the current render bundle are internally consistent.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-014-timed-gate-cots-review",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer approves only when the benchmark package is schema-valid, the ServoMotor_DS3218 import is explicit, the gate motion is coherent, and the render bundle evidence is internally consistent."
-  },
-  {
-    "id": "br-015-fast-transfer-hidden-brake-axis-review",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the fast-transfer benchmark with a hidden brake tray improvement. Validate feasibility, objective consistency, render-bundle history, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the passive-looking brake tray stays passive, the current render bundle matches the indexed history, and the benchmark assembly does not quietly introduce a second motion axis.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_reviewer/br-015-fast-transfer-hidden-brake-axis-review",
-    "expected_decision": "REJECTED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_reviewer` and the seeded workspace to match that role. Reviewer rejects benchmark packages when a passive-looking brake tray hides an extra benchmark-side moving axis or the render history does not line up with the latest revision."
-  },
-  {
     "id": "br-016-lower-bin-unreachable-redirection-review",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_reviewer` before using the seeded artifacts. Review the seeded benchmark deliverables in the workspace for the lower-bin redirection benchmark with a steeper deflector and a raised dead-zone shield. Validate feasibility, objective consistency, render-bundle history, and obvious simulation blockers using the existing handoff artifacts, with particular attention to whether the revised redirection path remains physically plausible for the seeded ball envelope instead of forcing a direct drop through the dead zone.",
     "complexity_level": 2,

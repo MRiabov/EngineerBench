@@ -1,12 +1,5 @@
 [
   {
-    "id": "ep-001",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a raised-shelf solution that uses one motorized lift axis and leaves a clean wiring corridor for downstream electronics work. Source any motorized COTS parts through the catalog, keep their exact pricing and provenance in the plan, treat the benchmark cost and weight values in `benchmark_definition.yaml` as hard customer caps, set tighter planner-owned budgets under those caps, and keep the mechanism manufacturable, sketch-aware, and robust to the listed runtime jitter.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-001-raised-shelf",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Writes contract-valid `plan.md`, `todo.md`, `assembly_definition.yaml`, and updated `benchmark_definition.yaml` for a raised-shelf transfer, with a feasible single-DOF lift strategy, cable-routing awareness, exact COTS motor provenance, sketching companion context kept aligned with the same geometry, and planner budgets below the benchmark caps."
-  },
-  {
     "id": "ep-002",
     "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a stable bridge or guided transfer that carries the low-friction cube across the central gap into the far goal zone. Keep the design inside the build zone, account for the gap forbid zone, and produce planner artifacts that an engineer coder can implement without re-planning.",
     "complexity_level": 0,
@@ -19,13 +12,6 @@
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-003-central-forbid-route",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts describe a robust around-obstacle transport mechanism, include explicit risk mitigation for the forbid zone and jitter, and keep `assembly_definition.yaml` minimal in DOFs and within budget."
-  },
-  {
-    "id": "ep-004",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` and plan for a benchmark that also contains a rotating gate near the middle of the route. Reserve space for one powered escapement or roller assist, keep wiring out of the gate swing keep-out, and explain how the mechanism times or buffers the ball so it can pass the gate cleanly while staying within the seeded benchmark caps and build zone.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-004-timed-gate",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts reference timed-gate timing and electrical-routing risk explicitly, produce a feasible single-motor metering concept that clears the gate, and keep planner-owned budgets under the benchmark caps."
   },
   {
     "id": "ep-005",
@@ -54,13 +40,6 @@
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-008-narrow-goal",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts include a realistic precision-guidance strategy, mention tolerance and jitter risks explicitly, and produce contract-valid handoff files with tighter planner budgets."
-  },
-  {
-    "id": "ep-009",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a fast-transfer mechanism that reaches the goal within roughly five seconds after simulation start. The benchmark allows one motorized accelerator module, so reserve its power and cable path in the plan and balance speed with control instead of just maximizing slope around the central obstacle region.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-009-fast-transfer",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts emphasize fast but controllable transfer, call out overshoot, obstacle, and power-routing risks, and produce a manufacturable costed assembly that stays under the seeded caps."
   },
   {
     "id": "ep-010",

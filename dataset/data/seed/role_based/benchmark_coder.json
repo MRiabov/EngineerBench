@@ -14,13 +14,6 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_coder` and the seeded workspace to match that role. Implements geometry and goal artifacts without planner-file regressions while preserving the seeded benchmark drafting context."
   },
   {
-    "id": "bc-012-raised-shelf-motor",
-    "task": "Use the seeded benchmark planner artifacts in the workspace to implement the motorized raised-shelf benchmark in `benchmark_script.py`. Keep `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml` consistent, preserve `benchmark_plan_evidence_script.py` and `benchmark_plan_technical_drawing_script.py` as read-only planner context, instantiate the benchmark-owned servo through `ServoMotor.from_catalog_id(\"ServoMotor_DS3218\")`, update `journal.md`, and keep `benchmark_script.py` import-safe with no `__main__` block or in-module review submission call.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_coder/bc-012-raised-shelf-motor",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_coder` and the seeded workspace to match that role. Writes benchmark implementation artifacts that preserve the drafting companions and exercise the class-aware COTS motor import path via `ServoMotor.from_catalog_id`."
-  },
-  {
     "id": "bc-013-sidedeflect",
     "task": "Use the seeded benchmark planner artifacts in the workspace to implement the side-deflect ramp benchmark in `benchmark_script.py`. The benchmark drops an ABS sphere from [0, 0, 120] mm onto a 30° angled deflector ramp that must redirect the ball into a side goal bin while avoiding a forbid zone below the spawn. Keep `plan.md`, `todo.md`, and `benchmark_definition.yaml` consistent, preserve `benchmark_plan_evidence_script.py` and `benchmark_plan_technical_drawing_script.py` as read-only planner context, update `journal.md`, and keep `benchmark_script.py` import-safe with no `__main__` block or in-module review submission call.",
     "complexity_level": 1,

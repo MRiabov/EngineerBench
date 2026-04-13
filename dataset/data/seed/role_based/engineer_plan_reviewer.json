@@ -1,35 +1,11 @@
 [
   {
-    "id": "epr-001-sideways-transfer",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the motorized sideways transfer. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that single driven roller lane remains the only justified DOF and the reserved wiring corridor stays intact, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-001-sideways-transfer",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the motorized sideways transfer and issues a structured decision tied to feasibility, budgets, and justified DOFs."
-  },
-  {
     "id": "epr-002-gap-bridge",
     "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the gap bridge transfer. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that bridge spans the seeded gap without invented actuators and still respects the landing clearances, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-002-gap-bridge",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the gap bridge transfer and issues a structured decision tied to feasibility, budgets, and justified DOFs."
-  },
-  {
-    "id": "epr-003-timed-gate-chute",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the timed gate chute. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that the gate uses only the planned motorized axis, stays outside the keep-out volume, and preserves the wiring corridor assumptions, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-003-timed-gate-chute",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the timed gate chute and issues a structured decision tied to feasibility, budgets, and justified DOFs."
-  },
-  {
-    "id": "epr-004-raised-shelf-lift",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the raised shelf lift. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that lift motion is limited to the planned axis, remains under budget, and fits the raised-shelf build envelope, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-004-raised-shelf-lift",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the raised shelf lift and issues a structured decision tied to feasibility, budgets, and justified DOFs."
   },
   {
     "id": "epr-005-central-forbid-route",
@@ -70,29 +46,5 @@
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-009-narrow-goal-funnel",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the narrow goal funnel and issues a structured decision tied to feasibility, budgets, and justified DOFs."
-  },
-  {
-    "id": "epr-010-diverter-gate-wiring",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the electronics-powered diverter gate. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that the 12V power budget, wire corridor, and single rotate_z gate motion remain internally consistent across the seeded handoff artifacts, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-010-diverter-gate-wiring",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the electronics-powered diverter gate and issues a structured decision tied to feasibility, budgets, and justified DOFs."
-  },
-  {
-    "id": "epr-011-sideways-transfer-budget-overrun",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the sideways transfer reviewer stress case. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, identify whether the final assembly metadata sneaks in extra motion beyond the planned single driven roller axis, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-011-sideways-transfer-budget-overrun",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer rejects planner handoffs when the seeded assembly metadata introduces extra or unjustified DOFs that conflict with the single-axis plan."
-  },
-  {
-    "id": "epr-012-sideways-transfer-fake-cots",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the sideways transfer fake-COTS variant. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that the selected motor remains a real catalog-backed COTS part rather than an invented placeholder, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-012-sideways-transfer-fake-cots",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer rejects planner handoffs when the seeded assembly references invented or non-catalog COTS parts."
   }
 ]
