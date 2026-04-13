@@ -126,7 +126,7 @@ appendices:
       Read the role skill first when it exists; the skill is where the detailed procedure lives.
       Use the checked-in shell helpers for the current role.
       Benchmark planners submit with `bash scripts/submit_benchmark_plan.sh`.
-      Solution and electronics planners submit with `bash scripts/submit_engineering_plan.sh`.
+      Engineering planners submit with `bash scripts/submit_engineering_plan.sh`.
       Benchmark coders submit with `bash scripts/submit_benchmark_for_review.sh`.
       Solution coders submit with `bash scripts/submit_solution_for_review.sh`.
       Reviewer roles submit with `bash scripts/submit_review.sh`.

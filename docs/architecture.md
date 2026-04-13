@@ -2,6 +2,8 @@
 
 **Date:** 2026-03-20
 
+This document describes the active runtime architecture for the development tree. The publication bundle is a narrower subset of this tree; the Temporal worker services and frontend surface remain documented here only as development-tree context.
+
 ## Architecture Diagram
 
 ```mermaid
@@ -31,8 +33,8 @@ flowchart TD
 | Worker Light | Owns workspace filesystem access, shell execution, git, linting, asset serving, and lightweight inspection | `worker_light/app.py`, `worker_light/api/routes.py` |
 | Worker Heavy | Owns geometry validation, physics simulation, manufacturability analysis, submission gating, and simulation render coordination | `worker_heavy/app.py`, `worker_heavy/api/routes.py` |
 | Worker Renderer | Owns headless preview rendering, selection snapshots, depth/segmentation previews, and render-manifest persistence | `worker_renderer/app.py`, `worker_renderer/api/routes.py` |
-| Temporal Workers | Own durable long-running tasks and heavy activity dispatch | `controller/temporal_worker.py`, `worker_heavy/temporal_worker.py` |
-| Frontend | Secondary operator UI for episodes, traces, assets, simulation output, and feedback | `frontend/src/App.tsx`, `frontend/src/pages/EngineerWorkspace.tsx`, `frontend/src/pages/BenchmarkGeneration.tsx` |
+| Temporal Workers | Development-tree only durable orchestration helpers | `controller/temporal_worker.py`, `worker_heavy/temporal_worker.py` |
+| Frontend | Development-tree only operator UI for episodes, traces, assets, simulation output, and feedback | `frontend/src/App.tsx`, `frontend/src/pages/EngineerWorkspace.tsx`, `frontend/src/pages/BenchmarkGeneration.tsx` |
 
 ## Agent Graphs
 
@@ -58,7 +60,7 @@ The benchmark generator produces problems that the engineer graph later solves. 
 
 1. The frontend calls the controller API when the UI is in use.
 2. The controller creates or resumes an episode and stores it in PostgreSQL.
-3. The controller drives a LangGraph agent graph with DSPy ReAct nodes.
+3. The controller drives a LangGraph agent graph with DSPy-based agent nodes.
 4. The controller proxies filesystem and shell operations to worker-light and routes heavy operations through Temporal-backed worker-heavy workflows.
 5. The workers write artifacts into the isolated session filesystem and the controller persists the resulting traces, assets, and review records.
 6. The frontend reads the episode detail payload when needed and renders traces, models, videos, heatmaps, and circuit views. Backend state remains authoritative.

@@ -17,11 +17,11 @@ The transition from "AI for Code" to "AI for Engineering" requires moving beyond
 
 ## 2. System Architecture
 
-Problemologist-AI is built on a distributed, microservices-oriented architecture designed for durable execution and high-performance physics workloads.
+Problemologist-AI is built on a distributed, microservices-oriented architecture designed for durable execution and high-performance physics workloads. The publication bundle is a narrower subset of this development tree, so this README describes the broader repository and not every surface that ships in the bundle.
 
 ### 2.1 Dual-Agent Framework
 
-The system utilizes **LangGraph** for orchestration and **DSPy.ReAct** for agentic reasoning.
+The system utilizes **LangGraph** for orchestration and DSPy-based agent reasoning.
 
 1. **Benchmark Generator Graph:**
    - **Planner:** Designs learning objectives (e.g., gravity, friction, motor dynamics).
@@ -38,7 +38,7 @@ The system utilizes **LangGraph** for orchestration and **DSPy.ReAct** for agent
 - **Controller (FastAPI):** Orchestrates agent logic and tool calls.
 - **Worker-Light:** Handles lightweight filesystem operations, git sync, and linting.
 - **Worker-Heavy:** Dedicated compute for Genesis physics simulation, V-HACD convex decomposition, and high-quality rendering.
-- **Durable Execution (Temporal):** Ensures system resilience for long-running engineering tasks (up to 30+ minutes).
+- **Durable Execution (Temporal):** Development-tree orchestration support for long-running engineering tasks (up to 30+ minutes).
 
 ## 3. Methodology
 

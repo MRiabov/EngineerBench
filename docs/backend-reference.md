@@ -4,7 +4,7 @@
 
 ## Scope
 
-This is the backend-first reference for the repository. It covers the controller, worker split, agent graphs, handoff contracts, simulation and evaluation gates, observability, and the modality-specific branches that matter for dataset generation and backend validation. The frontend is secondary and is documented separately.
+This is the backend-first reference for the repository. It covers the controller, worker split, agent graphs, handoff contracts, simulation and evaluation gates, observability, and the modality-specific branches that matter for dataset generation and backend validation. The publication bundle is a narrower subset of the development tree; this document calls out the retained backend surfaces and leaves the out-of-bundle tools, docs, and auxiliary services to the migration notes.
 
 ## 1. Product Purpose
 
@@ -29,8 +29,8 @@ The main operational priority is backend dataset generation. The frontend is an 
 | Worker Light | Owns session filesystem access, git, shell execution, linting, asset serving, and lightweight inspection | Session-scoped workspace, read/write policy enforced by config |
 | Worker Heavy | Owns validation, simulation, workbench analysis, heavy handoff gating, and simulation render coordination | Single-flight admission, `503 WORKER_BUSY` while active |
 | Worker Renderer | Owns headless preview rendering, selection snapshots, depth/segmentation previews, and render-manifest persistence | Dedicated single-flight renderer service |
-| Controller Temporal Worker | Owns durable orchestration for long-running workflows | Dispatches heavy activities through Temporal |
-| Worker Heavy Temporal Worker | Owns heavy activity polling and completion tracking | Separate process boundary from the API server |
+| Controller Temporal Worker | Development-tree only orchestration helper | Not included in the publication bundle |
+| Worker Heavy Temporal Worker | Development-tree only heavy activity helper | Not included in the publication bundle |
 | Shared Layer | Owns Pydantic schemas, enums, simulation models, observability models, and worker contracts | Strict schemas reject unknown fields |
 
 ## 3. Agent Graphs
@@ -51,10 +51,8 @@ Runtime conversations use four message roles: `system`, `user`, `assistant`, and
 | Benchmark Coder | Implement the approved benchmark | May refuse only when the plan is infeasible to implement |
 | Benchmark Reviewer | Verify the implemented benchmark is valid, solvable, and reviewable | Requires latest revision evidence and dynamic evidence for moving fixtures |
 | Engineering Planner | Design a physically feasible solution under cost and weight caps | Must keep planner-owned totals under benchmark caps and use realistic COTS pricing |
-| Electronics Planner | Add electrical requirements and wiring intent when explicit electronics are required | Must keep the electrical design compatible with the benchmark requirements |
 | Engineering Plan Reviewer | Validate the combined engineering handoff before coding | Must re-run cost/price validation and reject excessive DOFs or impossible designs |
 | Engineering Coder | Implement the approved unified solution in one revision | May refuse only with a valid `plan_refusal.md` and proof |
-| Electronics Reviewer | Specialist review gate for electromechanical tasks | Reviews the unified implementation, not a separate coding pass |
 | Engineering Execution Reviewer | Final review after validation and simulation success | Requires latest revision evidence, visual inspection when renders exist, and robustness checks |
 
 ## 4. Handover Artifacts
@@ -65,7 +63,7 @@ Runtime conversations use four message roles: `system`, `user`, `assistant`, and
 | Benchmark execution review | Latest validated `script.py` and benchmark artifacts | `.manifests/benchmark_review_manifest.json` | `reviews/benchmark-execution-review-decision-round-<n>.yaml`, `reviews/benchmark-execution-review-comments-round-<n>.yaml` |
 | Engineering planner submission | `plan.md`, `todo.md`, `benchmark_definition.yaml`, `assembly_definition.yaml` | `.manifests/engineering_plan_review_manifest.json` | N/A |
 | Engineering execution review | Latest validated `script.py` and engineering artifacts; coder-written handoff manifest shared with the reviewer gate | `.manifests/engineering_execution_handoff_manifest.json` | `reviews/engineering-execution-review-decision-round-<n>.yaml`, `reviews/engineering-execution-review-comments-round-<n>.yaml` |
-| Electronics review | Unified electromechanical implementation artifacts | `.manifests/electronics_review_manifest.json` | `reviews/electronics-review-decision-round-<n>.yaml`, `reviews/electronics-review-comments-round-<n>.yaml` |
+| Electronics review | Development-tree only electromechanical review artifacts | `.manifests/electronics_review_manifest.json` | `reviews/electronics-review-decision-round-<n>.yaml`, `reviews/electronics-review-comments-round-<n>.yaml` |
 
 ### Handover rules
 

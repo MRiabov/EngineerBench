@@ -6,7 +6,7 @@
 
 ## Executive Summary
 
-Problemologist-AI is an agentic CAD and physics platform for generating benchmark problems and solving them under physical, economic, and manufacturability constraints. The repository contains the controller that runs the agent graphs, the worker services that execute filesystem and simulation work, a shared schema layer that keeps the system contract strict, and a secondary React frontend for inspection and feedback.
+Problemologist-AI is an agentic CAD and physics platform for generating benchmark problems and solving them under physical, economic, and manufacturability constraints. The repository contains the controller that runs the agent graphs, the worker services that execute filesystem and simulation work, a shared schema layer that keeps the system contract strict, and a secondary React frontend for inspection and feedback. The publication bundle is a narrower subset of this development tree; this overview calls out the broader tree and marks the secondary or out-of-bundle surfaces where relevant.
 
 The project is brownfield and already has a working integration-test harness. The main operational goal is not just to run the code, but to keep the benchmark-generation and engineer workflows aligned with the backend architecture and evaluation contracts while dataset generation remains the priority.
 
@@ -43,14 +43,14 @@ The project is brownfield and already has a working integration-test harness. Th
 | Worker Heavy | `worker_heavy/` | Owns validation, simulation, manufacturability analysis, heavy handoff paths, and simulation render coordination |
 | Worker Renderer | `worker_renderer/` | Owns headless preview rendering, selection snapshots, depth/segmentation previews, and render-manifest persistence |
 | Shared | `shared/` | Owns the strict models, enums, observability schemas, simulation contracts, and filesystem policy helpers |
-| Frontend | `frontend/` | Secondary operator dashboard for trace inspection, simulation viewers, and feedback flow |
+| Frontend | `frontend/` | Secondary operator dashboard for trace inspection, simulation viewers, and feedback flow; not part of the publication bundle |
 
 ## Key Features
 
 | Feature | Notes |
 | -- | -- |
 | Benchmark generation graph | Planner, plan reviewer, coder, and reviewer stages with deterministic handoff checks |
-| Engineer graph | Planner, plan reviewer, coder, execution reviewer, plus electronics-specific stages when needed |
+| Engineer graph | Planner, plan reviewer, coder, and execution reviewer |
 | COTS search | Shared subagent and catalog-backed part search path for planners and coders |
 | Workbench analysis | Cost and manufacturability checks driven by the manufacturing configuration |
 | Simulation split | Fast validation preview versus backend simulation are intentionally separate |
@@ -63,7 +63,7 @@ The project is brownfield and already has a working integration-test harness. Th
 | Layer | Technology |
 | -- | -- |
 | API services | FastAPI |
-| Agent orchestration | LangGraph and DSPy ReAct |
+| Agent orchestration | LangGraph and DSPy-based agent reasoning |
 | Language runtime | Python 3.12 |
 | Frontend | React 19, TypeScript, Vite, Tailwind CSS |
 | Simulation | Genesis and MuJoCo |
