@@ -35,8 +35,7 @@ benchmark:
         weight: 0.05
         description: >
           plan.md, benchmark_definition.yaml, benchmark_assembly_definition.yaml, and todo.md all
-          exist and are non-empty (not equal to template stubs). When drafting
-          mode is enabled, the planner drafting scripts must also be present.
+          exist and are non-empty (not equal to template stubs).
 
       # Gate 2 — YAML files pass schema validation
       yaml_schema_valid:
@@ -358,8 +357,7 @@ engineer:
         weight: 0.05
         description: >
           plan.md (all 5 required sections), todo.md, assembly_definition.yaml
-          all exist and are non-empty. When drafting mode is enabled, the
-          planner drafting scripts must also be present.
+          all exist and are non-empty.
 
       # Gate 2 — YAML schema valid
       yaml_schema_valid:

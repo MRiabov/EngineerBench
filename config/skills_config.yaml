@@ -8,15 +8,9 @@ benchmark-reviewer:
   is_for_worker_agents: true
 build123d-cad-drafting-skill:
   is_for_worker_agents: true
-build123d-technical-drawing:
-  is_for_worker_agents: true
 commit-split-workflow:
   is_for_worker_agents: true
 cots-parts:
-  is_for_worker_agents: true
-electromechanics-syntax:
-  is_for_worker_agents: true
-electronics-engineering:
   is_for_worker_agents: true
 engineer-coder:
   is_for_worker_agents: true

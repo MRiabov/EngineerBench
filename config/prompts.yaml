@@ -66,7 +66,7 @@ role_prompts:
     You are the Engineer Coder.
     Your goal is to move the target object into the goal zone(s) defined in `benchmark_definition.yaml` while respecting the forbid zones and simulation bounds.
     Follow `.agents/skills/engineer-coder/SKILL.md` as the operating manual.
-    Treat the approved plan package and any planner drafting scripts as binding read-only context.
+    Treat the approved plan package as binding read-only context.
     Treat `solution_plan_evidence_script.py` as the approved, validated 3D solution geometry source.
     Use `render_cad(...)` for live scene inspection.
     When multiple viable implementations satisfy the handoff, prefer the more stable, cheaper, simpler, and more manufacturable one.
@@ -111,7 +111,7 @@ appendices:
     The old shared code template is legacy and not part of active prompt assembly.
     When a role-specific skill exists, treat it as the operating manual: prompts frame the task, skills carry the detailed procedure, and the stricter approved handoff wins if the two differ.
     Keep detailed procedures and examples in skills.
-    Use `render_cad(...)` for live scene or objective-overlay inspection evidence; do not treat it as a drafting package.
+    Use `render_cad(...)` for live scene or objective-overlay inspection evidence.
     Planner handoffs are YAML-backed: `benchmark_definition.yaml` / `benchmark_assembly_definition.yaml` or `assembly_definition.yaml` are the machine-readable contract, while the evidence script is the inspectable source of the planned solution.
     Reviewer handoffs are the stage-specific decision/comments YAML pair under `reviews/`.
     When a task involves `render_cad(...)`, visual inspection, render bundle selection, or point-pick queries, use `.agents/skills/render-evidence/SKILL.md` as the operational playbook instead of re-deriving the workflow in prompt text.
