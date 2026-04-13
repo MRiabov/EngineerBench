@@ -1,4 +1,0 @@
-- [x] Keep the benchmark fully freestanding with no drill or clamp assumptions.
-- [x] Declare the ballast base and counterweight fin consistently across artifacts.
-- [x] Preserve zero benchmark-side DOFs.
-- [x] Keep benchmark-local cost and weight within the customer caps.

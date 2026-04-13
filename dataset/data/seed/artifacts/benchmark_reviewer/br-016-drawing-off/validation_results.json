@@ -1,7 +1,0 @@
-{
-  "success": true,
-  "message": "Validation passed.",
-  "timestamp": 1710060600.0,
-  "script_path": "benchmark_script.py",
-  "script_sha256": "6cd8a8d3290468265062c7a02cd01dce859b479752a9b8a6b08c84826dd471f7"
-}

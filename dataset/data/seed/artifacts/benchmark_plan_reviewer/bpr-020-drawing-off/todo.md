@@ -1,4 +1,0 @@
-- [x] Keep the direct-drop dead zone aligned across the planner artifacts.
-- [x] Declare the deflector and lower bin consistently with the goal-zone geometry.
-- [x] Preserve a fully static benchmark with zero benchmark-side DOFs.
-- [x] Keep benchmark-local cost and weight within the declared caps.

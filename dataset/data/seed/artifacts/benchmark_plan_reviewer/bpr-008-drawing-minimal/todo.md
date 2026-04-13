@@ -1,4 +1,0 @@
-- [x] Keep the goal sleeve and throat-wall geometry aligned across all planner artifacts.
-- [x] Preserve a wide upstream capture bowl before the narrow goal throat.
-- [x] Keep the benchmark fully static with zero benchmark-side DOFs.
-- [x] Keep benchmark-local cost and weight within the customer caps.

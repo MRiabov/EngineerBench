@@ -1,4 +1,0 @@
-- [x] Declare both landing decks and the gap guard consistently across planner artifacts.
-- [x] Keep the `floor_gap` forbid volume unobstructed by benchmark-owned solids.
-- [x] Preserve a fully static benchmark with zero benchmark-side DOFs.
-- [x] Keep benchmark-local costs below the declared customer caps.

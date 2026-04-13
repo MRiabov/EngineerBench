@@ -1,4 +1,0 @@
-- [x] Keep the speed-bump keep-out aligned across the planner artifacts.
-- [x] Keep the brake concept visually passive even though the tray can tip slightly to arrest speed near the goal.
-- [x] Preserve a cable path that stays outside the central keep-out.
-- [x] Keep benchmark-local cost and weight within the declared caps.

@@ -1,4 +1,0 @@
-- [x] Declare both landing decks and the gap guard consistently across planner artifacts.
-- [x] Keep the `floor_gap` forbid volume unobstructed by benchmark-owned solids.
-- [x] Preserve bridge behavior that still reads as passive even with a tiny self-centering correction on the reference table.
-- [x] Keep benchmark-local costs below the declared customer caps.
