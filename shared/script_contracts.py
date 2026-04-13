@@ -13,10 +13,8 @@ _BENCHMARK_ROLE_NAMES = {
 _ENGINEERING_ROLE_NAMES = {
     AgentName.ENGINEER_CODER,
     AgentName.ENGINEER_EXECUTION_REVIEWER,
-    AgentName.ELECTRONICS_REVIEWER,
     AgentName.ENGINEER_PLANNER,
     AgentName.ENGINEER_PLAN_REVIEWER,
-    AgentName.ELECTRONICS_PLANNER,
 }
 
 BENCHMARK_SCRIPT_PATH = "benchmark_script.py"
@@ -112,10 +110,7 @@ def authored_script_path_for_reviewer_stage(
     stage = _normalize_reviewer_stage(reviewer_stage)
     if stage == AgentName.BENCHMARK_REVIEWER:
         return _as_path(BENCHMARK_SCRIPT_PATH)
-    if stage in {
-        AgentName.ENGINEER_EXECUTION_REVIEWER,
-        AgentName.ELECTRONICS_REVIEWER,
-    }:
+    if stage == AgentName.ENGINEER_EXECUTION_REVIEWER:
         return _as_path(SOLUTION_SCRIPT_PATH)
     return _as_path(LEGACY_SCRIPT_PATH)
 
@@ -124,9 +119,6 @@ def plan_path_for_reviewer_stage(reviewer_stage: AgentName | str | None) -> Path
     stage = _normalize_reviewer_stage(reviewer_stage)
     if stage == AgentName.BENCHMARK_REVIEWER:
         return _as_path(BENCHMARK_PLAN_PATH)
-    if stage in {
-        AgentName.ENGINEER_EXECUTION_REVIEWER,
-        AgentName.ELECTRONICS_REVIEWER,
-    }:
+    if stage == AgentName.ENGINEER_EXECUTION_REVIEWER:
         return _as_path(ENGINEERING_PLAN_PATH)
     return _as_path("plan.md")

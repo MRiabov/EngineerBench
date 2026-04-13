@@ -96,7 +96,7 @@ def _manifest_info(agent_name: AgentName) -> tuple[Path, AgentName]:
 def _planner_role_for_agent(agent_name: AgentName) -> AgentName | None:
     if agent_name == AgentName.BENCHMARK_PLANNER:
         return AgentName.BENCHMARK_PLANNER
-    if agent_name in {AgentName.ENGINEER_PLANNER, AgentName.ELECTRONICS_PLANNER}:
+    if agent_name == AgentName.ENGINEER_PLANNER:
         return AgentName.ENGINEER_PLANNER
     return None
 
