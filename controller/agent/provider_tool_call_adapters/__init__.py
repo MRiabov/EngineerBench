@@ -1,11 +1,7 @@
 from .base import ParsedToolCalls, ProviderToolCallAdapter
-from .minimax_adapter import MiniMaxToolCallAdapter
 from .native_adapter import NativeToolCallAdapter
 
-_ADAPTERS: tuple[ProviderToolCallAdapter, ...] = (
-    NativeToolCallAdapter(),
-    MiniMaxToolCallAdapter(),
-)
+_ADAPTERS: tuple[ProviderToolCallAdapter, ...] = (NativeToolCallAdapter(),)
 
 
 def extract_tool_calls(

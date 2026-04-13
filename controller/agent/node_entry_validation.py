@@ -118,7 +118,6 @@ ENGINEER_PREVIOUS_NODE_MAP: Mapping[AgentName, AgentName | None] = {
     AgentName.COTS_SEARCH: AgentName.ENGINEER_PLANNER,
     AgentName.SKILL_AGENT: AgentName.ENGINEER_EXECUTION_REVIEWER,
     AgentName.JOURNALLING_AGENT: AgentName.ENGINEER_PLAN_REVIEWER,
-    AgentName.STEER: None,
 }
 
 BENCHMARK_PREVIOUS_NODE_MAP: Mapping[AgentName, AgentName | None] = {
@@ -129,7 +128,6 @@ BENCHMARK_PREVIOUS_NODE_MAP: Mapping[AgentName, AgentName | None] = {
     AgentName.COTS_SEARCH: AgentName.BENCHMARK_PLANNER,
     AgentName.SKILL_AGENT: AgentName.BENCHMARK_REVIEWER,
     AgentName.JOURNALLING_AGENT: AgentName.BENCHMARK_REVIEWER,
-    AgentName.STEER: None,
 }
 
 PREVIOUS_NODE_MAPS: Mapping[ValidationGraph, Mapping[AgentName, AgentName | None]] = {
@@ -464,10 +462,6 @@ def build_benchmark_node_contracts() -> dict[AgentName, NodeEntryContract]:
             node=AgentName.JOURNALLING_AGENT,
             required_state_fields=["session", "episode_id"],
         ),
-        AgentName.STEER: NodeEntryContract(
-            node=AgentName.STEER,
-            required_state_fields=["session", "episode_id"],
-        ),
     }
 
 
@@ -532,10 +526,6 @@ def build_engineer_node_contracts() -> dict[AgentName, NodeEntryContract]:
         ),
         AgentName.JOURNALLING_AGENT: NodeEntryContract(
             node=AgentName.JOURNALLING_AGENT,
-            required_state_fields=["episode_id"],
-        ),
-        AgentName.STEER: NodeEntryContract(
-            node=AgentName.STEER,
             required_state_fields=["episode_id"],
         ),
     }

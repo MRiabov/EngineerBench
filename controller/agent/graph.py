@@ -34,7 +34,6 @@ from controller.agent.node_entry_validation import (
 )
 from controller.clients.worker import WorkerClient
 from controller.config.settings import settings as controller_settings
-from controller.graph.steerability_node import check_steering, steerability_node
 from controller.persistence.db import get_sessionmaker
 from controller.persistence.models import Episode
 from shared.current_role import current_role_manifest_json
@@ -422,9 +421,6 @@ def _guarded_node(target_node: AgentName, node_callable):
 
 async def should_continue(state: AgentState) -> str:
     """Route after reviewer based on approval status."""
-    if await check_steering(state) == AgentName.STEER:
-        return AgentName.STEER
-
     if state.episode_id:
         try:
             threshold = agent_settings.context_compaction_threshold_tokens
@@ -495,9 +491,6 @@ async def should_continue(state: AgentState) -> str:
 
 async def should_continue_after_plan_review(state: AgentState) -> str:
     """Route after plan reviewer. Approved plans must proceed to implementation."""
-    if await check_steering(state) == AgentName.STEER:
-        return AgentName.STEER
-
     if state.episode_id:
         try:
             threshold = agent_settings.context_compaction_threshold_tokens
@@ -591,13 +584,10 @@ async def route_after_electronics_planner(
 async def route_after_engineer_coder(
     state: AgentState,
 ) -> Literal[
-    AgentName.STEER,
     AgentName.ELECTRONICS_REVIEWER,
     AgentName.ENGINEER_EXECUTION_REVIEWER,
     END,
 ]:
-    if await check_steering(state) == AgentName.STEER:
-        return AgentName.STEER
     if await _should_end_scoped_run_after_node(state, AgentName.ENGINEER_CODER):
         return END
     if await _state_requires_electronics(state):
@@ -631,9 +621,7 @@ async def route_after_engineer_coder(
 
 async def route_after_electronics_reviewer(
     state: AgentState,
-) -> Literal[AgentName.STEER, AgentName.ENGINEER_EXECUTION_REVIEWER, END]:
-    if await check_steering(state) == AgentName.STEER:
-        return AgentName.STEER
+) -> Literal[AgentName.ENGINEER_EXECUTION_REVIEWER, END]:
     if await _should_end_scoped_run_after_node(state, AgentName.ELECTRONICS_REVIEWER):
         return END
     worker_client = state.worker_client
@@ -705,7 +693,6 @@ builder.add_node(
     AgentName.JOURNALLING_AGENT,
     _guarded_node(AgentName.JOURNALLING_AGENT, summarizer_node),
 )
-builder.add_node(AgentName.STEER, _guarded_node(AgentName.STEER, steerability_node))
 
 
 # Set the entry point and edges
@@ -773,7 +760,6 @@ builder.add_conditional_edges(
         AgentName.ENGINEER_CODER: AgentName.ENGINEER_CODER,
         AgentName.ENGINEER_PLANNER: AgentName.ENGINEER_PLANNER,
         AgentName.SKILL_AGENT: AgentName.SKILL_AGENT,
-        AgentName.STEER: AgentName.STEER,
         AgentName.JOURNALLING_AGENT: AgentName.JOURNALLING_AGENT,
         END: END,
     },
@@ -783,7 +769,6 @@ builder.add_conditional_edges(
     AgentName.ENGINEER_CODER,
     route_after_engineer_coder,
     {
-        AgentName.STEER: AgentName.STEER,
         AgentName.ELECTRONICS_REVIEWER: AgentName.ELECTRONICS_REVIEWER,
         AgentName.ENGINEER_EXECUTION_REVIEWER: AgentName.ENGINEER_EXECUTION_REVIEWER,
         END: END,
@@ -794,7 +779,6 @@ builder.add_conditional_edges(
     AgentName.ELECTRONICS_REVIEWER,
     route_after_electronics_reviewer,
     {
-        AgentName.STEER: AgentName.STEER,
         AgentName.ENGINEER_EXECUTION_REVIEWER: AgentName.ENGINEER_EXECUTION_REVIEWER,
         END: END,
     },
@@ -808,13 +792,10 @@ builder.add_conditional_edges(
         AgentName.ENGINEER_CODER: AgentName.ENGINEER_CODER,
         AgentName.ENGINEER_PLANNER: AgentName.ENGINEER_PLANNER,
         AgentName.SKILL_AGENT: AgentName.SKILL_AGENT,
-        AgentName.STEER: AgentName.STEER,
         AgentName.JOURNALLING_AGENT: AgentName.JOURNALLING_AGENT,
         END: END,
     },
 )
-
-builder.add_edge(AgentName.STEER, AgentName.ENGINEER_PLANNER)
 
 builder.add_edge(AgentName.SKILL_AGENT, END)
 builder.add_edge(AgentName.JOURNALLING_AGENT, AgentName.ENGINEER_PLANNER)

@@ -120,21 +120,18 @@ class SharedNodeContext:
             )
 
         request_config = settings.resolve_dspy_lm_request_config(settings.llm_model)
-        if settings.is_integration_test:
-            logger.info("using_mock_llms_for_integration_test", session_id=session_id)
-        else:
-            # T025: Initialize native tracing
-            init_tracing()
+        # T025: Initialize native tracing
+        init_tracing()
 
-            logger.info(
-                "lm_client_initialized",
-                provider=request_config.provider,
-                model=request_config.model,
-                api_base=request_config.api_base,
-                planner_token_cap=settings.llm_max_tokens
-                if "planner" in agent_role.value
-                else None,
-            )
+        logger.info(
+            "lm_client_initialized",
+            provider=request_config.provider,
+            model=request_config.model,
+            api_base=request_config.api_base,
+            planner_token_cap=settings.llm_max_tokens
+            if "planner" in agent_role.value
+            else None,
+        )
         dspy_lm = build_dspy_lm(
             settings.llm_model,
             session_id=session_id,

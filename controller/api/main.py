@@ -132,11 +132,10 @@ app.include_router(script_tools.router)
 app.include_router(skills.router)
 app.include_router(ops.router)
 app.include_router(cots.router)
-from controller.api.routes import simulation, steerability
+from controller.api.routes import simulation
 
 app.include_router(simulation.router, prefix="/api")
 app.include_router(simulation.router)
-app.include_router(steerability.router, prefix="/api/v1")
 
 
 from controller.api.schemas import (

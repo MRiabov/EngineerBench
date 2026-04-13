@@ -53,7 +53,6 @@ from controller.agent.node_entry_validation import (
 from controller.agent.review_handover import collect_plan_reviewer_handover_evidence
 from controller.clients.backend import RemoteFilesystemBackend
 from controller.clients.worker import WorkerClient
-from controller.graph.steerability_node import check_steering, steerability_node
 from controller.middleware.remote_fs import RemoteFilesystemMiddleware
 from controller.observability.database import DatabaseCallbackHandler
 from controller.persistence.db import get_sessionmaker
@@ -855,9 +854,6 @@ def define_graph():
         AgentName.JOURNALLING_AGENT,
         _guarded_node(AgentName.JOURNALLING_AGENT, summarizer_node),
     )
-    workflow.add_node(
-        AgentName.STEER, _guarded_node(AgentName.STEER, steerability_node)
-    )
 
     # Define transitions
     def route_start(
@@ -1010,14 +1006,10 @@ def define_graph():
     async def coder_router(
         state: BenchmarkGeneratorState,
     ) -> Literal[
-        AgentName.STEER,
         AgentName.BENCHMARK_REVIEWER,
         AgentName.BENCHMARK_CODER,
         AgentName.SKILL_AGENT,
     ]:
-        if await check_steering(state) == AgentName.STEER:
-            return AgentName.STEER
-
         if state.session.status == SessionStatus.REJECTED:
             return AgentName.BENCHMARK_CODER
 
@@ -1032,7 +1024,6 @@ def define_graph():
         AgentName.BENCHMARK_CODER,
         coder_router,
         {
-            AgentName.STEER: AgentName.STEER,
             AgentName.BENCHMARK_REVIEWER: AgentName.BENCHMARK_REVIEWER,
             AgentName.BENCHMARK_CODER: AgentName.BENCHMARK_CODER,
             AgentName.SKILL_AGENT: AgentName.SKILL_AGENT,
@@ -1044,17 +1035,12 @@ def define_graph():
     async def reviewer_router(
         state: BenchmarkGeneratorState,
     ) -> Literal[
-        AgentName.STEER,
         AgentName.BENCHMARK_REVIEWER,
         AgentName.BENCHMARK_CODER,
         AgentName.BENCHMARK_PLANNER,
         AgentName.SKILL_AGENT,
         AgentName.JOURNALLING_AGENT,
     ]:
-        # Check for steering first
-        if await check_steering(state) == AgentName.STEER:
-            return AgentName.STEER
-
         if state.episode_id:
             try:
                 threshold = agent_settings.context_compaction_threshold_tokens
@@ -1114,15 +1100,12 @@ def define_graph():
                 return AgentName.BENCHMARK_CODER
             return AgentName.BENCHMARK_CODER
 
-        if feedback.startswith("STEERING:"):
-            return AgentName.BENCHMARK_PLANNER
         return AgentName.BENCHMARK_CODER
 
     workflow.add_conditional_edges(
         AgentName.BENCHMARK_REVIEWER,
         reviewer_router,
         {
-            AgentName.STEER: AgentName.STEER,
             AgentName.BENCHMARK_REVIEWER: AgentName.BENCHMARK_REVIEWER,
             AgentName.BENCHMARK_CODER: AgentName.BENCHMARK_CODER,
             AgentName.BENCHMARK_PLANNER: AgentName.BENCHMARK_PLANNER,
@@ -1134,7 +1117,6 @@ def define_graph():
 
     workflow.add_edge(AgentName.SKILL_AGENT, END)
     workflow.add_edge(AgentName.JOURNALLING_AGENT, AgentName.BENCHMARK_PLANNER)
-    workflow.add_edge(AgentName.STEER, AgentName.BENCHMARK_PLANNER)
 
     # cots_search can be reached from planner or coder if we add those edges
     workflow.add_edge(AgentName.COTS_SEARCH, AgentName.BENCHMARK_PLANNER)
