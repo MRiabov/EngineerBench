@@ -970,7 +970,9 @@ The safe order is:
 - [ ] Remove Temporal orchestration shells, non-local devops helpers, and any
   bespoke local-agent-SDK clone surface from the default bundle.
 - [x] Remove technical-drawing plumbing, electronics planner/reviewer
-  surfaces, and late-epic simulation helpers from the default bundle.
+  surfaces, and late-epic simulation helpers from the default bundle,
+  including the script-contract helpers, preview/render wrappers, and
+  drafting handoff validators.
 - [x] Collapse the drawing-mode matrix to the retained full geometric-plan
   path and delete the off/minimal technical-drawing variants.
 
