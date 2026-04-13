@@ -142,50 +142,6 @@ def _validate_drafting_preview_gate(
     script_path: str | Path | None,
     session_id: str | None,
 ) -> str | None:
-    planner_role = _drafting_preview_role(script_path)
-    if planner_role is None:
-        return None
-
-    drafting_mode = load_agents_config().get_technical_drawing_mode(planner_role)
-    if drafting_mode not in (DraftingMode.MINIMAL, DraftingMode.FULL):
-        return None
-
-    drafting_script_path = working_root / technical_drawing_script_path_for_agent(
-        planner_role
-    )
-    drafting_manifest_path = working_root / drafting_render_manifest_path_for_agent(
-        planner_role
-    )
-    if not drafting_script_path.exists():
-        return (
-            f"{drafting_script_path.name} is missing; call render_technical_drawing() "
-            f"before validate()"
-        )
-    if not drafting_manifest_path.exists():
-        return (
-            f"{drafting_manifest_path.name} is missing; call render_technical_drawing() "
-            f"before validate()"
-        )
-
-    from worker_heavy.utils.file_validation import validate_drafting_preview_manifest
-
-    manifest_errors = validate_drafting_preview_manifest(
-        manifest_content=drafting_manifest_path.read_text(encoding="utf-8"),
-        technical_drawing_script_content=drafting_script_path.read_text(
-            encoding="utf-8"
-        ),
-        artifact_name=str(drafting_manifest_path.relative_to(working_root)),
-        workspace_root=working_root,
-    )
-    if manifest_errors:
-        return "; ".join(manifest_errors)
-
-    logger.info(
-        "drafting_preview_gate_passed",
-        session_id=session_id,
-        agent_role=planner_role.value,
-        manifest_path=str(drafting_manifest_path.relative_to(working_root)),
-    )
     return None
 
 

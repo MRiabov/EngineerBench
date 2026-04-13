@@ -966,9 +966,9 @@ The safe order is:
 - [x] Remove mock-provider, steerability, and legacy-wrapper surfaces.
 - [ ] Remove Temporal orchestration shells, non-local devops helpers, and any
   bespoke local-agent-SDK clone surface from the default bundle.
-- [ ] Remove technical-drawing plumbing, electronics planner/reviewer
+- [x] Remove technical-drawing plumbing, electronics planner/reviewer
   surfaces, and late-epic simulation helpers from the default bundle.
-- [ ] Collapse the drawing-mode matrix to the retained full geometric-plan
+- [x] Collapse the drawing-mode matrix to the retained full geometric-plan
   path and delete the off/minimal technical-drawing variants.
 
 ### Training, observability, and data
