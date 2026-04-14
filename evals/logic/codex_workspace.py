@@ -344,29 +344,6 @@ def _write_current_role_manifest(dst_root: Path, agent_name: AgentName) -> str:
     return _CURRENT_ROLE_MANIFEST_PATH.as_posix()
 
 
-def _collect_assembly_targets(assembly_definition: AssemblyDefinition) -> list[str]:
-    targets: list[str] = []
-
-    def _add(value: object) -> None:
-        text = str(value).strip()
-        if text and text not in targets:
-            targets.append(text)
-
-    for part in assembly_definition.manufactured_parts:
-        _add(part.part_name)
-        _add(part.part_id)
-    for part in assembly_definition.cots_parts:
-        _add(part.part_id)
-    for item in assembly_definition.final_assembly:
-        if isinstance(item, PartConfig):
-            _add(item.name)
-            continue
-        _add(item.subassembly_id)
-        for part in item.parts:
-            _add(part.name)
-    return targets
-
-
 def _load_benchmark_caps(workspace_dir: Path) -> tuple[float, float]:
     benchmark_path = workspace_dir / "benchmark_definition.yaml"
     default_unit_cost = 100.0
