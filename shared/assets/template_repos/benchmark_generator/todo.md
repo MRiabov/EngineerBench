@@ -22,6 +22,6 @@
 ## Validation
 
 - [ ] Verify geometry, objective clearance, and runtime jitter robustness.
-- [ ] Reject any actuators, FEM, or fluids before submission.
+- [ ] Reject any actuators or soft-material branches before submission.
 - [ ] Call `submit_benchmark_plan()` only after the handoff files are internally
   consistent.

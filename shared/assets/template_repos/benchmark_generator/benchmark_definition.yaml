@@ -9,8 +9,6 @@ objectives:
   build_zone:
     min: [-40.0, -28.0, 0.0]
     max: [40.0, 28.0, 48.0]
-  fluid_objectives: []
-  stress_objectives: []
 benchmark_parts:
   - part_id: left_start_deck
     label: left_start_deck
@@ -38,8 +36,6 @@ benchmark_parts:
       material_id: aluminum_6061
 physics:
   backend: GENESIS
-  fem_enabled: false
-fluids: []
 simulation_bounds:
   min: [-48.0, -36.0, 0.0]
   max: [48.0, 36.0, 60.0]

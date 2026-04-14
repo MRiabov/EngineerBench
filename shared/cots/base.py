@@ -27,7 +27,7 @@ class COTSPart(Compound, ABC):
         Initialize the COTS part.
 
         Args:
-            category: The category of the part (e.g., 'motor', 'fastener').
+            category: The category of the part (e.g., 'actuator', 'fastener').
             part_number: The specific model or Part ID.
             data: Metadata dictionary containing at least 'price' and 'weight_g'.
             children: build123d geometry children.

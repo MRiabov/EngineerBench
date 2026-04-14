@@ -584,43 +584,6 @@ engineer:
           or non-applicable requests in mixed-quality review seeds.
         partial: true
 
-  # ── Electrical Engineer ──────────────────────────────────────────────────
-  electronics_engineer:
-    description: >
-      Scores the electrical engineer's ability to design a valid, functional
-      electrical subsystem (wiring, power budget, continuity).
-    milestones:
-      # Gate 1 — electrical schematic file present
-      schematic_present:
-        weight: 0.10
-        description: >
-          electrical_schematic.yaml or equivalent artifact exists and is non-empty.
-
-      # Gate 2 — power budget within cap
-      power_budget_valid:
-        weight: 0.15
-        description: >
-          Total power draw <= power_budget from benchmark_definition.yaml.
-        partial: true
-        penalty_formula: "max(0.0, 1.0 - max(0.0, total_power / max_power - 1.0))"
-
-      # Gate 3 — circuit continuity check passes
-      circuit_continuity:
-        weight: 0.20
-        description: >
-          All actuators and sensors are reachable from the power source
-          (graph connectivity check on the schematic).
-
-      # Gate 4 — simulation with electrical subsystem passes
-      simulation_result:
-        weight: 0.55
-        description: >
-          Full simulation (mechanical + electrical) passes. Same partial
-          credit formula as engineer_coder.simulation_result.
-        partial: true
-        success_formula: "0.55"
-        failure_formula: "0.55 * (1.0 - min_distance_achieved / initial_distance) * 0.4"
-
   # ── Engineering Plan Reviewer ────────────────────────────────────────────
   engineer_plan_reviewer:
     description: >
@@ -670,62 +633,6 @@ engineer:
           weight: 0.03
           description: >
             Reviewer correctly judged whether the plan was implementation-ready and unambiguous.
-      review_actionable:
-        weight: 0.20
-        description: >
-          Rejections include specific fixes aligned with the failed checklist
-          items. Acceptances receive full credit.
-
-  # ── Electronics Reviewer ─────────────────────────────────────────────────
-  electronics_reviewer:
-    description: >
-      Scores the electronics reviewer's decision quality over electrical or
-      electromechanical implementation output.
-    hard_checks:
-      review_artifacts_complete:
-        weight: 0.10
-        description: >
-          reviews/ contains the stage-specific electronics decision YAML and
-          comments/checklist YAML for the current round.
-    judge_evaluation:
-      decision_correct:
-        weight: 0.35
-        description: >
-          The electrical review decision matches seeded ground truth for
-          accept/reject.
-      checklist:
-        latest_revision_verified:
-          weight: 0.04
-          description: >
-            Reviewer correctly judged that the latest electrical revision was reviewed.
-        schematic_present:
-          weight: 0.05
-          description: >
-            Reviewer correctly judged presence and completeness of electrical schematic artifacts.
-        power_budget_valid:
-          weight: 0.06
-          description: >
-            Reviewer correctly judged power-budget compliance.
-        circuit_continuity:
-          weight: 0.06
-          description: >
-            Reviewer correctly judged continuity and circuit validity.
-        electromechanical_clearance:
-          weight: 0.05
-          description: >
-            Reviewer correctly judged electrical routing and electromechanical clearance.
-        plan_fidelity:
-          weight: 0.04
-          description: >
-            Reviewer correctly judged fidelity to the approved electromechanical plan.
-        visual_evidence_checked:
-          weight: 0.02
-          description: >
-            Reviewer correctly judged static evidence inspection requirements.
-        dynamic_evidence_checked:
-          weight: 0.03
-          description: >
-            Reviewer correctly judged dynamic electrical evidence inspection requirements.
       review_actionable:
         weight: 0.20
         description: >

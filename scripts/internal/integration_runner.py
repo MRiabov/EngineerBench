@@ -1469,22 +1469,10 @@ def _prepare_parts_db(repo_root: Path) -> None:
     needs_population = not parts_db.exists() or parts_db.stat().st_size == 0
 
     if not needs_population:
-        try:
-            import sqlite3
-
-            with sqlite3.connect(parts_db) as conn:
-                motor_count = conn.execute(
-                    "SELECT COUNT(*) FROM parts WHERE category = 'motor'"
-                ).fetchone()[0]
-            needs_population = int(motor_count or 0) == 0
-        except Exception:
-            needs_population = True
-
-    if not needs_population:
         return
 
     _runner_status(
-        "parts.db missing motor catalog entries. Populating COTS database..."
+        "parts.db missing catalog entries. Populating COTS database..."
     )
     env = os.environ.copy()
     env["PYTHONPATH"] = "."

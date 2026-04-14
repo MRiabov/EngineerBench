@@ -3,8 +3,8 @@
 - Train bridge-spanning rigid-body reasoning with a passive benchmark that
   moves a sphere from a left launch deck to a right goal deck using only
   static geometry and gravity.
-- Keep the family simple, reproducible, and fully rigid-body: no actuators,
-  FEM, or fluids.
+- Keep the family simple, reproducible, and fully rigid-body: no actuators or
+  soft-material branches.
 
 ## 2. Static Geometry
 
@@ -42,7 +42,7 @@
 
 - The benchmark stays passive: the sphere crosses the span under gravity and
   the static geometry keeps the trajectory aligned with the goal deck.
-- There are no benchmark-owned moving fixtures, actuators, FEM parts, or fluid
+- There are no benchmark-owned moving fixtures, actuators, or soft-material
   features in this family.
 - Any benchmark-side motion that would require a controller is out of scope and
   must be rejected rather than adapted.
@@ -75,4 +75,4 @@
   `gap_floor_guard` must be static (`fixed: true`) and carry a known
   `material_id`.
 - The payload uses `material_id: abs`.
-- No part in this family should introduce powered or deformable behavior.
+- No part in this family should introduce powered behavior.
