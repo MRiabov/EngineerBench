@@ -1,6 +1,6 @@
 import asyncio
 import base64
-from contextlib import asynccontextmanager, contextmanager
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 import httpx
@@ -96,21 +96,6 @@ async def _controller_script_middleware(
         yield middleware
 
 
-@contextmanager
-def _script_log_context(payload: ScriptToolRequest, session_id: str):
-    identity = EpisodeIdentity.from_context(
-        session_id=session_id, episode_id=payload.episode_id
-    )
-    stage = (payload.reviewer_stage or payload.agent_role).value
-    with bind_log_context(
-        session_id=identity.session_id,
-        episode_id=str(identity.episode_id),
-        agent_role=payload.agent_role.value,
-        stage=stage,
-    ):
-        yield
-
-
 async def _retry_busy(callable_):
     delay = 1.5
     max_attempts = 10
@@ -179,7 +164,15 @@ async def validate_script(
     payload: ScriptToolRequest,
     x_session_id: str = Header(...),
 ):
-    with _script_log_context(payload, x_session_id):
+    identity = EpisodeIdentity.from_context(
+        session_id=x_session_id, episode_id=payload.episode_id
+    )
+    with bind_log_context(
+        session_id=identity.session_id,
+        episode_id=str(identity.episode_id),
+        agent_role=payload.agent_role.value,
+        stage=(payload.reviewer_stage or payload.agent_role).value,
+    ):
         async with _controller_script_middleware(
             x_session_id, payload.agent_role, request, payload.episode_id
         ) as middleware:
@@ -196,7 +189,15 @@ async def simulate_script(
     payload: ScriptToolRequest,
     x_session_id: str = Header(...),
 ):
-    with _script_log_context(payload, x_session_id):
+    identity = EpisodeIdentity.from_context(
+        session_id=x_session_id, episode_id=payload.episode_id
+    )
+    with bind_log_context(
+        session_id=identity.session_id,
+        episode_id=str(identity.episode_id),
+        agent_role=payload.agent_role.value,
+        stage=(payload.reviewer_stage or payload.agent_role).value,
+    ):
         ensure_smoke_test_mode_allowed(
             payload.smoke_test_mode,
             integration_enabled=settings.is_integration_test,
@@ -240,7 +241,15 @@ async def verify_script(
     payload: ScriptToolRequest,
     x_session_id: str = Header(...),
 ):
-    with _script_log_context(payload, x_session_id):
+    identity = EpisodeIdentity.from_context(
+        session_id=x_session_id, episode_id=payload.episode_id
+    )
+    with bind_log_context(
+        session_id=identity.session_id,
+        episode_id=str(identity.episode_id),
+        agent_role=payload.agent_role.value,
+        stage=(payload.reviewer_stage or payload.agent_role).value,
+    ):
         smoke_test_mode = payload.smoke_test_mode
         if smoke_test_mode is None:
             smoke_test_mode = resolve_default_smoke_test_mode(
@@ -290,7 +299,15 @@ async def preview_script(
     payload: ScriptToolRequest,
     x_session_id: str = Header(...),
 ):
-    with _script_log_context(payload, x_session_id):
+    identity = EpisodeIdentity.from_context(
+        session_id=x_session_id, episode_id=payload.episode_id
+    )
+    with bind_log_context(
+        session_id=identity.session_id,
+        episode_id=str(identity.episode_id),
+        agent_role=payload.agent_role.value,
+        stage=(payload.reviewer_stage or payload.agent_role).value,
+    ):
         async with _controller_script_middleware(
             x_session_id, payload.agent_role, request, payload.episode_id
         ) as middleware:
@@ -315,7 +332,15 @@ async def submit_script(
     payload: ScriptToolRequest,
     x_session_id: str = Header(...),
 ):
-    with _script_log_context(payload, x_session_id):
+    identity = EpisodeIdentity.from_context(
+        session_id=x_session_id, episode_id=payload.episode_id
+    )
+    with bind_log_context(
+        session_id=identity.session_id,
+        episode_id=str(identity.episode_id),
+        agent_role=payload.agent_role.value,
+        stage=(payload.reviewer_stage or payload.agent_role).value,
+    ):
         async with _controller_script_middleware(
             x_session_id, payload.agent_role, request, payload.episode_id
         ) as middleware:

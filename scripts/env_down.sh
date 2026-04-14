@@ -72,8 +72,6 @@ stop_pid_file "Worker Light" "$STACK_PID_DIR/worker_light.pid"
 stop_pid_file "Worker Renderer" "$STACK_PID_DIR/worker_renderer.pid"
 stop_pid_file "Worker Heavy" "$STACK_PID_DIR/worker_heavy.pid"
 stop_pid_file "Controller" "$STACK_PID_DIR/controller.pid"
-stop_pid_file "Temporal Worker" "$STACK_PID_DIR/temporal_worker.pid"
-stop_pid_file "Heavy Temporal Worker" "$STACK_PID_DIR/worker_heavy_temporal.pid"
 stop_pid_file "Frontend dev server" "$STACK_PID_DIR/frontend.pid"
 
 docker compose -p "$COMPOSE_PROJECT_NAME" -f docker-compose.yml stop worker-renderer >/dev/null 2>&1 || true
@@ -88,10 +86,6 @@ if [ "$STACK_CREATE_ROOT_LOG_SYMLINKS" = "1" ]; then
     logs/worker_renderer_debug.log \
     logs/worker_heavy.log \
     logs/worker_heavy_debug.log \
-    logs/worker_heavy_temporal.log \
-    logs/worker_heavy_temporal_debug.log \
-    logs/temporal_worker.log \
-    logs/temporal_worker_debug.log \
     logs/frontend.log
 fi
 

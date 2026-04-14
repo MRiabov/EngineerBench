@@ -27,7 +27,6 @@ from shared.git_utils import repo_revision
 from shared.models.schemas import (
     AssemblyDefinition,
     BenchmarkDefinition,
-    CotsPartEstimate,
     PayloadTrajectoryDefinition,
 )
 from shared.models.simulation import (
@@ -69,8 +68,6 @@ from worker_heavy.utils.rendering import prerender_24_views
 from worker_heavy.workbenches.config import load_config, load_merged_config
 
 from .dfm import (
-    _metadata_cots_id,
-    calculate_benchmark_drilling_cost,
     resolve_requested_quantity,
     validate_and_price,
 )
@@ -548,14 +545,6 @@ def _prefix_part_violation(label: str, violation: str) -> str:
     return violation if violation.startswith(prefix) else f"{prefix}{violation}"
 
 
-def _resolve_cots_catalog_item(
-    part_id: str,
-) -> tuple[Any, dict[str, str | None]] | None:
-    from shared.cots.runtime import get_catalog_item_with_metadata
-
-    return get_catalog_item_with_metadata(part_id)
-
-
 def _validate_parent_fixed_contract(
     component: Compound, objectives: BenchmarkDefinition | None
 ) -> str | None:
@@ -812,18 +801,16 @@ def to_mjcf(
 def calculate_assembly_totals(
     component: Compound,
     assembly_definition: AssemblyDefinition | None = None,
-    cots_parts: list[CotsPartEstimate] | None = None,
     manufacturing_config: ManufacturingConfig | None = None,
     session_id: str | None = None,
     quantity: int = 1,
 ) -> tuple[float, float]:
     """
-    Calculate total cost and weight of the assembly including COTS.
+    Calculate total cost and weight of the assembly.
     """
     config = manufacturing_config or load_config()
     total_cost = 0.0
     total_weight = 0.0
-    observed_cots_counts: dict[str, int] = {}
 
     # 1. Manufactured parts
     children = getattr(component, "children", [])
@@ -833,45 +820,6 @@ def calculate_assembly_totals(
     for child in children:
         metadata = getattr(child, "metadata", None)
         if not metadata:
-            continue
-
-        cots_id = _metadata_cots_id(metadata)
-        if cots_id:
-            part_label = getattr(child, "label", "unknown")
-            lookup = _resolve_cots_catalog_item(cots_id)
-            if lookup is None:
-                raise ValueError(f"{part_label}: unresolved COTS part_id '{cots_id}'")
-
-            catalog_item, catalog_metadata = lookup
-            catalog_details = catalog_item.metadata or {}
-            total_cost += catalog_item.unit_cost
-            total_weight += catalog_item.weight_g
-            observed_cots_counts[cots_id] = observed_cots_counts.get(cots_id, 0) + 1
-
-            manufacturer = getattr(metadata, "manufacturer", None)
-            catalog_manufacturer = catalog_details.get("manufacturer")
-            if (
-                manufacturer
-                and catalog_manufacturer
-                and manufacturer != catalog_manufacturer
-            ):
-                raise ValueError(
-                    f"{part_label}: manufacturer '{manufacturer}' does not match catalog manufacturer '{catalog_manufacturer}'"
-                )
-
-            for field_name, observed in (
-                ("catalog_version", getattr(metadata, "catalog_version", None)),
-                ("bd_warehouse_commit", getattr(metadata, "bd_warehouse_commit", None)),
-                ("catalog_snapshot_id", getattr(metadata, "catalog_snapshot_id", None)),
-                ("generated_at", getattr(metadata, "generated_at", None)),
-            ):
-                if observed is None:
-                    continue
-                expected = catalog_metadata.get(field_name)
-                if expected is not None and observed != expected:
-                    raise ValueError(
-                        f"{part_label}: {field_name} '{observed}' does not match catalog value '{expected}'"
-                    )
             continue
 
         if _metadata_is_fixed(metadata):
@@ -904,78 +852,6 @@ def calculate_assembly_totals(
                 session_id=session_id,
             )
             raise
-
-    # 2. Generic COTS parts from assembly definition
-    if cots_parts:
-        declared_cots_counts: dict[str, int] = {}
-        for p in cots_parts:
-            declared_cots_counts[p.part_id] = (
-                declared_cots_counts.get(p.part_id, 0) + p.quantity
-            )
-            lookup = _resolve_cots_catalog_item(p.part_id)
-            if lookup is None:
-                raise ValueError(f"Unknown catalog COTS part_id '{p.part_id}'")
-
-            catalog_item, catalog_metadata = lookup
-            catalog_details = catalog_item.metadata or {}
-            total_cost += catalog_item.unit_cost * p.quantity
-            total_weight += catalog_item.weight_g * p.quantity
-
-            manufacturer = catalog_details.get("manufacturer")
-            if manufacturer and p.manufacturer != manufacturer:
-                raise ValueError(
-                    "COTS manufacturer mismatch for part_id "
-                    f"'{p.part_id}': planner manufacturer '{p.manufacturer}' "
-                    f"does not match catalog manufacturer '{manufacturer}'"
-                )
-
-            if (
-                p.weight_g is not None
-                and abs(p.weight_g - catalog_item.weight_g) > 1e-6
-            ):
-                raise ValueError(
-                    "COTS weight mismatch for part_id "
-                    f"'{p.part_id}': planner weight {p.weight_g}g does not match "
-                    f"catalog weight {catalog_item.weight_g}g"
-                )
-
-        missing_declared_cots_parts = [
-            f"'{part_id}' x{quantity}"
-            for part_id, quantity in declared_cots_counts.items()
-            if observed_cots_counts.get(part_id, 0) < quantity
-        ]
-        if missing_declared_cots_parts:
-            raise ValueError(
-                "Declared COTS part(s) were not instantiated in authored geometry: "
-                + ", ".join(missing_declared_cots_parts)
-            )
-        provenance_pairs = (
-            (
-                "catalog_version",
-                p.catalog_version,
-                catalog_metadata.get("catalog_version"),
-            ),
-            (
-                "bd_warehouse_commit",
-                p.bd_warehouse_commit,
-                catalog_metadata.get("bd_warehouse_commit"),
-            ),
-            (
-                "catalog_snapshot_id",
-                p.catalog_snapshot_id,
-                catalog_metadata.get("catalog_snapshot_id"),
-            ),
-            ("generated_at", p.generated_at, catalog_metadata.get("generated_at")),
-        )
-        for field_name, observed, expected in provenance_pairs:
-            if observed is not None and expected is not None and observed != expected:
-                raise ValueError(
-                    f"COTS provenance mismatch for part_id '{p.part_id}': "
-                    f"{field_name} '{observed}' does not match catalog '{expected}'"
-                )
-
-    if assembly_definition is not None:
-        total_cost += calculate_benchmark_drilling_cost(assembly_definition, config)
 
     return total_cost, total_weight
 
@@ -1477,9 +1353,6 @@ def simulate(
             cost, weight = calculate_assembly_totals(
                 component,
                 assembly_definition=assembly_definition,
-                cots_parts=(
-                    assembly_definition.cots_parts if assembly_definition else None
-                ),
                 manufacturing_config=pricing_config,
                 quantity=requested_quantity if objectives is not None else 1,
             )

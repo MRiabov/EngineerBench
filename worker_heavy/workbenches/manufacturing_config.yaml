@@ -1,10 +1,6 @@
 defaults:
   currency: "USD"
 
-benchmark_operations:
-  drilling:
-    cost_per_hole_usd: 1.5
-
 materials:
   aluminum_6061:
     name: "Aluminum 6061"
@@ -12,14 +8,8 @@ materials:
     density_kg_m3: 2700
     color: "#C0C0C0"
     cost_per_kg: 6.00
-    elongation_stress_mpa: 276.0
     restitution: 0.5
     friction_coef: 0.61
-    youngs_modulus_pa: 68900000000.0
-    poissons_ratio: 0.33
-    yield_stress_pa: 276000000.0
-    ultimate_stress_pa: 310000000.0
-    material_class: "rigid"
 
   steel_carbon:
     name: "Carbon Steel"
@@ -27,14 +17,8 @@ materials:
     density_kg_m3: 7850
     color: "#6E737B"
     cost_per_kg: 1.80
-    elongation_stress_mpa: 250.0
     restitution: 0.55
     friction_coef: 0.60
-    youngs_modulus_pa: 200000000000.0
-    poissons_ratio: 0.29
-    yield_stress_pa: 250000000.0
-    ultimate_stress_pa: 460000000.0
-    material_class: "rigid"
 
   steel_structural:
     name: "Structural Steel"
@@ -42,14 +26,8 @@ materials:
     density_kg_m3: 7850
     color: "#5F666E"
     cost_per_kg: 1.40
-    elongation_stress_mpa: 250.0
     restitution: 0.50
     friction_coef: 0.62
-    youngs_modulus_pa: 200000000000.0
-    poissons_ratio: 0.30
-    yield_stress_pa: 250000000.0
-    ultimate_stress_pa: 400000000.0
-    material_class: "rigid"
 
   abs:
     name: "ABS"
@@ -57,14 +35,8 @@ materials:
     density_kg_m3: 1040
     color: "#FFFFFF"
     cost_per_kg: 2.50
-    elongation_stress_mpa: 40.0
     restitution: 0.6
     friction_coef: 0.5
-    youngs_modulus_pa: 2300000000.0
-    poissons_ratio: 0.35
-    yield_stress_pa: 40000000.0
-    ultimate_stress_pa: 44000000.0
-    material_class: "rigid"
 
   hdpe:
     name: "HDPE"
@@ -72,14 +44,8 @@ materials:
     density_kg_m3: 950
     color: "#F1F5F9"
     cost_per_kg: 1.90
-    elongation_stress_mpa: 26.0
     restitution: 0.30
     friction_coef: 0.22
-    youngs_modulus_pa: 1000000000.0
-    poissons_ratio: 0.42
-    yield_stress_pa: 26000000.0
-    ultimate_stress_pa: 32000000.0
-    material_class: "rigid"
 
   hardwood:
     name: "Hardwood"
@@ -87,14 +53,8 @@ materials:
     density_kg_m3: 750
     color: "#8B5A2B"
     cost_per_kg: 3.20
-    elongation_stress_mpa: 45.0
     restitution: 0.35
     friction_coef: 0.50
-    youngs_modulus_pa: 11000000000.0
-    poissons_ratio: 0.35
-    yield_stress_pa: 45000000.0
-    ultimate_stress_pa: 90000000.0
-    material_class: "rigid"
 
   silicone_rubber:
     name: "Silicone Rubber"
@@ -104,11 +64,6 @@ materials:
     cost_per_kg: 15.00
     restitution: 0.1
     friction_coef: 0.8
-    youngs_modulus_pa: 5000000.0
-    poissons_ratio: 0.49
-    yield_stress_pa: 7000000.0
-    ultimate_stress_pa: 10000000.0
-    material_class: "elastomer"
 
   rubber_generic:
     name: "Generic Rubber"
@@ -116,14 +71,8 @@ materials:
     density_kg_m3: 1150
     color: "#1F2937"
     cost_per_kg: 8.50
-    elongation_stress_mpa: 8.0
     restitution: 0.20
     friction_coef: 0.90
-    youngs_modulus_pa: 10000000.0
-    poissons_ratio: 0.49
-    yield_stress_pa: 8000000.0
-    ultimate_stress_pa: 12000000.0
-    material_class: "elastomer"
 
 cnc:
   materials:
@@ -133,7 +82,6 @@ cnc:
       cost_per_kg: 6.0
       machine_hourly_rate: 80.0
       color: "#D1D5DB"
-      elongation_stress_mpa: 240.0
       restitution: 0.5
       friction_coef: 0.6
   constraints:
@@ -152,7 +100,6 @@ injection_molding:
       cost_per_kg: 2.5
       machine_hourly_rate: 60.0
       color: "#3B82F6"
-      elongation_stress_mpa: 40.0
       restitution: 0.4
       friction_coef: 0.5
   constraints:
@@ -172,7 +119,6 @@ three_dp:
       cost_per_kg: 20.0
       machine_hourly_rate: 20.0
       color: "#1E293B"
-      elongation_stress_mpa: 30.0
       restitution: 0.3
       friction_coef: 0.4
   costs:

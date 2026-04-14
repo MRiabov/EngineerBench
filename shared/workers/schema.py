@@ -529,6 +529,8 @@ class BugReportArchiveManifest(BaseModel):
     bug_report_size_bytes: StrictInt | None = None
 
     model_config = ConfigDict(extra="forbid")
+
+
 class GitCommitRequest(BaseModel):
     """Request to commit changes in the session workspace."""
 
@@ -672,10 +674,6 @@ class PreviewDesignRequest(BaseModel):
             "bundles and scratch previews."
         ),
     )
-    drafting: bool = Field(
-        default=False,
-        description="Request a drafting preview instead of the default 3D modalities.",
-    )
     rendering_type: PreviewRenderingType | None = Field(
         default=None,
         description=(
@@ -690,13 +688,6 @@ class PreviewDesignRequest(BaseModel):
 
     @model_validator(mode="after")
     def normalize_preview_request(self) -> "PreviewDesignRequest":
-        if self.drafting:
-            self.rgb = bool(self.rgb) if self.rgb is not None else False
-            self.depth = bool(self.depth) if self.depth is not None else False
-            self.segmentation = (
-                bool(self.segmentation) if self.segmentation is not None else False
-            )
-            return self
         explicit_modalities = any(
             getattr(self, field) is not None
             for field in ("rgb", "depth", "segmentation")
@@ -741,7 +732,6 @@ class PreviewDesignResponse(BaseModel):
     artifact_path: StrictStr | None = None
     manifest_path: StrictStr | None = None
     rendering_type: PreviewRenderingType = PreviewRenderingType.RGB
-    drafting: StrictBool = False
     pitch: float | None = None
     yaw: float | None = None
     image_path: StrictStr | None = None
@@ -776,7 +766,6 @@ class PreviewWorkflowParams(BaseModel):
     depth: bool | None = None
     segmentation: bool | None = None
     payload_path: bool = False
-    drafting: bool = False
     rendering_type: PreviewRenderingType | None = Field(
         default=None,
         description="Legacy single-modality preview selector.",
@@ -821,7 +810,6 @@ class HeavyPreviewParams(BaseModel):
     depth: bool | None = None
     segmentation: bool | None = None
     payload_path: bool = False
-    drafting: bool = False
     rendering_type: PreviewRenderingType | None = None
 
     @field_validator("orbit_pitch", "orbit_yaw", mode="after")
@@ -967,7 +955,6 @@ class RenderManifest(BaseModel):
     scene_hash: StrictStr | None = None
     bundle_path: StrictStr | None = None
     environment_version: StrictStr | None = None
-    drafting: StrictBool = False
     source_script_sha256: StrictStr | None = None
     preview_evidence_paths: list[StrictStr] = Field(default_factory=list)
     artifacts: dict[StrictStr, RenderArtifactMetadata] = Field(default_factory=dict)

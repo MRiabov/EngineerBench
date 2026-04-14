@@ -28,7 +28,6 @@ class PredictionMetrics(BaseModel):
     error: str | None = None
 
     # Engineering / CAD
-    manufacturability_valid: bool = False
     parts_within_build_zone: bool = False
     actual_cost: float = 0.0
     actual_weight: float = 0.0
@@ -40,7 +39,6 @@ class PredictionMetrics(BaseModel):
     yaml_schema_valid: bool = True
     estimated_cost: float = 0.0
     estimated_weight: float = 0.0
-    cots_ids_valid: bool = True
     geometry_consistent: bool = True
     mechanism_fits_build_zone: bool = True
     engineer_implemented_successfully: bool = False
@@ -55,12 +53,6 @@ class PredictionMetrics(BaseModel):
     feedback_response_score: float = 0.0
     bad_feedback_resistance_score: float = 0.0
     checklist: dict[str, Any] = Field(default_factory=dict)
-
-    # COTS Search
-    n_queries: int = 0
-    n_valid_candidates: int = 0
-    n_returned_candidates: int = 0
-    candidate_adopted: bool = False
 
     # Skills
     skill_file_valid: bool = False
@@ -142,9 +134,6 @@ def evaluate_formula(formula: str, context: dict) -> float:
             "abs": abs,
             "pow": pow,
             "round": round,
-            "n_valid_candidates": context.get("n_valid_candidates", 0),
-            "n_returned_candidates": context.get("n_returned_candidates", 1),
-            "n_queries": context.get("n_queries", 0),
             "delta_success_rate": context.get("delta_success_rate", 0.0),
         }
         allowed_names.update(context)
@@ -242,9 +231,6 @@ def cad_simulation_metric(
         "estimated_cost": ["estimated_cost"],
         "estimated_weight": ["estimated_weight"],
         "total_power": ["total_power"],
-        "n_valid_candidates": ["n_valid_candidates"],
-        "n_returned_candidates": ["n_returned_candidates"],
-        "n_queries": ["n_queries"],
         "delta_success_rate": ["delta_success_rate"],
     }
 
@@ -308,7 +294,6 @@ def cad_simulation_metric(
                 "engineer_implemented_successfully",
                 "simulation_success",
             ],
-            "manufacturability_valid": ["manufacturability_valid"],
             "parts_within_build_zone": ["parts_within_build_zone"],
         }
         candidates = aliases.get(milestone_name, [])
@@ -404,7 +389,7 @@ def map_events_to_prediction(
 ) -> PredictionMetrics:
     """
     Translates worker events into a structured PredictionMetrics model.
-    Supports all agents (Planners, Engineers, Reviewers, COTS, Skills).
+    Supports the retained planner, engineer, reviewer, and skill agents.
     """
     metrics = PredictionMetrics()
 
@@ -465,7 +450,6 @@ def map_events_to_prediction(
                 else getattr(data, "result", False)
             )
             if result:
-                metrics.manufacturability_valid = True
                 metrics.parts_within_build_zone = True
                 val_cost = (
                     data.get("price", 0.0)

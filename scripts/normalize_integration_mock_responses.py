@@ -25,7 +25,6 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from shared.models.schemas import AssemblyDefinition, BenchmarkDefinition
-from worker_heavy.workbenches.config import load_config
 
 yaml_rt = YAML(typ="rt")
 yaml_rt.preserve_quotes = True
@@ -85,25 +84,7 @@ def _declared_assembly_cost(data: dict[str, Any]) -> float:
         manufactured_cost += _parse_float(
             part.get("estimated_unit_cost_usd")
         ) * _parse_float(part.get("quantity"), 1.0)
-
-    cots_cost = 0.0
-    for part in data.get("cots_parts") or []:
-        cots_cost += _parse_float(part.get("unit_cost_usd")) * _parse_float(
-            part.get("quantity"), 1.0
-        )
-
-    config = load_config()
-    drilling = getattr(getattr(config, "benchmark_operations", None), "drilling", None)
-    drilling_cost = 0.0
-    if drilling is not None:
-        cost_per_hole = _parse_float(getattr(drilling, "cost_per_hole_usd", 0.0))
-        total_holes = sum(
-            _parse_float(op.get("quantity"), 1.0)
-            for op in data.get("environment_drill_operations") or []
-        )
-        drilling_cost = round(total_holes * cost_per_hole, 2)
-
-    return round(manufactured_cost + cots_cost + drilling_cost, 2)
+    return round(manufactured_cost, 2)
 
 
 def _normalize_manufactured_parts(data: dict[str, Any]) -> bool:
@@ -178,12 +159,7 @@ def _normalize_assembly_file(path: Path, *, fix: bool) -> tuple[bool, list[str]]
         totals["estimated_unit_cost_usd"] = expected_cost
         changed = True
 
-    empty_assembly = not (
-        data.get("manufactured_parts")
-        or data.get("cots_parts")
-        or data.get("final_assembly")
-        or data.get("environment_drill_operations")
-    )
+    empty_assembly = not (data.get("manufactured_parts") or data.get("final_assembly"))
     if empty_assembly:
         if totals.get("estimated_weight_g") != 0:
             totals["estimated_weight_g"] = 0

@@ -536,7 +536,6 @@ async def _materialize_dataset_export(
     simulation_run_id = _trace_metadata_lookup(
         list(episode.traces), "simulation_run_id"
     )
-    cots_query_id = _trace_metadata_lookup(list(episode.traces), "cots_query_id")
     review_id = _trace_metadata_lookup(list(episode.traces), "review_id")
     if not review_id:
         raise HTTPException(
@@ -560,7 +559,6 @@ async def _materialize_dataset_export(
         is_integration_test=metadata.is_integration_test,
         integration_test_id=metadata.integration_test_id,
         simulation_run_id=simulation_run_id,
-        cots_query_id=cots_query_id,
         review_id=review_id,
         revision_hash=revision_hash,
         artifact_hash=source_artifact_hash,
@@ -631,7 +629,6 @@ async def _materialize_dataset_export(
         is_integration_test=metadata.is_integration_test,
         integration_test_id=metadata.integration_test_id,
         simulation_run_id=simulation_run_id,
-        cots_query_id=cots_query_id,
         review_id=review_id,
         revision_hash=revision_hash,
         artifact_hash=source_artifact_hash,

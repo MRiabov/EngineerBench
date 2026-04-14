@@ -69,7 +69,6 @@ class DatasetRowArchive(Base):
     integration_test_id: Mapped[str | None] = mapped_column(String)
 
     simulation_run_id: Mapped[str | None] = mapped_column(String)
-    cots_query_id: Mapped[str | None] = mapped_column(String)
     review_id: Mapped[str | None] = mapped_column(String)
     revision_hash: Mapped[str] = mapped_column(String)
     artifact_hash: Mapped[str] = mapped_column(String)
@@ -189,7 +188,6 @@ class Trace(Base):
 
     # Specific IDs for child artifacts
     simulation_run_id: Mapped[str | None] = mapped_column(String)
-    cots_query_id: Mapped[str | None] = mapped_column(String)
     review_id: Mapped[str | None] = mapped_column(String)
 
     trace_type: Mapped[TraceType] = mapped_column(

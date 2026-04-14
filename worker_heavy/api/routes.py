@@ -535,7 +535,6 @@ async def api_preview(
                     artifact_path=str(image_path.relative_to(workspace_root)),
                     manifest_path=manifest_path,
                     rendering_type=resolved_rendering_type,
-                    drafting=response.drafting or request.drafting,
                     pitch=request.orbit_pitch,
                     yaw=request.orbit_yaw,
                     image_bytes_base64=response.image_bytes_base64,
@@ -554,7 +553,6 @@ async def api_preview(
             message=str(e),
             status_text="Preview generation failed",
             rendering_type=_resolve_preview_rendering_type(request),
-            drafting=request.drafting,
             pitch=request.orbit_pitch,
             yaw=request.orbit_yaw,
         )

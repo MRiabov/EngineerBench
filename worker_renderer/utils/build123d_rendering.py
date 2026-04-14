@@ -685,13 +685,11 @@ def collect_preview_scene(
                     pos=tuple(float(v) for v in part_data.pos),
                     euler=tuple(float(v) for v in part_data.euler),
                     mesh_paths=obj_paths,
-                    material_id=part_data.material_id
-                    or ("cots-generic" if part_data.cots_id else None),
+                    material_id=part_data.material_id,
                     body_name=part_data.label,
                     geom_name=Path(obj_paths[0]).stem if obj_paths else None,
                     color_rgba=_material_color_rgba(
-                        part_data.material_id
-                        or ("cots-generic" if part_data.cots_id else None),
+                        part_data.material_id,
                         manufacturing_config,
                     ),
                     segmentation_color_rgb=_unique_color(part_index),

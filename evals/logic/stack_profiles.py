@@ -23,8 +23,6 @@ class StackProfile:
     postgres_host_port: int
     minio_host_port: int
     minio_console_host_port: int
-    temporal_host_port: int
-    temporal_ui_host_port: int
     frontend_host_port: int
     start_frontend: bool
     create_root_log_symlinks: bool
@@ -38,7 +36,6 @@ class StackProfile:
         worker_heavy_url = f"http://127.0.0.1:{self.worker_heavy_host_port}"
         worker_renderer_url = f"http://127.0.0.1:{self.worker_renderer_host_port}"
         frontend_url = f"http://127.0.0.1:{self.frontend_host_port}"
-        temporal_url = f"127.0.0.1:{self.temporal_host_port}"
         s3_endpoint = f"http://127.0.0.1:{self.minio_host_port}"
         postgres_url = f"postgresql+asyncpg://postgres:postgres@127.0.0.1:{self.postgres_host_port}/postgres"
         return {
@@ -48,7 +45,6 @@ class StackProfile:
             "WORKER_HEAVY_URL": worker_heavy_url,
             "WORKER_RENDERER_URL": worker_renderer_url,
             "FRONTEND_URL": frontend_url,
-            "TEMPORAL_URL": temporal_url,
             "S3_ENDPOINT": s3_endpoint,
             "S3_ENDPOINT_URL": s3_endpoint,
             "POSTGRES_URL": postgres_url,
@@ -64,8 +60,6 @@ class StackProfile:
             "POSTGRES_HOST_PORT": str(self.postgres_host_port),
             "MINIO_HOST_PORT": str(self.minio_host_port),
             "MINIO_CONSOLE_HOST_PORT": str(self.minio_console_host_port),
-            "TEMPORAL_HOST_PORT": str(self.temporal_host_port),
-            "TEMPORAL_UI_HOST_PORT": str(self.temporal_ui_host_port),
             "FRONTEND_HOST_PORT": str(self.frontend_host_port),
         }
 
@@ -117,8 +111,6 @@ STACK_PROFILES: dict[str, StackProfile] = {
         postgres_host_port=15432,
         minio_host_port=19000,
         minio_console_host_port=19001,
-        temporal_host_port=17233,
-        temporal_ui_host_port=18081,
         frontend_host_port=15173,
         start_frontend=True,
         create_root_log_symlinks=True,
@@ -136,8 +128,6 @@ STACK_PROFILES: dict[str, StackProfile] = {
         postgres_host_port=25432,
         minio_host_port=29000,
         minio_console_host_port=29001,
-        temporal_host_port=27233,
-        temporal_ui_host_port=28081,
         frontend_host_port=25173,
         start_frontend=False,
         create_root_log_symlinks=False,

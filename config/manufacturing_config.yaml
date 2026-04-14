@@ -40,15 +40,8 @@ materials:
     density_g_cm3: 2.7
     density_kg_m3: 2700
     color: "#C0C0C0"
-    elongation_stress_mpa: 276.0 # Yield strength
     restitution: 0.5 # Coefficient of restitution (bounciness)
     friction_coef: 0.61 # Approximate static friction against steel
-    # FEM fields (WP2)
-    youngs_modulus_pa: 68900000000.0
-    poissons_ratio: 0.33
-    yield_stress_pa: 276000000.0
-    ultimate_stress_pa: 310000000.0
-    material_class: "rigid"
 
     # Material costs
     cost_per_kg: 6.00
@@ -57,28 +50,16 @@ materials:
     density_g_cm3: 7.85
     density_kg_m3: 7850
     color: "#6E737B"
-    elongation_stress_mpa: 250.0
     restitution: 0.55
     friction_coef: 0.60
-    youngs_modulus_pa: 200000000000.0
-    poissons_ratio: 0.29
-    yield_stress_pa: 250000000.0
-    ultimate_stress_pa: 460000000.0
-    material_class: "rigid"
     cost_per_kg: 1.80
 
   steel_structural:
     density_g_cm3: 7.85
     density_kg_m3: 7850
     color: "#5F666E"
-    elongation_stress_mpa: 250.0
     restitution: 0.50
     friction_coef: 0.62
-    youngs_modulus_pa: 200000000000.0
-    poissons_ratio: 0.30
-    yield_stress_pa: 250000000.0
-    ultimate_stress_pa: 400000000.0
-    material_class: "rigid"
     cost_per_kg: 1.40
 
   abs:
@@ -86,15 +67,8 @@ materials:
     density_g_cm3: 1.04
     density_kg_m3: 1040
     color: "#FFFFFF"
-    elongation_stress_mpa: 40.0
     restitution: 0.6
     friction_coef: 0.5
-    # FEM fields (WP2)
-    youngs_modulus_pa: 2300000000.0
-    poissons_ratio: 0.35
-    yield_stress_pa: 40000000.0
-    ultimate_stress_pa: 44000000.0
-    material_class: "rigid"
 
     # Material costs
     cost_per_kg: 2.50
@@ -103,28 +77,16 @@ materials:
     density_g_cm3: 0.95
     density_kg_m3: 950
     color: "#F1F5F9"
-    elongation_stress_mpa: 26.0
     restitution: 0.30
     friction_coef: 0.22
-    youngs_modulus_pa: 1000000000.0
-    poissons_ratio: 0.42
-    yield_stress_pa: 26000000.0
-    ultimate_stress_pa: 32000000.0
-    material_class: "rigid"
     cost_per_kg: 1.90
 
   hardwood:
     density_g_cm3: 0.75
     density_kg_m3: 750
     color: "#8B5A2B"
-    elongation_stress_mpa: 45.0
     restitution: 0.35
     friction_coef: 0.50
-    youngs_modulus_pa: 11000000000.0
-    poissons_ratio: 0.35
-    yield_stress_pa: 45000000.0
-    ultimate_stress_pa: 90000000.0
-    material_class: "rigid"
     cost_per_kg: 3.20
 
   silicone_rubber:
@@ -133,24 +95,12 @@ materials:
     color: "#FF0000"
     restitution: 0.1
     friction_coef: 0.8
-    # FEM fields (WP2)
-    youngs_modulus_pa: 5000000.0
-    poissons_ratio: 0.49
-    yield_stress_pa: 7000000.0
-    ultimate_stress_pa: 10000000.0
-    material_class: "elastomer"
     cost_per_kg: 15.00
 
   rubber_generic:
     density_g_cm3: 1.15
     density_kg_m3: 1150
     color: "#1F2937"
-    elongation_stress_mpa: 8.0
     restitution: 0.20
     friction_coef: 0.90
-    youngs_modulus_pa: 10000000.0
-    poissons_ratio: 0.49
-    yield_stress_pa: 8000000.0
-    ultimate_stress_pa: 12000000.0
-    material_class: "elastomer"
     cost_per_kg: 8.50

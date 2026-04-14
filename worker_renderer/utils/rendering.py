@@ -167,7 +167,6 @@ def build_render_manifest(
     created_at: str | None = None,
     bundle_id: str | None = None,
     scene_hash: str | None = None,
-    drafting: bool = False,
     source_script_sha256: str | None = None,
 ) -> RenderManifest:
     resolved_revision = revision
@@ -208,7 +207,6 @@ def build_render_manifest(
         scene_hash=identity.scene_hash,
         bundle_path=identity.bundle_path,
         environment_version=environment_version,
-        drafting=drafting,
         source_script_sha256=source_script_sha256,
         preview_evidence_paths=preview_evidence_paths,
         artifacts=artifacts,
@@ -297,7 +295,6 @@ def normalize_render_manifest(
     created_at: str | None = None,
     bundle_id: str | None = None,
     scene_hash: str | None = None,
-    drafting: bool | None = None,
     source_script_sha256: str | None = None,
 ) -> RenderManifest:
     existing_artifacts = dict(existing_manifest.artifacts) if existing_manifest else {}
@@ -318,9 +315,6 @@ def normalize_render_manifest(
     resolved_environment_version = environment_version
     if resolved_environment_version is None and existing_manifest is not None:
         resolved_environment_version = existing_manifest.environment_version
-    resolved_drafting = drafting
-    if resolved_drafting is None and existing_manifest is not None:
-        resolved_drafting = existing_manifest.drafting
     resolved_source_script_sha256 = source_script_sha256
     if resolved_source_script_sha256 is None and existing_manifest is not None:
         resolved_source_script_sha256 = existing_manifest.source_script_sha256
@@ -337,7 +331,6 @@ def normalize_render_manifest(
         created_at=created_at,
         bundle_id=bundle_id,
         scene_hash=scene_hash,
-        drafting=bool(resolved_drafting),
         source_script_sha256=resolved_source_script_sha256,
     )
 

@@ -6,11 +6,8 @@ from typing import Any
 from shared.workers.workbench_models import ManufacturingConfig, ManufacturingMethod
 
 __all__ = [
-    "HoleType",
     "ManufacturingConfig",
     "ManufacturingMethod",
-    "cad",
-    "fastener_hole",
     "preview",
     "render_cad",
     "renderer_client",
@@ -21,12 +18,9 @@ __all__ = [
 ]
 
 _LAZY_ATTRS: dict[str, tuple[str, str | None]] = {
-    "cad": ("worker_heavy.utils.cad", None),
     "renderer_client": ("worker_heavy.utils.renderer_client", None),
     "validate_and_price": ("worker_heavy.utils.dfm", "validate_and_price"),
     "submit_for_review": ("worker_heavy.utils.handover", "submit_for_review"),
-    "HoleType": ("worker_heavy.utils.cad", "HoleType"),
-    "fastener_hole": ("worker_heavy.utils.cad", "fastener_hole"),
     "simulate": ("worker_heavy.utils.validation", "simulate"),
     "validate": ("worker_heavy.utils.validation", "validate"),
     "render_cad": ("worker_heavy.utils.preview", "render_cad"),

@@ -29,8 +29,6 @@ class ObservabilityEventType(StrEnum):
     RENDER_REQUEST_ENGINEER = "render_request_engineer"
     # 6. Render request (benchmark)
     RENDER_REQUEST_BENCHMARK = "render_request_benchmark"
-    VALIDATION_PREVIEW_BACKEND_SELECTED = "validation_preview_backend_selected"
-    VALIDATION_PREVIEW_RENDER_COMPLETE = "validation_preview_render_complete"
     # 7. Simulation request (engineer)
     SIMULATION_REQUEST = "simulation_request"
     # 8. Simulation result (engineer)
@@ -172,6 +170,8 @@ class SimulationResultEvent(BaseEvent):
     compute_time_ms: float
     simulation_run_id: str | None = None
     metadata: SimulationMetadata = Field(default_factory=SimulationMetadata)
+
+
 class PlanSubmissionBenchmarkEvent(BaseEvent):
     event_type: ObservabilityEventType = (
         ObservabilityEventType.PLAN_SUBMISSION_BENCHMARK

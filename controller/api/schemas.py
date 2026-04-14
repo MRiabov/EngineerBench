@@ -70,7 +70,6 @@ class TraceResponse(BaseModel):
     user_session_id: uuid.UUID | None = None
     langfuse_trace_id: str | None
     simulation_run_id: str | None = None
-    cots_query_id: str | None = None
     review_id: str | None = None
     trace_type: TraceType
     name: str | None
@@ -150,7 +149,6 @@ class ReplayReviewManifestResponse(BaseModel):
 class EpisodeReplayResponse(EpisodeResponse):
     worker_session_id: str | None = None
     simulation_run_id: str | None = None
-    cots_query_id: str | None = None
     review_id: str | None = None
     terminal_reason: TerminalReason | None = None
     failure_class: FailureClass | None = None
@@ -212,37 +210,6 @@ class ReviewResponse(BaseModel):
 
     status: ResponseStatus
     decision: ReviewDecision
-
-
-class CotsSearchItem(BaseModel):
-    """A single COTS part returned from search."""
-
-    part_id: str
-    name: str
-    category: str
-    manufacturer: str
-    price: float
-    source: str
-    weight_g: float
-    metadata: dict[str, Any] = Field(alias="metadata_vars", default_factory=dict)
-
-    model_config = ConfigDict(populate_by_name=True)
-
-
-class CotsMetadataResponse(BaseModel):
-    """Metadata for the current COTS catalog."""
-
-    catalog_version: str
-    bd_warehouse_commit: str
-    generated_at: str | None = None
-
-
-class OpenAPISchema(BaseModel):
-    """Minimal OpenAPI schema for integration testing contracts."""
-
-    paths: dict[str, dict[str, Any]] = Field(default_factory=dict)
-
-    model_config = ConfigDict(extra="allow")
 
 
 # --- Consolidated Request Models ---

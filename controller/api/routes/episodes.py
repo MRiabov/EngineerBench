@@ -71,45 +71,6 @@ def _is_closed_websocket_error(exc: Exception) -> bool:
     )
 
 
-def _normalize_plan_markdown(plan_content: str | None) -> str | None:
-    """Normalize persisted plans for list responses used by dataset-readiness checks."""
-    if not plan_content:
-        return plan_content
-
-    normalized = plan_content.strip()
-    if "# Solution Overview" in normalized and "## Parts List" in normalized:
-        return normalized
-
-    if normalized.startswith("# Engineering Plan"):
-        _, _, remainder = normalized.partition("\n")
-        normalized = remainder.lstrip()
-
-    replacements = {
-        "## 1. Solution Overview": "# Solution Overview",
-        "## 2. Parts List": "## Parts List",
-        "## 3. Assembly Strategy": "## Assembly Strategy",
-        "## 4. Assumption Register": "## Assumption Register",
-        "## 5. Detailed Calculations": "## Detailed Calculations",
-        "## 6. Critical Constraints / Operating Envelope": "## Critical Constraints / Operating Envelope",
-        "## 7. Cost & Weight Budget": "## Cost & Weight Budget",
-        "## 8. Risk Assessment": "## Risk Assessment",
-    }
-    for old, new in replacements.items():
-        normalized = normalized.replace(old, new)
-
-    if "# Solution Overview" in normalized and "## Parts List" in normalized:
-        return normalized
-
-    return (
-        "# Solution Overview\n"
-        "Normalized from persisted plan artifact for dataset readiness.\n\n"
-        "## Parts List\n"
-        "- Original plan preserved below.\n\n"
-        "## Source Plan\n"
-        f"{normalized}"
-    )
-
-
 _REVIEW_ROUND_RE = re.compile(
     r"^(?P<prefix>reviews/.+-round-)(?P<round>\d+)(?P<suffix>\.yaml)$"
 )
@@ -127,56 +88,6 @@ _REPLAY_REVIEW_MANIFEST_SUFFIXES = (
 
 def _normalize_artifact_path(path: str) -> str:
     return FilePath(path).as_posix().lstrip("/")
-
-
-def _select_latest_replay_assets(assets: list[Asset]) -> list[Asset]:
-    latest_by_path: dict[str, Asset] = {}
-    latest_round_by_family: dict[str, tuple[int, Asset]] = {}
-
-    for asset in sorted(assets, key=lambda item: (item.created_at, item.id)):
-        path = _normalize_artifact_path(asset.s3_path)
-        match = _REVIEW_ROUND_RE.match(path)
-        if match:
-            family = match.group("prefix").removeprefix("reviews/")
-            round_index = int(match.group("round"))
-            current = latest_round_by_family.get(family)
-            if current is None or round_index >= current[0]:
-                latest_round_by_family[family] = (round_index, asset)
-            continue
-
-        latest_by_path[path] = asset
-
-    selected: list[Asset] = list(latest_by_path.values())
-    selected.extend(asset for _, asset in latest_round_by_family.values())
-    selected.sort(key=lambda item: (_normalize_artifact_path(item.s3_path), item.id))
-    return selected
-
-
-def _asset_looks_like_review_manifest(path: str) -> bool:
-    normalized = _normalize_artifact_path(path)
-    return normalized.endswith(_REPLAY_REVIEW_MANIFEST_SUFFIXES)
-
-
-def _artifact_kind_from_path(path: str) -> str:
-    normalized = _normalize_artifact_path(path)
-    if normalized.endswith("validation_results.json"):
-        return "validation_results"
-    if normalized.endswith("simulation_result.json"):
-        return "simulation_result"
-    if normalized.endswith(_REPLAY_REVIEW_MANIFEST_SUFFIXES):
-        return "review_manifest"
-    if normalized.startswith("reviews/"):
-        return "review_evidence"
-    return "artifact"
-
-
-def _artifact_path_matches(path: str, target: str) -> bool:
-    normalized = _normalize_artifact_path(path)
-    return (
-        normalized == target
-        or normalized.endswith(f"/{target}")
-        or normalized.endswith(target)
-    )
 
 
 async def _load_text_artifact(
@@ -258,9 +169,8 @@ def _failure_signals_from_metadata(
 
 def _trace_ids_from_episode(
     episode: Episode,
-) -> tuple[ReplayTraceIds, str | None, str | None, str | None]:
+) -> tuple[ReplayTraceIds, str | None, str | None]:
     simulation_run_id: str | None = None
-    cots_query_id: str | None = None
     review_id: str | None = None
     trace_ids = ReplayTraceIds()
 
@@ -270,8 +180,6 @@ def _trace_ids_from_episode(
             simulation_run_id = (
                 trace.simulation_run_id or trace_metadata.simulation_run_id
             )
-        if cots_query_id is None:
-            cots_query_id = trace.cots_query_id or trace_metadata.cots_query_id
         if review_id is None:
             review_id = trace.review_id or trace_metadata.review_id
 
@@ -293,68 +201,7 @@ def _trace_ids_from_episode(
         if trace.name == "node_entry_validation_failed":
             trace_ids.entry_validation_trace_ids.append(trace.id)
 
-    return trace_ids, simulation_run_id, cots_query_id, review_id
-
-
-def _review_decision_events_from_episode(
-    episode: Episode,
-) -> list[ReviewDecisionEvent]:
-    events: list[ReviewDecisionEvent] = []
-    for trace in sorted(episode.traces, key=lambda trace: trace.id):
-        if trace.name != "review_decision":
-            continue
-        metadata = TraceMetadata.model_validate(trace.metadata_vars or {})
-        if metadata.decision is None:
-            continue
-
-        events.append(
-            ReviewDecisionEvent(
-                episode_id=str(episode.id),
-                user_session_id=str(trace.user_session_id)
-                if trace.user_session_id
-                else (
-                    str(episode.user_session_id) if episode.user_session_id else None
-                ),
-                agent_id=trace.name,
-                decision=metadata.decision,
-                reason=str(trace.content or metadata.observation or "Persisted review"),
-                review_id=metadata.review_id or trace.review_id,
-                checklist=dict(metadata.checklist or {}),
-            )
-        )
-    return events
-
-
-def _manifest_expected_revision(
-    manifest: ReviewManifest | PlanReviewManifest,
-) -> str | None:
-    for attr in ("revision", "benchmark_revision", "solution_revision"):
-        value = getattr(manifest, attr, None)
-        if isinstance(value, str) and value.strip():
-            return value.strip()
-    return None
-
-
-def _validate_manifest_session(
-    *,
-    manifest: ReviewManifest | PlanReviewManifest,
-    episode_id: str,
-    worker_session_id: str,
-) -> None:
-    for field_name, expected in (
-        ("session_id", worker_session_id),
-        ("episode_id", episode_id),
-        ("worker_session_id", worker_session_id),
-    ):
-        actual = getattr(manifest, field_name, None)
-        if actual and actual != expected:
-            raise HTTPException(
-                status_code=422,
-                detail=(
-                    f"stale_manifest: {field_name} mismatch on "
-                    f"{type(manifest).__name__}"
-                ),
-            )
+    return trace_ids, simulation_run_id, review_id
 
 
 async def _build_episode_replay_response(
@@ -379,7 +226,37 @@ async def _build_episode_replay_response(
             detail="unsupported_mechanism: replay cannot reconstruct unsupported path",
         )
 
-    selected_assets = _select_latest_replay_assets(list(episode.assets))
+    latest_by_path: dict[str, Asset] = {}
+    latest_round_by_family: dict[str, tuple[int, Asset]] = {}
+    for asset in sorted(episode.assets, key=lambda item: (item.created_at, item.id)):
+        path = _normalize_artifact_path(asset.s3_path)
+        match = _REVIEW_ROUND_RE.match(path)
+        if match:
+            family = match.group("prefix").removeprefix("reviews/")
+            round_index = int(match.group("round"))
+            current = latest_round_by_family.get(family)
+            if current is None or round_index >= current[0]:
+                latest_round_by_family[family] = (round_index, asset)
+            continue
+        latest_by_path[path] = asset
+
+    selected_assets = list(latest_by_path.values())
+    selected_assets.extend(asset for _, asset in latest_round_by_family.values())
+    selected_assets.sort(
+        key=lambda item: (_normalize_artifact_path(item.s3_path), item.id)
+    )
+
+    def _artifact_path_matches(path: str, target: str) -> bool:
+        normalized = _normalize_artifact_path(path)
+        return (
+            normalized == target
+            or normalized.endswith(f"/{target}")
+            or normalized.endswith(target)
+        )
+
+    def _asset_looks_like_review_manifest(path: str) -> bool:
+        normalized = _normalize_artifact_path(path)
+        return normalized.endswith(_REPLAY_REVIEW_MANIFEST_SUFFIXES)
 
     missing_required = [
         path
@@ -532,7 +409,12 @@ async def _build_episode_replay_response(
                 detail=f"invalid_artifact: {path} ({exc!s})",
             ) from exc
 
-        expected_revision = _manifest_expected_revision(manifest)
+        expected_revision = None
+        for attr in ("revision", "benchmark_revision", "solution_revision"):
+            value = getattr(manifest, attr, None)
+            if isinstance(value, str) and value.strip():
+                expected_revision = value.strip()
+                break
         if expected_revision is None:
             raise HTTPException(
                 status_code=422,
@@ -543,19 +425,48 @@ async def _build_episode_replay_response(
                 status_code=422,
                 detail=f"stale_manifest: revision mismatch in {path}",
             )
-        _validate_manifest_session(
-            manifest=manifest,
-            episode_id=str(episode.id),
-            worker_session_id=worker_session_id,
-        )
+        for field_name, expected in (
+            ("session_id", worker_session_id),
+            ("episode_id", str(episode.id)),
+            ("worker_session_id", worker_session_id),
+        ):
+            actual = getattr(manifest, field_name, None)
+            if actual and actual != expected:
+                raise HTTPException(
+                    status_code=422,
+                    detail=(
+                        f"stale_manifest: {field_name} mismatch on "
+                        f"{type(manifest).__name__}"
+                    ),
+                )
         review_manifests.append(
             ReplayReviewManifestResponse(path=path, manifest=manifest)
         )
 
-    trace_ids, simulation_run_id, cots_query_id, review_id = _trace_ids_from_episode(
-        episode
-    )
-    review_decision_events = _review_decision_events_from_episode(episode)
+    trace_ids, simulation_run_id, review_id = _trace_ids_from_episode(episode)
+    review_decision_events: list[ReviewDecisionEvent] = []
+    for trace in sorted(episode.traces, key=lambda trace: trace.id):
+        if trace.name != "review_decision":
+            continue
+        metadata = TraceMetadata.model_validate(trace.metadata_vars or {})
+        if metadata.decision is None:
+            continue
+
+        review_decision_events.append(
+            ReviewDecisionEvent(
+                episode_id=str(episode.id),
+                user_session_id=str(trace.user_session_id)
+                if trace.user_session_id
+                else (
+                    str(episode.user_session_id) if episode.user_session_id else None
+                ),
+                agent_id=trace.name,
+                decision=metadata.decision,
+                reason=str(trace.content or metadata.observation or "Persisted review"),
+                review_id=metadata.review_id or trace.review_id,
+                checklist=dict(metadata.checklist or {}),
+            )
+        )
     if not review_decision_events:
         raise HTTPException(
             status_code=422,
@@ -597,7 +508,6 @@ async def _build_episode_replay_response(
         assets=[AssetResponse.model_validate(a) for a in selected_assets],
         worker_session_id=worker_session_id,
         simulation_run_id=simulation_run_id,
-        cots_query_id=cots_query_id,
         review_id=review_id,
         terminal_reason=metadata.terminal_reason,
         failure_class=metadata.failure_class,
@@ -997,7 +907,6 @@ class TraceResponse(BaseModel):
     user_session_id: uuid.UUID | None = None
     langfuse_trace_id: str | None
     simulation_run_id: str | None = None
-    cots_query_id: str | None = None
     review_id: str | None = None
     trace_type: TraceType
     name: str | None
@@ -1106,7 +1015,7 @@ async def list_episodes(
         responses: list[EpisodeResponse] = []
         for ep in episodes:
             asset_content = markdown_asset_map.get(ep.id, {})
-            plan_content = _normalize_plan_markdown(
+            plan_content = (
                 ep.plan
                 or asset_content.get("benchmark_plan.md")
                 or asset_content.get("engineering_plan.md")

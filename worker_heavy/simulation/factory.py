@@ -49,8 +49,6 @@ def get_physics_backend(
         backend = session_cache[backend_type]
         if hasattr(backend, "smoke_test_mode"):
             backend.smoke_test_mode = smoke_test_mode
-        if hasattr(backend, "particle_budget"):
-            backend.particle_budget = particle_budget
         return backend
 
     # Enforce session limit
@@ -91,8 +89,6 @@ def _create_backend(
 
         backend = GenesisBackend(session_id=session_id)
         backend.smoke_test_mode = smoke_test_mode
-
-        backend.particle_budget = particle_budget
         # Trigger re-init if needed with correct mode
         if hasattr(backend, "_ensure_initialized"):
             backend._ensure_initialized()

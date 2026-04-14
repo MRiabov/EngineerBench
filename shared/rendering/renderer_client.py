@@ -149,7 +149,6 @@ def render_preview(
         depth=depth,
         segmentation=segmentation,
         payload_path=payload_path,
-        drafting=False,
         rendering_type=rendering_type,
         script_content=script_content,
         smoke_test_mode=smoke_test_mode,

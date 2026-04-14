@@ -110,13 +110,10 @@ def _token_counts_to_list(tokens: Counter[str]) -> list[tuple[str, int]]:
 
 def _format_identity_pair(
     label: str | None,
-    cots_id: str | None,
 ) -> str:
     pieces: list[str] = []
     if label is not None:
         pieces.append(f"label={label}")
-    if cots_id is not None:
-        pieces.append(f"cots_id={cots_id}")
     if not pieces:
         return "<unlabeled>"
     return ", ".join(pieces)
@@ -139,9 +136,6 @@ def _planner_plan_grounding_tokens_from_benchmark(
     for benchmark_part in benchmark_definition.benchmark_parts:
         if benchmark_part.label.strip():
             tokens[benchmark_part.label.strip()] += 1
-        cots_id = (benchmark_part.metadata.cots_id or "").strip()
-        if cots_id:
-            tokens[cots_id] += 1
     return tokens
 
 
@@ -151,9 +145,8 @@ def _planner_plan_grounding_identity_pairs_from_benchmark(
     pairs: Counter[tuple[str | None, str | None]] = Counter()
     for benchmark_part in benchmark_definition.benchmark_parts:
         label = benchmark_part.label.strip() or None
-        cots_id = (benchmark_part.metadata.cots_id or "").strip() or None
-        if label is not None or cots_id is not None:
-            pairs[(label, cots_id)] += 1
+        if label is not None:
+            pairs[(label, None)] += 1
     return pairs
 
 
@@ -171,14 +164,8 @@ def _planner_plan_grounding_identity_pairs_from_assembly(
                 _visit(part)
         elif isinstance(item, PartConfig):
             label = item.name.strip() or None
-            cots_id = getattr(item.config, "cots_id", None)
-            normalized_cots_id = (
-                cots_id.strip()
-                if isinstance(cots_id, str) and cots_id.strip()
-                else None
-            )
-            if label is not None or normalized_cots_id is not None:
-                pairs[(label, normalized_cots_id)] += 1
+            if label is not None:
+                pairs[(label, None)] += 1
 
     for item in assembly_definition.final_assembly:
         _visit(item)
@@ -229,9 +216,6 @@ def _planner_plan_grounding_tokens_from_assembly(
     for part in assembly_definition.manufactured_parts:
         if part.part_name.strip():
             declared_tokens[part.part_name.strip()] += part.quantity
-    for cots_part in assembly_definition.cots_parts:
-        if cots_part.part_id.strip():
-            declared_tokens[cots_part.part_id.strip()] += cots_part.quantity
 
     final_assembly_tokens: Counter[str] = Counter()
     for item in assembly_definition.final_assembly:
@@ -304,9 +288,6 @@ def _assembly_script_expected_tokens(
     for part in assembly_definition.manufactured_parts:
         if part.part_name.strip():
             declared_tokens[part.part_name.strip()] += part.quantity
-    for cots_part in assembly_definition.cots_parts:
-        if cots_part.part_id.strip():
-            declared_tokens[cots_part.part_id.strip()] += cots_part.quantity
 
     final_assembly_tokens: Counter[str] = Counter()
     for item in assembly_definition.final_assembly:
@@ -379,15 +360,10 @@ def _collect_component_identity_counts(
             normalized_label = (
                 label.strip() if isinstance(label, str) and label.strip() else None
             )
-            normalized_cots_id = None
             if normalized_label is not None:
                 counts[normalized_label] += 1
-            cots_id = getattr(metadata, "cots_id", None)
-            if isinstance(cots_id, str) and cots_id.strip():
-                normalized_cots_id = cots_id.strip()
-                counts[normalized_cots_id] += 1
-            if normalized_label is not None or normalized_cots_id is not None:
-                identity_entries.append((normalized_label, normalized_cots_id))
+            if normalized_label is not None:
+                identity_entries.append((normalized_label, None))
 
         for child in children:
             _visit(child, is_root=False)
@@ -411,12 +387,8 @@ def _collect_component_identity_pairs(
             normalized_label = (
                 label.strip() if isinstance(label, str) and label.strip() else None
             )
-            normalized_cots_id = None
-            cots_id = getattr(metadata, "cots_id", None)
-            if isinstance(cots_id, str) and cots_id.strip():
-                normalized_cots_id = cots_id.strip()
-            if normalized_label is not None or normalized_cots_id is not None:
-                pair = (normalized_label, normalized_cots_id)
+            if normalized_label is not None:
+                pair = (normalized_label, None)
                 pairs[pair] += 1
                 identity_entries.append(pair)
 
@@ -436,12 +408,10 @@ def _format_component_identity_entries(
         return "<none>"
 
     formatted_entries: list[str] = []
-    for label, cots_id in identity_entries[:max_entries]:
+    for label, _ in identity_entries[:max_entries]:
         pieces: list[str] = []
         if label is not None:
             pieces.append(f"label={label}")
-        if cots_id is not None:
-            pieces.append(f"cots_id={cots_id}")
         if not pieces:
             pieces.append("<unlabeled>")
         formatted_entries.append(", ".join(pieces))
@@ -473,19 +443,19 @@ def validate_component_inventory_exactness(
             )
     if expected_identity_pairs is not None:
         pair_summary = _format_component_identity_entries(pair_entries)
-        for label, cots_id in sorted(
+        for label, _ in sorted(
             set(observed_pairs) | set(expected_identity_pairs),
             key=lambda item: (
                 "" if item[0] is None else item[0],
                 "" if item[1] is None else item[1],
             ),
         ):
-            expected_count = expected_identity_pairs.get((label, cots_id), 0)
-            observed_count = observed_pairs.get((label, cots_id), 0)
+            expected_count = expected_identity_pairs.get((label, None), 0)
+            observed_count = observed_pairs.get((label, None), 0)
             if observed_count != expected_count:
                 errors.append(
                     f"{artifact_name}: exact inventory pair mismatch for "
-                    f"({_format_identity_pair(label, cots_id)}) "
+                    f"({_format_identity_pair(label)}) "
                     f"(expected {expected_count}, found {observed_count}; "
                     f"observed identities: {pair_summary})"
                 )
@@ -583,41 +553,6 @@ def _is_missing_file_error(content: str, *, expected_path: str | None = None) ->
 
 def _benchmark_refusal_error(reason: BenchmarkRefusalReason, message: str) -> str:
     return f"{reason.value}: {message}"
-
-
-_SUPPORTED_BENCHMARK_MOTION_TOKENS = {
-    "rotate_x",
-    "rotate_y",
-    "rotate_z",
-    "slide_x",
-    "slide_y",
-    "slide_z",
-}
-
-
-def _iter_benchmark_motion_configs(
-    assembly_definition: AssemblyDefinition,
-) -> list[tuple[str, list[str], Any]]:
-    motion_configs: list[tuple[str, list[str], Any]] = []
-    for item in assembly_definition.final_assembly:
-        if isinstance(item, SubassemblyEstimate):
-            for part_config in item.parts:
-                motion_configs.append(
-                    (
-                        part_config.name,
-                        list(part_config.config.dofs or []),
-                        part_config.config.control,
-                    )
-                )
-        elif isinstance(item, PartConfig):
-            motion_configs.append(
-                (
-                    item.name,
-                    list(item.config.dofs or []),
-                    item.config.control,
-                )
-            )
-    return motion_configs
 
 
 def _point_within_bounds(point: tuple[float, float, float], bounds: Any) -> bool:
@@ -1050,74 +985,6 @@ def validate_assembly_definition_yaml(
                 )
                 return False, weight_errors
 
-        from shared.cots.runtime import get_catalog_item_with_metadata
-
-        for cots_part in estimation.cots_parts:
-            lookup = get_catalog_item_with_metadata(cots_part.part_id)
-            if lookup is None:
-                msg = (
-                    "cots_parts: part_id "
-                    f"'{cots_part.part_id}' does not resolve to a catalog item"
-                )
-                logger.error(
-                    "cots_part_catalog_lookup_failed",
-                    part_id=cots_part.part_id,
-                    session_id=session_id,
-                )
-                return False, [msg]
-
-            catalog_item, catalog_metadata = lookup
-            catalog_details = catalog_item.metadata or {}
-            if abs(cots_part.unit_cost_usd - catalog_item.unit_cost) > 1e-6:
-                msg = (
-                    "cots_parts: part_id "
-                    f"'{cots_part.part_id}' unit_cost_usd ({cots_part.unit_cost_usd}) "
-                    f"must match catalog unit cost ({catalog_item.unit_cost})"
-                )
-                return False, [msg]
-
-            if (
-                cots_part.weight_g is not None
-                and abs(cots_part.weight_g - catalog_item.weight_g) > 1e-6
-            ):
-                msg = (
-                    "cots_parts: part_id "
-                    f"'{cots_part.part_id}' weight_g ({cots_part.weight_g}) "
-                    f"must match catalog weight ({catalog_item.weight_g})"
-                )
-                return False, [msg]
-
-            manufacturer = catalog_details.get("manufacturer")
-            if manufacturer and cots_part.manufacturer != manufacturer:
-                msg = (
-                    "cots_parts: part_id "
-                    f"'{cots_part.part_id}' manufacturer ({cots_part.manufacturer}) "
-                    f"must match catalog manufacturer ({manufacturer})"
-                )
-                return False, [msg]
-
-            provenance_values = (
-                cots_part.catalog_version,
-                cots_part.bd_warehouse_commit,
-                cots_part.catalog_snapshot_id,
-                cots_part.generated_at,
-            )
-            if any(value is not None for value in provenance_values):
-                for field_name, observed in (
-                    ("catalog_version", cots_part.catalog_version),
-                    ("bd_warehouse_commit", cots_part.bd_warehouse_commit),
-                    ("catalog_snapshot_id", cots_part.catalog_snapshot_id),
-                    ("generated_at", cots_part.generated_at),
-                ):
-                    expected = catalog_metadata.get(field_name)
-                    if expected is not None and observed != expected:
-                        msg = (
-                            "cots_parts: part_id "
-                            f"'{cots_part.part_id}' {field_name} ({observed}) "
-                            f"must match catalog value ({expected})"
-                        )
-                        return False, [msg]
-
         logger.info("cost_estimation_yaml_valid", session_id=session_id)
         return True, estimation
     except yaml.YAMLError as e:
@@ -1155,127 +1022,10 @@ def validate_benchmark_assembly_motion_contract(
             _benchmark_refusal_error(
                 BenchmarkRefusalReason.CONTRADICTORY_CONSTRAINTS,
                 "benchmark_assembly_definition.yaml must not declare motion_forecast; "
-                "benchmark motion is encoded through final_assembly DOFs instead",
+                "benchmark motion is encoded through the benchmark fixtures instead",
             )
         )
-        return errors
-
-    benchmark_part_ids = (
-        {part.part_id for part in benchmark_definition.benchmark_parts}
-        if benchmark_definition is not None
-        else set()
-    )
-
-    for part_name, dofs, control in _iter_benchmark_motion_configs(assembly_definition):
-        if benchmark_part_ids and part_name not in benchmark_part_ids:
-            errors.append(
-                _benchmark_refusal_error(
-                    BenchmarkRefusalReason.AMBIGUOUS_TASK,
-                    "benchmark_assembly_definition.yaml moving part "
-                    f"'{part_name}' is not declared in benchmark_definition.yaml",
-                )
-            )
-            continue
-
-        if not dofs:
-            if control is not None:
-                errors.append(
-                    _benchmark_refusal_error(
-                        BenchmarkRefusalReason.CONTRADICTORY_CONSTRAINTS,
-                        "benchmark_assembly_definition.yaml part "
-                        f"'{part_name}' declares control metadata without any DOFs",
-                    )
-                )
-            continue
-
-        normalized_dofs: list[str] = []
-        for raw_dof in dofs:
-            dof_token = str(raw_dof).strip()
-            if not dof_token:
-                errors.append(
-                    _benchmark_refusal_error(
-                        BenchmarkRefusalReason.AMBIGUOUS_TASK,
-                        "benchmark_assembly_definition.yaml part "
-                        f"'{part_name}' has an empty DOF token",
-                    )
-                )
-                break
-            normalized_dof = dof_token.lower()
-            if normalized_dof not in _SUPPORTED_BENCHMARK_MOTION_TOKENS:
-                errors.append(
-                    _benchmark_refusal_error(
-                        BenchmarkRefusalReason.UNSOLVABLE_SCENARIO,
-                        "benchmark_assembly_definition.yaml part "
-                        f"'{part_name}' uses unsupported benchmark motion token "
-                        f"'{dof_token}'",
-                    )
-                )
-                break
-            normalized_dofs.append(normalized_dof)
-        else:
-            if len(set(normalized_dofs)) != len(normalized_dofs):
-                errors.append(
-                    _benchmark_refusal_error(
-                        BenchmarkRefusalReason.AMBIGUOUS_TASK,
-                        "benchmark_assembly_definition.yaml part "
-                        f"'{part_name}' declares duplicate DOF tokens: {dofs}",
-                    )
-                )
-                continue
-            if len(normalized_dofs) > 6:
-                errors.append(
-                    _benchmark_refusal_error(
-                        BenchmarkRefusalReason.UNSOLVABLE_SCENARIO,
-                        "benchmark_assembly_definition.yaml part "
-                        f"'{part_name}' declares more than 6 rigid-body DOFs: "
-                        f"{dofs}",
-                    )
-                )
-                continue
-            if control is not None:
-                control_speed = getattr(control, "speed", None)
-                try:
-                    control_speed_value = float(control_speed)
-                except (TypeError, ValueError):
-                    errors.append(
-                        _benchmark_refusal_error(
-                            BenchmarkRefusalReason.AMBIGUOUS_TASK,
-                            "benchmark_assembly_definition.yaml part "
-                            f"'{part_name}' has an invalid controller speed value",
-                        )
-                    )
-                    continue
-                if control_speed_value <= 0:
-                    errors.append(
-                        _benchmark_refusal_error(
-                            BenchmarkRefusalReason.AMBIGUOUS_TASK,
-                            "benchmark_assembly_definition.yaml part "
-                            f"'{part_name}' must use a positive controller speed; "
-                            f"got {control_speed_value:g}",
-                        )
-                    )
-                    continue
-            # Explicit multi-DOF and free-body benchmark fixtures are valid when
-            # the benchmark contract declares them and the motion tokens are supported.
-            continue
-
-    if benchmark_definition is not None:
-        benchmark_parts = {
-            part.part_id: getattr(part.metadata, "fixed", None)
-            for part in benchmark_definition.benchmark_parts
-        }
-        for part_name, dofs, control in _iter_benchmark_motion_configs(
-            assembly_definition
-        ):
-            if dofs and benchmark_parts.get(part_name) is True:
-                errors.append(
-                    _benchmark_refusal_error(
-                        BenchmarkRefusalReason.CONTRADICTORY_CONSTRAINTS,
-                        "benchmark_definition.yaml marks moving benchmark part "
-                        f"'{part_name}' fixed while benchmark_assembly_definition.yaml "
-                        f"declares motion dofs={dofs} control={control}",
-                    )
-                )
+    return errors
 
     if benchmark_definition is not None:
         static_variation_id = (
@@ -1489,9 +1239,7 @@ def validate_planner_handoff_cross_contract(
                 f"{expected_label} ({expected_value:.2f})"
             )
 
-    moving_part_names = [
-        part.part_name for part in assembly_definition.moving_parts if part.dofs
-    ]
+    moving_part_names = [part.part_name for part in assembly_definition.moving_parts]
     motion_forecast = assembly_definition.motion_forecast
     if motion_forecast is not None:
         errors.extend(
@@ -1896,7 +1644,6 @@ def validate_node_output(
                 [
                     part.part_name
                     for part in engineering_assembly_definition_model.moving_parts
-                    if part.dofs
                 ]
                 if engineering_assembly_definition_model is not None
                 else None

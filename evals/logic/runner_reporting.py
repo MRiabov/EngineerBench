@@ -24,19 +24,13 @@ _ERROR_LOG_CANDIDATE_FILES = (
     "worker_light_errors.log",
     "worker_renderer_errors.log",
     "worker_heavy_errors.log",
-    "worker_heavy_temporal_errors.log",
-    "temporal_worker_errors.log",
     "worker-light_errors.log",
     "worker-heavy_errors.log",
-    "worker-heavy-temporal_errors.log",
-    "temporal-worker_errors.log",
     "json/evals_errors.json",
     "json/controller_errors.json",
     "json/worker_light_errors.json",
     "json/worker_renderer_errors.json",
     "json/worker_heavy_errors.json",
-    "json/worker_heavy_temporal_errors.json",
-    "json/temporal_worker_errors.json",
 )
 _MAX_POINTER_CODES = 8
 _MAX_POINTER_MESSAGES = 8

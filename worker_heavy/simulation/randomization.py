@@ -1,9 +1,8 @@
 """Static and visual randomization utilities for simulation benchmarks.
 
 Implements material randomization per architecture spec:
-- Randomly switch materials for moving parts (heavier/lighter/different friction)
+- Randomly switch materials for moving parts
 - Apply material colors to parts for visual diversity
-- Support optional minimum strength constraints for material selection
 """
 
 import random
@@ -28,20 +27,17 @@ class RandomizationConfig(BaseModel):
     """Configuration for static randomization."""
 
     seed: int
-    min_strength_mpa: float | None = None  # Minimum material yield strength
     material_whitelist: list[str] | None = None  # Allowed materials
 
 
 def get_eligible_materials(
     materials: dict[str, Any],
-    min_strength_mpa: float | None = None,
     whitelist: list[str] | None = None,
 ) -> list[str]:
     """Filter materials based on constraints.
 
     Args:
         materials: Materials config dict from manufacturing_config.yaml.
-        min_strength_mpa: Minimum yield strength (elongation_stress_mpa).
         whitelist: If provided, only these materials are considered.
 
     Returns:
@@ -49,16 +45,10 @@ def get_eligible_materials(
     """
     eligible = []
 
-    for mat_id, props in materials.items():
+    for mat_id in materials:
         # Check whitelist
         if whitelist and mat_id not in whitelist:
             continue
-
-        # Check minimum strength
-        if min_strength_mpa is not None:
-            strength = props.get("elongation_stress_mpa", 0)
-            if strength < min_strength_mpa:
-                continue
 
         eligible.append(mat_id)
 
@@ -69,7 +59,6 @@ def randomize_materials(
     moving_parts: list[str],
     materials: dict[str, Any],
     seed: int,
-    min_strength_mpa: float | None = None,
     whitelist: list[str] | None = None,
 ) -> dict[str, MaterialAssignment]:
     """Assign random materials to moving parts.
@@ -78,7 +67,6 @@ def randomize_materials(
         moving_parts: List of part names that have degrees of freedom.
         materials: Materials config dict from manufacturing_config.yaml.
         seed: Random seed for reproducibility.
-        min_strength_mpa: Minimum material yield strength for filtering.
         whitelist: If provided, only these materials are considered.
 
     Returns:
@@ -86,9 +74,7 @@ def randomize_materials(
     """
     rng = random.Random(seed)
 
-    eligible = get_eligible_materials(
-        materials, min_strength_mpa=min_strength_mpa, whitelist=whitelist
-    )
+    eligible = get_eligible_materials(materials, whitelist=whitelist)
 
     if not eligible:
         raise ValueError("No eligible materials found with given constraints")

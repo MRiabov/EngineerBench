@@ -39,7 +39,6 @@ class TraceBroadcast(BaseModel):
     metadata: dict[str, Any] | None
     langfuse_trace_id: str | None
     simulation_run_id: str | None = None
-    cots_query_id: str | None = None
     review_id: str | None = None
 
 
@@ -71,7 +70,6 @@ class DatabaseCallbackHandler(BaseCallbackHandler):
             metadata=trace_obj.metadata_vars,
             langfuse_trace_id=trace_obj.langfuse_trace_id,
             simulation_run_id=trace_obj.simulation_run_id,
-            cots_query_id=trace_obj.cots_query_id,
             review_id=trace_obj.review_id,
         )
         await self.broadcaster.broadcast(
@@ -524,7 +522,6 @@ class DatabaseCallbackHandler(BaseCallbackHandler):
                         metadata_vars=metadata,
                         langfuse_trace_id=self._get_langfuse_id(),
                         simulation_run_id=data.get("simulation_run_id"),
-                        cots_query_id=data.get("cots_query_id"),
                         review_id=data.get("review_id"),
                     )
                     db.add(trace_obj)

@@ -1,5 +1,4 @@
 import os
-import time
 import uuid
 from pathlib import Path
 
@@ -10,7 +9,6 @@ from shared.agents.config import load_agents_config
 from shared.current_role import current_role_agent_name
 from shared.enums import AgentName
 from shared.models.schemas import BenchmarkDefinition
-from shared.observability.events import emit_event
 from shared.rendering import (
     materialize_render_artifacts,
     render_static_preview,
@@ -409,17 +407,6 @@ def prerender_24_views(
             normalize_render_manifest as renderer_normalize_render_manifest,
         )
 
-        emit_event(
-            {
-                "event_type": "validation_preview_backend_selected",
-                "requested_physics_backend": requested_backend_value,
-                "actual_preview_backend": PREVIEW_BACKEND_NAME,
-                "purpose": "validation_static_preview",
-                "session_id": session_id,
-            }
-        )
-
-        preview_start = time.time()
         bundle_base64 = export_preview_scene_bundle(
             component,
             objectives=objectives,
@@ -494,17 +481,6 @@ def prerender_24_views(
                 ),
             )
         saved_files = list(render_paths)
-
-        emit_event(
-            {
-                "event_type": "validation_preview_render_complete",
-                "preview_backend": PREVIEW_BACKEND_NAME,
-                "image_count": len(render_paths),
-                "elapsed_render_time": time.time() - preview_start,
-                "artifact_paths": render_paths,
-                "session_id": session_id,
-            }
-        )
 
         if not saved_files:
             saved_files = list(render_paths)

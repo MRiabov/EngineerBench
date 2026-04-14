@@ -1554,41 +1554,8 @@ def _should_rebuild_frontend(frontend_state_file: Path | None) -> bool:
 
 
 def _prepare_parts_db(repo_root: Path) -> None:
-    parts_db = repo_root / "parts.db"
-    needs_population = not parts_db.exists() or parts_db.stat().st_size == 0
-
-    if not needs_population:
-        return
-
-    _runner_status("parts.db missing catalog entries. Populating COTS database...")
-    env = os.environ.copy()
-    env["PYTHONPATH"] = "."
-    _run(["uv", "run", "python", "-m", "shared.cots.indexer"], env=env)
-
-
-def _wait_for_temporal_stable_tcp(
-    *,
-    host: str = "127.0.0.1",
-    port: int = 17233,
-    timeout_s: float = 20.0,
-    interval_s: float = 0.5,
-    consecutive_successes: int = 4,
-) -> None:
-    started = time.monotonic()
-    stable_count = 0
-    while True:
-        if _check_tcp(host, port, timeout_s=1.0):
-            stable_count += 1
-            if stable_count >= consecutive_successes:
-                return
-        else:
-            stable_count = 0
-
-        if time.monotonic() - started >= timeout_s:
-            raise TimeoutError(
-                f"Timed out waiting for temporal gRPC to become stable on {host}:{port}"
-            )
-        time.sleep(interval_s)
+    del repo_root
+    return
 
 
 def _integration_infra_reachable_without_docker() -> bool:
@@ -1601,11 +1568,7 @@ def _integration_infra_reachable_without_docker() -> bool:
     except Exception:
         minio_ok = False
 
-    return (
-        _check_tcp("127.0.0.1", 15432, timeout_s=1.0)
-        and _check_tcp("127.0.0.1", 17233, timeout_s=1.0)
-        and minio_ok
-    )
+    return _check_tcp("127.0.0.1", 15432, timeout_s=1.0) and minio_ok
 
 
 def _bring_up_infra_and_migrate(
@@ -1646,7 +1609,6 @@ def _bring_up_infra_and_migrate(
             kind="http",
             target="http://127.0.0.1:19000/minio/health/live",
         ),
-        HealthCheck(name="temporal", kind="tcp", target="127.0.0.1:17233"),
     ]
     asyncio.run(
         wait_for_checks_parallel(
@@ -1656,9 +1618,6 @@ def _bring_up_infra_and_migrate(
             probe_timeout_s=1.0,
         )
     )
-
-    _runner_status("Infrastructure is up. Verifying Temporal gRPC stability...")
-    _wait_for_temporal_stable_tcp()
 
     _runner_status("Purging local S3 buckets before the run...")
     _run_quietly(["uv", "run", "python", "scripts/cleanup_local_s3.py"])
@@ -1670,34 +1629,8 @@ def _bring_up_infra_and_migrate(
 
 
 def _prepare_frontend_dist(repo_root: Path, frontend_state_file: Path | None) -> None:
-    if _should_rebuild_frontend(frontend_state_file):
-        _runner_status(
-            "Building frontend (detected non-test frontend changes since last integration build or missing dist)..."
-        )
-        env = os.environ.copy()
-        env["PYTHONPATH"] = "."
-        # CI checkouts do not have frontend node_modules populated, so install
-        # the locked frontend toolchain before generating API clients or building.
-        _run(["npm", "ci"], cwd=repo_root / "frontend")
-        _run(["uv", "run", "python", "scripts/generate_openapi.py"], env=env)
-        _run(["npm", "run", "gen:api"], cwd=repo_root / "frontend")
-        production_env = repo_root / "frontend" / ".env.production"
-        production_env.write_text(
-            "VITE_API_URL=http://localhost:18000\nVITE_IS_INTEGRATION_TEST=true\n",
-            encoding="utf-8",
-        )
-        shutil.rmtree(repo_root / "frontend" / "dist", ignore_errors=True)
-        _run(["npm", "run", "build"], cwd=repo_root / "frontend")
-        if frontend_state_file is not None:
-            frontend_state_file.parent.mkdir(parents=True, exist_ok=True)
-            frontend_state_file.write_text(
-                _git_output(["git", "rev-parse", "HEAD"]) + "\n",
-                encoding="utf-8",
-            )
-    else:
-        _runner_status(
-            "Skipping frontend build (no non-test frontend changes since last integration build)."
-        )
+    del repo_root, frontend_state_file
+    return
 
 
 @dataclass(frozen=True)
@@ -1821,7 +1754,6 @@ def _preemptive_cleanup() -> None:
         "uvicorn.*18001",
         "uvicorn.*18002",
         "python3 -m http.server 15173",
-        "python -m controller.temporal_worker",
         "npm run dev",
         "vite",
         "npx serve",
@@ -1908,8 +1840,6 @@ def _stop_processes(processes: list[StartedProcess]) -> None:
 def _cleanup_pid_files(repo_root: Path) -> None:
     for pid_file in [
         repo_root / "logs" / "controller.pid",
-        repo_root / "logs" / "temporal_worker.pid",
-        repo_root / "logs" / "worker_heavy_temporal.pid",
         repo_root / "logs" / "worker_light.pid",
         repo_root / "logs" / "worker_renderer.pid",
         repo_root / "logs" / "worker_heavy.pid",
@@ -2064,26 +1994,6 @@ def _link_current_logs(run_playwright: bool) -> None:
         (f"{current_prefix}/worker_heavy_debug.log", "worker_heavy_debug.log"),
         (f"{current_prefix}/worker_heavy_errors.log", "worker_heavy_errors.log"),
         (f"{current_prefix}/json/worker_heavy_errors.json", "worker_heavy_errors.json"),
-        (f"{current_prefix}/worker_heavy_temporal.log", "worker_heavy_temporal.log"),
-        (
-            f"{current_prefix}/worker_heavy_temporal_debug.log",
-            "worker_heavy_temporal_debug.log",
-        ),
-        (
-            f"{current_prefix}/worker_heavy_temporal_errors.log",
-            "worker_heavy_temporal_errors.log",
-        ),
-        (
-            f"{current_prefix}/json/worker_heavy_temporal_errors.json",
-            "worker_heavy_temporal_errors.json",
-        ),
-        (f"{current_prefix}/temporal_worker.log", "temporal_worker.log"),
-        (f"{current_prefix}/temporal_worker_debug.log", "temporal_worker_debug.log"),
-        (f"{current_prefix}/temporal_worker_errors.log", "temporal_worker_errors.log"),
-        (
-            f"{current_prefix}/json/temporal_worker_errors.json",
-            "temporal_worker_errors.json",
-        ),
         (f"{current_prefix}/full_test_output.log", "full_test_output.log"),
     ]
     if run_playwright:
@@ -2118,12 +2028,6 @@ def _link_current_logs(run_playwright: bool) -> None:
         "worker_heavy.log",
         "worker_heavy_debug.log",
         "worker_heavy_errors.log",
-        "worker_heavy_temporal.log",
-        "worker_heavy_temporal_debug.log",
-        "worker_heavy_temporal_errors.log",
-        "temporal_worker.log",
-        "temporal_worker_debug.log",
-        "temporal_worker_errors.log",
         "frontend.log",
         "browser_console.log",
         "full_test_output.log",
@@ -2143,8 +2047,6 @@ def _link_current_logs(run_playwright: bool) -> None:
         "controller_errors.json",
         "worker_light_errors.json",
         "worker_heavy_errors.json",
-        "worker_heavy_temporal_errors.json",
-        "temporal_worker_errors.json",
         "backend_error_allowlisted_prefixes.json",
     ]:
         compat_path = integration_json_compat / name
@@ -2228,7 +2130,6 @@ def _run_integration_command(
         f"postgresql+asyncpg://postgres:postgres@127.0.0.1:15432/{integration_db_name}"
     )
 
-    os.environ["TEMPORAL_URL"] = "127.0.0.1:17233"
     os.environ["S3_ENDPOINT"] = "http://127.0.0.1:19000"
     os.environ["S3_ENDPOINT_URL"] = "http://127.0.0.1:19000"
     os.environ["S3_ACCESS_KEY"] = "minioadmin"
@@ -2259,7 +2160,6 @@ def _run_integration_command(
     )
     os.environ["IS_INTEGRATION_TEST"] = "true"
     os.environ["SMOKE_TEST_MODE"] = "true"
-    os.environ["TEMPORAL_URL"] = "127.0.0.1:17233"
     os.environ["S3_ENDPOINT"] = "http://127.0.0.1:19000"
     os.environ["S3_ENDPOINT_URL"] = "http://127.0.0.1:19000"
     os.environ["S3_ACCESS_KEY"] = "minioadmin"
@@ -2290,22 +2190,12 @@ def _run_integration_command(
     os.environ["DATABASE_URL"] = integration_db_url
 
     pytest_args = normalized_pytest_args
-    run_playwright = _should_run_playwright(pytest_args)
-    git_dir = _git_output(["git", "rev-parse", "--git-dir"]) if run_playwright else ""
-    frontend_state_file = (
-        Path(git_dir) / "problemologist_integration_frontend_build_commit"
-        if git_dir
-        else None
-    )
+    run_playwright = False
 
-    _kill_port_occupants([15173, 18000, 18001, 18002, 18003, 15432, 17233, 19000])
+    _kill_port_occupants([15173, 18000, 18001, 18002, 18003, 15432, 19000])
 
     _run(["bash", "scripts/ensure_docker_vfs.sh"])
-    _runner_status(
-        "Preparing prerequisites in parallel (infra, parts DB"
-        + (", frontend build" if run_playwright else "")
-        + ")..."
-    )
+    _runner_status("Preparing prerequisites in parallel (infra, parts DB)...")
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
         prep_futures: list[concurrent.futures.Future[object]] = [
             pool.submit(
@@ -2315,10 +2205,6 @@ def _run_integration_command(
             ),
             pool.submit(_prepare_parts_db, repo_root),
         ]
-        if run_playwright:
-            prep_futures.append(
-                pool.submit(_prepare_frontend_dist, repo_root, frontend_state_file)
-            )
         for future in concurrent.futures.as_completed(prep_futures):
             future.result()
 

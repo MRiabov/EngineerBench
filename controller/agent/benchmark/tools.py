@@ -164,29 +164,6 @@ def get_benchmark_planner_tools(
             agent_role=AgentName.BENCHMARK_PLANNER,
         )
 
-    async def preview(
-        script_path: str = "benchmark_plan_evidence_script.py",
-        orbit_pitch: float | list[float] = 45,
-        orbit_yaw: float | list[float] = 45,
-        rgb: bool | None = None,
-        depth: bool | None = None,
-        segmentation: bool | None = None,
-        payload_path: bool = False,
-        rendering_type: PreviewRenderingType | str | None = None,
-        smoke_test_mode: bool | None = None,
-    ):
-        return await render_cad(
-            script_path=script_path,
-            orbit_pitch=orbit_pitch,
-            orbit_yaw=orbit_yaw,
-            rgb=rgb,
-            depth=depth,
-            segmentation=segmentation,
-            payload_path=payload_path,
-            rendering_type=rendering_type,
-            smoke_test_mode=smoke_test_mode,
-        )
-
     async def submit_benchmark_plan() -> dict:
         """
         Validate benchmark planner artifacts and explicitly submit planner handoff.

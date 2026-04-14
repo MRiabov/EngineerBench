@@ -4,9 +4,7 @@ from shared.eval_artifacts import (
     workspace_artifacts_for_agent,
 )
 
-# Base non-drafting planner artifact contract. Use
-# `required_plan_artifacts_for_agent()` when the mode-sensitive drafting files
-# must be included.
+# Base planner artifact contract.
 PLANNER_REQUIRED_FILES: dict[AgentName, tuple[str, ...]] = {
     AgentName.BENCHMARK_PLANNER: (
         "benchmark_plan.md",
@@ -85,11 +83,6 @@ AGENT_SPECS: dict[AgentName, AgentEvalSpec] = {
         required_trace_names=(AgentName.ENGINEER_EXECUTION_REVIEWER,),
         start_node=AgentName.ENGINEER_EXECUTION_REVIEWER,
         review_filename_prefix="engineering-execution-review",
-    ),
-    AgentName.COTS_SEARCH: AgentEvalSpec(
-        mode=EvalMode.AGENT,
-        request_agent_name=AgentName.COTS_SEARCH,
-        required_trace_names=(AgentName.COTS_SEARCH,),
     ),
     AgentName.SKILL_AGENT: AgentEvalSpec(
         mode=EvalMode.AGENT,

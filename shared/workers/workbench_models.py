@@ -1,4 +1,4 @@
-from typing import Any, Literal
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -36,8 +36,6 @@ class WorkbenchMetadata(BaseModel):
     """Standardized metadata for workbench results."""
 
     cost_breakdown: CostBreakdown | None = None
-    dof_count: int | None = None
-    dof_warning: str | None = None
     undercut_count: int | None = None
     gate_count: int | None = None
     additional_info: dict[str, Any] = Field(default_factory=dict)
@@ -62,19 +60,10 @@ class MaterialDefinition(BaseModel):
     density_kg_m3: float | None = None
     cost_per_kg: float
     color: str = "#FFFFFF"
-    elongation_stress_mpa: float = 0.0
     restitution: float = 0.5
     friction_coef: float = 0.61  # Default for aluminum
     machine_hourly_rate: float = 0.0
     compatibility: list[ManufacturingMethod] = Field(default_factory=list)
-
-    # NEW - FEM fields (WP2)
-    youngs_modulus_pa: float | None = None
-    poissons_ratio: float | None = None
-    yield_stress_pa: float | None = None
-    ultimate_stress_pa: float | None = None
-    elongation_at_break: float | None = None
-    material_class: Literal["rigid", "soft", "elastomer"] = "rigid"
 
 
 class WireDefinition(BaseModel):
@@ -134,20 +123,6 @@ class ThreeDPMethodConfig(BaseModel):
     costs: ThreeDPCosts = Field(default_factory=ThreeDPCosts)
 
 
-class BenchmarkDrillingCostConfig(BaseModel):
-    """Static costing for drilling into benchmark-owned fixtures."""
-
-    cost_per_hole_usd: float = Field(default=1.0, gt=0)
-
-
-class BenchmarkOperationsConfig(BaseModel):
-    """Static costing for benchmark-owned operations."""
-
-    drilling: BenchmarkDrillingCostConfig = Field(
-        default_factory=BenchmarkDrillingCostConfig
-    )
-
-
 class ManufacturingConfig(BaseModel):
     defaults: dict[str, Any] = Field(default_factory=dict)
     materials: dict[str, MaterialDefinition] = Field(default_factory=dict)
@@ -155,9 +130,6 @@ class ManufacturingConfig(BaseModel):
     cnc: CNCMethodConfig | None = None
     injection_molding: IMMethodConfig | None = None
     three_dp: ThreeDPMethodConfig | None = None
-    benchmark_operations: BenchmarkOperationsConfig = Field(
-        default_factory=BenchmarkOperationsConfig
-    )
 
     def __getitem__(self, key: str) -> Any:
         # Support dict-like access for backward compatibility with existing workbenches
@@ -169,8 +141,6 @@ class ManufacturingConfig(BaseModel):
             return self.three_dp.model_dump() if self.three_dp else {}
         if key == "defaults":
             return self.defaults
-        if key == "benchmark_operations":
-            return self.benchmark_operations.model_dump()
         raise KeyError(key)
 
     def get(self, key: str, default: Any = None) -> Any:

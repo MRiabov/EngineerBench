@@ -75,7 +75,6 @@ async def record_worker_events(
                     event_user_session_id=str(event_user_session_id),
                 )
                 simulation_run_id = event_dict.get("simulation_run_id")
-                cots_query_id = event_dict.get("cots_query_id")
                 review_id = event_dict.get("review_id")
             else:
                 name = event.get("event_type", "generic_event")
@@ -87,7 +86,6 @@ async def record_worker_events(
                     else user_session_id
                 )
                 simulation_run_id = event.get("simulation_run_id")
-                cots_query_id = event.get("cots_query_id")
                 review_id = event.get("review_id")
 
             if isinstance(metadata, dict) and not metadata.get("episode_id"):
@@ -103,7 +101,6 @@ async def record_worker_events(
                 metadata_vars=metadata,
                 langfuse_trace_id=langfuse_trace_id,
                 simulation_run_id=simulation_run_id,
-                cots_query_id=cots_query_id,
                 review_id=review_id,
             )
             db.add(trace)

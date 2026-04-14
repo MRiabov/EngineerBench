@@ -179,8 +179,6 @@ class SimulationLoop:
                     if label:
                         metadata = getattr(child, "metadata", None)
                         material_id = getattr(metadata, "material_id", None)
-                        if not material_id and getattr(metadata, "cots_id", None):
-                            material_id = "cots-generic"
                         self.material_lookup[label] = material_id
                         if getattr(metadata, "is_fixed", False):
                             self.fixed_body_names.add(label)

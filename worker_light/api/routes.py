@@ -291,7 +291,6 @@ async def api_preview(
             segmentation=request.segmentation,
             payload_path=request.payload_path,
             rendering_type=request.rendering_type,
-            drafting=request.drafting,
             session_id=x_session_id,
             agent_role=x_agent_role,
             script_content=request.script_content,
@@ -374,7 +373,6 @@ async def api_preview(
             artifact_path=artifact_path,
             manifest_path=manifest_path,
             rendering_type=response.rendering_type,
-            drafting=response.drafting or request.drafting,
             pitch=request.orbit_pitch
             if isinstance(request.orbit_pitch, float)
             else None,
@@ -393,7 +391,6 @@ async def api_preview(
             status_text="Preview generation failed",
             message=str(exc),
             rendering_type=(request.rendering_type or PreviewRenderingType.RGB),
-            drafting=request.drafting,
             pitch=request.orbit_pitch
             if isinstance(request.orbit_pitch, float)
             else None,

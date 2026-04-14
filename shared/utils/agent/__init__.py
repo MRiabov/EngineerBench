@@ -27,8 +27,6 @@ from shared.script_contracts import (
     role_family_for_agent,
 )
 from shared.simulation.schemas import get_default_simulator_backend
-from shared.utils.fasteners import HoleType as HoleType
-from shared.utils.fasteners import fastener_hole as fastener_hole
 from shared.workers.schema import (
     BenchmarkToolResponse,
     PlanRefusal,
@@ -841,7 +839,6 @@ async def _preview_async(
             success=True,
             status_text=SCRIPT_IMPORT_DEFERRED_MESSAGE,
             message=SCRIPT_IMPORT_DEFERRED_MESSAGE,
-            drafting=False,
             rendering_type=requested_rendering_type,
         )
     try:
@@ -861,7 +858,6 @@ async def _preview_async(
             depth=depth,
             segmentation=segmentation,
             payload_path=payload_path,
-            drafting=False,
             rendering_type=(
                 PreviewRenderingType(str(rendering_type))
                 if rendering_type is not None
@@ -875,7 +871,6 @@ async def _preview_async(
             success=False,
             status_text="Preview generation failed",
             message=str(exc),
-            drafting=False,
             rendering_type=requested_rendering_type,
         )
     response = _call_worker_light_preview(
@@ -893,7 +888,6 @@ async def _preview_async(
             depth=depth,
             segmentation=segmentation,
             payload_path=payload_path,
-            drafting=False,
             rendering_type=(
                 PreviewRenderingType(str(rendering_type))
                 if rendering_type is not None
@@ -1048,6 +1042,3 @@ def refuse_plan(reason: str) -> bool:
     with Path("refusal.json").open("w") as f:
         f.write(refusal_data.model_dump_json(indent=2))
     return True
-
-
-# Re-export fasteners

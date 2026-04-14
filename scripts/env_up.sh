@@ -108,7 +108,7 @@ mkdir -p "$STACK_PID_DIR"
 # DO NOT REMOVE: This is required for agent execution environments where overlay2 fails.
 bash scripts/ensure_docker_vfs.sh
 
-echo "Spinning up infrastructure (Postgres, Temporal, Minio)..."
+echo "Spinning up infrastructure (Postgres, Minio)..."
 docker compose -p "$COMPOSE_PROJECT_NAME" -f docker-compose.test.yaml up -d --remove-orphans
 
 echo "Waiting for infra to be ready..."
@@ -126,15 +126,6 @@ done
 INFRA_COUNT=0
 until curl -s "http://127.0.0.1:${MINIO_HOST_PORT}/minio/health/live" > /dev/null 2>&1 || [ $INFRA_COUNT -eq $MAX_INFRA_RETRIES ]; do
   echo "Waiting for Minio... ($INFRA_COUNT/$MAX_INFRA_RETRIES)"
-  sleep 2
-  INFRA_COUNT=$((INFRA_COUNT + 1))
-done
-
-# Wait for Temporal
-INFRA_COUNT=0
-# Using python3 instead of nc for portability as nc is missing in some environments
-until python3 -c "import socket; socket.create_connection(('127.0.0.1', ${TEMPORAL_HOST_PORT}), timeout=1)" > /dev/null 2>&1 || [ $INFRA_COUNT -eq $MAX_INFRA_RETRIES ]; do
-  echo "Waiting for Temporal... ($INFRA_COUNT/$MAX_INFRA_RETRIES)"
   sleep 2
   INFRA_COUNT=$((INFRA_COUNT + 1))
 done

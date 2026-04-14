@@ -384,7 +384,6 @@ def _starter_engineer_assembly(workspace_dir: Path) -> AssemblyDefinition:
             planner_target_max_weight_g=planner_target_max_weight_g,
         ),
         manufactured_parts=[],
-        cots_parts=[],
         final_assembly=[PartConfig(name=target_name, config=AssemblyPartConfig())],
         totals=CostTotals(
             estimated_unit_cost_usd=0.0,
@@ -410,7 +409,6 @@ def _starter_benchmark_assembly(workspace_dir: Path) -> AssemblyDefinition:
             planner_target_max_weight_g=planner_target_max_weight_g,
         ),
         manufactured_parts=[],
-        cots_parts=[],
         final_assembly=[PartConfig(name=target_name, config=AssemblyPartConfig())],
         totals=CostTotals(
             estimated_unit_cost_usd=0.0,
@@ -584,7 +582,7 @@ def build_cli_prompt(
 
     runtime_context = _build_cli_runtime_context(item=item, agent_name=agent_name)
     prompt_manager = PromptManager()
-    # PromptManager owns the shared, drafting, backend, and bug-report appendices.
+    # PromptManager owns the shared, backend, and bug-report appendices.
     return prompt_manager.render(
         agent_name,
         backend_family=PromptBackendFamily.CLI_BASED,

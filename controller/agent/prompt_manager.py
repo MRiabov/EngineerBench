@@ -32,7 +32,6 @@ class PromptAppendices(BaseModel):
 
     shared: str = ""
     bug_reporting: str = ""
-    drafting: dict[str, str] = Field(default_factory=dict)
     backend: dict[str, str] = Field(default_factory=dict)
     cli: PromptCliAppendices = Field(default_factory=PromptCliAppendices)
 

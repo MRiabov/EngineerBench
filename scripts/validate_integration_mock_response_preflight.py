@@ -123,7 +123,6 @@ def _benchmark_assembly_definition_content(
             planner_target_max_weight_g=planner_target_max_weight_g,
         ),
         manufactured_parts=[],
-        cots_parts=[],
         final_assembly=[],
         totals=CostTotals(
             estimated_unit_cost_usd=estimated_unit_cost_usd,

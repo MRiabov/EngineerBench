@@ -436,7 +436,6 @@ class SceneCompiler:
         kv: float | None = None,
         forcerange: tuple[float, float] | None = None,
         actuator_type: str = "position",
-        cots_id: str | None = None,
     ):
         """Adds an actuator to control a joint."""
         # Default gains if not derived
@@ -600,9 +599,7 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
                     euler=data.euler,
                 )
             else:
-                material_id = data.material_id or (
-                    "cots-generic" if data.cots_id else None
-                )
+                material_id = data.material_id
                 mesh_path_base = self.assets_dir / data.label
                 # Use coarser mesh for smoke tests
                 tolerance = 1.0 if smoke_test_mode else 0.1
@@ -801,8 +798,7 @@ class GenesisSimulationBuilder(SimulationBuilderBase):
                 "name": data.label,
                 "pos": data.pos,
                 "euler": data.euler,
-                "material_id": data.material_id
-                or ("cots-generic" if data.cots_id else None),
+                "material_id": data.material_id,
                 "fixed": data.is_fixed,
                 "joint": {
                     "type": data.joint_type,

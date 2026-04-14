@@ -173,7 +173,7 @@ def _collect_motion_names(assembly_definition: AssemblyDefinition | None) -> set
     return {
         part.part_name.strip()
         for part in assembly_definition.moving_parts
-        if part.part_name.strip() and part.dofs
+        if part.part_name.strip()
     }
 
 

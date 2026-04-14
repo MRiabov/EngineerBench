@@ -59,8 +59,6 @@ def _normalize_material_id_text(value: Any) -> Any:
         text = value.strip()
         if not text:
             raise ValueError("material_id must be a non-empty string")
-        if text.startswith("cots-"):
-            return text
         return text.replace("-", "_")
     return value
 
@@ -87,22 +85,6 @@ class CodeReference(BaseModel):
     file_path: str
     start_line: int
     end_line: int
-
-
-class BackupParams(BaseModel):
-    """Parameters for backup workflow."""
-
-    db_url: str | None = None
-    s3_bucket: str | None = None
-    source_bucket: str | None = None
-    backup_bucket: str | None = None
-
-
-class BackupResult(BaseModel):
-    """Result of a backup operation."""
-
-    postgres_backup_key: str | None = None
-    s3_files_backed_up: int | None = None
 
 
 class BoundingBox(StrictContractModel):
@@ -167,10 +149,17 @@ class MovedObject(StrictContractModel):
 
 
 class MovingPart(StrictContractModel):
-    """A moving part in the environment."""
+    """A part name referenced by a motion forecast."""
 
     part_name: str
-    dofs: list[str]
+
+    @field_validator("part_name")
+    @classmethod
+    def validate_part_name(cls, value: str) -> str:
+        text = value.strip()
+        if not text:
+            raise ValueError("part_name must be a non-empty string")
+        return text
 
 
 class MotionForecastContact(StrictContractModel):
@@ -527,17 +516,7 @@ class BenchmarkPartMetadata(StrictContractModel):
     """Benchmark-owned metadata for environment and fixture parts."""
 
     fixed: bool = False
-    allows_engineer_interaction: bool = False
     material_id: OptionalMaterialId = None
-    cots_id: str | None = None
-
-    @model_validator(mode="after")
-    def validate_identity(self) -> "BenchmarkPartMetadata":
-        if not self.material_id and not self.cots_id:
-            raise ValueError(
-                "BenchmarkPartMetadata must have either material_id or cots_id"
-            )
-        return self
 
 
 class BenchmarkPartDefinition(StrictContractModel):
@@ -599,18 +578,11 @@ class PartMetadata(BaseModel):
     """Metadata for individual parts in a CAD assembly."""
 
     material_id: OptionalMaterialId = None
-    cots_id: str | None = None
     is_fixed: bool = Field(default=False, alias="fixed")
     manufacturing_method: ManufacturingMethod | None = None
     joint: JointMetadata | None = None
 
     model_config = ConfigDict(populate_by_name=True)
-
-    @model_validator(mode="after")
-    def validate_identity(self) -> "PartMetadata":
-        if not self.material_id and not self.cots_id:
-            raise ValueError("PartMetadata must have either material_id or cots_id")
-        return self
 
 
 class CompoundMetadata(BaseModel):
@@ -620,24 +592,6 @@ class CompoundMetadata(BaseModel):
     joint: JointMetadata | None = None
 
     model_config = ConfigDict(populate_by_name=True)
-
-
-# =============================================================================
-# COTS Catalog Models
-# =============================================================================
-
-
-class COTSMetadata(BaseModel):
-    """Metadata for COTS items, indexed into the catalog."""
-
-    part_id: str
-    name: str
-    category: str
-    unit_cost: float
-    weight_g: float
-    bbox: BoundingBox
-    volume: float
-    params: dict[str, Any]
 
 
 # =============================================================================
@@ -694,9 +648,6 @@ class TraceMetadata(BaseModel):
     # Simulation specific
     simulation_run_id: str | None = None
     backend: SimulatorBackendType | None = None
-
-    # COTS specific
-    cots_query_id: str | None = None
 
     # Review specific
     review_id: str | None = None
@@ -803,7 +754,6 @@ class DatasetRowLineage(StrictContractModel):
     is_integration_test: bool | None = None
     integration_test_id: str | None = None
     simulation_run_id: str | None = None
-    cots_query_id: str | None = None
     review_id: str | None = None
     revision_hash: str
     artifact_hash: str
@@ -1127,101 +1077,15 @@ class ManufacturedPartEstimate(StrictContractModel):
         return text
 
 
-class CotsPartEstimate(StrictContractModel):
-    """Assembly estimate for a COTS part."""
-
-    part_id: str
-    manufacturer: str
-    unit_cost_usd: float
-    weight_g: float | None = None
-    quantity: int
-    source: str
-    catalog_version: str | None = None
-    bd_warehouse_commit: str | None = None
-    catalog_snapshot_id: str | None = None
-    generated_at: str | None = None
-
-    @field_validator("part_id", "manufacturer", "source")
-    @classmethod
-    def validate_non_empty_strings(cls, value: str) -> str:
-        text = value.strip()
-        if not text:
-            raise ValueError("must be a non-empty string")
-        return text
-
-    @field_validator("unit_cost_usd", "weight_g", mode="before")
-    @classmethod
-    def validate_numeric_values(cls, value: Any) -> Any:
-        if value is None:
-            return value
-        if float(value) <= 0:
-            raise ValueError("must be > 0")
-        return value
-
-    @field_validator(
-        "catalog_version",
-        "bd_warehouse_commit",
-        "catalog_snapshot_id",
-        "generated_at",
-        mode="before",
-    )
-    @classmethod
-    def validate_optional_non_empty_strings(cls, value: Any) -> Any:
-        if value is None:
-            return value
-        text = str(value).strip()
-        if not text:
-            raise ValueError("must be a non-empty string")
-        return text
-
-    @model_validator(mode="after")
-    def validate_catalog_provenance(self) -> "CotsPartEstimate":
-        provenance_fields = (
-            self.catalog_version,
-            self.bd_warehouse_commit,
-            self.catalog_snapshot_id,
-            self.generated_at,
-        )
-        has_any_provenance = any(field is not None for field in provenance_fields)
-        if has_any_provenance and not all(
-            field is not None for field in provenance_fields
-        ):
-            raise ValueError(
-                "catalog provenance must include catalog_version, "
-                "bd_warehouse_commit, catalog_snapshot_id, and generated_at together"
-            )
-        return self
-
-
-class MotorControl(StrictContractModel):
-    """Motor control metadata for actuated parts."""
-
-    speed: float
-
-
 class AssemblyPartConfig(StrictContractModel):
-    """Configuration for a part in an assembly, including motion metadata."""
-
-    dofs: list[str] = []
-    cots_id: str | None = None
-    control: MotorControl | None = None
-
-    @field_validator("cots_id")
-    @classmethod
-    def validate_cots_id(cls, value: str | None) -> str | None:
-        if value is None:
-            return value
-        text = value.strip()
-        if not text:
-            raise ValueError("cots_id must be a non-empty string")
-        return text
+    """Reserved per-part configuration container."""
 
 
 class PartConfig(StrictContractModel):
-    """Configuration for a part in an assembly, including motion metadata."""
+    """Configuration for a part in an assembly."""
 
     name: str
-    config: AssemblyPartConfig
+    config: AssemblyPartConfig | None = None
 
 
 class JointEstimate(StrictContractModel):
@@ -1295,239 +1159,6 @@ class AssemblyConstraints(StrictContractModel):
         return self
 
 
-class DraftingDimension(StrictContractModel):
-    """One binding or explanatory dimension in the drafting package."""
-
-    dimension_id: str
-    kind: Literal["linear", "angular", "radius", "diameter", "fit", "clearance"]
-    target: str
-    value: float
-    tolerance: str | None = None
-    binding: bool = True
-    note: str | None = None
-    plan_ref: str | None = None
-
-    @field_validator("dimension_id", "target")
-    @classmethod
-    def validate_non_empty_strings(cls, value: str) -> str:
-        text = value.strip()
-        if not text:
-            raise ValueError("must be a non-empty string")
-        return text
-
-    @field_validator("value")
-    @classmethod
-    def validate_positive_value(cls, value: float) -> float:
-        if value <= 0:
-            raise ValueError("must be > 0")
-        return value
-
-
-class DraftingCallout(StrictContractModel):
-    """A numbered or named drawing callout."""
-
-    callout_id: str | int
-    label: str
-    target: str
-    plan_ref: str | None = None
-    note: str | None = None
-
-    @field_validator("label", "target")
-    @classmethod
-    def validate_non_empty_strings(cls, value: str) -> str:
-        text = value.strip()
-        if not text:
-            raise ValueError("must be a non-empty string")
-        return text
-
-
-class DraftingNote(StrictContractModel):
-    """An explanatory or critical drawing note."""
-
-    note_id: str
-    text: str
-    critical: bool = False
-    plan_ref: str | None = None
-
-    @field_validator("note_id", "text")
-    @classmethod
-    def validate_non_empty_strings(cls, value: str) -> str:
-        text = value.strip()
-        if not text:
-            raise ValueError("must be a non-empty string")
-        return text
-
-
-class GoalZoneOverlapIntent(StrictContractModel):
-    """A typed allowance for a drafted target to overlap a goal zone."""
-
-    zone_name: str
-    target: str
-
-    @field_validator("zone_name", "target")
-    @classmethod
-    def validate_non_empty_strings(cls, value: str) -> str:
-        text = value.strip()
-        if not text:
-            raise ValueError("must be a non-empty string")
-        return text
-
-
-class DraftingLayoutView(StrictContractModel):
-    """One display-only layout transform for an authored drafting view."""
-
-    view_id: str
-    display_offset_mm: CoercedTuple2D = (0.0, 0.0)
-    exploded: bool = False
-
-    @field_validator("view_id")
-    @classmethod
-    def validate_non_empty_strings(cls, value: str) -> str:
-        text = value.strip()
-        if not text:
-            raise ValueError("must be a non-empty string")
-        return text
-
-
-class DraftingLayout(StrictContractModel):
-    """Display-only layout metadata for a drafting sheet."""
-
-    mode: Literal["orthographic_trio", "exploded", "staggered"] = "orthographic_trio"
-    views: list[DraftingLayoutView] = Field(default_factory=list)
-
-    @model_validator(mode="after")
-    def validate_contract(self) -> "DraftingLayout":
-        if self.mode in {"exploded", "staggered"} and not self.views:
-            raise ValueError(
-                "drafting.layout.views must contain at least one view when a non-orthographic layout is requested"
-            )
-
-        view_ids = [view.view_id for view in self.views]
-        if len(set(view_ids)) != len(view_ids):
-            raise ValueError("drafting.layout.views must not repeat view_id values")
-        return self
-
-
-class DraftingView(StrictContractModel):
-    """A single drafting view in the planner-authored package."""
-
-    view_id: str
-    target: str
-    projection: Literal["front", "top", "side", "section", "detail", "isometric"]
-    scale: float = 1.0
-    datums: list[str] = Field(default_factory=list)
-    dimensions: list[DraftingDimension] = Field(default_factory=list)
-    callouts: list[DraftingCallout] = Field(default_factory=list)
-    notes: list[DraftingNote] = Field(default_factory=list)
-    section_marker: str | None = None
-    detail_target: str | None = None
-
-    @field_validator("view_id", "target")
-    @classmethod
-    def validate_non_empty_strings(cls, value: str) -> str:
-        text = value.strip()
-        if not text:
-            raise ValueError("must be a non-empty string")
-        return text
-
-    @field_validator("scale")
-    @classmethod
-    def validate_scale(cls, value: float) -> float:
-        if value <= 0:
-            raise ValueError("must be > 0")
-        return value
-
-    @field_validator("datums")
-    @classmethod
-    def validate_datums(cls, value: list[str]) -> list[str]:
-        cleaned = [datum.strip() for datum in value if str(datum).strip()]
-        if not cleaned:
-            raise ValueError("must contain at least one datum reference")
-        if len(set(cleaned)) != len(cleaned):
-            raise ValueError("must not contain duplicate datum identifiers")
-        return cleaned
-
-    @model_validator(mode="after")
-    def validate_projection_specific_fields(self) -> "DraftingView":
-        if self.projection == "section" and not (self.section_marker or "").strip():
-            raise ValueError("section views must define section_marker")
-        if self.projection == "detail" and not (self.detail_target or "").strip():
-            raise ValueError("detail views must define detail_target")
-
-        dimension_ids = [dimension.dimension_id for dimension in self.dimensions]
-        if len(set(dimension_ids)) != len(dimension_ids):
-            raise ValueError("drafting view dimensions must not repeat dimension_id")
-
-        callout_ids = [str(callout.callout_id).strip() for callout in self.callouts]
-        if len(callout_ids) != len(set(callout_ids)):
-            raise ValueError("drafting view callouts must not repeat callout_id")
-
-        note_ids = [note.note_id for note in self.notes]
-        if len(set(note_ids)) != len(note_ids):
-            raise ValueError("drafting view notes must not repeat note_id")
-        return self
-
-
-class DraftingSheet(StrictContractModel):
-    """Planner-authored technical drawing package for one assembly."""
-
-    sheet_id: str
-    title: str
-    units: Literal["mm"] = "mm"
-    projection_standard: Literal["orthographic"] = "orthographic"
-    goal_zone_overlap_intents: list[GoalZoneOverlapIntent] = Field(default_factory=list)
-    views: list[DraftingView] = Field(default_factory=list)
-    notes: list[DraftingNote] = Field(default_factory=list)
-    layout: DraftingLayout | None = None
-
-    @field_validator("sheet_id", "title")
-    @classmethod
-    def validate_non_empty_strings(cls, value: str) -> str:
-        text = value.strip()
-        if not text:
-            raise ValueError("must be a non-empty string")
-        return text
-
-    @model_validator(mode="after")
-    def validate_views(self) -> "DraftingSheet":
-        if not self.views:
-            raise ValueError("drafting.views must contain at least one view")
-
-        view_ids = [view.view_id for view in self.views]
-        if len(set(view_ids)) != len(view_ids):
-            raise ValueError("drafting.views must not contain duplicate view_id values")
-
-        if self.layout is not None:
-            authored_view_ids = {view.view_id for view in self.views}
-            for layout_view in self.layout.views:
-                if layout_view.view_id not in authored_view_ids:
-                    raise ValueError(
-                        f"drafting.layout.views references unknown authored view_id '{layout_view.view_id}'"
-                    )
-        return self
-
-
-class EnvironmentDrillOperation(StrictContractModel):
-    """Planner-declared drill operation against a benchmark-owned fixture."""
-
-    target_part_id: str
-    hole_id: str
-    diameter_mm: float
-    depth_mm: float
-    quantity: int = 1
-    notes: str | None = None
-
-    @model_validator(mode="after")
-    def validate_contract(self) -> "EnvironmentDrillOperation":
-        if self.diameter_mm <= 0:
-            raise ValueError("diameter_mm must be > 0")
-        if self.depth_mm <= 0:
-            raise ValueError("depth_mm must be > 0")
-        if self.quantity < 1:
-            raise ValueError("quantity must be >= 1")
-        return self
-
-
 class AssemblyDefinition(StrictContractModel):
     """
     Schema for assembly_definition.yaml.
@@ -1538,9 +1169,6 @@ class AssemblyDefinition(StrictContractModel):
     units: AssemblyUnits = AssemblyUnits()
     constraints: AssemblyConstraints
     manufactured_parts: list[ManufacturedPartEstimate] = []
-    cots_parts: list[CotsPartEstimate] = []
-    environment_drill_operations: list[EnvironmentDrillOperation] = []
-    drafting: DraftingSheet | None = None
     motion_forecast: MotionForecast | None = None
     final_assembly: list[SubassemblyEstimate | PartConfig] = []
     totals: CostTotals
@@ -1548,24 +1176,13 @@ class AssemblyDefinition(StrictContractModel):
 
     @property
     def moving_parts(self) -> list[MovingPart]:
-        """Flatten final_assembly to extract all parts with DOFs."""
-        parts: list[MovingPart] = []
-
-        def process_item(item):
-            if isinstance(item, SubassemblyEstimate):
-                for p_config in item.parts:
-                    if p_config.config.dofs:
-                        parts.append(
-                            MovingPart(
-                                part_name=p_config.name, dofs=p_config.config.dofs
-                            )
-                        )
-            elif isinstance(item, PartConfig) and item.config.dofs:
-                parts.append(MovingPart(part_name=item.name, dofs=item.config.dofs))
-
-        for item in self.final_assembly:
-            process_item(item)
-        return parts
+        """Return motion-forecast part names when the assembly declares them."""
+        if self.motion_forecast is None:
+            return []
+        return [
+            MovingPart(part_name=part_name)
+            for part_name in self.motion_forecast.moving_part_names
+        ]
 
     @model_validator(mode="after")
     def validate_caps(self) -> "AssemblyDefinition":

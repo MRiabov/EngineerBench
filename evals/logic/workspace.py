@@ -411,7 +411,6 @@ def _starter_engineer_assembly(
             planner_target_max_weight_g=planner_target_max_weight_g,
         ),
         manufactured_parts=[],
-        cots_parts=[],
         final_assembly=[PartConfig(name=target_name, config=AssemblyPartConfig())],
         totals=CostTotals(
             estimated_unit_cost_usd=0.0,
@@ -436,7 +435,6 @@ def _starter_benchmark_assembly(
             planner_target_max_weight_g=planner_target_max_weight_g,
         ),
         manufactured_parts=[],
-        cots_parts=[],
         final_assembly=[PartConfig(name=target_name, config=AssemblyPartConfig())],
         totals=CostTotals(
             estimated_unit_cost_usd=0.0,

@@ -69,7 +69,6 @@ class GenesisBackend(PhysicsRendererBackend):
         self.applied_controls = {}  # name -> float
         self.current_time = 0.0
         self.mfg_config = None
-        self.particle_budget = None
         self.smoke_test_mode = False
         self._is_built = False
         self.session_id = session_id
@@ -660,7 +659,6 @@ class GenesisBackend(PhysicsRendererBackend):
                 and state.pos.ndim >= 2
                 and state.pos.shape[-1] == 3
             ):
-                # Soft-body particle state is batched per environment.
                 pos_arr = state.pos.cpu().numpy()
                 vel_arr = state.vel.cpu().numpy() if hasattr(state, "vel") else None
                 if env_idx is not None and pos_arr.ndim >= 2:

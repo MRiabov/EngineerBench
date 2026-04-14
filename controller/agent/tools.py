@@ -54,20 +54,6 @@ def _runtime_skill_script_path(*relative_parts: str) -> Path:
     return repo_root.joinpath(*relative_parts)
 
 
-def _rewrite_render_bundle_path(
-    path: str,
-    *,
-    source_bundle_root: Path,
-    destination_bundle_root: Path,
-) -> str:
-    candidate = Path(path)
-    try:
-        relative_path = candidate.relative_to(source_bundle_root)
-    except ValueError:
-        return candidate.as_posix()
-    return (destination_bundle_root / relative_path).as_posix()
-
-
 async def run_validate_and_price_script(
     fs: RemoteFilesystemMiddleware,
 ) -> dict[str, object]:
@@ -168,29 +154,6 @@ def get_common_tools(fs: RemoteFilesystemMiddleware, session_id: str) -> list[Ca
         """Render live CAD preview evidence."""
         return await fs.render_cad(
             script_path,
-            orbit_pitch=orbit_pitch,
-            orbit_yaw=orbit_yaw,
-            rgb=rgb,
-            depth=depth,
-            segmentation=segmentation,
-            payload_path=payload_path,
-            rendering_type=rendering_type,
-            smoke_test_mode=smoke_test_mode,
-        )
-
-    async def preview(
-        script_path: str = default_script_path,
-        orbit_pitch: float | list[float] = 45,
-        orbit_yaw: float | list[float] = 45,
-        rgb: bool | None = None,
-        depth: bool | None = None,
-        segmentation: bool | None = None,
-        payload_path: bool = False,
-        rendering_type: PreviewRenderingType | str | None = None,
-        smoke_test_mode: bool | None = None,
-    ):
-        return await render_cad(
-            script_path=script_path,
             orbit_pitch=orbit_pitch,
             orbit_yaw=orbit_yaw,
             rgb=rgb,

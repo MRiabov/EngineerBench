@@ -116,7 +116,6 @@ class AssemblyPartData(BaseModel):
     joint_axis: list[float] | None = None
     joint_range: list[float] | None = None
     material_id: str | None = None
-    cots_id: str | None = None
     is_zone: bool = False
     zone_type: ZoneType | None = None
     zone_size: list[float] | None = None
@@ -278,7 +277,6 @@ class CommonAssemblyTraverser:
                     euler=euler,
                     is_fixed=meta["is_fixed"],
                     material_id=meta["material_id"],
-                    cots_id=meta["cots_id"],
                     joint_type=meta["joint_type"],
                     joint_axis=meta["joint_axis"],
                     joint_range=meta["joint_range"],
@@ -328,7 +326,6 @@ class CommonAssemblyTraverser:
                 return {
                     "is_fixed": True,
                     "material_id": None,
-                    "cots_id": None,
                     "joint_type": None,
                     "joint_axis": None,
                     "joint_range": None,
@@ -361,7 +358,6 @@ class CommonAssemblyTraverser:
         return {
             "is_fixed": metadata.is_fixed,
             "material_id": CommonAssemblyTraverser._resolve_material_id(metadata),
-            "cots_id": getattr(metadata, "cots_id", None),
             "joint_type": joint_type,
             "joint_axis": joint_axis,
             "joint_range": joint_range,

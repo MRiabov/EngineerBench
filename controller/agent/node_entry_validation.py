@@ -1185,11 +1185,7 @@ async def validate_seeded_workspace_handoff_artifacts(
                     else None
                 ),
                 expected_moving_part_names=(
-                    [
-                        part.part_name
-                        for part in assembly_definition_model.moving_parts
-                        if part.dofs
-                    ]
+                    [part.part_name for part in assembly_definition_model.moving_parts]
                     if assembly_definition_model is not None
                     else None
                 ),
