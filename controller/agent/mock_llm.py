@@ -993,8 +993,6 @@ class MockDSPyLM(dspy.LM):
         elif node_key == AgentName.SKILL_AGENT:
             resp["summary"] = node_data.get("summary", "Skills identified.")
             resp["journal"] = node_data.get("journal", "Learning complete.")
-        elif node_key == AgentName.COTS_SEARCH:
-            resp["search_summary"] = node_data.get("search_summary", "Search complete.")
         # Legacy ReAct (3.1.3) internal predictor fields.
         # For JSON mode we keep both legacy and modern fields to avoid brittle
         # parser-mode mismatches across DSPy predictor variants.
@@ -1088,7 +1086,6 @@ class MockDSPyLM(dspy.LM):
                 AgentName.ENGINEER_EXECUTION_REVIEWER: ["thought", "review"],
                 AgentName.JOURNALLING_AGENT: ["thought", "summarized_journal"],
                 AgentName.SKILL_AGENT: ["thought", "summary", "journal"],
-                AgentName.COTS_SEARCH: ["thought", "search_summary"],
             }.get(node_key, [])
 
             all_fields = list(dict.fromkeys(expected_fields + sig_fields))

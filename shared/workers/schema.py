@@ -529,17 +529,6 @@ class BugReportArchiveManifest(BaseModel):
     bug_report_size_bytes: StrictInt | None = None
 
     model_config = ConfigDict(extra="forbid")
-
-
-class COTSReproducibilityManifest(BaseModel):
-    """System-owned catalog provenance snapshot for the current workspace session."""
-
-    catalog_version: StrictStr | None = None
-    bd_warehouse_commit: StrictStr | None = None
-    catalog_snapshot_id: StrictStr | None = None
-    generated_at: StrictStr | None = None
-
-
 class GitCommitRequest(BaseModel):
     """Request to commit changes in the session workspace."""
 

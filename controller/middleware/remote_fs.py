@@ -554,46 +554,6 @@ class RemoteFilesystemMiddleware:
         success = await self.client.write_file(p_str, content, overwrite=overwrite)
 
         if success:
-            # WP06: Detect COTS selections in assembly definition artifacts.
-            if p_str in {
-                "assembly_definition.yaml",
-                "benchmark_assembly_definition.yaml",
-            }:
-                try:
-                    import yaml
-
-                    data_raw = yaml.safe_load(content)
-                    cots_parts = []
-                    if isinstance(data_raw, dict):
-                        raw_cots_parts = data_raw.get("cots_parts")
-                        if isinstance(raw_cots_parts, list):
-                            cots_parts = [
-                                part
-                                for part in raw_cots_parts
-                                if isinstance(part, dict)
-                                and isinstance(part.get("part_id"), str)
-                                and part.get("part_id", "").strip()
-                            ]
-
-                    if cots_parts:
-                        from shared.observability.schemas import COTSSelectionEvent
-
-                        selected_ids = [
-                            str(part["part_id"]).strip() for part in cots_parts
-                        ]
-                        query_ids: list[str] = []
-
-                        await record_events(
-                            episode_id=self.episode_id,
-                            events=[
-                                COTSSelectionEvent(
-                                    selected_part_ids=selected_ids, query_ids=query_ids
-                                )
-                            ],
-                        )
-                except Exception as e:
-                    logger.warning("failed_to_emit_cots_selection_event", error=str(e))
-
             # Broadcast update and sync asset via helper
             await broadcast_file_update(self.episode_id, p_str, content)
 

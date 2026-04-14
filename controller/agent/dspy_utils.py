@@ -537,19 +537,7 @@ def map_events_to_prediction(
             }:
                 metrics.review_actionable = len(reason) > 20
 
-        # 6. COTS Search
-        if etype == ObservabilityEventType.COTS_SEARCH:
-            metrics.n_queries += 1
-            count = (
-                data.get("results_count", 0)
-                if isinstance(data, dict)
-                else getattr(data, "results_count", 0)
-            )
-            metrics.n_returned_candidates += count
-            if count > 0:
-                metrics.n_valid_candidates += count
-
-        # 8. Benchmark specific
+        # 6. Benchmark specific
         if etype == ObservabilityEventType.SCENE_VALIDATION:
             result = (
                 data.get("result")

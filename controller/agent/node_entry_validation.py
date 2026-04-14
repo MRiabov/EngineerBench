@@ -106,7 +106,6 @@ ENGINEER_PREVIOUS_NODE_MAP: Mapping[AgentName, AgentName | None] = {
     # Execution review failures should route back to coder so latest-revision
     # handover artifacts can be regenerated before another reviewer entry.
     AgentName.ENGINEER_EXECUTION_REVIEWER: AgentName.ENGINEER_CODER,
-    AgentName.COTS_SEARCH: AgentName.ENGINEER_PLANNER,
 }
 
 BENCHMARK_PREVIOUS_NODE_MAP: Mapping[AgentName, AgentName | None] = {
@@ -114,7 +113,6 @@ BENCHMARK_PREVIOUS_NODE_MAP: Mapping[AgentName, AgentName | None] = {
     AgentName.BENCHMARK_PLAN_REVIEWER: AgentName.BENCHMARK_PLANNER,
     AgentName.BENCHMARK_CODER: AgentName.BENCHMARK_PLAN_REVIEWER,
     AgentName.BENCHMARK_REVIEWER: AgentName.BENCHMARK_CODER,
-    AgentName.COTS_SEARCH: AgentName.BENCHMARK_PLANNER,
 }
 
 PREVIOUS_NODE_MAPS: Mapping[ValidationGraph, Mapping[AgentName, AgentName | None]] = {
@@ -332,10 +330,6 @@ def build_benchmark_node_contracts() -> dict[AgentName, NodeEntryContract]:
             required_artifacts=[BENCHMARK_SCRIPT_PATH],
             custom_check=BENCHMARK_REVIEWER_HANDOVER_CHECK,
         ),
-        AgentName.COTS_SEARCH: NodeEntryContract(
-            node=AgentName.COTS_SEARCH,
-            required_state_fields=["session", "episode_id"],
-        ),
     }
 
 
@@ -368,10 +362,6 @@ def build_engineer_node_contracts() -> dict[AgentName, NodeEntryContract]:
             required_state_fields=["episode_id"],
             required_artifacts=list(ENGINEERING_EXECUTION_REVIEWER_HANDOFF_ARTIFACTS),
             custom_check=ENGINEER_EXECUTION_REVIEWER_HANDOVER_CHECK,
-        ),
-        AgentName.COTS_SEARCH: NodeEntryContract(
-            node=AgentName.COTS_SEARCH,
-            required_state_fields=["task", "episode_id"],
         ),
     }
 

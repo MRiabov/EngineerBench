@@ -673,7 +673,6 @@ class BaseNode:
             AgentName.BENCHMARK_PLAN_REVIEWER,
             AgentName.BENCHMARK_CODER,
             AgentName.BENCHMARK_REVIEWER,
-            AgentName.COTS_SEARCH,
             AgentName.ENGINEER_PLANNER,
             AgentName.ENGINEER_CODER,
             AgentName.ENGINEER_PLAN_REVIEWER,
@@ -1587,7 +1586,7 @@ class BaseNode:
             return None
 
         for t in tools:
-            # Now tools are already raw functions or wrapped in search_cots_catalog
+            # Tools are already raw functions or wrapped helpers at this layer.
             name = getattr(t, "name", t.__name__ if hasattr(t, "__name__") else str(t))
 
             import functools

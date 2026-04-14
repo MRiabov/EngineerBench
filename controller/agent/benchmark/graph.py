@@ -81,7 +81,6 @@ from shared.simulation.schemas import (
 from .models import GenerationSession, SessionStatus
 from .nodes import (
     coder_node,
-    cots_search_node,
     plan_reviewer_node,
     planner_node,
     reviewer_node,
@@ -840,11 +839,6 @@ def define_graph():
         AgentName.BENCHMARK_REVIEWER,
         _guarded_node(AgentName.BENCHMARK_REVIEWER, reviewer_node),
     )
-    workflow.add_node(
-        AgentName.COTS_SEARCH,
-        _guarded_node(AgentName.COTS_SEARCH, cots_search_node),
-    )
-
     # Define transitions
     def route_start(
         state: BenchmarkGeneratorState,
@@ -1084,9 +1078,6 @@ def define_graph():
             END: END,
         },
     )
-
-    # cots_search can be reached from planner or coder if we add those edges
-    workflow.add_edge(AgentName.COTS_SEARCH, AgentName.BENCHMARK_PLANNER)
 
     return workflow.compile()
 
