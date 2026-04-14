@@ -1225,11 +1225,11 @@ def _normalize_pytest_args(pytest_args: list[str]) -> tuple[list[str], bool, boo
         elif len(normalized) == 0:
             normalized = [
                 "-m",
-                "integration_p0 or integration_p1 or integration_p2 or integration_frontend or integration",
+                "integration_p0 or integration_p1 or integration_p2 or integration",
             ]
 
     if not has_file:
-        normalized.extend(["tests/integration", "tests/e2e"])
+        normalized.append("tests/integration")
 
     return normalized, has_marker, has_file
 
@@ -1252,23 +1252,19 @@ def _ordered_integration_marker_slices() -> list[tuple[str, str]]:
         ("integration_p0", "integration_p0"),
         (
             "integration_p1",
-            "integration_p1 and not integration_p0 and not integration_agent and not integration_frontend",
+            "integration_p1 and not integration_p0 and not integration_agent",
         ),
         (
             "integration_agent",
             "integration_agent and not integration_p0",
         ),
         (
-            "integration_frontend",
-            "integration_frontend and not integration_p0 and not integration_agent",
-        ),
-        (
             "integration_p2",
-            "integration_p2 and not integration_p0 and not integration_p1 and not integration_agent and not integration_frontend",
+            "integration_p2 and not integration_p0 and not integration_p1 and not integration_agent",
         ),
         (
             "integration_rest",
-            "integration and not integration_p0 and not integration_p1 and not integration_p2 and not integration_agent and not integration_frontend",
+            "integration and not integration_p0 and not integration_p1 and not integration_p2 and not integration_agent",
         ),
     ]
 
@@ -1348,7 +1344,6 @@ def _run_ordered_integration_pytest_slices(
             "-m",
             marker_expr,
             "tests/integration",
-            "tests/e2e",
         ]
         _runner_status(f"Running integration slice {slice_name}: -m {marker_expr}")
         exit_code = run_pytest_subprocess(
@@ -1371,7 +1366,15 @@ def _run_ordered_integration_pytest_slices(
     return 0
 
 
+def _frontend_available(repo_root: Path | None = None) -> bool:
+    root = repo_root or _repo_root()
+    return (root / "frontend").is_dir()
+
+
 def _should_run_playwright(pytest_args: list[str]) -> bool:
+    if not _frontend_available():
+        return False
+
     marker_expr: str | None = None
     for idx, arg in enumerate(pytest_args):
         if arg == "-m" and idx + 1 < len(pytest_args):
@@ -2232,7 +2235,7 @@ def _run_integration_command(
             future.result()
 
     _runner_status(
-        "Starting Application Servers (Controller, Worker, Renderer Container, Temporal Worker)..."
+        "Starting Application Servers (Controller, Worker, Renderer Container)..."
     )
 
     integration_logs_root = repo_root / "logs" / "integration_tests"
@@ -2311,32 +2314,6 @@ def _run_integration_command(
                         pid_file=repo_root / "logs" / "worker_heavy.pid",
                     ),
                     ProcessSpec(
-                        name="Worker Heavy Temporal",
-                        cmd=[
-                            "uv",
-                            "run",
-                            "python",
-                            "-m",
-                            "worker_heavy.temporal_worker",
-                        ],
-                        log_file=log_dir / "worker_heavy_temporal.log",
-                        env_updates={
-                            "PYTHONPATH": combined_pythonpath,
-                            "WORKER_RENDERER_URL": "http://127.0.0.1:18003",
-                            "EXTRA_DEBUG_LOG": str(
-                                log_dir / "worker_heavy_temporal_debug.log"
-                            ),
-                            "EXTRA_ERROR_LOG": str(
-                                log_dir / "worker_heavy_temporal_errors.log"
-                            ),
-                            "EXTRA_ERROR_JSON_LOG": str(
-                                json_log_dir / "worker_heavy_temporal_errors.json"
-                            ),
-                            "SESSION_LOG_ROOT": str(session_log_root),
-                        },
-                        pid_file=repo_root / "logs" / "worker_heavy_temporal.pid",
-                    ),
-                    ProcessSpec(
                         name="Controller",
                         cmd=[
                             "uv",
@@ -2358,25 +2335,6 @@ def _run_integration_command(
                             "SESSION_LOG_ROOT": str(session_log_root),
                         },
                         pid_file=repo_root / "logs" / "controller.pid",
-                    ),
-                    ProcessSpec(
-                        name="Temporal Worker",
-                        cmd=["uv", "run", "python", "-m", "controller.temporal_worker"],
-                        log_file=log_dir / "temporal_worker.log",
-                        env_updates={
-                            "PYTHONPATH": combined_pythonpath,
-                            "EXTRA_DEBUG_LOG": str(
-                                log_dir / "temporal_worker_debug.log"
-                            ),
-                            "EXTRA_ERROR_LOG": str(
-                                log_dir / "temporal_worker_errors.log"
-                            ),
-                            "EXTRA_ERROR_JSON_LOG": str(
-                                json_log_dir / "temporal_worker_errors.json"
-                            ),
-                            "SESSION_LOG_ROOT": str(session_log_root),
-                        },
-                        pid_file=repo_root / "logs" / "temporal_worker.pid",
                     ),
                 ]
             )
@@ -2453,30 +2411,6 @@ def _run_integration_command(
                 continue
             if started.process.poll() is not None:
                 print(f"{started.name} died unexpectedly!", file=sys.stderr)
-                if started.name == "Temporal Worker":
-                    temporal_log = log_dir / "temporal_worker.log"
-                    if temporal_log.exists():
-                        print(
-                            "--- LAST 20 LINES OF TEMPORAL WORKER LOG ---",
-                            file=sys.stderr,
-                        )
-                        lines = temporal_log.read_text(
-                            encoding="utf-8", errors="ignore"
-                        ).splitlines()
-                        for line in lines[-20:]:
-                            print(line, file=sys.stderr)
-                if started.name == "Worker Heavy Temporal":
-                    heavy_temporal_log = log_dir / "worker_heavy_temporal.log"
-                    if heavy_temporal_log.exists():
-                        print(
-                            "--- LAST 20 LINES OF HEAVY TEMPORAL WORKER LOG ---",
-                            file=sys.stderr,
-                        )
-                        lines = heavy_temporal_log.read_text(
-                            encoding="utf-8", errors="ignore"
-                        ).splitlines()
-                        for line in lines[-20:]:
-                            print(line, file=sys.stderr)
                 return 1
 
         (repo_root / "test_output").mkdir(parents=True, exist_ok=True)
@@ -2495,8 +2429,8 @@ def _run_integration_command(
                     json_log_dir / "worker_light_errors.json",
                     json_log_dir / "worker_renderer_errors.json",
                     json_log_dir / "worker_heavy_errors.json",
-                    json_log_dir / "worker_heavy_temporal_errors.json",
-                    json_log_dir / "temporal_worker_errors.json",
+                    # Temporal worker services are not part of the active
+                    # integration boundary in this repo snapshot.
                 ],
             )
         else:
@@ -2509,8 +2443,8 @@ def _run_integration_command(
                     json_log_dir / "worker_light_errors.json",
                     json_log_dir / "worker_renderer_errors.json",
                     json_log_dir / "worker_heavy_errors.json",
-                    json_log_dir / "worker_heavy_temporal_errors.json",
-                    json_log_dir / "temporal_worker_errors.json",
+                    # Temporal worker services are not part of the active
+                    # integration boundary in this repo snapshot.
                 ],
             )
 

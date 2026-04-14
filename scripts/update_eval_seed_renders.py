@@ -25,7 +25,6 @@ from scripts.internal.eval_seed_selection import (  # noqa: E402
     infer_seed_agent_for_task_id,
     load_seed_dataset,
 )
-from shared.agents.config import TECHNICAL_DRAWING_MODE_ENV, DraftingMode  # noqa: E402
 from shared.enums import AgentName  # noqa: E402
 from shared.workers.schema import RenderManifest  # noqa: E402
 
@@ -235,20 +234,6 @@ def _parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
-        "--technical-drawing-mode",
-        type=str,
-        default=DraftingMode.FULL.value,
-        choices=[
-            DraftingMode.OFF.value,
-            DraftingMode.MINIMAL.value,
-            DraftingMode.FULL.value,
-        ],
-        help=(
-            "Select the drawing-mode corpus to update (default: full). "
-            "Rows without technical_drawing_mode are skipped."
-        ),
-    )
-    parser.add_argument(
         "--errors-only",
         action="store_true",
         help="Suppress per-row progress output.",
@@ -260,7 +245,6 @@ def _update_item(
     agent: AgentName,
     item,
     *,
-    technical_drawing_mode: DraftingMode,
     errors_only: bool,
 ) -> tuple[bool, bool, str]:
     artifact_dir = _resolve_seed_artifact_dir(item, root=ROOT)
@@ -271,10 +255,7 @@ def _update_item(
 
     from scripts.internal.eval_seed_renders import update_seed_artifact_renders
 
-    saved_paths = update_seed_artifact_renders(
-        artifact_dir,
-        technical_drawing_mode=technical_drawing_mode,
-    )
+    saved_paths = update_seed_artifact_renders(artifact_dir)
     saved_paths.extend(_discover_render_sidecars(artifact_dir))
     saved_paths = sorted(dict.fromkeys(saved_paths))
     _validate_required_render_sidecars(artifact_dir, render_paths=saved_paths)
@@ -285,7 +266,6 @@ def _update_item(
 
 
 async def _async_main(args: argparse.Namespace) -> int:
-    technical_drawing_mode = DraftingMode(args.technical_drawing_mode)
     if args.agent:
         agents = resolve_agents(args.agent)
     elif args.task_id:
@@ -303,7 +283,6 @@ async def _async_main(args: argparse.Namespace) -> int:
             agent=agents[0].value if len(agents) == 1 else None,
             task_ids=[args.task_id] if args.task_id else [],
             levels=sorted(levels) if levels else [],
-            technical_drawing_mode=technical_drawing_mode.value,
         ),
     )
     if lock_lease is None:
@@ -321,7 +300,6 @@ async def _async_main(args: argparse.Namespace) -> int:
             task_id=args.task_id,
             limit=args.limit,
             levels=levels if levels else None,
-            technical_drawing_mode=technical_drawing_mode,
             root=ROOT,
         )
         if args.task_id and not dataset:
@@ -333,7 +311,6 @@ async def _async_main(args: argparse.Namespace) -> int:
                 ok, rendered, detail = _update_item(
                     agent,
                     item,
-                    technical_drawing_mode=technical_drawing_mode,
                     errors_only=args.errors_only,
                 )
             except Exception as exc:
@@ -371,8 +348,6 @@ async def _async_main(args: argparse.Namespace) -> int:
 
 def main() -> int:
     args = _parse_args()
-    technical_drawing_mode = DraftingMode(args.technical_drawing_mode)
-    os.environ[TECHNICAL_DRAWING_MODE_ENV] = technical_drawing_mode.value
     return asyncio.run(_async_main(args))
 
 

@@ -62,10 +62,6 @@ from evals.logic.workspace import (  # noqa: E402
 from scripts.internal.eval_seed_renders import (  # noqa: E402
     update_seed_artifact_renders,
 )
-from shared.agents.config import (  # noqa: E402
-    TECHNICAL_DRAWING_MODE_ENV,
-    DraftingMode,
-)
 from shared.enums import AgentName, EvalRunnerBackend  # noqa: E402
 from shared.logging import get_logger  # noqa: E402
 
@@ -147,8 +143,7 @@ def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Validate seeded eval entry contracts, including planner inventory "
-            "exactness, plan grounding, and drafting prompt/script gates, "
-            "without running full evals."
+            "exactness and plan grounding without running full evals."
         )
     )
     parser.add_argument(
@@ -228,20 +223,6 @@ def _parse_args() -> argparse.Namespace:
         "--fail-fast",
         action="store_true",
         help="Stop at the first invalid seed.",
-    )
-    parser.add_argument(
-        "--technical-drawing-mode",
-        type=str,
-        default=DraftingMode.FULL.value,
-        choices=[
-            DraftingMode.OFF.value,
-            DraftingMode.MINIMAL.value,
-            DraftingMode.FULL.value,
-        ],
-        help=(
-            "Select the drawing-mode corpus to validate (default: full). "
-            "Rows without technical_drawing_mode are skipped."
-        ),
     )
     parser.add_argument(
         "--errors-only",
@@ -512,11 +493,7 @@ async def _validate_item(
         if update_renders and item.seed_artifact_dir is not None:
             artifact_dir = _resolve_seed_artifact_dir(item, root=ROOT)
             if artifact_dir is not None:
-                update_seed_artifact_renders(
-                    artifact_dir,
-                    technical_drawing_mode=item.technical_drawing_mode
-                    or DraftingMode.OFF,
-                )
+                update_seed_artifact_renders(artifact_dir)
         snapshot_client = InMemorySeedWorkspaceClient(session_id=session_id)
         await materialize_seed_workspace_snapshot(
             item=item,
@@ -526,8 +503,6 @@ async def _validate_item(
             workspace_client=snapshot_client,
             update_manifests=update_manifests,
         )
-        # The shared preflight now also enforces the drafting prompt gate and
-        # TechnicalDrawing structural checks for mode-enabled rows.
         await _preflight_seeded_entry_contract(
             item=item,
             session_id=session_id,
@@ -567,7 +542,6 @@ async def _async_main(args: argparse.Namespace) -> int:
     if args.concurrency < 1:
         raise SystemExit("--concurrency must be >= 1")
 
-    technical_drawing_mode = DraftingMode(args.technical_drawing_mode)
     if args.agent:
         agents = resolve_agents(args.agent)
     elif args.task_id:
@@ -588,7 +562,6 @@ async def _async_main(args: argparse.Namespace) -> int:
             task_id=args.task_id,
             limit=args.limit,
             levels=levels if levels else None,
-            technical_drawing_mode=technical_drawing_mode,
         )
         if args.task_id and not dataset:
             failures.append((agent.value, args.task_id, "task id not found in dataset"))
@@ -612,7 +585,6 @@ async def _async_main(args: argparse.Namespace) -> int:
                 agent=agents[0].value if len(agents) == 1 else None,
                 task_ids=[args.task_id] if args.task_id else [],
                 levels=sorted(levels) if levels else [],
-                technical_drawing_mode=technical_drawing_mode.value,
             ),
         )
         if lock_lease is None:
@@ -643,7 +615,6 @@ async def _async_main(args: argparse.Namespace) -> int:
                 agent=agents[0].value if len(agents) == 1 else None,
                 task_ids=[args.task_id] if args.task_id else [],
                 levels=sorted(levels) if levels else [],
-                technical_drawing_mode=technical_drawing_mode.value,
             ),
         )
         if lock_lease is None:
@@ -748,8 +719,6 @@ async def _async_main(args: argparse.Namespace) -> int:
                 "--skip-env-up",
                 "--runner-backend",
                 judge_backend.value,
-                "--technical-drawing-mode",
-                technical_drawing_mode.value,
                 "--run-judge",
                 "--agent",
                 agent_value,
@@ -793,8 +762,6 @@ async def _async_main(args: argparse.Namespace) -> int:
 
 def main() -> int:
     args = _parse_args()
-    technical_drawing_mode = DraftingMode(args.technical_drawing_mode)
-    os.environ[TECHNICAL_DRAWING_MODE_ENV] = technical_drawing_mode.value
     return asyncio.run(_async_main(args))
 
 

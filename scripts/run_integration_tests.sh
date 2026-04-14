@@ -45,7 +45,7 @@ fi
 export INTEGRATION_EARLY_STOP_ON_BACKEND_ERRORS="${INTEGRATION_EARLY_STOP_ON_BACKEND_ERRORS:-1}"
 # Set INTEGRATION_RUNNER_VERBOSE=1 to restore detailed bootstrap/teardown progress.
 # Default full-suite runs are split into deterministic marker buckets so p0/p1
-# coverage lands before agent, frontend, and p2 slices.
+# coverage lands before agent and p2 slices.
 export INTEGRATION_ORDERED_MARKER_SPLITS="${INTEGRATION_ORDERED_MARKER_SPLITS:-1}"
 # Teardown is serialized with the integration lock so concurrent runs cannot
 # clobber each other. The env var is kept for compatibility with older docs.
