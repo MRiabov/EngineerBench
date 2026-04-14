@@ -411,9 +411,7 @@ def map_events_to_prediction(
     # Tracking for artifact presence
     planned_files = set()
     required_planner_files = (
-        set(plan_artifacts_for_agent(agent_name))
-        if agent_name is not None
-        else set()
+        set(plan_artifacts_for_agent(agent_name)) if agent_name is not None else set()
     )
 
     for event in events:
@@ -448,10 +446,15 @@ def map_events_to_prediction(
                     metrics.review_artifacts_complete = True
 
         # 2. Planning & Logic
-        if required_planner_files and etype in [
-            ObservabilityEventType.PLAN_SUBMISSION_ENGINEER,
-            ObservabilityEventType.PLAN_SUBMISSION_BENCHMARK,
-        ] and required_planner_files.issubset(planned_files):
+        if (
+            required_planner_files
+            and etype
+            in [
+                ObservabilityEventType.PLAN_SUBMISSION_ENGINEER,
+                ObservabilityEventType.PLAN_SUBMISSION_BENCHMARK,
+            ]
+            and required_planner_files.issubset(planned_files)
+        ):
             metrics.plan_artifacts_present = True
 
         # 3. Manufacturability & Pricing

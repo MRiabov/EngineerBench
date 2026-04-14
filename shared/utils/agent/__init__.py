@@ -644,7 +644,6 @@ def _validate_submission(
         if not benchmark_valid:
             return False, "; ".join(benchmark_result)
 
-    local_kwargs["script_path"] = resolved_script_path
     success, message = real_validate(compound, **local_kwargs)
     if success and not message:
         message = "Validation successful"

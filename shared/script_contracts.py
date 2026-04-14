@@ -110,6 +110,8 @@ def plan_path_for_reviewer_stage(reviewer_stage: AgentName | str | None) -> Path
     stage = _normalize_reviewer_stage(reviewer_stage)
     if stage == AgentName.BENCHMARK_REVIEWER:
         return _as_path(BENCHMARK_PLAN_PATH)
+    if stage == AgentName.ENGINEER_PLAN_REVIEWER:
+        return _as_path(ENGINEERING_PLAN_PATH)
     if stage == AgentName.ENGINEER_EXECUTION_REVIEWER:
         return _as_path(ENGINEERING_PLAN_PATH)
     raise ValueError(

@@ -14,8 +14,6 @@ from pathlib import Path
 
 import yaml
 
-from shared.enums import ResponseStatus
-
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -36,6 +34,7 @@ from scripts.internal.eval_seed_selection import (  # noqa: E402
     infer_seed_agent_for_task_id,
     load_seed_dataset,
 )
+from shared.enums import ResponseStatus  # noqa: E402
 
 _STACK_PROFILE_NAME = (
     "integration"

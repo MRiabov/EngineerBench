@@ -97,9 +97,15 @@ def main() -> int:
         task_id=task_id,
         agent=agent_name,
     )
+    row = materializer.EvalDatasetItem.model_validate(  # type: ignore[attr-defined]
+        {
+            **row,
+            "seed_dataset": str(dataset_path.relative_to(repo_root)),
+        }
+    )
 
     removed = _clear_workspace(workspace_dir)
-    restored = materializer.materialize_codex_workspace(  # type: ignore[attr-defined]
+    restored = materializer.materialize_workspace(  # type: ignore[attr-defined]
         item=row,
         agent_name=agent_name,
         workspace_dir=workspace_dir,

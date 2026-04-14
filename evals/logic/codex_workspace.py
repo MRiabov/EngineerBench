@@ -50,7 +50,6 @@ from shared.models.schemas import (
     ReviewComments,
     ReviewFrontmatter,
 )
-from shared.script_contracts import plan_path_for_agent
 from shared.workers.filesystem.backend import FileInfo
 from worker_heavy.utils.file_validation import (
     validate_node_output,
