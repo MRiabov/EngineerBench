@@ -102,7 +102,6 @@ def _collect_submission_artifacts(
         ".manifests/benchmark_review_manifest.json",
         ".manifests/engineering_plan_review_manifest.json",
         ".manifests/engineering_execution_handoff_manifest.json",
-        ".manifests/electronics_review_manifest.json",
     )
     review_manifests: dict[str, str] = {}
     for rel_path in stage_manifest_paths:
@@ -136,8 +135,6 @@ def _collect_simulation_artifacts(
         render_paths=list(result.render_paths),
         object_store_keys=dict(result.render_object_store_keys),
         mjcf_content=result.mjcf_content,
-        stress_summaries=list(result.stress_summaries),
-        fluid_metrics=list(result.fluid_metrics),
         failure=result.failure,
         total_cost=result.total_cost,
         total_weight_g=result.total_weight_g,

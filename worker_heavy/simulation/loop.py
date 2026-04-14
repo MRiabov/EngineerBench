@@ -99,7 +99,6 @@ class SimulationLoop:
                     backend=resolved_backend_type.value
                     if hasattr(resolved_backend_type, "value")
                     else resolved_backend_type,
-                    fem_enabled=False,
                     compute_target=objectives.physics.compute_target
                     if objectives
                     else "auto",
@@ -163,7 +162,6 @@ class SimulationLoop:
                         self.component,
                         self.config,
                         part_labels=self.manufactured_part_labels,
-                        fem_required=False,
                         default_method=mfg_method,
                         quantity=self.requested_quantity,
                     )
@@ -290,10 +288,6 @@ class SimulationLoop:
                 session_id=session_id,
             )
             raise
-
-    @property
-    def stress_summaries(self):
-        return self.backend.get_stress_summaries()
 
     def reset_metrics(self):
         self.metric_collector.reset()
@@ -428,9 +422,6 @@ class SimulationLoop:
                 return True
 
         return False
-
-    def _get_stress_fields(self) -> dict[str, dict]:
-        return {}
 
     def check_goal_with_vertices(self, body_name: str) -> bool:
         """Check if any vertices of body_name are inside any of the goal sites."""
@@ -585,8 +576,7 @@ class SimulationLoop:
             state = self.backend.get_body_state(target_body_name)
             target_vel = np.linalg.norm(state.vel)
 
-        max_stress = self.backend.get_max_stress()
-        self.metric_collector.update(dt_interval, energy, target_vel, max_stress)
+        self.metric_collector.update(dt_interval, energy, target_vel)
 
         # 2. Backend failure checks
         if not res.success:
@@ -655,19 +645,7 @@ class SimulationLoop:
         if res.failure:
             return res.failure
 
-        # Legacy support for string reasons
-        if isinstance(res.failure_reason, str):
-            if res.failure_reason.startswith("PART_BREAKAGE"):
-                part_name = (
-                    res.failure_reason.split(":")[1]
-                    if ":" in res.failure_reason
-                    else None
-                )
-                return SimulationFailure(
-                    reason=FailureReason.PART_BREAKAGE, detail=part_name
-                )
-
-        # Default fallback: re-check breakage or assume instability
+        # Default fallback: assume instability.
         return SimulationFailure(reason=FailureReason.PHYSICS_INSTABILITY)
 
     def _identify_target_body(self) -> str | None:
@@ -716,7 +694,6 @@ class SimulationLoop:
             total_time=current_time,
             total_energy=metrics.total_energy,
             max_velocity=metrics.max_velocity,
-            max_stress=metrics.max_stress,
             success=is_success,
             fail_reason=str(self.fail_reason) if self.fail_reason else None,
             fail_mode=self.fail_reason.reason if self.fail_reason else None,
@@ -726,8 +703,6 @@ class SimulationLoop:
                 if getattr(self, "payload_trajectory_monitor", None) is not None
                 else None
             ),
-            stress_summaries=self.stress_summaries,
-            stress_fields=self._get_stress_fields(),
             events=metrics.events,
             confidence=(
                 SimulationConfidence.APPROXIMATE

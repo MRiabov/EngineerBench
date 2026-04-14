@@ -18,11 +18,9 @@ from shared.enums import FailureReason
 # ... (rest of imports)
 logger = structlog.get_logger(__name__)
 from shared.models.simulation import (
-    FluidMetricResult,
     RendererCapabilities,
     RenderMode,
     SimulationFailure,
-    StressSummary,
 )
 from shared.simulation.backends import (
     ActuatorState,
@@ -32,7 +30,6 @@ from shared.simulation.backends import (
     SimulationScene,
     SiteState,
     StepResult,
-    StressField,
     build_render_bundle_object_pose_records,
 )
 from shared.workers.schema import RenderBundleObjectPoseRecord, SegmentationLegendEntry
@@ -170,22 +167,9 @@ class MuJoCoBackend(PhysicsRendererBackend):
             "act": self.data.act.tolist() if self.model and self.model.na > 0 else [],
         }
 
-    def get_stress_field(self, body_id: str) -> StressField | None:
-        # MuJoCo (rigid only) does not have stress fields
-        return None
-
-    def get_max_stress(self) -> float:
-        return 0.0
-
-    def get_stress_summaries(self) -> list[StressSummary]:
-        return []
-
     def get_particle_positions(self) -> np.ndarray | None:
         # MuJoCo (rigid only) does not have particles
         return None
-
-    def get_fluid_metrics(self) -> list[FluidMetricResult]:
-        return []
 
     # Rendering & Visualization
     def render(self) -> np.ndarray:

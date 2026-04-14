@@ -438,7 +438,7 @@ class SceneCompiler:
         actuator_type: str = "position",
         cots_id: str | None = None,
     ):
-        """Adds an actuator (motor/servo) to control a joint."""
+        """Adds an actuator to control a joint."""
         # Default gains if not derived
         final_kp = kp if kp is not None else 10.0
         final_kv = kv if kv is not None else 1.0
@@ -453,8 +453,6 @@ class SceneCompiler:
             attrs["kv"] = str(final_kv)
         elif actuator_type == "velocity":
             attrs["kv"] = str(final_kv)
-        elif actuator_type == "motor":
-            attrs["gear"] = "1"
         else:
             attrs["kp"] = str(final_kp)
             attrs["kv"] = str(final_kv)
@@ -774,7 +772,7 @@ class GenesisSimulationBuilder(SimulationBuilderBase):
         # 2. Add parts from assembly
         parts_data = CommonAssemblyTraverser.traverse(assembly)
 
-        # Load manufacturing config to check for deformable materials
+        # Load manufacturing config for material coloring and cost lookup
         from worker_heavy.workbenches.config import load_config, load_merged_config
 
         custom_cfg_path = self.output_dir / "manufacturing_config.yaml"

@@ -26,11 +26,9 @@ except Exception:
     gs = None
 
 from shared.models.simulation import (
-    FluidMetricResult,
     RendererCapabilities,
     RenderMode,
     SimulationFailure,
-    StressSummary,
 )
 from shared.simulation.backends import (
     ActuatorState,
@@ -40,11 +38,9 @@ from shared.simulation.backends import (
     SimulationScene,
     SiteState,
     StepResult,
-    StressField,
     build_render_bundle_object_pose_records,
 )
 from shared.workers.schema import RenderBundleObjectPoseRecord
-from worker_heavy.simulation.motor_contracts import resolve_solution_motor_contract
 
 logger = structlog.get_logger(__name__)
 
@@ -70,15 +66,9 @@ class GenesisBackend(PhysicsRendererBackend):
         self.entities = {}  # name -> gs.Entity
         self.entity_configs = {}  # name -> dict (from json)
         self.cameras = {}  # name -> gs.Camera
-        self.motors = []  # part_name -> dict
-        self.motor_contracts = {}  # name -> resolved controllable motor contract
         self.mjcf_actuators = {}  # name -> {joint: str, force_range: tuple}
-        self.cables = {}  # name -> gs.Entity
-        self.virtual_cable_tensions = {}  # name -> float fallback when Cable morph is unavailable
         self.applied_controls = {}  # name -> float
-        self.electronics_names = []  # list of entity names marked as electronics
         self.current_time = 0.0
-        self._last_max_stress = 0.0
         self.mfg_config = None
         self.current_particle_multiplier = 1.0
         self.particle_budget = None
@@ -256,12 +246,8 @@ class GenesisBackend(PhysicsRendererBackend):
             self.entities = {}
             self.entity_configs = {}
             self.cameras = {}
-            self.motors = []
-            self.motor_contracts = {}
             self.mjcf_actuators = {}
-            self.cables = {}
             self.applied_controls = {}
-            self.electronics_names = []
             self._is_built = False
 
             if "gs_scene" in scene.assets:
@@ -325,11 +311,6 @@ class GenesisBackend(PhysicsRendererBackend):
                         )
                         raise
 
-    def set_electronics(self, names: list[str]) -> None:
-        """Identify entities for proximity-based fluid damage detection."""
-        self.electronics_names = names
-        logger.info("genesis_set_electronics", names=names)
-
     @property
     def is_built(self) -> bool:
         if self.scene is None:
@@ -365,7 +346,7 @@ class GenesisBackend(PhysicsRendererBackend):
         if gs is None:
             raise ImportError("Genesis not installed")
 
-        # Optimization for smoke tests: substeps help with MPM/FEM.
+                # Optimization for smoke tests: substeps help with Genesis stability.
         # We use production dt for stability.
         is_smoke = getattr(self, "smoke_test_mode", False)
         sim_options = gs.options.SimOptions(
@@ -373,47 +354,8 @@ class GenesisBackend(PhysicsRendererBackend):
             substeps=4 if is_smoke else 10,
         )
 
-        # T014: Particle visualization options from WP06
-        mpm_options = None
-        if hasattr(scene.config, "simulation_bounds") or (
-            isinstance(scene.config, dict) and "simulation_bounds" in scene.config
-        ):
-            bounds = (
-                scene.config["simulation_bounds"]
-                if isinstance(scene.config, dict)
-                else scene.config.simulation_bounds
-            )
-            # Add some safety margin as Genesis MPM boundaries are strict
-            margin = 5.0
-            lower = np.array(bounds["min"]) - margin
-            upper = np.array(bounds["max"]) + margin
-            span = np.maximum(upper - lower, 1e-6)
-            # Keep MPM grid size bounded for very large simulation bounds.
-            base_density = 16
-            max_cells = 5e7 if is_smoke else 1e8
-            estimated_cells = float(np.prod(span * base_density))
-            if estimated_cells > max_cells:
-                density = int((max_cells / float(np.prod(span))) ** (1.0 / 3.0))
-                grid_density = max(1, min(base_density, density))
-                logger.warning(
-                    "genesis_mpm_grid_density_reduced",
-                    estimated_cells=estimated_cells,
-                    max_cells=max_cells,
-                    chosen_density=grid_density,
-                    span=span.tolist(),
-                )
-            else:
-                grid_density = base_density
-            mpm_options = gs.options.MPMOptions(
-                lower_bound=tuple(lower),
-                upper_bound=tuple(upper),
-                grid_density=grid_density,
-                use_sparse_grid=True,
-            )
-
         self.scene = gs.Scene(
             sim_options=sim_options,
-            mpm_options=mpm_options,
             show_viewer=False,
             vis_options=gs.options.VisOptions(
                 particle_size_scale=1.0,
@@ -495,190 +437,35 @@ class GenesisBackend(PhysicsRendererBackend):
                         # WP2 Fix: Robust material lookup across all methods
                         mat_props = self._get_mat_props(material_id)
 
-                        # Genesis Material
-                        if ent_cfg.type == "soft_mesh":
-                            # FEM Material
-                            if mat_props and mat_props.material_class in [
-                                "soft",
-                                "elastomer",
-                            ]:
-                                logger.info(
-                                    "genesis_using_fem_neohookean",
-                                    name=name,
-                                    mat_id=material_id,
-                                )
-                                material = gs.materials.FEM.NeoHookean(
-                                    E=mat_props.youngs_modulus_pa
-                                    if mat_props.youngs_modulus_pa
-                                    else 5e6,
-                                    nu=mat_props.poissons_ratio
-                                    if mat_props.poissons_ratio
-                                    else 0.49,
-                                    rho=mat_props.density_kg_m3
-                                    if mat_props.density_kg_m3
-                                    else 1100,
-                                )
-                            else:
-                                logger.info(
-                                    "genesis_using_fem_elastic",
-                                    name=name,
-                                    mat_id=material_id,
-                                    mat_props=mat_props.model_dump()
-                                    if mat_props
-                                    else None,
-                                )
-                                material = gs.materials.FEM.Elastic(
-                                    E=mat_props.youngs_modulus_pa
-                                    if mat_props and mat_props.youngs_modulus_pa
-                                    else 68.9e9,
-                                    nu=mat_props.poissons_ratio
-                                    if mat_props and mat_props.poissons_ratio
-                                    else 0.33,
-                                    rho=mat_props.density_kg_m3
-                                    if mat_props and mat_props.density_kg_m3
-                                    else 2700,
-                                )
-                            # Load MSH or OBJ (Genesis can tetrahedralize OBJ)
-                            if not ent_cfg.file:
-                                continue
-                            file_path = scene_dir / ent_cfg.file
-                            entity = self.scene.add_entity(
-                                gs.morphs.Mesh(
-                                    file=str(file_path),
-                                    pos=ent_cfg.pos,
-                                    euler=ent_cfg.euler,
-                                ),
-                                material=material,
-                            )
-                        else:
-                            # Rigid Material
-                            material = gs.materials.Rigid(
-                                rho=mat_props.density_kg_m3
-                                if mat_props and mat_props.density_kg_m3
-                                else 2700,
-                                friction=mat_props.friction_coef
-                                if mat_props and mat_props.friction_coef
-                                else 0.5,
-                                coup_restitution=(
-                                    mat_props.restitution
-                                    if mat_props and mat_props.restitution
-                                    else 0.5
-                                ),
-                            )
-                            # Load OBJ
-                            if not ent_cfg.file:
-                                continue
-                            obj_path = scene_dir / ent_cfg.file
-                            entity = self.scene.add_entity(
-                                gs.morphs.Mesh(
-                                    file=str(obj_path),
-                                    pos=ent_cfg.pos,
-                                    euler=ent_cfg.euler,
-                                ),
-                                material=material,
-                            )
+                        # Load rigid mesh geometry.
+                        material = gs.materials.Rigid(
+                            rho=mat_props.density_kg_m3
+                            if mat_props and mat_props.density_kg_m3
+                            else 2700,
+                            friction=mat_props.friction_coef
+                            if mat_props and mat_props.friction_coef
+                            else 0.5,
+                            coup_restitution=(
+                                mat_props.restitution
+                                if mat_props and mat_props.restitution
+                                else 0.5
+                            ),
+                        )
+                        if not ent_cfg.file:
+                            continue
+                        obj_path = scene_dir / ent_cfg.file
+                        entity = self.scene.add_entity(
+                            gs.morphs.Mesh(
+                                file=str(obj_path),
+                                pos=ent_cfg.pos,
+                                euler=ent_cfg.euler,
+                            ),
+                            material=material,
+                        )
 
                         self.entities[name] = entity
 
-                    # 3. Add Motors / Controls
-                    self.motors = [m.model_dump() for m in data.motors]
-                    self._materialize_solution_motor_contracts()
-                    self.cables = {}  # Keep as dict, but we'll populate from data
-
-                    # 4. Add Cables (Wiring)
-                    for cable_cfg in data.cables:
-                        name = cable_cfg.wire_id
-                        has_cable_morph = hasattr(gs.morphs, "Cable")
-                        if has_cable_morph:
-                            material = gs.materials.Rigid(rho=8960)  # Copper density
-                            cable = self.scene.add_entity(
-                                gs.morphs.Cable(
-                                    points=cable_cfg.points,
-                                    radius=cable_cfg.radius,
-                                ),
-                                material=material,
-                            )
-                            self.cables[name] = cable
-                            continue
-
-                        # Genesis build without Cable morph: emulate tension from geometric stretch.
-                        points = cable_cfg.points or []
-                        path_len_m = 0.0
-                        for i in range(len(points) - 1):
-                            p0 = np.array(points[i], dtype=float)
-                            p1 = np.array(points[i + 1], dtype=float)
-                            # Scene points are in mm in our pipeline; convert to meters.
-                            path_len_m += float(np.linalg.norm(p1 - p0)) / 1000.0
-                        nominal_len_m = (
-                            float(getattr(cable_cfg, "length_mm", 0.0)) / 1000.0
-                        )
-                        if nominal_len_m <= 0.0:
-                            nominal_len_m = path_len_m
-                        stretch_m = max(0.0, path_len_m - nominal_len_m)
-                        stiffness = float(getattr(cable_cfg, "stiffness", 100.0))
-                        self.virtual_cable_tensions[name] = stretch_m * stiffness
-                        self.cables[name] = None
-
-                    # T014: Fluid Spawning from FluidDefinition (with WP06 color support)
-                    for fluid_cfg in data.fluids:
-                        props = fluid_cfg.properties
-                        vol = fluid_cfg.initial_volume
-                        color = fluid_cfg.color
-                        # Convert 0-255 to 0-1 and add alpha for transparency
-                        color_f = tuple([c / 255.0 for c in color] + [0.8])
-
-                        # Support Box and Sphere spawning volumes
-                        # T017: Apply particle multiplier or manual budget override
-                        if self.particle_budget:
-                            n_particles = self.particle_budget
-                        else:
-                            n_particles = int(10000 * self.current_particle_multiplier)
-
-                        # MPM Material based on FluidDefinition
-                        material = gs.materials.MPM.Liquid(
-                            rho=props.density_kg_m3 if props.density_kg_m3 else 1000,
-                            mu=(props.viscosity_cp if props.viscosity_cp else 1.0)
-                            * 0.001,  # Convert cP to Pa.s
-                            viscous=True,
-                            sampler=f"pbs-{n_particles}",
-                        )
-
-                        surface = gs.surfaces.Default(
-                            color=color_f[:3],
-                            opacity=color_f[3] if len(color_f) > 3 else 0.8,
-                        )
-
-                        vol_type = vol.type.lower()
-                        if vol_type == "box":
-                            self.scene.add_entity(
-                                gs.morphs.Box(
-                                    pos=vol.center,
-                                    size=vol.size if vol.size else [0.1, 0.1, 0.1],
-                                ),
-                                material=material,
-                                surface=surface,
-                            )
-                        elif vol_type == "sphere":
-                            self.scene.add_entity(
-                                gs.morphs.Sphere(
-                                    pos=vol.center,
-                                    radius=vol.radius if vol.radius else 0.05,
-                                ),
-                                material=material,
-                                surface=surface,
-                            )
-
-                        elif vol_type == "cylinder":
-                            self.scene.add_entity(
-                                gs.morphs.Cylinder(
-                                    pos=vol.center,
-                                    radius=vol.radius if vol.radius else 0.05,
-                                    height=vol.height if vol.height else 0.1,
-                                    axis="z",
-                                ),
-                                material=material,
-                                surface=surface,
-                            )
+                    self._is_built = True
 
             except Exception as e:
                 logger.error(
@@ -773,46 +560,6 @@ class GenesisBackend(PhysicsRendererBackend):
 
             self.current_time += actual_dt
 
-            # T012: Part Breakage Detection & Global Stress Tracking
-            self._last_max_stress = 0.0
-            for name in self.entities:
-                field = self.get_stress_field(name)
-                if field is not None and len(field.stress) > 0:
-                    max_stress = np.max(field.stress)
-                    self._last_max_stress = max(
-                        self._last_max_stress, float(max_stress)
-                    )
-
-                    # Fetch ultimate stress
-                    ent_cfg = self.entity_configs.get(name, {})
-                    material_id = ent_cfg.get("material_id", "aluminum_6061")
-                    mat_props = self._get_mat_props(material_id)
-                    ultimate_stress = (
-                        mat_props.ultimate_stress_pa
-                        if mat_props and mat_props.ultimate_stress_pa
-                        else 310e6
-                    )
-
-                    if max_stress > ultimate_stress:
-                        # max_idx = np.argmax(field.stress)  # Not used currently
-                        # loc = field.nodes[max_idx].tolist()  # Not used currently
-                        return StepResult(
-                            time=self.current_time,
-                            success=False,
-                            failure=SimulationFailure(
-                                reason=FailureReason.PART_BREAKAGE, detail=name
-                            ),
-                        )
-
-            # T017: ELECTRONICS_FLUID_DAMAGE check
-            failure = self._check_electronics_fluid_damage()
-            if failure:
-                return StepResult(
-                    time=self.current_time,
-                    success=False,
-                    failure=failure,
-                )
-
         except Exception as e:
             logger.warning("genesis_step_failed", error=str(e))
             return StepResult(
@@ -820,44 +567,6 @@ class GenesisBackend(PhysicsRendererBackend):
             )
 
         return StepResult(time=self.current_time, success=True)
-
-    def _check_electronics_fluid_damage(self) -> SimulationFailure | None:
-        """Check if any fluid particles are touching electronic components."""
-        particles = self.get_particle_positions()
-        if particles is None or len(particles) == 0:
-            return None
-
-        # 1. Use explicitly set electronics names
-        # 2. Fallback to 'is_electronics' in config
-        targets = set(self.electronics_names)
-        for name, cfg in self.entity_configs.items():
-            if cfg.get("is_electronics"):
-                targets.add(name)
-
-        for name in targets:
-            entity = self.entities.get(name)
-            if not entity:
-                continue
-
-            # Get center of the entity
-            try:
-                state = entity.get_state()
-                if hasattr(state, "pos"):
-                    # state.pos is [1, n_nodes, 3] for soft/MPM, or [n_envs, 3] for rigid?
-                    # Genesis RigidEntity.get_pos() returns [n_envs, 3]
-                    pos = entity.get_pos().cpu().numpy()
-                    center = pos[0] if pos.ndim > 1 else pos
-
-                    dist = np.linalg.norm(particles - center, axis=1)
-                    if np.any(dist < 0.05):  # 5cm threshold
-                        logger.info("electronics_fluid_damage", part=name)
-                        return SimulationFailure(
-                            reason=FailureReason.ELECTRONICS_FLUID_DAMAGE, detail=name
-                        )
-            except Exception as e:
-                logger.debug("failed_to_check_fluid_damage", part=name, error=str(e))
-
-        return None
 
     def get_body_state(self, body_id: str, env_idx: int | None = None) -> BodyState:
         logger.debug("genesis_get_body_state_request", body_id=body_id, env_idx=env_idx)
@@ -976,7 +685,7 @@ class GenesisBackend(PhysicsRendererBackend):
                 and state.pos.ndim >= 2
                 and state.pos.shape[-1] == 3
             ):
-                # FEM or MPM entity: state.pos is [1, n_nodes, 3] or [1, n_particles, 3]
+                # Soft-body particle state is batched per environment.
                 pos_arr = state.pos.cpu().numpy()
                 vel_arr = state.vel.cpu().numpy() if hasattr(state, "vel") else None
                 if env_idx is not None and pos_arr.ndim >= 2:
@@ -1036,88 +745,15 @@ class GenesisBackend(PhysicsRendererBackend):
             "n_entities": len(self.entities),
         }
 
-    def get_stress_field(self, body_id: str) -> StressField | None:
-        if body_id not in self.entities:
-            return None
-
-        entity = self.entities[body_id]
-        state = entity.get_state()
-
-        # Debug: log attributes of entity and state
-        if body_id == "test_part" or body_id == "weak_link":
-            logger.debug(
-                "genesis_stress_field_debug",
-                body_id=body_id,
-                entity_attrs=dir(entity),
-                state_attrs=dir(state),
-            )
-
-        # Check if it's an FEM entity
-        if hasattr(state, "von_mises"):
-            nodes = state.pos[0].cpu().numpy()
-            stress = state.von_mises[0].cpu().numpy()
-            return StressField(nodes=nodes, stress=stress)
-        if hasattr(state, "pos") and state.pos.ndim == 3:
-            # It's a node-based entity (FEM). If von_mises is missing, it might have exploded.
-            nodes = state.pos[0].cpu().numpy()
-            # Return NaNs to indicate we know it's FEM but stress is unavailable (likely due to instability)
-            stress = np.full(len(nodes), np.nan)
-            return StressField(nodes=nodes, stress=stress)
-        logger.debug("state_missing_von_mises", body_id=body_id, attributes=dir(state))
-
-        return None
-
-    def get_max_stress(self) -> float:
-        return self._last_max_stress
-
-    def get_stress_summaries(self) -> list[StressSummary]:
-        summaries = []
-        for name, _ in self.entities.items():
-            field = self.get_stress_field(name)
-            if field is not None:
-                max_stress = np.max(field.stress)
-                mean_stress = np.mean(field.stress)
-                max_idx = np.argmax(field.stress)
-
-                ent_cfg = self.entity_configs.get(name, {})
-                material_id = ent_cfg.get("material_id", "aluminum_6061")
-                mat_props = self._get_mat_props(material_id)
-                ultimate_stress = (
-                    mat_props.ultimate_stress_pa
-                    if mat_props and mat_props.ultimate_stress_pa
-                    else 310e6
-                )
-                yield_stress = (
-                    mat_props.yield_stress_pa
-                    if mat_props and mat_props.yield_stress_pa
-                    else 276e6
-                )
-
-                summaries.append(
-                    StressSummary(
-                        part_label=name,
-                        max_von_mises_pa=float(max_stress),
-                        mean_von_mises_pa=float(mean_stress),
-                        safety_factor=ultimate_stress / max_stress
-                        if max_stress > 0
-                        else 100.0,
-                        location_of_max=tuple(field.nodes[max_idx].tolist()),
-                        utilization_pct=max_stress / yield_stress * 100.0
-                        if yield_stress > 0
-                        else 0.0,
-                    )
-                )
-        return summaries
-
     def get_particle_positions(self) -> np.ndarray | None:
-        # For MPM fluids
+        # Genesis particle systems are only surfaced when present in the scene.
         all_particles = []
         for _, entity in self.entities.items():
-            # In Genesis, MPM entities have particles
+            # Genesis particle systems expose per-particle positions.
             try:
                 state = entity.get_state()
                 if hasattr(state, "pos") and not hasattr(state, "von_mises"):
-                    # Heuristic: MPM has pos but not von_mises (which FEM has)
+                    # Particle systems expose positions without stress tensors.
                     pos = state.pos[0].cpu().numpy()
                     all_particles.append(pos)
             except Exception:
@@ -1127,9 +763,6 @@ class GenesisBackend(PhysicsRendererBackend):
             return None
 
         return np.concatenate(all_particles, axis=0)
-
-    def get_fluid_metrics(self) -> list[FluidMetricResult]:
-        return []
 
     # Rendering & Visualization
     def render(self) -> np.ndarray:
@@ -1313,32 +946,6 @@ class GenesisBackend(PhysicsRendererBackend):
                 except Exception as e:
                     logger.debug("failed_to_get_mjcf_actuator_state", error=str(e))
 
-        # 2. Check solution motors loaded from the shared moving-part contract
-        motor_contract = self.motor_contracts.get(actuator_name)
-        entity_name = motor_contract["entity_name"] if motor_contract else actuator_name
-        if entity_name in self.entities:
-            entity = self.entities[entity_name]
-            try:
-                forces = self._as_numpy_vector(entity.get_dofs_force())
-                vels = self._as_numpy_vector(entity.get_dofs_velocity())
-
-                force = float(forces[0]) if forces.size > 0 else 0.0
-                vel = float(vels[0]) if vels.size > 0 else 0.0
-                forcerange = (
-                    tuple(motor_contract["force_range"])
-                    if motor_contract
-                    else (-1000, 1000)
-                )
-
-                return ActuatorState(
-                    force=force,
-                    velocity=vel,
-                    ctrl=ctrl_val,
-                    forcerange=forcerange,
-                )
-            except Exception:
-                pass
-
         return ActuatorState(force=0.0, velocity=0.0, ctrl=ctrl_val, forcerange=(0, 0))
 
     def _set_entity_dofs_force(self, entity, forces):
@@ -1360,87 +967,13 @@ class GenesisBackend(PhysicsRendererBackend):
             values = values.cpu().numpy()
         return np.asarray(values, dtype=float)
 
-    def _entity_has_controllable_dofs(self, entity: Any) -> bool:
-        try:
-            dof_forces = self._as_numpy_vector(entity.get_dofs_force())
-            return dof_forces.size > 0
-        except Exception:
-            return False
-
-    def _materialize_solution_motor_contracts(self) -> None:
-        """Resolve solution-authored motor metadata into validated runtime contracts."""
-        self.motor_contracts = {}
-        errors: list[str] = []
-
-        for motor in self.motors:
-            part_name = str(
-                motor.get("part_name")
-                or motor.get("name")
-                or motor.get("actuator_name")
-                or ""
-            ).strip()
-            if not part_name:
-                continue
-
-            control = motor.get("control")
-            if not control:
-                continue
-
-            entity = self.entities.get(part_name)
-            if entity is None:
-                errors.append(
-                    f"motor '{part_name}' does not map to a loaded Genesis entity"
-                )
-                continue
-
-            entity_cfg = self.entity_configs.get(part_name, {})
-            if entity_cfg.get("fixed"):
-                errors.append(
-                    f"motor '{part_name}' cannot be controlled because the entity is fixed"
-                )
-                continue
-
-            try:
-                contract = resolve_solution_motor_contract(
-                    part_name=part_name,
-                    cots_id=motor.get("cots_id"),
-                    control=control,
-                    joint_name=str(motor.get("joint") or f"{part_name}_joint"),
-                )
-            except ValueError as exc:
-                errors.append(str(exc))
-                continue
-
-            if not self._entity_has_controllable_dofs(entity):
-                errors.append(
-                    f"motor '{part_name}' does not expose a controllable DOF on the Genesis entity"
-                )
-                continue
-
-            self.motor_contracts[part_name] = {
-                "part_name": contract.part_name,
-                "entity_name": part_name,
-                "joint": contract.joint_name,
-                "cots_id": contract.cots_id,
-                "control_mode": contract.control_mode,
-                "control_speed": contract.control_speed,
-                "control_frequency": contract.control_frequency,
-                "actuator_type": contract.actuator_type,
-                "force_range": contract.force_range,
-                "max_velocity": contract.max_velocity,
-            }
-
-        if errors:
-            raise ValueError("; ".join(errors))
-
     def apply_control(self, control_inputs: dict[str, float]) -> None:
-        # control_inputs: motor_id -> value
-        for motor_id, val in control_inputs.items():
-            self.applied_controls[motor_id] = val
+        for actuator_name, val in control_inputs.items():
+            self.applied_controls[actuator_name] = val
 
             # 1. Handle MJCF actuators
-            if motor_id in self.mjcf_actuators:
-                info = self.mjcf_actuators[motor_id]
+            if actuator_name in self.mjcf_actuators:
+                info = self.mjcf_actuators[actuator_name]
                 joint_name = info["joint"]
                 entity = self.entities.get("mjcf_scene")
                 if entity:
@@ -1462,20 +995,6 @@ class GenesisBackend(PhysicsRendererBackend):
                         logger.debug("mjcf_apply_control_failed", error=str(e))
                 continue
 
-            # 2. Handle solution motors loaded from the shared moving-part contract
-            motor_contract = self.motor_contracts.get(motor_id)
-            entity_name = motor_contract["entity_name"] if motor_contract else motor_id
-            if entity_name in self.entities:
-                entity = self.entities[entity_name]
-                try:
-                    self._set_entity_dofs_force(
-                        entity, np.array([val], dtype=np.float32)
-                    )
-                except Exception as e:
-                    logger.debug(
-                        "genesis_apply_control_failed", name=motor_id, error=str(e)
-                    )
-
     def get_all_body_names(self) -> list[str]:
         names = list(self.entities.keys())
         for ent in self.entities.values():
@@ -1490,21 +1009,13 @@ class GenesisBackend(PhysicsRendererBackend):
         return names
 
     def get_all_actuator_names(self) -> list[str]:
-        names = list(self.motor_contracts.keys())
-        if not names:
-            names = [
-                m["part_name"]
-                for m in getattr(self, "motors", [])
-                if str(m.get("part_name") or "").strip()
-            ]
-        names.extend(list(self.mjcf_actuators.keys()))
-        return names
+        return list(self.mjcf_actuators.keys())
 
     def get_all_site_names(self) -> list[str]:
         return [name for name, cfg in self.entity_configs.items() if cfg.get("is_zone")]
 
     def get_all_tendon_names(self) -> list[str]:
-        return list(self.cables.keys())
+        return []
 
     def get_all_camera_names(self) -> list[str]:
         return list(self.cameras.keys())
@@ -1578,28 +1089,8 @@ class GenesisBackend(PhysicsRendererBackend):
         return False
 
     def get_tendon_tension(self, tendon_name: str) -> float:
-        """Returns the average tension along the cable."""
-        if tendon_name in self.virtual_cable_tensions:
-            return float(self.virtual_cable_tensions[tendon_name])
-
-        if tendon_name not in self.cables:
-            raise ValueError(f"Tendon '{tendon_name}' not found in scene")
-
-        cable = self.cables[tendon_name]
-        if cable is None:
-            return 0.0
-        try:
-            # Genesis cables (MPM or Rigid) might have stress or force data.
-            # For a Rigid cable, we can check forces between nodes.
-            # This is an approximation.
-            state = cable.get_state()
-            if hasattr(state, "force"):
-                # Average force magnitude
-                forces = state.force.cpu().numpy()
-                return float(np.mean(np.linalg.norm(forces, axis=-1)))
-            return 0.0
-        except Exception:
-            return 0.0
+        """Returns zero because cable/tendon support is not part of the bundle."""
+        return 0.0
 
     def apply_jitter(
         self,
@@ -1668,8 +1159,5 @@ class GenesisBackend(PhysicsRendererBackend):
             pass
         self.scene = None
         self.entities = {}
-        self.cables = {}
-        self.virtual_cable_tensions = {}
         self.cameras = {}
-        self.motor_contracts = {}
         self._is_built = False
