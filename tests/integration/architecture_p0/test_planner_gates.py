@@ -2568,7 +2568,6 @@ equivalent natural-language motion descriptions.
                 name="bridge_gate",
                 config=AssemblyPartConfig(
                     dofs=["slide_y"],
-                    control=None,
                 ),
             )
         ],

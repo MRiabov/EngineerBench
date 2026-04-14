@@ -14,7 +14,8 @@ import pytest
 import yaml
 
 from controller.api.schemas import AgentRunRequest, AgentRunResponse, EpisodeResponse
-from shared.enums import EpisodeStatus
+from shared.current_role import current_role_manifest_json
+from shared.enums import AgentName, EpisodeStatus
 from shared.models.schemas import (
     BenchmarkDefinition,
     BoundingBox,
@@ -98,6 +99,19 @@ def _read_first_video_frame(video_bytes: bytes) -> np.ndarray:
 
 async def get_bundle(client: httpx.AsyncClient, session_id: str) -> str:
     """Fetch gzipped workspace from light worker and return base64 string."""
+    await client.post(
+        f"{WORKER_LIGHT_URL}/fs/write",
+        json=WriteFileRequest(
+            path=".manifests/current_role.json",
+            content=current_role_manifest_json(AgentName.BENCHMARK_CODER),
+            overwrite=True,
+            bypass_agent_permissions=True,
+        ).model_dump(mode="json"),
+        headers={
+            "X-Session-ID": session_id,
+            "X-System-FS-Bypass": "1",
+        },
+    )
     resp = await client.post(
         f"{WORKER_LIGHT_URL}/fs/bundle",
         headers={"X-Session-ID": session_id},
@@ -572,14 +586,14 @@ def build():
         )
         results = [await first_task, *remaining_results]
 
-        admitted_successes = 0
+        admitted_responses = 0
         busy_count = 0
         unexpected: list[str] = []
         for idx, (status_code, payload) in enumerate(results):
             if status_code == 200:
                 parsed = BenchmarkToolResponse.model_validate(payload)
                 if parsed.success:
-                    admitted_successes += 1
+                    admitted_responses += 1
                 else:
                     unexpected.append(
                         f"request[{idx}] returned 200 but success=false: {parsed.message}"
@@ -601,8 +615,8 @@ def build():
             )
 
         assert not unexpected, "\n".join(unexpected)
-        assert admitted_successes == 1, (
-            f"expected exactly 1 admitted request, got {admitted_successes}"
+        assert admitted_responses == 1, (
+            f"expected exactly 1 admitted request, got {admitted_responses}"
         )
         assert busy_count >= 1, "expected one or more WORKER_BUSY responses"
 

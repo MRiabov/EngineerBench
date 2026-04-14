@@ -67,13 +67,29 @@ WORKER_LIGHT_URL = os.getenv("WORKER_LIGHT_URL", "http://127.0.0.1:18001")
 pytestmark = pytest.mark.xdist_group(name="eval_runner")
 
 
+def _validate_eval_seed_env(**extra: str) -> dict[str, str]:
+    env = dict(os.environ)
+    pythonpath = env.get("PYTHONPATH")
+    env["PYTHONPATH"] = os.pathsep.join(
+        [str(ROOT), pythonpath] if pythonpath else [str(ROOT)]
+    )
+    env.update(extra)
+    return env
+
+
 def _load_dataset_item(_dataset_rel_path: str, row_id: str) -> EvalDatasetItem:
+    dataset_path = ROOT / _dataset_rel_path
+    if not dataset_path.exists():
+        raise FileNotFoundError(dataset_path)
+
+    dataset_rows = json.loads(dataset_path.read_text(encoding="utf-8"))
+    row = next((row for row in dataset_rows if row["id"] == row_id), None)
+    if row is None:
+        raise KeyError(f"Row {row_id!r} not found in {dataset_path}")
     return EvalDatasetItem.model_validate(
         {
-            "id": row_id,
-            "task": f"Integration fixture task for {row_id}.",
-            "complexity_level": 0,
-            "seed_artifact_dir": CODEX_FIXTURE_ARTIFACT_DIR.relative_to(ROOT),
+            **row,
+            "seed_dataset": dataset_path.relative_to(ROOT),
         }
     )
 
@@ -276,7 +292,7 @@ def test_run_evals_help_exposes_codex_backend():
 @pytest.mark.integration_p0
 def test_train_skills_help_exposes_retained_bundle_cli():
     completed = subprocess.run(
-        [sys.executable, "dataset/evals/train_skills.py", "--help"],
+        [sys.executable, "-m", "evals.logic.skill_training", "--help"],
         cwd=ROOT,
         capture_output=True,
         text=True,
@@ -1404,7 +1420,7 @@ async def test_run_evals_codex_judge_does_not_launch_reviewers_without_flag(
 
     monkeypatch.setattr(
         runner,
-        "_run_codex_reviewer_chain_for_judge",
+        "_run_reviewer_chain_for_judge",
         fail_reviewer_chain_for_judge,
     )
 
@@ -2051,7 +2067,7 @@ def test_run_evals_codex_env_uses_role_reasoning_effort_and_can_disable(
 
     disabled_agents_config = _load_agents_config_with_reasoning_effort_enabled(False)
     monkeypatch.setattr(
-        "evals.logic.codex_workspace.load_agents_config",
+        "evals.logic.cli_provider.load_agents_config",
         lambda: disabled_agents_config,
     )
     disabled_home_root = tmp_path / "codex-home-disabled"
@@ -2229,7 +2245,7 @@ def test_run_evals_codex_submit_helper_imports_workspace_script_from_cwd(
         }
     )
     completed = subprocess.run(
-        ["bash", "scripts/submit_for_review.sh"],
+        ["bash", "scripts/submit_solution_for_review.sh"],
         cwd=workspace_dir,
         capture_output=True,
         text=True,
@@ -2277,6 +2293,9 @@ def test_run_evals_codex_submit_helper_forces_headless_rendering_env(tmp_path):
             import os
             import sys
 
+            if len(sys.argv) > 1 and sys.argv[1] == "-":
+                raise SystemExit(0)
+
             payload = {
                 "argv": sys.argv[1:],
                 "DISPLAY": os.environ.get("DISPLAY"),
@@ -2311,7 +2330,7 @@ def test_run_evals_codex_submit_helper_forces_headless_rendering_env(tmp_path):
         }
     )
     completed = subprocess.run(
-        ["bash", "scripts/submit_for_review.sh"],
+        ["bash", "scripts/submit_solution_for_review.sh"],
         cwd=workspace_dir,
         capture_output=True,
         text=True,
@@ -2320,12 +2339,13 @@ def test_run_evals_codex_submit_helper_forces_headless_rendering_env(tmp_path):
     )
 
     assert completed.returncode == 0, completed.stderr
+    assert completed.stdout.strip(), completed.stderr
     payload = json.loads(completed.stdout.strip())
     assert payload["argv"] == ["scripts/submit_for_review.py"]
     assert payload["DISPLAY"] is None
     assert payload["XAUTHORITY"] is None
     assert payload["LIBGL_ALWAYS_SOFTWARE"] == "1"
-    assert payload["MUJOCO_GL"] == "osmesa"
+    assert payload["MUJOCO_GL"] == "egl"
     assert payload["PYOPENGL_PLATFORM"] == "osmesa"
     assert payload["PYVISTA_OFF_SCREEN"] == "true"
     assert payload["VTK_DEFAULT_OPENGL_WINDOW"] == "vtkOSOpenGLRenderWindow"
@@ -2494,6 +2514,14 @@ def test_prompt_manager_unified_render_uses_shared_source_model(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ):
+    data = yaml.safe_load(AGENTS_CONFIG_PATH.read_text(encoding="utf-8")) or {}
+    data.setdefault("bug_reports", {})["enabled"] = False
+    config = AgentsConfig.model_validate(data)
+    monkeypatch.setattr(
+        "controller.agent.prompt_manager.load_agents_config",
+        lambda: config,
+    )
+
     item = _load_dataset_item(
         "dataset/data/seed/role_based/engineer_coder.json",
         "ec-001",
@@ -2658,8 +2686,8 @@ def test_materialize_seed_workspace_threads_cli_provider_specific_appendix(
     ),
     [
         (
-            "tests/integration/fixtures/codex_runner_mode/benchmark_plan_reviewer.json",
-            "bpr-001-raised-shelf",
+            "dataset/data/seed/role_based/benchmark_planner.json",
+            "bp-001",
             AgentName.BENCHMARK_PLANNER,
             ".manifests/benchmark_plan_review_manifest.json",
             (
@@ -2680,8 +2708,8 @@ def test_materialize_seed_workspace_threads_cli_provider_specific_appendix(
             ("scripts/submit_benchmark_plan.sh",),
         ),
         (
-            "dataset/data/seed/role_based/engineer_plan_reviewer.json",
-            "epr-001-sideways-transfer",
+            "dataset/data/seed/role_based/engineer_planner.json",
+            "ep-001",
             AgentName.ENGINEER_PLANNER,
             ".manifests/engineering_plan_review_manifest.json",
             (
@@ -2819,6 +2847,7 @@ async def test_codex_materialized_planner_workspace_submits(
     assert result.ok is True
     assert result.status == "submitted"
     assert result.node_type == agent_name
+    assert not result.errors
 
     manifest_path = workspace_dir / expected_manifest
     assert manifest_path.exists(), manifest_path
@@ -2840,7 +2869,7 @@ async def test_codex_role_scoped_planner_wrapper_rejects_mismatched_role(
 ):
     item = _load_dataset_item(
         "dataset/data/seed/role_based/engineer_plan_reviewer.json",
-        "epr-001-sideways-transfer",
+        "epr-001",
     )
     workspace_dir = tmp_path / AgentName.ENGINEER_PLANNER.value / item.id
     materialize_seed_workspace(
@@ -2929,8 +2958,8 @@ async def test_codex_role_scoped_planner_wrapper_rejects_mismatched_role(
             ("scripts/submit_review.sh",),
         ),
         (
-            "tests/integration/fixtures/codex_runner_mode/benchmark_coder.json",
-            "bc-011-sideways-ball",
+            "dataset/data/seed/role_based/benchmark_coder.json",
+            "bc-001",
             AgentName.BENCHMARK_CODER,
             (
                 "You are the Benchmark Coder.",
@@ -2956,7 +2985,7 @@ async def test_codex_role_scoped_planner_wrapper_rejects_mismatched_role(
             ("scripts/submit_benchmark_for_review.sh",),
         ),
         (
-            "tests/integration/fixtures/codex_runner_mode/engineer_coder.json",
+            "dataset/data/seed/role_based/engineer_coder.json",
             "ec-001",
             AgentName.ENGINEER_CODER,
             (
@@ -2984,8 +3013,8 @@ async def test_codex_role_scoped_planner_wrapper_rejects_mismatched_role(
             ("scripts/submit_solution_for_review.sh",),
         ),
         (
-            "tests/integration/fixtures/codex_runner_mode/engineer_plan_reviewer.json",
-            "epr-001-sideways-transfer",
+            "dataset/data/seed/role_based/engineer_plan_reviewer.json",
+            "epr-001",
             AgentName.ENGINEER_PLAN_REVIEWER,
             (
                 "You are the Plan Reviewer.",
@@ -3008,8 +3037,8 @@ async def test_codex_role_scoped_planner_wrapper_rejects_mismatched_role(
             ("scripts/submit_review.sh",),
         ),
         (
-            "tests/integration/fixtures/codex_runner_mode/benchmark_reviewer.json",
-            "br-014-timed-gate-cots-review",
+            "dataset/data/seed/role_based/benchmark_reviewer.json",
+            "br-001",
             AgentName.BENCHMARK_REVIEWER,
             (
                 "You are the Benchmark Reviewer.",
@@ -3037,8 +3066,8 @@ async def test_codex_role_scoped_planner_wrapper_rejects_mismatched_role(
             ("scripts/submit_review.sh",),
         ),
         (
-            "tests/integration/fixtures/codex_runner_mode/engineer_execution_reviewer.json",
-            "eer-002-gap-bridge",
+            "dataset/data/seed/role_based/engineer_execution_reviewer.json",
+            "eer-001",
             AgentName.ENGINEER_EXECUTION_REVIEWER,
             (
                 "You are the Execution Reviewer.",
@@ -3135,6 +3164,9 @@ def test_clear_env_re_materializes_seeded_workspace_in_place(tmp_path: Path):
         workspace_dir=workspace_dir,
     )
     original_snapshot = _workspace_snapshot(workspace_dir)
+    original_benchmark_definition = yaml.safe_load(
+        (workspace_dir / "benchmark_definition.yaml").read_text(encoding="utf-8")
+    )
 
     (workspace_dir / "journal.md").write_text("dirty\n", encoding="utf-8")
     (workspace_dir / "scratch.txt").write_text("stale\n", encoding="utf-8")
@@ -3162,7 +3194,17 @@ def test_clear_env_re_materializes_seeded_workspace_in_place(tmp_path: Path):
 
     assert completed.returncode == 0, combined_output
     assert '"ok": true' in completed.stdout.lower()
-    assert _workspace_snapshot(workspace_dir) == original_snapshot
+    refreshed_snapshot = _workspace_snapshot(workspace_dir)
+    refreshed_snapshot.pop("benchmark_definition.yaml", None)
+    original_snapshot_without_benchmark = dict(original_snapshot)
+    original_snapshot_without_benchmark.pop("benchmark_definition.yaml", None)
+    assert refreshed_snapshot == original_snapshot_without_benchmark
+    assert (
+        yaml.safe_load(
+            (workspace_dir / "benchmark_definition.yaml").read_text(encoding="utf-8")
+        )
+        == original_benchmark_definition
+    )
 
 
 @pytest.mark.integration_p0
@@ -3188,6 +3230,7 @@ def test_validate_eval_seed_accepts_curated_rows_and_preserves_redundancy_metada
         text=True,
         check=False,
         timeout=60,
+        env=_validate_eval_seed_env(),
     )
     assert help_completed.returncode == 0, help_completed.stderr
     help_output = " ".join(help_completed.stdout.split()).lower()
@@ -3197,13 +3240,14 @@ def test_validate_eval_seed_accepts_curated_rows_and_preserves_redundancy_metada
     assert "codex" in help_output, help_completed.stdout
 
     validation_cases = (
-        ("benchmark_planner", "bp-001-forbid-zone"),
-        ("benchmark_plan_reviewer", "bpr-012-gap-bridge-hidden-dof"),
-        ("benchmark_coder", "bc-011-sideways-ball"),
-        ("benchmark_reviewer", "br-012-sideways-ball-infeasible-goal"),
-        ("benchmark_reviewer", "br-014-timed-gate-cots-review"),
-        ("benchmark_reviewer", "br-015-fast-transfer-hidden-brake-axis-review"),
-        ("benchmark_reviewer", "br-016-lower-bin-unreachable-redirection-review"),
+        ("benchmark_planner", "bp-001"),
+        ("benchmark_plan_reviewer", "bpr-001"),
+        ("benchmark_coder", "bc-001"),
+        ("benchmark_reviewer", "br-001"),
+        ("engineer_planner", "ep-001"),
+        ("engineer_plan_reviewer", "epr-001"),
+        ("engineer_coder", "ec-001"),
+        ("engineer_execution_reviewer", "eer-001"),
     )
     for agent_name, row_id in validation_cases:
         completed = subprocess.run(
@@ -3224,6 +3268,7 @@ def test_validate_eval_seed_accepts_curated_rows_and_preserves_redundancy_metada
             text=True,
             check=False,
             timeout=300,
+            env=_validate_eval_seed_env(),
         )
 
         assert completed.returncode == 0, completed.stderr
@@ -3264,6 +3309,7 @@ def test_validate_eval_seed_accepts_curated_rows_and_preserves_redundancy_metada
         text=True,
         check=False,
         timeout=300,
+        env=_validate_eval_seed_env(),
     )
     judge_guard_output = "\n".join(
         part for part in (judge_guard.stdout, judge_guard.stderr) if part
@@ -3281,9 +3327,9 @@ def test_validate_eval_seed_removes_preview_bundles_from_all_seed_artifacts():
             "scripts/validate_eval_seed.py",
             "--skip-env-up",
             "--agent",
-            "engineer_coder",
+            "benchmark_planner",
             "--task-id",
-            "ec-001",
+            "bp-001-forbid-zone",
             "--fail-fast",
             "--concurrency",
             "1",
@@ -3293,6 +3339,7 @@ def test_validate_eval_seed_removes_preview_bundles_from_all_seed_artifacts():
         text=True,
         check=False,
         timeout=300,
+        env=_validate_eval_seed_env(),
     )
 
     combined_output = "\n".join(
@@ -3300,7 +3347,9 @@ def test_validate_eval_seed_removes_preview_bundles_from_all_seed_artifacts():
     )
 
     assert completed.returncode == 0, combined_output
-    assert "PASS engineer_coder ec-001:" in completed.stdout, completed.stdout
+    assert "PASS benchmark_planner bp-001-forbid-zone:" in completed.stdout, (
+        completed.stdout
+    )
     assert "black/empty" not in combined_output, combined_output
 
     seed_root = ROOT / "dataset" / "data" / "seed" / "role_based"
@@ -3347,6 +3396,7 @@ def test_validate_eval_seed_can_filter_rows_by_complexity_level():
         text=True,
         check=False,
         timeout=300,
+        env=_validate_eval_seed_env(),
     )
 
     assert completed.returncode == 0, completed.stderr
@@ -3377,6 +3427,7 @@ def test_validate_eval_seed_errors_only_suppresses_pass_output():
         text=True,
         check=False,
         timeout=300,
+        env=_validate_eval_seed_env(),
     )
 
     assert completed.returncode == 0, completed.stderr
@@ -3399,9 +3450,7 @@ def test_validate_eval_seed_skip_env_up_can_join_shared_eval_lock(tmp_path: Path
                 "--agent",
                 "benchmark_planner",
                 "--task-id",
-                "bp-001-drawing-full",
-                "--technical-drawing-mode",
-                "full",
+                "bp-001-forbid-zone",
                 "--fail-fast",
                 "--concurrency",
                 "1",
@@ -3411,11 +3460,10 @@ def test_validate_eval_seed_skip_env_up_can_join_shared_eval_lock(tmp_path: Path
             text=True,
             check=False,
             timeout=300,
-            env={
-                **os.environ,
-                "EVAL_RUN_LOCK_PATH": str(lock_path),
-                "EVAL_RUN_STATE_PATH": str(state_path),
-            },
+            env=_validate_eval_seed_env(
+                EVAL_RUN_LOCK_PATH=str(lock_path),
+                EVAL_RUN_STATE_PATH=str(state_path),
+            ),
         )
 
     combined_output = "\n".join(
@@ -3423,7 +3471,7 @@ def test_validate_eval_seed_skip_env_up_can_join_shared_eval_lock(tmp_path: Path
     )
 
     assert completed.returncode == 0, combined_output
-    assert "PASS benchmark_planner bp-001-drawing-full:" in completed.stdout, (
+    assert "PASS benchmark_planner bp-001-forbid-zone:" in completed.stdout, (
         completed.stdout
     )
     assert not state_path.exists(), state_path
@@ -3446,9 +3494,7 @@ def test_validate_eval_seed_skip_env_up_fails_while_exclusive_eval_lock_is_held(
                 "--agent",
                 "benchmark_planner",
                 "--task-id",
-                "bp-001-drawing-full",
-                "--technical-drawing-mode",
-                "full",
+                "bp-001-forbid-zone",
                 "--fail-fast",
                 "--concurrency",
                 "1",
@@ -3458,11 +3504,10 @@ def test_validate_eval_seed_skip_env_up_fails_while_exclusive_eval_lock_is_held(
             text=True,
             check=False,
             timeout=300,
-            env={
-                **os.environ,
-                "EVAL_RUN_LOCK_PATH": str(lock_path),
-                "EVAL_RUN_STATE_PATH": str(state_path),
-            },
+            env=_validate_eval_seed_env(
+                EVAL_RUN_LOCK_PATH=str(lock_path),
+                EVAL_RUN_STATE_PATH=str(state_path),
+            ),
         )
 
     combined_output = "\n".join(
@@ -3534,8 +3579,6 @@ def test_update_eval_seed_renders_skip_env_up_can_join_shared_eval_lock(
                 "benchmark_planner",
                 "--task-id",
                 "bp-does-not-exist",
-                "--technical-drawing-mode",
-                "full",
                 "--errors-only",
             ],
             cwd=ROOT,

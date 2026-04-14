@@ -22,5 +22,7 @@ payload:
   start_position: [0.0, 0.0, 0.0]
   runtime_jitter: [0.0, 0.0, 0.0]
 constraints:
+  estimated_solution_cost_usd: 66.666666666667
+  estimated_solution_weight_g: 666.666666666667
   max_unit_cost: 100.0
   max_weight_g: 1000.0

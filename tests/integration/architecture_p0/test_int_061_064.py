@@ -113,7 +113,8 @@ async def test_int_062_worker_openapi_contract():
         heavy_schema = OpenAPISchema.model_validate(resp.json())
         paths = heavy_schema.paths
         assert "/benchmark/simulate" in paths
-        assert "/benchmark/validate" in paths
+        assert "/engineering/simulate" in paths
+        assert "/benchmark/verify" in paths
 
 
 @pytest.mark.integration_p0

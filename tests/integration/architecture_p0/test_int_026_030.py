@@ -1,6 +1,7 @@
 import asyncio
 import os
 import uuid
+from pathlib import Path
 
 import httpx
 import pytest
@@ -15,7 +16,8 @@ from controller.api.schemas import (
     OpenAPISchema,
     StandardResponse,
 )
-from shared.enums import EpisodeStatus
+from shared.current_role import current_role_manifest_json
+from shared.enums import AgentName, EpisodeStatus
 from shared.models.schemas import (
     BenchmarkDefinition,
     BoundingBox,
@@ -23,11 +25,7 @@ from shared.models.schemas import (
     MovedObject,
     ObjectivesSection,
 )
-from shared.workers.schema import (
-    BenchmarkToolRequest,
-    BenchmarkToolResponse,
-    WriteFileRequest,
-)
+from shared.workers.schema import BenchmarkToolResponse, WriteFileRequest
 from tests.integration.agent.helpers import seed_benchmark_assembly_definition
 
 # Constants
@@ -44,14 +42,6 @@ def _default_benchmark_parts():
             "metadata": {"fixed": True, "material_id": "aluminum_6061"},
         }
     ]
-
-
-def _event_get(event, key: str, default=None):
-    if isinstance(event, dict):
-        return event.get(key, default)
-    if hasattr(event, "get"):
-        return event.get(key, default)
-    return getattr(event, key, default)
 
 
 async def _require_service(client: httpx.AsyncClient, name: str, url: str):
@@ -100,15 +90,92 @@ async def _post_with_busy_retry(
     return response
 
 
+async def _seed_current_role_manifest(
+    client: httpx.AsyncClient, *, session_id: str, agent_name: AgentName
+) -> None:
+    response = await client.post(
+        f"{WORKER_LIGHT_URL}/fs/write",
+        json=WriteFileRequest(
+            path=".manifests/current_role.json",
+            content=current_role_manifest_json(agent_name),
+            overwrite=True,
+            bypass_agent_permissions=True,
+        ).model_dump(mode="json"),
+        headers={
+            "X-Session-ID": session_id,
+            "X-System-FS-Bypass": "1",
+        },
+    )
+    assert response.status_code == 200, response.text
+
+
+async def _seed_workspace_file(
+    client: httpx.AsyncClient,
+    *,
+    session_id: str,
+    path: str,
+    content: str,
+) -> None:
+    response = await client.post(
+        f"{WORKER_LIGHT_URL}/fs/write",
+        json=WriteFileRequest(
+            path=path,
+            content=content,
+            overwrite=True,
+            bypass_agent_permissions=True,
+        ).model_dump(mode="json"),
+        headers={
+            "X-Session-ID": session_id,
+            "X-System-FS-Bypass": "1",
+        },
+    )
+    assert response.status_code == 200, response.text
+
+
+async def _wait_for_episode_trace_names(
+    client: httpx.AsyncClient,
+    *,
+    episode_id: str,
+    expected_names: set[str],
+    timeout_s: float = 30.0,
+) -> set[str]:
+    deadline = asyncio.get_running_loop().time() + timeout_s
+    seen_names: set[str] = set()
+    while asyncio.get_running_loop().time() < deadline:
+        response = await client.get(f"{CONTROLLER_URL}/episodes/{episode_id}")
+        assert response.status_code == 200, response.text
+        episode = EpisodeResponse.model_validate(response.json())
+        seen_names = {
+            trace.name for trace in (episode.traces or []) if trace.name is not None
+        }
+        if expected_names.issubset(seen_names):
+            return seen_names
+        await asyncio.sleep(0.5)
+
+    return seen_names
+
+
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
 @pytest.mark.int_id("INT-026")
-async def test_int_026_mandatory_event_families():
+async def test_int_026_mandatory_event_families(tmp_path: Path):
     """INT-026: Verify mandatory event families are emitted in a real run."""
     async with httpx.AsyncClient(timeout=300.0) as client:
         await _require_service(client, "worker-light", WORKER_LIGHT_URL)
-        await _require_service(client, "worker-heavy", WORKER_HEAVY_URL)
+        await _require_service(client, "controller", CONTROLLER_URL)
         session_id = f"INT-026-{uuid.uuid4().hex[:8]}"
+        await _seed_current_role_manifest(
+            client, session_id=session_id, agent_name=AgentName.BENCHMARK_CODER
+        )
+        create_episode_resp = await client.post(
+            f"{CONTROLLER_URL}/api/test/episodes",
+            json=AgentRunRequest(
+                task="INT-026 trace capture",
+                session_id=session_id,
+            ).model_dump(mode="json"),
+        )
+        assert create_episode_resp.status_code == 201, create_episode_resp.text
+        episode_id = str(create_episode_resp.json()["episode_id"])
 
         # 1. Setup benchmark_definition.yaml
         objectives = BenchmarkDefinition(
@@ -127,62 +194,70 @@ async def test_int_026_mandatory_event_families():
             constraints=Constraints(max_unit_cost=100.0, max_weight_g=10.0),
             benchmark_parts=_default_benchmark_parts(),
         )
-        write_obj_req = WriteFileRequest(
-            path="benchmark_definition.yaml",
-            content=yaml.dump(objectives.model_dump(mode="json")),
-            overwrite=True,
-        )
-        await client.post(
-            f"{WORKER_LIGHT_URL}/fs/write",
-            json=write_obj_req.model_dump(mode="json"),
-            headers={"X-Session-ID": session_id},
-        )
 
-        # 2. Write a script that manually emits an event to verify collection
+        # 2. Write a script that returns a valid component and emits a tool event.
         script = """
-import os
 from build123d import *
-from shared.models.schemas import PartMetadata
 from shared.observability.events import emit_event
+from shared.observability.schemas import ToolInvocationEvent
+from shared.models.schemas import PartMetadata
 
 def build():
-    # Emit event to verify collection
-    emit_event({"event_type": "simulation_result", "data": {"status": "success"}})
-    
-    # Trigger a standardized tool invocation event
-    emit_event({"event_type": "tool_invocation", "data": {"tool": "fastener_hole", "args": {"type": "M3"}}})
-
+    emit_event(
+        ToolInvocationEvent(
+            tool_name="benchmark_script_build",
+            arguments={"script_path": "benchmark_script.py"},
+        )
+    )
     p = Box(1, 1, 1)
     p.label = "test_part"
     p.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
     return p
 """
-        write_script_req = WriteFileRequest(
-            path="script.py", content=script, overwrite=True
+        await _seed_workspace_file(
+            client,
+            session_id=session_id,
+            path="benchmark_definition.yaml",
+            content=yaml.dump(objectives.model_dump(mode="json")),
         )
-        await client.post(
-            f"{WORKER_LIGHT_URL}/fs/write",
-            json=write_script_req.model_dump(mode="json"),
-            headers={"X-Session-ID": session_id},
+        await _seed_workspace_file(
+            client,
+            session_id=session_id,
+            path="benchmark_script.py",
+            content=script,
         )
 
-        # 3. Trigger simulation
-        sim_req = BenchmarkToolRequest(script_path="script.py")
+        # 3. Trigger simulation through the controller boundary so request/result
+        # events are recorded by the real observability middleware.
         resp = await _post_with_busy_retry(
             client,
-            url=f"{WORKER_HEAVY_URL}/benchmark/simulate",
-            json_payload=sim_req.model_dump(mode="json"),
+            url=f"{CONTROLLER_URL}/api/script-tools/simulate",
+            json_payload={
+                "script_path": "benchmark_script.py",
+                "agent_role": "benchmark_coder",
+                "smoke_test_mode": True,
+                "episode_id": episode_id,
+            },
             headers={"X-Session-ID": session_id},
             timeout=300.0,
         )
         assert resp.status_code == 200
         data = BenchmarkToolResponse.model_validate(resp.json())
-        events = data.events
+        assert data.success is True
 
-        # Verify event families
-        event_types = [_event_get(e, "event_type") for e in events]
-        assert "simulation_result" in event_types, "Missing simulation_result event"
-        assert "tool_invocation" in event_types, "Missing tool_invocation event"
+        trace_names = await _wait_for_episode_trace_names(
+            client,
+            episode_id=episode_id,
+            expected_names={
+                "simulation_request",
+                "simulation_result",
+                "tool_invocation",
+            },
+        )
+
+        assert "simulation_request" in trace_names, "Missing simulation_request trace"
+        assert "simulation_result" in trace_names, "Missing simulation_result trace"
+        assert "tool_invocation" in trace_names, "Missing tool_invocation trace"
 
 
 @pytest.mark.integration_p0
@@ -287,29 +362,23 @@ async def test_int_028_strict_api_schema_contract():
 @pytest.mark.asyncio
 @pytest.mark.int_id("INT-029")
 async def test_int_029_api_key_enforcement(controller_client):
-    """INT-029: Verify API key enforcement on protected endpoints."""
+    """INT-029: Verify the legacy backup endpoint is no longer exposed."""
     client = controller_client
 
     # No key
     resp = await client.post("/ops/backup")
-    assert resp.status_code == 403
+    assert resp.status_code == 404
 
     # Invalid auth
     resp = await client.post(
         "/ops/backup",
         headers={"X-Backup-Secret": "invalid-auth-val"},
     )
-    assert resp.status_code == 403
+    assert resp.status_code == 404
 
     valid_auth = os.getenv("BACKUP_SECRET", "change-me-in-production")
     resp = await client.post("/ops/backup", headers={"X-Backup-Secret": valid_auth})
-    assert resp.status_code in [202, 500]
-    if resp.status_code == 500:
-        assert (
-            "Backup configuration missing" in resp.text
-            or "Temporal" in resp.text
-            or "connection" in resp.text.lower()
-        )
+    assert resp.status_code == 404
 
 
 @pytest.mark.integration_p0
