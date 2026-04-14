@@ -4,7 +4,7 @@
   "created_at": "2026-04-08T06:52:55.137873+00:00",
   "episode_id": "92c763a8-7c0d-5a22-9619-af4f801b304f",
   "worker_session_id": "seed-renders-epr-008-lift-platform-handoff-e9590285",
-  "revision": "faca613b94895c55de9ed329d8283f94291c22ae",
+  "revision": "f0f781ef28f25c5b09e8ecd37a87db40a5c1d83f",
   "scene_hash": "ad42a4823ddd69eaa46458b5174b3bcb49aed75125d171ce92b8b71ec2701504",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",
