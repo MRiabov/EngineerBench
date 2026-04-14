@@ -4,7 +4,7 @@
 - [x] Record the cost and weight envelope for the passive fixture.
 - [x] Write `benchmark_definition.yaml` with rigid-body-only scope and explicit bounds.
 - [x] Write `benchmark_assembly_definition.yaml` with a schema-valid passive fixture handoff.
-- [x] Write `benchmark_plan_evidence_script.py` and `benchmark_plan_technical_drawing_script.py` for the drafting-enabled fixture.
-- [x] Call `render_technical_drawing()` so `renders/benchmark_renders/render_manifest.json` is materialized before submission.
+- [x] Write `benchmark_plan_evidence_script.py` for the passive fixture.
+- [x] Keep the render bundle consistent before submission.
 - [x] Reject any powered features before submission.
 - [x] Call `submit_benchmark_plan()` only after the handoff files are internally consistent.

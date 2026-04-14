@@ -55,8 +55,8 @@
   center obstacle, and a simple box or pocket for the goal area.
 - Keep the geometry readable and aligned to world axes so the gravity path is
   obvious to the reviewer.
-- Materialize a compact drafting package for the passive fixture and inspect it
-  with `render_technical_drawing()` before submission.
+- Keep the benchmark evidence focused on the passive fixture and submit only
+  after the handoff files are internally consistent.
 
 ## 8. Cost & Weight Envelope
 
