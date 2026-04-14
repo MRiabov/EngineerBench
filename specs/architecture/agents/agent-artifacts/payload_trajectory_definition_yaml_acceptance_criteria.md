@@ -28,7 +28,7 @@ It is worth being a dedicated artifact because reviewers need a strict motion pr
 - The proof is explicit about the safe start, the waypoint order, and the terminal goal contact.
 - The admissible rotation domain is explicit instead of implied.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - The file merely copies the coarse forecast without adding the required precision or terminal proof.
 - The build-safe start or goal-contact finish semantics are contradicted or loosened.

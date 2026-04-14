@@ -18,7 +18,7 @@ It is worth being a dedicated artifact because a coder must be able to reject an
 - The document explains why the plan is infeasible rather than why the implementation was merely inconvenient.
 - The evidence is specific enough that a reviewer can confirm the refusal without reconstructing the whole workspace by hand.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - Generic objections replace concrete infeasibility evidence.
 - The refusal tries to reinterpret the plan instead of refusing the approved contract.

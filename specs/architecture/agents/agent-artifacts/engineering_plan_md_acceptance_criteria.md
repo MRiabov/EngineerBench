@@ -19,10 +19,11 @@ It binds the solution approach, exact inventory names, assumptions, calculations
 - The narrative is stage-ordered and engineering-owned.
 - The plan uses exact engineering names instead of generic placeholders.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - Generic prose appears where the contract expects exact names or counts.
 - Required headings or exact identifier mentions are missing.
+- Detailed Calculations subsection headings are complete but out of order, or the CALC row order does not match the subsection order; the validator should report the specific ordering mismatch rather than a generic missing-heading failure.
 - The plan conflicts with the YAML files, scripts, or review artifacts.
 - Stale benchmark scope or unsupported engineering work appears in the handoff.
 

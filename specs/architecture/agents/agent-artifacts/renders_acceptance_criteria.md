@@ -24,7 +24,7 @@ It is worth being a dedicated artifact family because visual evidence is what le
 - When render images exist and the stage requires visual inspection, the bundle contains enough media to satisfy the configured minimum inspection count.
 - The render evidence complements validation and simulation output instead of duplicating or contradicting it.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - A reviewer only listed files instead of actually inspecting media.
 - The bundle is stale, from a different revision, or attached to the wrong stage.

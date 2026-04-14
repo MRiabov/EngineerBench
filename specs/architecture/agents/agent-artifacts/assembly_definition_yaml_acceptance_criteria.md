@@ -23,7 +23,7 @@ It is worth being a dedicated agent artifact because it is the main binding betw
 - The solution scope is clearly separated from benchmark-owned read-only context.
 - Motion metadata is explicit enough for simulation, swept-clearance validation, and reviewer comparison.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - Placeholder values, stale revision data, or schema drift appear.
 - COTS components are backed by invented prices, manufacturers, or catalog IDs.

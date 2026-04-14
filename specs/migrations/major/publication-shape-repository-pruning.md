@@ -47,6 +47,11 @@ implements it, documents it, or tests it. That includes the technical-drawing
 contract, the electromechanical stack, fluids/FEM/stress branches, steerability,
 and advanced UI visualization.
 
+The same cutoff excludes benchmark-side degrees of freedom (DOFs) and
+environment attachment/drilling logic. Those motion capabilities begin at Epic
+9 and later, so they stay out of the publication bundle until a later
+publication pass.
+
 The only retained drawing behavior is the ordinary full geometric-plan path
 already needed to reproduce Epic 7. Off/minimal drafting variants and
 preview-only companions are not publication surfaces.
@@ -74,7 +79,8 @@ final paper explicitly uses them as evaluated claims:
     including Temporal/devops coverage and the majority of unsupported
     INT-001 through INT-180 cases.
 11. Later-epic physics and product branches, including electronics,
-    fluids/FEM, technical drawing, and advanced visualization.
+    fluids/FEM, technical drawing, advanced visualization, and benchmark-side
+    DOF and environment attachment/drilling plumbing.
 12. Internal documentation that explains the development tree rather than the
     conference artifact.
 13. The technical-drawing contract, drafting-mode gates, and display-only
@@ -673,6 +679,10 @@ material:
 - `specs/architecture/agents/engineering-planner-technical-drawings.md`
 - `specs/architecture/electronics-and-electromechanics.md`
 - `specs/architecture/fluids-and-deformables.md`
+- `specs/architecture/agents/handover-contracts.md`
+- `specs/architecture/agents/artifacts-and-filesystem.md`
+- `specs/architecture/agents/agent-skill.md`
+- `specs/architecture/agents/definitions-of-success-and-failure.md`
 - `specs/integration-test-list.md`
 - `specs/integration-test-rules.md`
 - `specs/devtools.md`
@@ -691,6 +701,20 @@ material:
 - `docs/qwen-performance.log.md`
 - `docs/nightly-work-plans/**`
 - `docs/agent-workflow/**`
+- `docs/api-contracts.md`
+- `specs/architecture/CAD-and-other-infra.md`
+- `specs/architecture/application-acceptance-criteria.md`
+- `specs/architecture/cots-geometry-import.md`
+- `specs/architecture/evals-architecture.md`
+- `specs/architecture/observability.md`
+- `specs/architecture/primary-system-objectives.md`
+- `specs/architecture/simulation-and-rendering.md`
+- `specs/architecture/agents/overview.md`
+- `specs/architecture/agents/roles.md`
+- `specs/architecture/agents/roles-detailed/README.md`
+- `specs/architecture/agents/agent-artifacts/README.md`
+- `specs/architecture/agents/roles-detailed/*.md`
+- `specs/architecture/agents/agent-artifacts/*.md`
 
 ## Module-Level Trim Notes
 
@@ -1113,6 +1137,34 @@ The safe order is:
 - [x] Correct the canonical INT-131 integration-test row to match the live
   COTS inventory exactness test and keep the architecture_p1 mapping in sync.
 
+### DOF and attachment pruning
+
+- [ ] Remove benchmark-side DOF language from the remaining architecture and
+  reviewer docs, especially `specs/architecture/evals-architecture.md`,
+  `specs/architecture/agents/handover-contracts.md`,
+  `specs/architecture/agents/tools.md`,
+  `specs/architecture/agents/roles-detailed/benchmark-plan-reviewer.md`, and
+  `specs/architecture/observability.md`.
+- [ ] Remove environment attachment/drilling language from the published
+  contract docs and the seeded planner/reviewer artifacts, especially
+  `specs/architecture/CAD-and-other-infra.md`,
+  `dataset/data/seed/role_based/benchmark_plan_reviewer.json`, and the
+  matching `dataset/data/seed/artifacts/**` scenario trees.
+- [ ] Prune the seeded no-drill and hidden-DOF scenarios as a unit, including
+  `bpr-003-no-drill-transfer`, `bpr-008-gap-bridge-hidden-dof`,
+  `bpr-010-no-drill-overhang`, `epr-003-no-drill-transfer`, and
+  `eer-003-no-drill-transfer`.
+- [ ] Remove or retune the tests and mock responses that only exist to prove
+  the removed motion-contract cases, including
+  `tests/integration/architecture_p1/test_reviewer_evidence.py`,
+  `tests/integration/architecture_p0/test_planner_gates.py`,
+  `tests/integration/architecture_p1/test_handover.py`,
+  `tests/worker_heavy/simulation/test_builder_constraints.py`, and the
+  related `tests/integration/mock_responses/**` entries.
+- [ ] Confirm no retained publication-bundle file still depends on
+  `dof_minimality`, `dof_deviation_justified`,
+  `environment_drill_operations`, or benchmark-only attachment helpers.
+
 ### Frontend API boundary cleanup
 
 - [ ] Remove the now-unused frontend-only FastAPI boundary from
@@ -1421,6 +1473,33 @@ listed above stay in the publication bundle and are not part of the prune list:
 - `config/skills_repo.lock.json`
 - `config/reward_config.yaml` if the final paper does not cite the reward table
 - `config/generator_config.yaml` if the final paper does not cite dataset-generation configuration
+
+### Additional touched roots
+
+The migration also touches these roots because they still carry removed
+publication families, seed templates, or test coverage that must be pruned or
+reworded alongside the narrower paths above:
+
+- `controller/agent/benchmark/*.py`
+- `controller/agent/nodes/*.py`
+- `controller/agent/node_entry_validation.py`
+- `controller/agent/review_handover.py`
+- `controller/observability/tracing.py`
+- `shared/rendering/renderer_client.py`
+- `shared/workers/*.py`
+- `worker_heavy/api/routes.py`
+- `worker_heavy/utils/*.py`
+- `worker_renderer/utils/rendering.py`
+- `shared/assets/template_repos/benchmark_generator/benchmark_assembly_definition.yaml`
+- `shared/assets/template_repos/engineer/assembly_definition.yaml`
+- `shared/assets/template_repos/engineer/benchmark_assembly_definition.yaml`
+- `shared/agent_templates/common/manufacturing_config.yaml`
+- `config/skills_config.yaml`
+- `dataset/data/seed/artifacts/**`
+- `tests/integration/architecture_p0/**`
+- `tests/integration/fixtures/codex_runner_mode/**`
+- `tests/integration/mock_responses/**`
+- `tests/worker_heavy/**`
 
 This list is intentionally conservative. If a path is only there for developer
 comfort, compatibility, or experiment throughput, it should not survive the

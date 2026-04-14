@@ -18,7 +18,7 @@ It is worth being a dedicated artifact because it preserves blockers, failed pro
 - The journal captures why a dead end was explored, not just that it failed.
 - The entries are short and actionable rather than narrative filler.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - Vague status notes or generic commentary replace concrete attempts.
 - The journal references stale revisions or artifacts that are no longer present.

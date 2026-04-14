@@ -20,7 +20,7 @@ It is worth being a dedicated artifact because it tells the next role what remai
 - The checklist is short enough to be useful but complete enough to debug progress.
 - Stage transition state is obvious at a glance.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - Stale items from a prior stage remain in the file.
 - Completed-state markers do not match the current workspace state.

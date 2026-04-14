@@ -17,7 +17,7 @@ It is worth being a dedicated artifact because later seed repair and review work
 - The identities and structure are stable enough that reviewers do not have to guess which object is which.
 - The file is specific enough to be useful without recreating the scene from scratch.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - The snapshot is stale or belongs to a different revision.
 - Object identities, counts, or labels drift from the authored source.

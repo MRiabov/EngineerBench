@@ -27,7 +27,7 @@ environment state.
   filename presence.
 - The file stays stable across repeated retries inside the same node.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - The file is missing, malformed, or stale.
 - The file content does not match the active node.

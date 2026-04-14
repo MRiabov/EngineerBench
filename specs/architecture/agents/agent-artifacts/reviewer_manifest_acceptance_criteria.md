@@ -30,7 +30,7 @@ The live runtime contract uses the handoff name above.
 - The stored metadata is sufficient to tell whether the reviewer is looking at the current revision and session.
 - The file keeps the stage boundary visible rather than hiding it behind generic metadata.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - The manifest is missing, stale, schema-invalid, or for the wrong stage.
 - Session metadata points at a different workspace revision or another session entirely.

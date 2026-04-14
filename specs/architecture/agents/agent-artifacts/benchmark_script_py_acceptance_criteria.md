@@ -18,7 +18,7 @@ It is worth being a dedicated artifact because coder and reviewer roles must con
 - The script is clear enough that downstream roles can compare their own output against it mechanically.
 - The object inventory and motion facts remain exact across the current revision.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - Benchmark-owned geometry drifts from the approved plan.
 - Labels, quantities, or motion facts change during materialization.

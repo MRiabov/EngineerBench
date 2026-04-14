@@ -19,7 +19,7 @@ It binds the benchmark objective, inventory names, geometry, randomization, and 
 - The narrative is stage-ordered and benchmark-owned.
 - The plan uses exact benchmark names instead of generic placeholders.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - Generic prose appears where the contract expects exact names or counts.
 - Required headings or exact identifier mentions are missing.

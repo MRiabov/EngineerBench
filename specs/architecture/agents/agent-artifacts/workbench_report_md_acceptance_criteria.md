@@ -17,7 +17,7 @@ It is worth being a dedicated artifact because reviewers need a compact statemen
 - The summary reflects the current revision rather than a generic run status.
 - The wording is grounded in the actual review package, not a paraphrase of unrelated logs.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - The summary tells a different story from the review artifacts.
 - The pass/fail reason is too vague to map back to the run.

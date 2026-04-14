@@ -346,6 +346,7 @@ For each part:
 ## 5. Detailed Calculations
 - The section starts with a compact index table whose columns are `ID`, `Problem / Decision`, `Result`, and `Impact`.
 - Each index row must map to a matching `### CALC-001: <short title>` subsection below; the `CALC-*` heading is required, not optional.
+- The CALC subsections must stay in the same order as the summary-table rows. If the headings are shuffled but still complete, validation fails with an explicit order-mismatch error rather than a generic missing-heading message.
 - Each calculation subsection should include a problem statement, assumptions, derivation, worst-case check, result, design impact, and cross-reference.
 ## 6. Critical Constraints / Operating Envelope
 - Derived numeric limits that the mechanism must satisfy, such as minimum slope, maximum torque, minimum current, or clearance bounds.

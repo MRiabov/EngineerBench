@@ -19,7 +19,7 @@ It is worth being a dedicated artifact because the final execution gate must rec
 - The checklist helps a later repair loop understand which exact items still fail.
 - The verdict aligns with validation, simulation, and any required render evidence.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - The decision and comments disagree or reference different revisions.
 - The package relies on stale manifest data or stale simulation evidence.

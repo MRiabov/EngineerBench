@@ -18,7 +18,7 @@ It is worth being a dedicated artifact because later gates need an exact, parsea
 - The file is stable enough that later reviewers can compare it against the workspace without guesswork.
 - The result does not smuggle in stale or approximate state.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - The result comes from another revision or another seeded task.
 - The file is parseable but too vague to explain why validation passed or failed.

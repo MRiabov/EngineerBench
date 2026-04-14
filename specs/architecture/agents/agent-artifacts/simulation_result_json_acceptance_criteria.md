@@ -20,7 +20,7 @@ It is worth being a dedicated artifact because moving benchmarks and motion-sens
 - The record is specific enough to compare against renders, trajectory proofs, and validation output.
 - The record distinguishes early payload failure from late payload drift when benchmark payload observation is windowed.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - The simulation result comes from a stale bundle or a different revision.
 - The file says the solution succeeded while the motion evidence or render bundle shows a mismatch.

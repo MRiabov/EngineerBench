@@ -11,6 +11,7 @@ It is worth being a dedicated artifact because the final run, validation, and si
 - The script exposes the final assembly as expected by the runtime.
 - The script is consistent with validation and simulation outputs.
 - The script uses exact source-grounded identifiers only.
+- The script does not author or duplicate the benchmark payload; that context is injected by the runtime environment.
 
 ## Quality Criteria
 
@@ -18,12 +19,13 @@ It is worth being a dedicated artifact because the final run, validation, and si
 - The final assembly is stable and does not rely on invented fallback labels or transient shell state.
 - The script stays aligned with the validated totals and with the current revision of the workspace.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - The implementation drifts from `assembly_definition.yaml`.
 - The runtime exposure does not match the final assembly that validation and simulation exercised.
 - Invented identifiers, stale geometry, or hidden fallback paths appear.
 - The solution only appears valid because of transient state rather than the persisted source.
+- Benchmark payload geometry is embedded in the solution source instead of being supplied by the environment.
 
 ## Cross-References
 

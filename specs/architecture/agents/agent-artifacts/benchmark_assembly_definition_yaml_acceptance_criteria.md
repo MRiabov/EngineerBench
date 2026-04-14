@@ -21,7 +21,7 @@ It is worth being a dedicated artifact because it captures the benchmark-side mo
 - Stable labels and part references survive into downstream intake without rename drift.
 - The motion contract is legible enough for engineer planning and reviewer comparison.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - Hidden motion, contradictory motion, or unsupported motion declarations appear.
 - The benchmark-owned fixture does not match the plan, evidence, or the object inventory.

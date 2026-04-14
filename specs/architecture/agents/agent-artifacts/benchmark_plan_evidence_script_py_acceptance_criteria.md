@@ -18,7 +18,7 @@ It is worth being a dedicated artifact because reviewers and downstream engineer
 - The script makes the benchmark intent legible without hiding the inventory in opaque helper logic.
 - The same authored labels and counts appear in the plan, the draft YAML, and the evidence scene.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - The script renames, drops, or duplicates benchmark-owned labels or quantities.
 - Solution-side geometry appears in the benchmark evidence scene.

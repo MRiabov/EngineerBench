@@ -24,7 +24,7 @@ without turning the bug report into a replacement for `journal.md`,
 - The blocker description is specific enough to reproduce or triage without reading the entire workspace.
 - The report makes it clear whether the blocker is infrastructure, harness, workspace materialization, prompt transport, filesystem policy, render plumbing, eval orchestration, or other runtime plumbing.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - The file is used as a task journal or a narrative status update.
 - The report omits the active role, command, or relevant artifact path.

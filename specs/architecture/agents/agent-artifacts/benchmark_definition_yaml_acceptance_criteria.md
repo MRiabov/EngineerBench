@@ -24,7 +24,7 @@ It is worth being a first-class agent artifact because downstream roles, validat
 - Exact identifiers are repeated across the handoff package so later roles do not have to guess names or counts.
 - The geometry and cap data are legible enough that reviewers can reason about benchmark validity and challenge level without reconstructing intent from scratch.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - Goal, forbid, and build geometry intersect the moved object at spawn or after stated randomization.
 - Benchmark-owned fixture geometry intersects the moved object at its declared start_position before runtime jitter is applied.

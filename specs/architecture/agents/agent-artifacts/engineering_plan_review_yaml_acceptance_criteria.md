@@ -19,7 +19,7 @@ It is worth being a dedicated artifact because the engineering plan-quality gate
 - The checklist maps to the actual engineering handoff contract and not to invented review categories.
 - The decision, comments, and plan text are internally consistent.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - The decision and comments disagree about the stage, revision, or outcome.
 - The package relies on stale manifest data or a stale plan snapshot.

@@ -19,7 +19,7 @@ It is worth being a dedicated artifact because it persists the plan-quality gate
 - The checklist items map to the actual benchmark handoff contract rather than generic review language.
 - The decision and comments tell the same story about the current package.
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - The decision and comments disagree about the stage, revision, or outcome.
 - The review uses stale manifest data or a stale package snapshot.

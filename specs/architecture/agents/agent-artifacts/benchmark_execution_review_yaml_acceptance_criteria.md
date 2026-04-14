@@ -19,7 +19,7 @@ It is worth being a dedicated artifact because it captures the post-implementati
 - The checklist gives later replanning a clear path to repair specific failures.
 - The verdict aligns with the benchmark geometry, motion, validation evidence, and the config-driven benchmark-payload observation window from `config/agents_config.yaml` (`benchmark_payload_observation.window_s`, default `1.5s`).
 
-## Reviewer Look-Fors
+## Reviewer Look-Fors: File Antipatterns to Look For
 
 - The decision and comments disagree or reference different revisions.
 - The package relies on stale benchmark evidence or an old manifest.
