@@ -1,7 +1,7 @@
 # TODO
 
 - [x] Planner handoff package seeded
-- [ ] Read the seeded `benchmark_definition.yaml`, `plan.md`, and `assembly_definition.yaml`
+- [ ] Read the seeded `benchmark_definition.yaml`, `engineering_plan.md`, and `assembly_definition.yaml`
 - [ ] Implement the freestanding support frame outside the gap forbid zone
 - [ ] Implement the bridge deck and paired guide fences in `solution_script.py`
 - [ ] Implement the landing pocket aligned to the seeded goal zone

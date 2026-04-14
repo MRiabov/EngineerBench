@@ -4,7 +4,7 @@
   "created_at": "2026-04-08T07:41:35.753166+00:00",
   "episode_id": "dc740b2f-7a0d-5c8f-96de-c40cdc3ac584",
   "worker_session_id": "seed-renders-ec-009-narrow-goal-funnel-9473a1d6",
-  "revision": "f0f781ef28f25c5b09e8ecd37a87db40a5c1d83f",
+  "revision": "a918d2dc1f3e879beaff16e11e2b165bb7ccf370",
   "scene_hash": "7968f26b8361b5e5183001d8db54d5f752c3b144be7e5769b56e5c7fa64882fc",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",

@@ -1,7 +1,7 @@
 [
   {
     "id": "bpr-002-gap-bridge",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the gap-bridge cube transfer benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the gap forbid zone, landing deck, and static bridge geometry stay coherent without invented moving parts, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
+    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the gap-bridge cube transfer benchmark. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the gap forbid zone, landing deck, and static bridge geometry stay coherent without invented moving parts, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-002-gap-bridge",
     "expected_decision": "APPROVED",
@@ -9,7 +9,7 @@
   },
   {
     "id": "bpr-003-central-forbid-route",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the central-forbid-route ball transfer benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the central blocker and the around-obstacle routing geometry remain coherent with the seeded build and goal zones, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
+    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the central-forbid-route ball transfer benchmark. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the central blocker and the around-obstacle routing geometry remain coherent with the seeded build and goal zones, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-003-central-forbid-route",
     "expected_decision": "APPROVED",
@@ -17,7 +17,7 @@
   },
   {
     "id": "bpr-005-no-drill-transfer",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the freestanding no-drill transfer benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the environment stays fully freestanding with no hidden attachment assumptions, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
+    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the freestanding no-drill transfer benchmark. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the environment stays fully freestanding with no hidden attachment assumptions, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-005-no-drill-transfer",
     "expected_decision": "APPROVED",
@@ -25,7 +25,7 @@
   },
   {
     "id": "bpr-006-low-friction-cube",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the low-friction cube guide benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the guide geometry and center blocker stay coherent with the low-friction cube assumptions and forbid-zone routing, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
+    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the low-friction cube guide benchmark. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the guide geometry and center blocker stay coherent with the low-friction cube assumptions and forbid-zone routing, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-006-low-friction-cube",
     "expected_decision": "APPROVED",
@@ -33,7 +33,7 @@
   },
   {
     "id": "bpr-007-lift-platform-handoff",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lift-platform handoff benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the moving platform uses only the planned lift axis and that the platform travel clearance remains coherent across all seeded artifacts, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
+    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lift-platform handoff benchmark. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the moving platform uses only the planned lift axis and that the platform travel clearance remains coherent across all seeded artifacts, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-007-lift-platform-handoff",
     "expected_decision": "APPROVED",
@@ -41,7 +41,7 @@
   },
   {
     "id": "bpr-008-narrow-goal",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the narrow-goal funnel benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the wide capture region, narrowing throat, and final goal sleeve remain coherent under the seeded runtime jitter assumptions, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
+    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the narrow-goal funnel benchmark. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the wide capture region, narrowing throat, and final goal sleeve remain coherent under the seeded runtime jitter assumptions, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-008-narrow-goal",
     "expected_decision": "APPROVED",
@@ -49,7 +49,7 @@
   },
   {
     "id": "bpr-010-lower-bin",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lower-bin redirection benchmark. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the deflector, lower-bin goal, and direct-drop dead zone remain coherent and feasible under the seeded ball randomization, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
+    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lower-bin redirection benchmark. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the deflector, lower-bin goal, and direct-drop dead zone remain coherent and feasible under the seeded ball randomization, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-010-lower-bin",
     "expected_decision": "APPROVED",
@@ -57,7 +57,7 @@
   },
   {
     "id": "bpr-012-gap-bridge-hidden-dof",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the gap-bridge cube transfer variant that adds a small self-centering correction on the bridge reference table. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the bridge really remains a passive benchmark fixture or whether the seeded motion metadata introduces unsupported benchmark-side actuation, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
+    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the gap-bridge cube transfer variant that adds a small self-centering correction on the bridge reference table. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the bridge really remains a passive benchmark fixture or whether the seeded motion metadata introduces unsupported benchmark-side actuation, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-012-gap-bridge-hidden-dof",
     "expected_decision": "REJECT_PLAN",
@@ -65,7 +65,7 @@
   },
   {
     "id": "bpr-013-central-route-pinch-clearance",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the central-forbid-route ball transfer variant with a narrowed downstream pinch. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the declared guide-wall pinch still remains robust for the worst-case ball diameter and runtime jitter rather than only the nominal path, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
+    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the central-forbid-route ball transfer variant with a narrowed downstream pinch. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the declared guide-wall pinch still remains robust for the worst-case ball diameter and runtime jitter rather than only the nominal path, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-013-central-route-pinch-clearance",
     "expected_decision": "REJECT_PLAN",
@@ -73,7 +73,7 @@
   },
   {
     "id": "bpr-015-no-drill-overhang",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the freestanding no-drill transfer variant with a farther-right goal cradle and longer chute. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the freestanding geometry still stays inside the benchmark build envelope instead of quietly overhanging it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
+    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the freestanding no-drill transfer variant with a farther-right goal cradle and longer chute. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the freestanding geometry still stays inside the benchmark build envelope instead of quietly overhanging it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-015-no-drill-overhang",
     "expected_decision": "REJECT_PLAN",
@@ -81,7 +81,7 @@
   },
   {
     "id": "bpr-016-low-friction-pocket-tolerance",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the low-friction cube guide variant with a tighter goal pocket. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the tapered guide and goal pocket still allow a low-friction cube to settle reliably under the seeded jitter instead of only barely fitting nominally, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
+    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the low-friction cube guide variant with a tighter goal pocket. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the tapered guide and goal pocket still allow a low-friction cube to settle reliably under the seeded jitter instead of only barely fitting nominally, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-016-low-friction-pocket-tolerance",
     "expected_decision": "REJECT_PLAN",
@@ -89,7 +89,7 @@
   },
   {
     "id": "bpr-017-platform-sweep-bridge-collision",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lift-platform handoff variant with a longer bridge into the receiving shelf. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the longer bridge still respects the moving platform sweep and declared travel-clearance envelope rather than intruding into it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
+    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lift-platform handoff variant with a longer bridge into the receiving shelf. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the longer bridge still respects the moving platform sweep and declared travel-clearance envelope rather than intruding into it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-017-platform-sweep-bridge-collision",
     "expected_decision": "REJECT_PLAN",
@@ -97,7 +97,7 @@
   },
   {
     "id": "bpr-018-narrow-goal-throat-mismatch",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the narrow-goal funnel variant with a more aggressive throat squeeze. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the throat still admits the seeded worst-case ball geometry with any meaningful tolerance instead of collapsing below it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
+    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the narrow-goal funnel variant with a more aggressive throat squeeze. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the throat still admits the seeded worst-case ball geometry with any meaningful tolerance instead of collapsing below it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-018-narrow-goal-throat-mismatch",
     "expected_decision": "REJECT_PLAN",
@@ -105,7 +105,7 @@
   },
   {
     "id": "bpr-020-lower-bin-unreachable-redirection",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lower-bin redirection variant that steepens the deflector and raises the dead-zone shield. Confirm the plan package is internally consistent across `plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the revised redirection geometry still yields a plausible path into the lower bin instead of forcing the ball through the dead zone or into an unplanned second bounce, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
+    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lower-bin redirection variant that steepens the deflector and raises the dead-zone shield. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the revised redirection geometry still yields a plausible path into the lower bin instead of forcing the ball through the dead zone or into an unplanned second bounce, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-020-lower-bin-unreachable-redirection",
     "expected_decision": "REJECT_PLAN",

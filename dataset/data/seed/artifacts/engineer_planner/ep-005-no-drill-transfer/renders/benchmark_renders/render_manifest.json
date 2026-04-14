@@ -4,7 +4,7 @@
   "created_at": "2026-04-08T06:35:38.669130+00:00",
   "episode_id": "ef70ee93-b846-5fff-8fa0-2f236f0cd627",
   "worker_session_id": "seed-renders-ep-005-no-drill-transfer-ce69a37a",
-  "revision": "f0f781ef28f25c5b09e8ecd37a87db40a5c1d83f",
+  "revision": "a918d2dc1f3e879beaff16e11e2b165bb7ccf370",
   "scene_hash": "bada4e7b7d9bb08553b9ef87a16fffd7200ecfe10c4480bc99f831887ef50fae",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",
