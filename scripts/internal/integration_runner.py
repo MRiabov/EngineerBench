@@ -28,6 +28,11 @@ from pathlib import Path
 from typing import Literal, TextIO
 from xml.etree import ElementTree as ET
 
+from alembic.config import Config
+from alembic.runtime.migration import MigrationContext
+from alembic.script import ScriptDirectory
+from sqlalchemy import create_engine
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
@@ -893,6 +898,70 @@ def _run(
     )
 
 
+def _resolve_alembic_database_url(repo_root: Path) -> str:
+    url = os.environ.get("POSTGRES_URL") or os.environ.get("DATABASE_URL")
+    if not url:
+        config = Config(str(repo_root / "alembic.ini"))
+        url = config.get_main_option("sqlalchemy.url")
+
+    if url.startswith("postgresql+asyncpg://"):
+        return url.replace("postgresql+asyncpg://", "postgresql+psycopg://", 1)
+    return url
+
+
+def _get_alembic_head_revisions(repo_root: Path) -> set[str]:
+    config = Config(str(repo_root / "alembic.ini"))
+    return {revision for revision in ScriptDirectory.from_config(config).get_heads()}
+
+
+def _get_current_alembic_revisions(repo_root: Path) -> set[str]:
+    database_url = _resolve_alembic_database_url(repo_root)
+    engine = create_engine(database_url)
+    try:
+        with engine.connect() as connection:
+            context = MigrationContext.configure(connection)
+            return {
+                revision
+                for revision in context.get_current_heads()
+                if revision is not None
+            }
+    finally:
+        engine.dispose()
+
+
+def _format_revision_set(revisions: set[str]) -> str:
+    if not revisions:
+        return "<none>"
+    return ", ".join(sorted(revisions))
+
+
+def _ensure_alembic_migrations(
+    repo_root: Path, *, force_run_alembic: bool = False
+) -> bool:
+    current_revisions = _get_current_alembic_revisions(repo_root)
+    head_revisions = _get_alembic_head_revisions(repo_root)
+
+    if not force_run_alembic and current_revisions == head_revisions:
+        _runner_status(
+            "Integration database is already at Alembic head; skipping migrations.",
+            always=True,
+        )
+        return False
+
+    if force_run_alembic:
+        _runner_status("Force-running Alembic migrations...", always=True)
+    else:
+        _runner_status(
+            "Alembic revision mismatch "
+            f"(current={_format_revision_set(current_revisions)}, "
+            f"head={_format_revision_set(head_revisions)}); running migrations...",
+            always=True,
+        )
+
+    _run(["uv", "run", "alembic", "upgrade", "head"])
+    return True
+
+
 def _worker_renderer_compose_cmd(*, compose_project_name: str) -> list[str]:
     return ["docker", "compose", "-p", compose_project_name, "-f", "docker-compose.yml"]
 
@@ -1522,7 +1591,9 @@ def _integration_infra_reachable_without_docker() -> bool:
     )
 
 
-def _bring_up_infra_and_migrate(integration_db_name: str) -> None:
+def _bring_up_infra_and_migrate(
+    integration_db_name: str, *, force_run_alembic: bool = False
+) -> None:
     _runner_status("starting containers...")
     compose_cmd = [
         "docker",
@@ -1578,8 +1649,7 @@ def _bring_up_infra_and_migrate(integration_db_name: str) -> None:
     _runner_status(f"Ensuring integration database exists ({integration_db_name})...")
     _ensure_postgres_database(integration_db_name)
 
-    _runner_status("Running migrations...")
-    _run(["uv", "run", "alembic", "upgrade", "head"])
+    _ensure_alembic_migrations(_repo_root(), force_run_alembic=force_run_alembic)
 
 
 def _prepare_frontend_dist(repo_root: Path, frontend_state_file: Path | None) -> None:
@@ -2215,14 +2285,17 @@ def _run_integration_command(
 
     _run(["bash", "scripts/ensure_docker_vfs.sh"])
     _runner_status(
-        "Preparing prerequisites in parallel (infra, ngspice, parts DB"
+        "Preparing prerequisites in parallel (infra, parts DB"
         + (", frontend build" if run_playwright else "")
         + ")..."
     )
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
         prep_futures: list[concurrent.futures.Future[object]] = [
-            pool.submit(_bring_up_infra_and_migrate, integration_db_name),
-            pool.submit(_run, ["bash", "scripts/ensure_ngspice.sh"]),
+            pool.submit(
+                _bring_up_infra_and_migrate,
+                integration_db_name,
+                force_run_alembic=args.force_run_alembic,
+            ),
             pool.submit(_prepare_parts_db, repo_root),
         ]
         if run_playwright:
@@ -2546,6 +2619,20 @@ def _build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Wait for the shared integration lock instead of failing fast when another run is active.",
     )
+    run_parser.add_argument(
+        "--force-run-alembic",
+        action="store_true",
+        help="Run Alembic migrations even if the database already appears to be at head.",
+    )
+
+    migrate_parser = sub.add_parser(
+        "migrate", help="Ensure the configured database schema is at Alembic head"
+    )
+    migrate_parser.add_argument(
+        "--force-run-alembic",
+        action="store_true",
+        help="Run Alembic migrations even if the database already appears to be at head.",
+    )
 
     cleanup_parser = sub.add_parser(
         "cleanup", help="Internal: perform integration teardown."
@@ -2588,6 +2675,17 @@ def main() -> int:
         if passthrough and passthrough[0] == "--":
             passthrough = passthrough[1:]
         return _run_integration_command(args, passthrough)
+
+    if args.command == "migrate":
+        if unknown:
+            parser.error(
+                "Unrecognized arguments for migrate: "
+                f"{' '.join(shlex.quote(arg) for arg in unknown)}"
+            )
+        _ensure_alembic_migrations(
+            _repo_root(), force_run_alembic=args.force_run_alembic
+        )
+        return 0
 
     if args.command == "cleanup":
         if unknown:

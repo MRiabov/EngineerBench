@@ -10,6 +10,7 @@ set -e
 cd "$(dirname "$0")/.."
 
 STACK_PROFILE="${PROBLEMOLOGIST_STACK_PROFILE:-integration}"
+FORCE_RUN_ALEMBIC=0
 while [ "$#" -gt 0 ]; do
   case "$1" in
     --profile)
@@ -22,6 +23,10 @@ while [ "$#" -gt 0 ]; do
       ;;
     --profile=*)
       STACK_PROFILE="${1#*=}"
+      shift
+      ;;
+    --force-run-alembic)
+      FORCE_RUN_ALEMBIC=1
       shift
       ;;
     *)
@@ -103,9 +108,6 @@ mkdir -p "$STACK_PID_DIR"
 # DO NOT REMOVE: This is required for agent execution environments where overlay2 fails.
 bash scripts/ensure_docker_vfs.sh
 
-# Ensure ngspice is installed for legacy environment checks
-bash scripts/ensure_ngspice.sh
-
 echo "Spinning up infrastructure (Postgres, Temporal, Minio)..."
 docker compose -p "$COMPOSE_PROJECT_NAME" -f docker-compose.test.yaml up -d --remove-orphans
 
@@ -140,8 +142,14 @@ done
 echo "Purging local S3 buckets before the run..."
 uv run python scripts/cleanup_local_s3.py
 
-echo "Running migrations..."
-uv run alembic upgrade head
+MIGRATION_ARGS=()
+if [ "$FORCE_RUN_ALEMBIC" = "1" ]; then
+  echo "Force-running migrations..."
+  MIGRATION_ARGS=(--force-run-alembic)
+else
+  echo "Checking whether migrations are needed..."
+fi
+uv run python scripts/internal/integration_runner.py migrate "${MIGRATION_ARGS[@]}"
 
 echo "Starting Application Servers..."
 
