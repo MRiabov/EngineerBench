@@ -20,13 +20,10 @@ from shared.enums import (
     ResponseStatus,
     SimulationConfidence,
 )
-from shared.models.schemas import BenchmarkPartAttachmentPolicy, ElectronicsSection
+from shared.models.schemas import BenchmarkPartAttachmentPolicy
 from shared.models.simulation import (
-    FluidMetricResult,
     MultiRunResult,
     SimulationFailure,
-    StressFieldData,
-    StressSummary,
 )
 from shared.observability.schemas import BaseEvent
 from shared.simulation.schemas import (
@@ -387,12 +384,6 @@ class VerificationRequest(BenchmarkToolRequest):
     seed: int = Field(default=42, description="Random seed.")
 
 
-class ElectronicsValidationRequest(BaseModel):
-    """Request to validate an electronic circuit."""
-
-    section: ElectronicsSection
-
-
 class SimulationArtifacts(BaseModel):
     """Structured artifacts from a simulation run."""
 
@@ -400,9 +391,6 @@ class SimulationArtifacts(BaseModel):
     render_blobs_base64: dict[StrictStr, StrictStr] = Field(default_factory=dict)
     object_store_keys: dict[StrictStr, StrictStr] = Field(default_factory=dict)
     mjcf_content: StrictStr | None = None
-    stress_summaries: list[StressSummary] = Field(default_factory=list)
-    fluid_metrics: list[FluidMetricResult] = Field(default_factory=list)
-    circuit_validation_result: dict[StrictStr, Any] | None = None
     scene_path: StrictStr | None = None
     failure: SimulationFailure | None = None
     verification_result: MultiRunResult | None = None
@@ -875,18 +863,6 @@ class SimulationVideoRequest(BaseModel):
     frame_paths: list[StrictStr] = Field(default_factory=list)
     output_name: StrictStr = "simulation.mp4"
     fps: StrictInt = Field(default=30, ge=1, le=240)
-    session_id: StrictStr | None = None
-
-
-class StressHeatmapRequest(BaseModel):
-    """Request to render a stress heatmap artifact."""
-
-    bundle_base64: StrictStr
-    stress_field: StressFieldData
-    output_name: StrictStr = "stress_heatmap.png"
-    mesh_path: StrictStr | None = None
-    width: StrictInt = Field(default=800, ge=1)
-    height: StrictInt = Field(default=600, ge=1)
     session_id: StrictStr | None = None
 
 

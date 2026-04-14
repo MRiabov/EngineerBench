@@ -3,7 +3,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from shared.enums import FailureReason, FluidObjectiveType, SimulationConfidence
+from shared.enums import FailureReason, SimulationConfidence
 from shared.simulation.schemas import SimulatorBackendType
 
 
@@ -82,45 +82,15 @@ class SimulationFailure(BaseModel):
         return super().__eq__(other)
 
 
-class StressSummary(BaseModel):
-    part_label: str
-    max_von_mises_pa: float
-    mean_von_mises_pa: float
-    safety_factor: float  # ultimate_stress / max_von_mises
-    location_of_max: tuple[float, float, float]
-    utilization_pct: float  # max_stress / yield_stress * 100
-
-
-class FluidMetricResult(BaseModel):
-    metric_type: FluidObjectiveType
-    fluid_id: str
-    measured_value: float
-    target_value: float
-    passed: bool
-
-
-class StressFieldData(BaseModel):
-    """Serializable version of StressField."""
-
-    nodes: list[list[float]]  # (N, 3)
-    stress: list[float]  # (N,) von Mises stress
-
-
 class SimulationMetrics(BaseModel):
     total_time: float = 0.0
     total_energy: float = 0.0
     max_velocity: float = 0.0
-    max_stress: float = 0.0
     success: bool = False
     fail_reason: str | None = None
     fail_mode: FailureReason | None = None
     failure: SimulationFailure | None = None
     payload_trajectory_monitor: PayloadTrajectoryMonitorState | None = None
-    stress_summaries: list[StressSummary] = Field(default_factory=list)
-    stress_fields: dict[str, StressFieldData] = Field(
-        default_factory=dict
-    )  # part_label -> StressFieldData
-    fluid_metrics: list[FluidMetricResult] = Field(default_factory=list)
     events: list[dict] = Field(default_factory=list)
     confidence: SimulationConfidence = SimulationConfidence.HIGH
 
@@ -136,9 +106,6 @@ class SimulationResult(BaseModel):
     render_paths: list[str] = Field(default_factory=list)
     render_object_store_keys: dict[str, str] = Field(default_factory=dict)
     mjcf_content: str | None = None
-    stress_summaries: list[StressSummary] = Field(default_factory=list)
-    stress_fields: dict[str, StressFieldData] = Field(default_factory=dict)
-    fluid_metrics: list[FluidMetricResult] = Field(default_factory=list)
     total_cost: float = 0.0
     total_weight_g: float = 0.0
     confidence: SimulationConfidence = SimulationConfidence.HIGH

@@ -25,25 +25,17 @@ from shared.enums import (
     BenchmarkAttachmentMethod,
     BenchmarkRefusalReason,
     DatasetCurationReasonCode,
-    ElectricalRefusalReason,
-    ElectronicComponentType,
     EntryFailureDisposition,
     EpisodePhase,
     EpisodeType,
     FailureClass,
-    FluidEvalAt,
-    FluidObjectiveType,
-    FluidShapeType,
     GenerationKind,
     ManufacturingMethod,
     MechanicalRefusalReason,
-    MotorControlMode,
-    MovingPartType,
     ReviewDecision,
     SeedMatchMethod,
     TerminalReason,
 )
-from shared.models.simulation import SimulationFailure
 from shared.simulation.schemas import (
     CustomObjectives,
     SimulatorBackendType,
@@ -114,74 +106,11 @@ class BackupResult(BaseModel):
     s3_files_backed_up: int | None = None
 
 
-class SchematicItem(BaseModel):
-    """An item in the electronics schematic representation."""
-
-    type: str
-
-    model_config = ConfigDict(extra="allow")
-
-
 class BoundingBox(StrictContractModel):
     """Axis-aligned bounding box with min/max coordinates."""
 
     min: CoercedTuple3D
     max: CoercedTuple3D
-
-
-# =============================================================================
-# WP2 Fluid & Stress Models
-# =============================================================================
-
-
-class FluidProperties(StrictContractModel):
-    viscosity_cp: float = 1.0
-    density_kg_m3: float = 1000.0
-    surface_tension_n_m: float = 0.07
-
-
-class FluidVolume(StrictContractModel):
-    type: FluidShapeType
-    center: CoercedTuple3D
-    # For cylinder
-    radius: float | None = None
-    height: float | None = None
-    # For box
-    size: CoercedTuple3D | None = None
-
-
-class FluidDefinition(StrictContractModel):
-    fluid_id: str
-    properties: FluidProperties = FluidProperties()
-    initial_volume: FluidVolume
-    color: Annotated[tuple[int, int, int], BeforeValidator(_coerce_to_tuple)] = (
-        0,
-        0,
-        200,
-    )
-
-
-class FluidContainmentObjective(StrictContractModel):
-    type: FluidObjectiveType = FluidObjectiveType.FLUID_CONTAINMENT
-    fluid_id: str
-    containment_zone: BoundingBox
-    threshold: float = 0.95
-    eval_at: FluidEvalAt = FluidEvalAt.END
-
-
-class FlowRateObjective(StrictContractModel):
-    type: FluidObjectiveType = FluidObjectiveType.FLOW_RATE
-    fluid_id: str
-    gate_plane_point: CoercedTuple3D
-    gate_plane_normal: CoercedTuple3D
-    target_rate_l_per_s: float
-    tolerance: float = 0.2
-
-
-class MaxStressObjective(StrictContractModel):
-    type: Literal["max_stress"] = "max_stress"
-    part_label: str
-    max_von_mises_mpa: float
 
 
 # =============================================================================
@@ -203,8 +132,6 @@ class ObjectivesSection(StrictContractModel):
     goal_zone: BoundingBox
     forbid_zones: list[ForbidZone] = []
     build_zone: BoundingBox
-    fluid_objectives: list[FluidContainmentObjective | FlowRateObjective] = []
-    stress_objectives: list[MaxStressObjective] = []
 
 
 class StaticRandomization(StrictContractModel):
@@ -240,24 +167,11 @@ class MovedObject(StrictContractModel):
         return material
 
 
-class MotorControl(StrictContractModel):
-    """Control parameters for motor-type moving parts."""
-
-    mode: MotorControlMode
-    speed: float
-    frequency: float | None = None
-
-
 class MovingPart(StrictContractModel):
-    """
-    A moving part in the environment (motor or passive).
-    Used for extraction from assembly.
-    """
+    """A moving part in the environment."""
 
     part_name: str
-    type: MovingPartType
     dofs: list[str]
-    control: MotorControl | None = None
 
 
 class MotionForecastContact(StrictContractModel):
@@ -582,16 +496,6 @@ class EntityDefinition(BaseModel):
     model_config = ConfigDict(extra="allow")
 
 
-class MotorDefinition(BaseModel):
-    name: str | None = None
-    part_name: str | None = None
-    joint: str | None = None
-    type: str = "servo"
-    parameters: dict[str, Any] = Field(default_factory=dict)
-
-    model_config = ConfigDict(extra="allow")
-
-
 class CableDefinition(BaseModel):
     wire_id: str
     points: list[CoercedTuple3D]
@@ -603,9 +507,7 @@ class CableDefinition(BaseModel):
 
 class SceneDefinition(BaseModel):
     entities: list[EntityDefinition] = Field(default_factory=list)
-    motors: list[MotorDefinition] = Field(default_factory=list)
     cables: list[CableDefinition] = Field(default_factory=list)
-    fluids: list[FluidDefinition] = Field(default_factory=list)
 
     model_config = ConfigDict(extra="allow")
 
@@ -619,49 +521,7 @@ class PhysicsConfig(StrictContractModel):
     """Configuration for the physics engine."""
 
     backend: SimulatorBackendType = Field(default_factory=get_default_simulator_backend)
-    fem_enabled: bool = False
     compute_target: str = "auto"  # "auto" | "cpu" | "gpu"
-
-
-# =============================================================================
-# WP3 Electronics Models
-# =============================================================================
-
-
-class PowerSupplyConfig(StrictContractModel):
-    """Configuration for a DC power supply."""
-
-    type: str = "mains_ac_rectified"
-    voltage_dc: float
-    max_current_a: float
-    location: CoercedTuple3D | None = None
-
-
-class WiringConstraint(StrictContractModel):
-    """Constraints on wire routing and length."""
-
-    max_total_wire_length_mm: float
-    restricted_zones: list[ForbidZone] = []
-
-
-class ElectronicsRequirements(StrictContractModel):
-    """Electronics requirements section for benchmark_definition.yaml."""
-
-    power_supply_available: PowerSupplyConfig
-    wiring_constraints: WiringConstraint | None = None
-    circuit_validation_required: bool = True
-
-
-class CircuitValidationResult(BaseModel):
-    """Result of a circuit validation check."""
-
-    valid: bool
-    node_voltages: dict[str, float] = {}
-    branch_currents: dict[str, float] = {}
-    total_draw_a: float = 0.0
-    errors: list[str] = []
-    failures: list[SimulationFailure] = []
-    warnings: list[str] = []
 
 
 class BenchmarkPartDrillPolicy(StrictContractModel):
@@ -774,12 +634,10 @@ class BenchmarkDefinition(StrictContractModel):
     objectives: ObjectivesSection
     benchmark_parts: list[BenchmarkPartDefinition] = Field(default_factory=list)
     physics: PhysicsConfig = PhysicsConfig()
-    fluids: list[FluidDefinition] = []
     simulation_bounds: BoundingBox
     payload: MovedObject
     constraints: Constraints
     randomization: RandomizationMeta = RandomizationMeta()
-    electronics_requirements: ElectronicsRequirements | None = None
     assembly_totals: dict[str, float] | None = None
 
     @model_validator(mode="after")
@@ -905,7 +763,6 @@ class TraceMetadata(BaseModel):
     # Simulation specific
     simulation_run_id: str | None = None
     backend: SimulatorBackendType | None = None
-    motor_states: dict[str, str] = Field(default_factory=dict)
 
     # COTS specific
     cots_query_id: str | None = None
@@ -1269,9 +1126,7 @@ class PlanRefusalFrontmatter(StrictContractModel):
     Refusal logic must be structured, role-specific, and machine-validated.
     """
 
-    reasons: list[
-        MechanicalRefusalReason | ElectricalRefusalReason | BenchmarkRefusalReason
-    ]
+    reasons: list[MechanicalRefusalReason | BenchmarkRefusalReason]
     role: AgentName
 
     @model_validator(mode="after")
@@ -1280,9 +1135,7 @@ class PlanRefusalFrontmatter(StrictContractModel):
         if self.role == AgentName.ENGINEER_CODER:
             if not all(
                 isinstance(r, MechanicalRefusalReason)
-                or isinstance(r, ElectricalRefusalReason)
                 or str(r) in MechanicalRefusalReason.__members__
-                or str(r) in ElectricalRefusalReason.__members__
                 for r in self.reasons
             ):
                 raise ValueError(f"Invalid reasons for {self.role}")
@@ -1413,7 +1266,6 @@ class AssemblyPartConfig(StrictContractModel):
     """Configuration for a part in an assembly, including motion metadata."""
 
     dofs: list[str] = []
-    control: MotorControl | None = None
     cots_id: str | None = None
 
     @field_validator("cots_id")
@@ -1717,58 +1569,6 @@ class DraftingSheet(StrictContractModel):
         return self
 
 
-# =============================================================================
-# WP3 Assembly Electronics Section
-# =============================================================================
-
-
-class WireTerminal(StrictContractModel):
-    """A terminal on an electronic component."""
-
-    component: str
-    terminal: str
-
-
-class WireConfig(StrictContractModel):
-    """Configuration for a physical wire in the assembly."""
-
-    wire_id: str
-    from_terminal: WireTerminal = Field(..., alias="from")
-    to_terminal: WireTerminal = Field(..., alias="to")
-    gauge_awg: int
-    length_mm: float
-    waypoints: list[tuple[float, float, float]] = []
-    routed_in_3d: bool = False
-
-    model_config = ConfigDict(populate_by_name=True, extra="forbid")
-
-    @field_validator("waypoints", mode="before")
-    @classmethod
-    def coerce_waypoints(cls, v):
-        if isinstance(v, list):
-            return [tuple(pt) if isinstance(pt, list) else pt for pt in v]
-        return v
-
-
-class ElectronicComponent(StrictContractModel):
-    """A component in the electronic circuit."""
-
-    component_id: str
-    type: ElectronicComponentType
-    cots_part_id: str | None = None
-    assembly_part_ref: str | None = None
-    rated_voltage: float | None = None
-    stall_current_a: float | None = None
-
-
-class ElectronicsSection(StrictContractModel):
-    """Electronics section of the assembly definition."""
-
-    power_supply: PowerSupplyConfig
-    wiring: list[WireConfig] = []
-    components: list[ElectronicComponent] = []
-
-
 class EnvironmentDrillOperation(StrictContractModel):
     """Planner-declared drill operation against a benchmark-owned fixture."""
 
@@ -1801,7 +1601,6 @@ class AssemblyDefinition(StrictContractModel):
     constraints: AssemblyConstraints
     manufactured_parts: list[ManufacturedPartEstimate] = []
     cots_parts: list[CotsPartEstimate] = []
-    electronics: ElectronicsSection | None = None
     environment_drill_operations: list[EnvironmentDrillOperation] = []
     drafting: DraftingSheet | None = None
     motion_forecast: MotionForecast | None = None
@@ -1812,30 +1611,18 @@ class AssemblyDefinition(StrictContractModel):
     @property
     def moving_parts(self) -> list[MovingPart]:
         """Flatten final_assembly to extract all parts with DOFs."""
-        parts = []
+        parts: list[MovingPart] = []
 
         def process_item(item):
             if isinstance(item, SubassemblyEstimate):
                 for p_config in item.parts:
                     if p_config.config.dofs:
                         parts.append(
-                            MovingPart(
-                                part_name=p_config.name,
-                                type=(
-                                    "motor" if p_config.config.control else "passive"
-                                ),
-                                dofs=p_config.config.dofs,
-                                control=p_config.config.control,
-                            )
+                            MovingPart(part_name=p_config.name, dofs=p_config.config.dofs)
                         )
             elif isinstance(item, PartConfig) and item.config.dofs:
                 parts.append(
-                    MovingPart(
-                        part_name=item.name,
-                        type=("motor" if item.config.control else "passive"),
-                        dofs=item.config.dofs,
-                        control=item.config.control,
-                    )
+                    MovingPart(part_name=item.name, dofs=item.config.dofs)
                 )
 
         for item in self.final_assembly:

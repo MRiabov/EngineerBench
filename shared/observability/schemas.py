@@ -55,22 +55,9 @@ class ObservabilityEventType(StrEnum):
     REVIEW_DECISION = "review_decision"
     EXCESSIVE_DOF_DETECTED = "excessive_dof_detected"
 
-    # 25. WP3 Electronics events
-    CIRCUIT_VALIDATION = "circuit_validation"
-    WIRE_ROUTING = "wire_routing"
-    POWER_BUDGET_CHECK = "power_budget_check"
-    ELECTRICAL_FAILURE = "electrical_failure"
-    ELEC_AGENT_HANDOVER = "elec_agent_handover"
-    CIRCUIT_SIMULATION = "circuit_simulation"
-    WIRE_TORN = "wire_torn"
-    POWER_BUDGET_WARNING = "power_budget_warning"
-
-    # 26. WP2 Fluids & Deformable Materials events
+    # 25. Simulation and physics events
     SIMULATION_BACKEND_SELECTED = "simulation_backend_selected"
     PART_BREAKAGE = "part_breakage"
-    FLUID_CONTAINMENT_CHECK = "fluid_containment_check"
-    FLOW_RATE_CHECK = "flow_rate_check"
-    STRESS_SUMMARY = "stress_summary"
     MESHING_FAILURE = "meshing_failure"
     PHYSICS_INSTABILITY = "physics_instability"
     GPU_OOM_RETRY = "gpu_oom_retry"
@@ -269,130 +256,12 @@ class ReviewEvent(BaseEvent):
     checklist: dict[str, str | float | bool] = Field(default_factory=dict)
 
 
-# =============================================================================
-# WP3 Electronics Events
-# =============================================================================
-
-
-class CircuitValidationEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.CIRCUIT_VALIDATION
-    result: bool
-    total_draw_a: float
-    errors: list[str] = Field(default_factory=list)
-    warnings: list[str] = Field(default_factory=list)
-
-
-class WireRoutingEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.WIRE_ROUTING
-    wire_count: int
-    total_length_mm: float
-    clearance_passed: bool | None
-    errors: list[str] = Field(default_factory=list)
-
-
-class PowerBudgetCheckEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.POWER_BUDGET_CHECK
-    total_draw_a: float
-    max_capacity_a: float
-    margin_a: float
-    is_safe: bool
-
-
-class ElectricalFailureEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.ELECTRICAL_FAILURE
-    failure_type: str  # e.g., "short_circuit", "overcurrent", "wire_torn"
-    component_id: str | None = None
-    message: str
-
-
-class ElecAgentHandoverEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.ELEC_AGENT_HANDOVER
-    from_agent: str
-    to_agent: str
-    iteration_count: int
-
-
-class CircuitSimulationEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.CIRCUIT_SIMULATION
-    duration_s: float
-    motor_states: dict[str, str]  # motor_id -> "on"/"off"
-
-
-class CircuitSimulatedEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.CIRCUIT_SIMULATION
-    duration_s: float
-    total_draw_a: float
-    is_stable: bool
-
-
-class WireTornEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.WIRE_TORN
-    wire_id: str
-    force_n: float
-    limit_n: float
-
-
-class PowerBudgetWarningEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.POWER_BUDGET_WARNING
-    current_draw_a: float
-    limit_a: float
-    margin_pct: float
-
-
-# =============================================================================
-# WP2 Fluids & Deformable Materials Events
-# =============================================================================
-
-
 class SimulationBackendSelectedEvent(BaseEvent):
     event_type: ObservabilityEventType = (
         ObservabilityEventType.SIMULATION_BACKEND_SELECTED
     )
     backend: str
-    fem_enabled: bool
     compute_target: str
-
-
-class PartBreakageEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.PART_BREAKAGE
-    part_label: str
-    stress_mpa: float
-    ultimate_mpa: float
-    location: tuple[float, float, float]
-    step: int
-
-
-class FluidContainmentCheckEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.FLUID_CONTAINMENT_CHECK
-    fluid_id: str
-    ratio: float
-    threshold: float
-    passed: bool
-
-
-class FlowRateCheckEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.FLOW_RATE_CHECK
-    fluid_id: str
-    measured_rate: float
-    target_rate: float
-    passed: bool
-
-
-class StressSummaryEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.STRESS_SUMMARY
-    part_label: str
-    max_von_mises: float
-    safety_factor: float
-
-
-class MeshingFailureEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.MESHING_FAILURE
-    part_label: str
-    error: str
-    retry_count: int
-    repaired: bool
-
-
 class PhysicsInstabilityEvent(BaseEvent):
     event_type: ObservabilityEventType = ObservabilityEventType.PHYSICS_INSTABILITY
     kinetic_energy: float
