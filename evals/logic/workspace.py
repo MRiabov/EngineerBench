@@ -152,15 +152,11 @@ def _plan_artifact_exists_fn(
     worker: WorkerClient,
     target_node: AgentName,
 ):
-    plan_candidates = plan_artifact_candidates_for_agent(target_node)
-    plan_candidate_set = set(plan_candidates)
+    plan_candidate = plan_artifact_candidates_for_agent(target_node)[0]
 
     async def _exists(path: str) -> bool:
-        if path in plan_candidate_set:
-            for candidate in plan_candidates:
-                if await worker.exists(candidate):
-                    return True
-            return False
+        if path == plan_candidate:
+            return await worker.exists(plan_candidate)
         return await worker.exists(path)
 
     return _exists

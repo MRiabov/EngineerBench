@@ -52,7 +52,8 @@ _REVIEW_ROUND_RE = re.compile(
 )
 
 _ALLOWED_EXACT_FILES = {
-    "plan.md",
+    "benchmark_plan.md",
+    "engineering_plan.md",
     "todo.md",
     "journal.md",
     "script.py",
@@ -122,6 +123,8 @@ def _normalize_path(path: str) -> str:
 def _should_include_asset(path: str) -> bool:
     normalized = _normalize_path(path)
     if not normalized:
+        return False
+    if normalized == "plan.md":
         return False
     if normalized.startswith(("renders/", "reviews/", ".manifests/")):
         return True
@@ -242,7 +245,7 @@ def _missing_required_artifacts(
 
     if episode_type == EpisodeType.BENCHMARK:
         required = [
-            "plan.md",
+            "benchmark_plan.md",
             "todo.md",
             "journal.md",
             BENCHMARK_SCRIPT_PATH,
@@ -261,7 +264,7 @@ def _missing_required_artifacts(
         ]
     else:
         required = [
-            "plan.md",
+            "engineering_plan.md",
             "todo.md",
             "journal.md",
             SOLUTION_SCRIPT_PATH,

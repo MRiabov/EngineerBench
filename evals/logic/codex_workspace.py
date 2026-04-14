@@ -862,16 +862,6 @@ def materialize_seed_workspace(
         )
     )
 
-    if is_planner_agent(agent_name):
-        canonical_plan_path = workspace_dir / plan_path_for_agent(agent_name)
-        if canonical_plan_path.exists():
-            legacy_plan_path = workspace_dir / "plan.md"
-            legacy_plan_path.write_text(
-                canonical_plan_path.read_text(encoding="utf-8"),
-                encoding="utf-8",
-            )
-            copied_paths.append("plan.md")
-
     if (
         agent_name
         not in {

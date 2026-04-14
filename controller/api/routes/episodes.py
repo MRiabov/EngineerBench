@@ -418,7 +418,8 @@ async def _build_episode_replay_response(
             or path.startswith("reviews/")
             or path
             in {
-                "plan.md",
+                "benchmark_plan.md",
+                "engineering_plan.md",
                 "todo.md",
                 "journal.md",
                 "script.py",
@@ -1084,7 +1085,14 @@ async def list_episodes(
                 select(Asset.episode_id, Asset.s3_path, Asset.content).where(
                     Asset.episode_id.in_(ep_ids),
                     Asset.s3_path.in_(
-                        ["plan.md", "/plan.md", "journal.md", "/journal.md"]
+                        [
+                            "benchmark_plan.md",
+                            "/benchmark_plan.md",
+                            "engineering_plan.md",
+                            "/engineering_plan.md",
+                            "journal.md",
+                            "/journal.md",
+                        ]
                     ),
                 )
             )
@@ -1099,7 +1107,9 @@ async def list_episodes(
         for ep in episodes:
             asset_content = markdown_asset_map.get(ep.id, {})
             plan_content = _normalize_plan_markdown(
-                ep.plan or asset_content.get("plan.md")
+                ep.plan
+                or asset_content.get("benchmark_plan.md")
+                or asset_content.get("engineering_plan.md")
             )
             journal_content = ep.journal or asset_content.get("journal.md")
 
