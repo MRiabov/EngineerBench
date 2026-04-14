@@ -117,7 +117,6 @@ class AssemblyPartData(BaseModel):
     joint_range: list[float] | None = None
     material_id: str | None = None
     cots_id: str | None = None
-    is_electronics: bool = False
     is_zone: bool = False
     zone_type: ZoneType | None = None
     zone_size: list[float] | None = None
@@ -226,7 +225,6 @@ class CommonAssemblyTraverser:
     @staticmethod
     def traverse(
         assembly: Compound,
-        electronics: Any | None = None,
         *,
         allow_unnamed_labels: bool = False,
         unnamed_label_factory: Callable[[], str] | None = None,
@@ -270,9 +268,6 @@ class CommonAssemblyTraverser:
             )
             meta = CommonAssemblyTraverser._resolve_part_metadata(node)
             zone_info = CommonAssemblyTraverser._detect_zone(node, label)
-            is_electronics = CommonAssemblyTraverser._map_electronics(
-                label, electronics
-            )
 
             constraint = getattr(node, "constraint", None)
             weld_target = None
@@ -291,7 +286,6 @@ class CommonAssemblyTraverser:
                     joint_type=meta["joint_type"],
                     joint_axis=meta["joint_axis"],
                     joint_range=meta["joint_range"],
-                    is_electronics=is_electronics,
                     is_zone=zone_info["is_zone"],
                     zone_type=zone_info["type"],
                     zone_size=zone_info["size"],
@@ -393,15 +387,6 @@ class CommonAssemblyTraverser:
             bb = child.bounding_box()
             zone_size = [bb.size.X / 2, bb.size.Y / 2, bb.size.Z / 2]
         return {"is_zone": is_zone, "type": zone_type, "size": zone_size}
-
-    @staticmethod
-    def _map_electronics(label: str, electronics: Any | None) -> bool:
-        if electronics and hasattr(electronics, "components"):
-            for comp in electronics.components:
-                if getattr(comp, "assembly_part_ref", None) == label:
-                    return True
-        return False
-
 
 class MeshProcessor:
     """Converts build123d geometry into preview-ready mesh files."""

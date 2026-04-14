@@ -11,12 +11,11 @@ class MetricCollector:
         """Reset all metrics for a new run."""
         self.metrics = SimulationMetrics()
 
-    def update(self, delta_time: float, energy: float, velocity: float, stress: float):
+    def update(self, delta_time: float, energy: float, velocity: float):
         """Update metrics with new values."""
         self.metrics.total_time += delta_time
         self.metrics.total_energy += energy
         self.metrics.max_velocity = max(self.metrics.max_velocity, velocity)
-        self.metrics.max_stress = max(self.metrics.max_stress, stress)
 
     def add_event(self, event_type: str, data: dict):
         """Add an event to the metrics."""

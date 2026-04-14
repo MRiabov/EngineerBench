@@ -21,7 +21,6 @@ from .preview_scene import export_preview_scene_bundle
 
 __all__ = [
     "RenderedSimulationVideo",
-    "RenderedStressHeatmap",
     "append_render_bundle_index",
     "build_render_bundle_index_entry",
     "build_render_manifest",
@@ -40,8 +39,6 @@ __all__ = [
     "render_simulation_video_artifact",
     "render_simulation_video_bytes",
     "render_static_preview",
-    "render_stress_heatmap",
-    "render_stress_heatmap_artifact",
     "renderer_base_url",
     "select_single_preview_render_subdir",
     "select_scratch_preview_render_subdir",
@@ -56,11 +53,6 @@ _LAZY_EXPORTS = {
     "materialize_render_artifacts": ("renderer_client", "materialize_render_artifacts"),
     "render_preview": ("renderer_client", "render_preview"),
     "render_static_preview": ("renderer_client", "render_static_preview"),
-    "render_stress_heatmap": ("renderer_client", "render_stress_heatmap"),
-    "render_stress_heatmap_artifact": (
-        "stress_heatmap",
-        "render_stress_heatmap_artifact",
-    ),
     "renderer_base_url": ("renderer_client", "renderer_base_url"),
     "render_simulation_video_artifact": (
         "simulation_video",
@@ -72,7 +64,6 @@ _LAZY_EXPORTS = {
         "render_simulation_video_bytes",
     ),
     "RenderedSimulationVideo": ("simulation_video", "RenderedSimulationVideo"),
-    "RenderedStressHeatmap": ("stress_heatmap", "RenderedStressHeatmap"),
     "synthesize_placeholder_frames": (
         "simulation_video",
         "synthesize_placeholder_frames",
@@ -88,8 +79,6 @@ def __getattr__(name: str):
 
     if module_name == "renderer_client":
         from . import renderer_client as module
-    elif module_name == "stress_heatmap":
-        from . import stress_heatmap as module
     else:
         from . import simulation_video as module
 

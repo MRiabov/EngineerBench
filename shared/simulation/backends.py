@@ -4,10 +4,8 @@ import numpy as np
 from pydantic import BaseModel, Field, model_validator
 
 from shared.models.simulation import (
-    FluidMetricResult,
     RendererCapabilities,
     SimulationFailure,
-    StressSummary,
 )
 from shared.workers.schema import RenderBundleObjectPoseRecord
 
@@ -17,13 +15,6 @@ class BodyState(BaseModel):
     quat: tuple[float, float, float, float]
     vel: tuple[float, float, float]
     angvel: tuple[float, float, float]
-
-
-class StressField(BaseModel):
-    nodes: np.ndarray  # (N, 3)
-    stress: np.ndarray  # (N,) von Mises stress
-
-    model_config = {"arbitrary_types_allowed": True}
 
 
 class ContactForce(BaseModel):
@@ -96,9 +87,6 @@ class SceneAssets(BaseModel):
 
     gs_scene: Any | None = None
     entities: list[dict[str, Any]] = []
-    motors: list[dict[str, Any]] = []
-    cables: list[dict[str, Any]] = []
-    fluids: list[dict[str, Any]] = []
     model_config = {"extra": "allow", "arbitrary_types_allowed": True}
 
 
@@ -152,11 +140,7 @@ class PhysicsBackend(Protocol):
     def step(self, dt: float) -> StepResult: ...
     def get_body_state(self, body_id: str) -> BodyState: ...
     def get_state(self) -> dict[str, Any]: ...
-    def get_stress_field(self, body_id: str) -> StressField | None: ...
-    def get_max_stress(self) -> float: ...
-    def get_stress_summaries(self) -> list[StressSummary]: ...
     def get_particle_positions(self) -> np.ndarray | None: ...
-    def get_fluid_metrics(self) -> list[FluidMetricResult]: ...
     def get_camera_matrix(self, camera_name: str) -> np.ndarray: ...
     def set_site_pos(self, site_name: str, pos: np.ndarray) -> None: ...
     def get_site_state(self, site_name: str) -> SiteState: ...

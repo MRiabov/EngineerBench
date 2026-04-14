@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 
 
 class SimulatorBackendType(StrEnum):
-    MUJOCO = "MUJOCO"  # Rigid-body only, fast, no FEM/fluids
-    GENESIS = "GENESIS"  # FEM + MPM fluids, requires more compute
+    MUJOCO = "MUJOCO"  # Rigid-body only, fast
+    GENESIS = "GENESIS"  # General-purpose physics backend
 
     def accepted_headless_gl_backends(self) -> tuple[HeadlessGLBackend, ...]:
         from shared.runtime.headless import HeadlessGLBackend

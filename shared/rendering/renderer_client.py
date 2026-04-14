@@ -10,7 +10,6 @@ from typing import TYPE_CHECKING, Any
 import httpx
 import structlog
 
-from shared.models.simulation import StressFieldData
 from shared.workers.bundling import bundle_directory_base64
 from shared.workers.schema import (
     BenchmarkToolRequest,
@@ -19,7 +18,6 @@ from shared.workers.schema import (
     PreviewDesignResponse,
     PreviewRenderingType,
     SimulationVideoRequest,
-    StressHeatmapRequest,
 )
 
 logger = structlog.get_logger(__name__)
@@ -245,35 +243,6 @@ def render_simulation_video(
         session_id=session_id,
     ).model_dump(mode="json")
     url = f"{renderer_base_url()}/benchmark/simulation-video"
-    data = _post_json_with_busy_retry(
-        url=url,
-        payload=payload,
-        session_id=session_id,
-        timeout=120.0,
-    )
-    return BenchmarkToolResponse.model_validate(data)
-
-
-def render_stress_heatmap(
-    *,
-    bundle_base64: str | None,
-    stress_field: StressFieldData,
-    output_name: str,
-    session_id: str,
-    mesh_path: str | None = None,
-    width: int = 800,
-    height: int = 600,
-) -> BenchmarkToolResponse:
-    payload = StressHeatmapRequest(
-        bundle_base64=bundle_base64 or "",
-        stress_field=stress_field,
-        output_name=output_name,
-        mesh_path=mesh_path,
-        width=width,
-        height=height,
-        session_id=session_id,
-    ).model_dump(mode="json")
-    url = f"{renderer_base_url()}/benchmark/stress-heatmap"
     data = _post_json_with_busy_retry(
         url=url,
         payload=payload,

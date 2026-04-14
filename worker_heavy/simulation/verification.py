@@ -79,7 +79,6 @@ def _build_metrics(outcome: _SceneOutcome) -> SimulationMetrics:
         total_time=outcome.total_time,
         total_energy=0.0,
         max_velocity=outcome.max_velocity,
-        max_stress=0.0,
         success=outcome.success,
         fail_reason=str(failure) if failure else None,
         fail_mode=failure.reason if failure else None,
