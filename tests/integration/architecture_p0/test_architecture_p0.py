@@ -111,6 +111,7 @@ async def get_bundle(client: httpx.AsyncClient, session_id: str) -> str:
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-001")
 async def test_int_001_compose_boot_health_contract():
     """INT-001: Verify services are up and healthy."""
     async with httpx.AsyncClient(timeout=300.0) as client:
@@ -141,6 +142,7 @@ async def test_int_001_compose_boot_health_contract():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-217")
 async def test_int_217_static_preview_prefers_benchmark_bucket_when_workspace_also_contains_assembly_definition():
     """
     INT-217 regression: benchmark static-preview routing must not flip to the
@@ -385,6 +387,7 @@ async def _assert_simulation_video_contract(
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-210")
 async def test_int_210_mujoco_simulation_video_delegates_to_renderer_worker():
     """INT-210: MuJoCo simulation video is encoded by worker-renderer."""
     if selected_backend() != SimulatorBackendType.MUJOCO:
@@ -400,6 +403,7 @@ async def test_int_210_mujoco_simulation_video_delegates_to_renderer_worker():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-211")
 async def test_int_211_genesis_simulation_video_delegates_to_renderer_worker():
     """INT-211: Genesis simulation video uses the same renderer-worker contract."""
     if selected_backend() != SimulatorBackendType.GENESIS:
@@ -417,6 +421,7 @@ async def test_int_211_genesis_simulation_video_delegates_to_renderer_worker():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-002")
 async def test_int_002_controller_temporal_worker_execution_boundary():
     """INT-002: Verify controller-temporal-worker handoff and execution status."""
     session_id = f"INT-002-{uuid.uuid4().hex[:8]}"
@@ -460,6 +465,7 @@ async def test_int_002_controller_temporal_worker_execution_boundary():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-003")
 async def test_int_003_session_filesystem_isolation(worker_light_client):
     """INT-003: Verify sessions have isolated filesystems."""
     client = worker_light_client
@@ -486,6 +492,7 @@ async def test_int_003_session_filesystem_isolation(worker_light_client):
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-004")
 async def test_int_004_simulation_serialization():
     """INT-004: heavy worker exposes single-flight admission, busy responses, and readiness gating."""
     async with httpx.AsyncClient(timeout=300.0) as client:
@@ -602,6 +609,7 @@ def build():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-020")
 async def test_int_020_simulation_failure_taxonomy():
     """INT-020: Verify simulation success/failure taxonomy."""
     async with httpx.AsyncClient(timeout=300.0) as client:
@@ -763,6 +771,7 @@ run()
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-021")
 async def test_int_021_runtime_randomization_robustness():
     """INT-021: Verify runtime randomization robustness (multi-seed)."""
     async with httpx.AsyncClient(timeout=300.0) as client:
@@ -870,6 +879,7 @@ def build():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-023")
 async def test_int_023_fastener_validity_rules():
     """INT-023: Verify fastener validity rules."""
     async with httpx.AsyncClient(timeout=300.0) as client:
@@ -914,6 +924,7 @@ def build():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-024")
 async def test_int_024_worker_benchmark_validation_toolchain():
     """
     INT-024: /benchmark/validate fails on invalid objective setups,

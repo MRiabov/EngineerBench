@@ -6,6 +6,7 @@ from tests.support.helpers.playwright import open_frontend
 
 
 @pytest.mark.integration_frontend
+@pytest.mark.int_id("INT-171")
 def test_int_171_layout_persistence(page: Page, frontend_url: str):
     """
     INT-171: 3-column layout + resize persistence
@@ -40,6 +41,7 @@ def test_int_171_layout_persistence(page: Page, frontend_url: str):
 
 
 @pytest.mark.integration_frontend
+@pytest.mark.int_id("INT-170")
 def test_int_170_feedback_system(page: Page, frontend_url: str):
     """
     INT-170: Post-run feedback UX + API persistence

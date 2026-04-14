@@ -17,6 +17,7 @@ WORKER_HEAVY_URL = os.getenv("WORKER_HEAVY_URL", "http://127.0.0.1:18002")
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-061")
 async def test_int_061_asset_serving_security():
     """INT-061: Asset serving security + session isolation contract."""
     async with httpx.AsyncClient(timeout=300.0) as client:
@@ -94,6 +95,7 @@ async def test_int_061_asset_serving_security():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-062")
 async def test_int_062_worker_openapi_contract():
     """INT-062: Split-worker OpenAPI artifact contract."""
     async with httpx.AsyncClient(timeout=300.0) as client:
@@ -116,6 +118,7 @@ async def test_int_062_worker_openapi_contract():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-063")
 async def test_int_063_mounted_path_read_only():
     """INT-063: Mounted path compatibility/read-only contract."""
     async with httpx.AsyncClient(timeout=300.0) as client:
@@ -153,6 +156,7 @@ async def test_int_063_mounted_path_read_only():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-070")
 async def test_int_070_mounted_path_traversal_protection():
     """INT-070: Mounted path traversal protection."""
     async with httpx.AsyncClient(timeout=300.0) as client:

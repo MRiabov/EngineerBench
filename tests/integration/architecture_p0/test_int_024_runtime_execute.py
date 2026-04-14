@@ -45,6 +45,7 @@ def _runtime_validate_command() -> str:
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-024")
 async def test_int_024_execute_command_uses_agent_policy_timeout_by_default():
     """
     INT-024: controller execute_command must inherit the agent execution
@@ -91,6 +92,7 @@ async def test_int_024_execute_command_uses_agent_policy_timeout_by_default():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-024")
 async def test_int_024_runtime_execute_masks_host_session_root_as_workspace():
     """
     INT-024: shell execution must expose the canonical `/workspace` alias
@@ -119,6 +121,7 @@ async def test_int_024_runtime_execute_masks_host_session_root_as_workspace():
 @pytest.mark.integration_p0
 @pytest.mark.xdist_group(name="physics_sims")
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-024")
 async def test_int_024_runtime_execute_reaches_benchmark_validate_toolchain():
     """
     INT-024: benchmark validation remains reachable from the light-worker
@@ -261,6 +264,7 @@ print(f"VALIDATE_MESSAGE={message}")
 @pytest.mark.integration_p0
 @pytest.mark.xdist_group(name="physics_sims")
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-024")
 async def test_int_024_runtime_execute_rejects_startup_overlap_with_spawned_payload():
     """
     INT-024: benchmark validation must fail closed when a benchmark fixture
@@ -356,6 +360,7 @@ print(f"VALIDATE_MESSAGE={message}")
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-024")
 async def test_int_024_runtime_validate_rejects_transient_shell_state_mismatch():
     """
     INT-024: utils.submission.validate_benchmark() must fail closed when the live
@@ -415,6 +420,7 @@ PY
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-024")
 async def test_int_024_runtime_validate_rejects_parent_only_fixed_metadata():
     """
     INT-024: benchmark validation fails closed when a parent Compound is marked
@@ -514,6 +520,7 @@ print(f"VALIDATE_MESSAGE={message}")
 @pytest.mark.integration_p0
 @pytest.mark.xdist_group(name="physics_sims")
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-024")
 async def test_int_024_runtime_validate_accepts_translated_top_level_parts_with_exact_solution_script():
     """
     INT-024: benchmark validation should accept the exact authored
@@ -628,6 +635,7 @@ print(f"VALIDATE_MESSAGE={message}")
 )
 @pytest.mark.xdist_group(name="physics_sims")
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-024")
 async def test_int_024_runtime_validate_rejects_blank_top_level_labels():
     """
     INT-024: top-level build123d parts must not silently accept blank labels.
@@ -687,6 +695,7 @@ print(f"VALIDATE_MESSAGE={message}")
 @pytest.mark.integration_p0
 @pytest.mark.xdist_group(name="physics_sims")
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-024")
 async def test_int_024_runtime_validate_reports_resolved_build_zone_bounds():
     """
     INT-024: build-zone violations must report the resolved objective bounds,

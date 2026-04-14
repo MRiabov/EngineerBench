@@ -247,6 +247,7 @@ async def _wait_for_review_evidence(
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-074")
 async def test_int_074_engineering_dof_minimization_review_gate():
     """
     INT-074: Plan/execution reviewers must flag excessive DOFs (`len(dofs) > 3`)

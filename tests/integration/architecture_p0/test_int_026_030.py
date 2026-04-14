@@ -102,6 +102,7 @@ async def _post_with_busy_retry(
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-026")
 async def test_int_026_mandatory_event_families():
     """INT-026: Verify mandatory event families are emitted in a real run."""
     async with httpx.AsyncClient(timeout=300.0) as client:
@@ -186,6 +187,7 @@ def build():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-027")
 async def test_int_027_seed_variant_tracking():
     """INT-027: Verify DB persistence of variant_id and seed from the API response."""
     async with httpx.AsyncClient(timeout=300.0) as client:
@@ -237,6 +239,7 @@ async def test_int_027_seed_variant_tracking():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-028")
 async def test_int_028_strict_api_schema_contract():
     """INT-028: Verify OpenAPI schema validity and live responses."""
     async with httpx.AsyncClient(timeout=300.0) as client:
@@ -282,6 +285,7 @@ async def test_int_028_strict_api_schema_contract():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-029")
 async def test_int_029_api_key_enforcement(controller_client):
     """INT-029: Verify API key enforcement on protected endpoints."""
     client = controller_client
@@ -310,6 +314,7 @@ async def test_int_029_api_key_enforcement(controller_client):
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-030")
 async def test_int_030_interrupt_propagation():
     """INT-030: Verify user interrupt cancels worker jobs."""
     async with httpx.AsyncClient(timeout=300.0) as client:
@@ -352,6 +357,7 @@ async def test_int_030_interrupt_propagation():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-030")
 async def test_int_030_benchmark_interrupt_propagation():
     """INT-030 benchmark variant: Verify user interrupt cancels benchmark jobs."""
     async with httpx.AsyncClient(timeout=300.0) as client:

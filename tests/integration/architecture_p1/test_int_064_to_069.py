@@ -18,6 +18,7 @@ WORKER_HEAVY_URL = os.getenv("WORKER_HEAVY_URL", "http://127.0.0.1:18002")
 
 @pytest.mark.integration_p1
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-064")
 async def test_int_064_cots_metadata():
     """INT-064: COTS reproducibility metadata persistence."""
     async with httpx.AsyncClient(timeout=300.0) as client:
@@ -64,6 +65,7 @@ async def test_int_064_cots_metadata():
 @pytest.mark.integration_p1
 @pytest.mark.xdist_group(name="physics_sims")
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-064")
 async def test_int_064_session_workspace_copies_parts_db_catalog():
     """INT-064: session workspaces must receive a usable catalog snapshot."""
     session_id = f"INT-064-{uuid.uuid4().hex[:8]}"

@@ -43,6 +43,7 @@ def _session_id() -> str:
     ]
 )
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-187")
 async def test_int_187_heavy_worker_crash_containment_boundary():
     crash_sid = _session_id()
     ok_sid = _session_id()
@@ -89,6 +90,7 @@ async def test_int_187_heavy_worker_crash_containment_boundary():
 @pytest.mark.integration
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-189")
 async def test_int_189_simulation_executor_timeout_recreates_child():
     manager = SimulationExecutorManager()
 

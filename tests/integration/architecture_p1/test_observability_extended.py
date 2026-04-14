@@ -24,6 +24,7 @@ pytestmark = pytest.mark.xdist_group(name="physics_sims")
 
 @pytest.mark.integration_p1
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-057")
 async def test_int_057_backup_logging_flow():
     """
     INT-057: Backup-to-S3 logging flow
@@ -79,6 +80,7 @@ async def test_int_057_backup_logging_flow():
 
 @pytest.mark.integration_p1
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-058")
 async def test_int_058_cross_system_correlation():
     """INT-058: Verify cross-system correlation IDs."""
     async with httpx.AsyncClient(timeout=30.0) as client:

@@ -208,6 +208,7 @@ async def _write_workspace_file(
     ]
 )
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-008")
 async def test_int_008_objectives_semantic_validation_rejects_goal_forbid_overlap():
     """
     INT-008: benchmark_definition.yaml validation must fail closed on semantic contradictions,
@@ -318,6 +319,7 @@ def build():
     ]
 )
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-008")
 async def test_int_008_objectives_semantic_validation_rejects_runtime_envelope_forbid_zone_collision():
     """
     INT-008: benchmark_definition.yaml validation must fail closed when the
@@ -380,6 +382,7 @@ async def test_int_008_objectives_semantic_validation_rejects_runtime_envelope_f
     ]
 )
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-008")
 async def test_int_008_objectives_semantic_validation_rejects_goal_zone_outside_build_zone():
     """
     INT-008: benchmark_definition.yaml validation must fail closed when the
@@ -434,6 +437,7 @@ async def test_int_008_objectives_semantic_validation_rejects_goal_zone_outside_
     ]
 )
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-008")
 async def test_int_008_objectives_semantic_validation_rejects_build_zone_outside_simulation_bounds():
     """
     INT-008: benchmark_definition.yaml validation must fail closed when the
@@ -491,6 +495,7 @@ async def test_int_008_objectives_semantic_validation_rejects_build_zone_outside
     ]
 )
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-008")
 async def test_int_008_objectives_semantic_validation_rejects_runtime_envelope_exceeding_build_zone():
     """
     INT-008: benchmark_definition.yaml validation must fail closed when the
@@ -553,6 +558,7 @@ async def test_int_008_objectives_semantic_validation_rejects_runtime_envelope_e
     ],
 )
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-008")
 async def test_int_008_objectives_semantic_validation_rejects_negative_runtime_jitter_and_radius(
     case_name: str,
     runtime_jitter: list[float],
@@ -613,6 +619,7 @@ async def test_int_008_objectives_semantic_validation_rejects_negative_runtime_j
     ]
 )
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-008")
 async def test_int_008_attachment_policy_rejects_legacy_attachment_method():
     """
     INT-008: benchmark_definition.yaml attachment policy must reject legacy
@@ -735,6 +742,7 @@ def build():
     ]
 )
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-008")
 async def test_int_008_requires_non_empty_benchmark_parts():
     """
     INT-008: benchmark_definition.yaml must fail closed when benchmark_parts is
@@ -833,6 +841,7 @@ def build():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-008")
 async def test_int_008_submit_requires_explicit_reviewer_stage():
     """/benchmark/submit must fail closed when reviewer_stage is omitted."""
     session_id = f"INT-008-STAGE-{uuid.uuid4().hex[:8]}"
@@ -932,6 +941,7 @@ def build():
     ]
 )
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-008")
 async def test_int_008_interactable_benchmark_fixture_round_trips_permission():
     """
     INT-008: explicit interaction permission must survive YAML serialization and
@@ -1129,6 +1139,7 @@ def build():
     ]
 )
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-008")
 async def test_int_008_missing_interaction_permission_fails_closed_at_handoff():
     """
     INT-008: a benchmark-owned fixture that is used for engineer-facing
@@ -1309,6 +1320,7 @@ def build():
     ]
 )
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-008")
 async def test_int_008_objectives_semantic_validation_rejects_runtime_envelope_forbid_collision():
     """
     INT-008: benchmark_definition.yaml validation must fail closed when the
@@ -1422,6 +1434,7 @@ def build():
     ]
 )
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-008")
 async def test_int_008_objectives_semantic_validation_rejects_negative_runtime_ranges():
     """
     INT-008: benchmark_definition.yaml validation must fail closed on negative
@@ -1734,6 +1747,7 @@ async def _validate_and_simulate(
     ]
 )
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-008")
 async def test_int_008_drilling_contract_rejects_exceeding_hole_count():
     """
     INT-008: drilling operations that exceed drill_policy.max_hole_count must
@@ -1797,6 +1811,7 @@ async def test_int_008_drilling_contract_rejects_exceeding_hole_count():
     ]
 )
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-008")
 async def test_int_008_drilling_contract_rejects_diameter_out_of_range():
     """
     INT-008: drilling operations with diameter_mm outside the declared
@@ -1854,6 +1869,7 @@ async def test_int_008_drilling_contract_rejects_diameter_out_of_range():
     ]
 )
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-008")
 async def test_int_008_drilling_contract_rejects_depth_exceeding_max():
     """
     INT-008: drilling operations with depth_mm exceeding drill_policy.max_depth_mm
@@ -1911,6 +1927,7 @@ async def test_int_008_drilling_contract_rejects_depth_exceeding_max():
     ]
 )
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-008")
 async def test_int_008_no_attachment_policy_defaults_to_non_drillable():
     """
     INT-008: a benchmark fixture with no attachment_policy must cause drill

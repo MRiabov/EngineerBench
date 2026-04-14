@@ -32,6 +32,7 @@ def base_headers(session_id):
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-012")
 async def test_int_012_013_cots_search_contract_and_readonly(session_id, base_headers):
     """INT-012, INT-013: Verify COTS search output contract and read-only behavior."""
     async with httpx.AsyncClient(timeout=300.0) as client:
@@ -85,6 +86,7 @@ async def test_int_012_013_cots_search_contract_and_readonly(session_id, base_he
     ]
 )
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-016")
 async def test_int_016_reviewer_decision_schema_gate(
     session_id, base_headers, controller_client, worker_heavy_client
 ):
@@ -138,6 +140,7 @@ This should be rejected.
     ]
 )
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-017")
 async def test_int_017_plan_refusal_loop(session_id, base_headers, controller_client):
     """INT-017: Verify plan refusal loop (rejection leads to FAILED state)."""
     # Use controller_client fixture

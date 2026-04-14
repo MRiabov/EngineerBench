@@ -22,6 +22,7 @@ CONTROLLER_URL = os.getenv("CONTROLLER_URL", "http://127.0.0.1:18000")
 
 @pytest.mark.integration_p1
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-059")
 async def test_int_059_langfuse_trace_linkage():
     """INT-059: Verify Langfuse trace linkage in live runs."""
     async with httpx.AsyncClient(timeout=300.0) as client:
@@ -90,6 +91,7 @@ async def test_int_059_langfuse_trace_linkage():
 
 @pytest.mark.integration_p1
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-060")
 async def test_int_060_langfuse_feedback_contract():
     """INT-060: Verify Langfuse feedback forwarding contract."""
     async with httpx.AsyncClient(timeout=300.0) as client:

@@ -16,6 +16,7 @@ WORKER_HEAVY_URL = os.getenv("WORKER_HEAVY_URL", "http://127.0.0.1:18002")
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-071")
 async def test_int_071_filesystem_policy_precedence_and_reviewer_scope():
     """INT-071: Agents config precedence + reviewer write scope."""
     session_id = f"INT-071-{uuid.uuid4().hex[:8]}"
@@ -152,6 +153,7 @@ async def test_int_071_filesystem_policy_precedence_and_reviewer_scope():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-072")
 async def test_int_072_plan_refusal_validation_and_routing():
     """INT-072: plan_refusal.md validation + reviewer routing."""
     session_id = f"INT-072-{uuid.uuid4().hex[:8]}"
@@ -238,6 +240,7 @@ async def test_int_072_plan_refusal_validation_and_routing():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.int_id("INT-073")
 async def test_int_073_observability_linkage():
     """INT-073: session, child-ID, and lineage linkage is observable."""
     user_session_id = uuid.uuid4()
