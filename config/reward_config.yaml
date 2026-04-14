@@ -709,39 +709,6 @@ engineer:
 # Shared subagents
 # ---------------------------------------------------------------------------
 shared:
-  # ── COTS Search Subagent ─────────────────────────────────────────────────
-  cots_search:
-    description: >
-      Scores the COTS search subagent's ability to return relevant,
-      constraint-satisfying part candidates efficiently.
-    milestones:
-      # Gate 1 — returned candidates within constraints
-      candidates_within_constraints:
-        weight: 0.40
-        description: >
-          All returned candidates satisfy the invoker's constraints
-          (torque, voltage, size, cost tier). Partial: fraction of
-          candidates that satisfy all constraints.
-        partial: true
-        formula: "n_valid_candidates / n_returned_candidates"
-
-      # Gate 2 — at least one candidate was used in the final plan
-      candidate_adopted:
-        weight: 0.40
-        description: >
-          At least one returned part_id appears in the final
-          assembly_definition.yaml. Binary.
-
-      # Gate 3 — search was efficient (few queries)
-      search_efficiency:
-        weight: 0.20
-        description: >
-          Fewer SQL queries to find a valid candidate is better.
-          Score = max(0, 1 - (n_queries - 1) / 5). 1 query → 1.0,
-          6+ queries → 0.0.
-        partial: true
-        formula: "max(0.0, 1.0 - (n_queries - 1) / 5.0)"
-
   # ── Skill Creator Subagent ───────────────────────────────────────────────
   skill_agent:
     description: >

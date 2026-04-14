@@ -44,7 +44,6 @@ from shared.workers.schema import SimulationArtifacts, ValidationResultRecord
 from ..benchmark_handover_validation import (
     BenchmarkPlanReviewerEvidence,
 )
-from ..nodes.cots_search import COTSSearchNode
 from ..review_handover import (
     collect_plan_reviewer_handover_evidence,
     validate_reviewer_handover,
@@ -640,8 +639,6 @@ class BenchmarkPlannerNode(BaseNode):
 
                 submitted = False
                 last_submit_error_text: str | None = None
-                cots_search_budget = 2
-                cots_search_calls = 0
                 no_tool_call_streak = 0
                 completion_timeout_streak = 0
                 for step_idx in range(
@@ -793,24 +790,6 @@ class BenchmarkPlannerNode(BaseNode):
                             )
                             continue
 
-                        if (
-                            tool_name == "invoke_cots_search_subagent"
-                            and cots_search_calls >= cots_search_budget
-                        ):
-                            budget_msg = self._get_runtime_prompt(
-                                "benchmark_generator.runtime.cots_search_budget_exhausted",
-                                max_calls=cots_search_budget,
-                            )
-                            messages.append(
-                                self._tool_response_message(
-                                    tool_call_id=tool_call.get("id", ""),
-                                    tool_name=str(tool_name),
-                                    content=budget_msg,
-                                )
-                            )
-                            messages.append({"role": "system", "content": budget_msg})
-                            continue
-
                         if tool_name == submit_tool_name:
                             await self._normalize_benchmark_definition_yaml_artifact()
                             await self._normalize_todo_markdown_artifact()
@@ -854,9 +833,6 @@ class BenchmarkPlannerNode(BaseNode):
                                 content=result_text,
                             )
                         )
-
-                        if tool_name == "invoke_cots_search_subagent":
-                            cots_search_calls += 1
 
                         if tool_name == submit_tool_name:
                             submission = result
@@ -1773,25 +1749,6 @@ async def coder_node(state: BenchmarkGeneratorState) -> BenchmarkGeneratorState:
     )
     node = BenchmarkCoderNode(context=ctx)
     return await node(state)
-
-
-@type_check
-async def cots_search_node(state: BenchmarkGeneratorState) -> BenchmarkGeneratorState:
-    from controller.config.settings import settings as global_settings
-
-    worker_light_url = global_settings.worker_light_url
-    ctx = SharedNodeContext.create(
-        worker_light_url=worker_light_url,
-        session_id=_benchmark_worker_session_id(state),
-        episode_id=state.episode_id,
-        agent_role=AgentName.COTS_SEARCH,
-    )
-    node = COTSSearchNode(context=ctx)
-    summary, _ = await node.run_search(state=state, prompt=state.session.prompt)
-    state.messages.append(
-        AIMessage(content=f"COTS Search summary: {summary or 'No summary provided.'}")
-    )
-    return state
 
 
 class BenchmarkReviewerSignature(dspy.Signature):

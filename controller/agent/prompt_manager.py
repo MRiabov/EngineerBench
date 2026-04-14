@@ -56,7 +56,6 @@ class PromptManager:
         AgentName.ENGINEER_PLAN_REVIEWER.value: "engineer_plan_reviewer",
         AgentName.ENGINEER_CODER.value: "engineer_coder",
         AgentName.ENGINEER_EXECUTION_REVIEWER.value: "engineer_execution_reviewer",
-        AgentName.COTS_SEARCH.value: "cots_search",
         AgentName.SKILL_AGENT.value: "skill_agent",
         AgentName.JOURNALLING_AGENT.value: "journalling_agent",
     }

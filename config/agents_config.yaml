@@ -68,11 +68,6 @@ execution:
       timeout_seconds: 90
       max_turns: 150
       max_total_tokens: 400000
-    cots_search:
-      timeout_seconds: 180
-      max_turns: 150
-      max_total_tokens: 400000
-      native_tool_loop_max_iters: 16
     journalling_agent:
       timeout_seconds: 90
       max_turns: 150
@@ -177,7 +172,6 @@ agents:
       - inspect_media
       - write_file
       - edit_file
-      - invoke_cots_search_subagent
       - validate_costing_and_price
       - submit_engineering_plan
     allowed_during_unit_eval:
@@ -241,7 +235,6 @@ agents:
       - grep
       - execute_command
       - inspect_topology
-      - invoke_cots_search_subagent
     allowed_during_unit_eval:
       - engineer_coder
       - engineer_execution_reviewer
@@ -300,7 +293,6 @@ agents:
       - grep
       - execute_command
       - inspect_topology
-      - invoke_cots_search_subagent
     allowed_during_unit_eval:
       - benchmark_coder
       - benchmark_reviewer
@@ -353,7 +345,6 @@ agents:
       - execute_command
       - inspect_topology
       - verify
-      - invoke_cots_search_subagent
     allowed_during_unit_eval:
       - engineer_coder
       - engineer_plan_reviewer
@@ -403,7 +394,6 @@ agents:
       - grep
       - execute_command
       - inspect_topology
-      - invoke_cots_search_subagent
     allowed_during_unit_eval:
       - engineer_coder
       - engineer_execution_reviewer
@@ -457,7 +447,6 @@ agents:
       - edit_file
       - grep
       - execute_command
-      - invoke_cots_search_subagent
       - submit_benchmark_plan
     allowed_during_unit_eval:
       - benchmark_planner
@@ -496,7 +485,6 @@ agents:
       - grep
       - execute_command
       - inspect_topology
-      - invoke_cots_search_subagent
     allowed_during_unit_eval:
       - benchmark_planner
       - benchmark_plan_reviewer
@@ -541,41 +529,12 @@ agents:
       - grep
       - execute_command
       - inspect_topology
-      - invoke_cots_search_subagent
     allowed_during_unit_eval:
       - benchmark_reviewer
     visual_inspection:
       required: true
       min_images: 1
       reminder_interval: 2
-  cots_search:
-    filesystem_permissions:
-      read:
-        allow:
-          - /
-          - .
-          - config/**
-          - .agents/skills/**
-          - utils/**
-          - benchmark_definition.yaml
-          - benchmark_assembly_definition.yaml
-          - assembly_definition.yaml
-          - benchmark_plan.md
-          - engineering_plan.md
-          - plan.md
-          - todo.md
-          - journal.md
-        deny:
-          - .manifests/**
-      write:
-        allow: []
-        deny:
-          - "**"
-    tools:
-      - search_cots_catalog
-      - read_file
-    allowed_during_unit_eval:
-      - cots_search
   journalling_agent:
     filesystem_permissions:
       read:
@@ -622,7 +581,6 @@ agents:
       - grep
       - execute_command
       - inspect_topology
-      - invoke_cots_search_subagent
       - save_suggested_skill
     allowed_during_unit_eval:
       - skill_agent

@@ -65,43 +65,6 @@ manufactured_parts:
     removed_volume_mm3: 0.0
     estimated_unit_cost_usd: 1.0
 
-cots_parts:
-  # Add one item per COTS part.
-  # Required fields:
-  # - part_id
-  # - manufacturer
-  # - unit_cost_usd
-  # - weight_g
-  # - quantity
-  # - source
-  # - catalog_version
-  # - bd_warehouse_commit
-  # - catalog_snapshot_id
-  # - generated_at
-  # Example:
-  # - part_id: M3_BOLT
-  #   manufacturer: Generic
-  #   unit_cost_usd: 0.5
-  #   weight_g: 1.2
-  #   quantity: 8
-  #   source: catalog
-  #   catalog_version: "1.0.0"
-  #   bd_warehouse_commit: "unknown"
-  #   catalog_snapshot_id: "<catalog snapshot hash>"
-  #   generated_at: "unknown"
-
-environment_drill_operations:
-  # Optional.
-  # Declare benchmark-owned fixture drilling only when the benchmark attachment
-  # policy allows it.
-  # Example:
-  # - target_part_id: <benchmark_fixture_part_id>
-  #   hole_id: mount_left
-  #   diameter_mm: 5.0
-  #   depth_mm: 10.0
-  #   quantity: 1
-  #   notes: Fastener clearance hole into permitted fixture
-
 final_assembly:
   - name: bridge_deck
     config:
@@ -169,8 +132,6 @@ drafting:
   notes: []
 
 totals:
-  # `estimated_unit_cost_usd` must include manufactured parts, COTS parts,
-  # and any benchmark drilling cost from environment_drill_operations.
   estimated_unit_cost_usd: 14.0
   estimated_weight_g: 11.9232
   estimate_confidence: high

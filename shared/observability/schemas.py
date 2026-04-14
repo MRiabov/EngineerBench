@@ -53,7 +53,6 @@ class ObservabilityEventType(StrEnum):
     COST_WEIGHT_DELTA = "cost_weight_delta"
     # 16. Review decision (full details)
     REVIEW_DECISION = "review_decision"
-    EXCESSIVE_DOF_DETECTED = "excessive_dof_detected"
 
     # 25. Simulation and physics events
     SIMULATION_BACKEND_SELECTED = "simulation_backend_selected"
@@ -266,17 +265,6 @@ class ReviewDecisionEvent(BaseEvent):
     review_id: str | None = None
     evidence_stats: ReviewEvidenceStats = Field(default_factory=ReviewEvidenceStats)
     checklist: dict[str, str | float | bool] = Field(default_factory=dict)
-
-
-class ExcessiveDofDetectedEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.EXCESSIVE_DOF_DETECTED
-    reviewer_stage: str
-    part_id: str
-    proposed_dofs: list[str]
-    expected_minimal_engineering_dofs: list[str]
-    expected_minimal_dofs: list[str]
-    dof_count: int
-    dof_count_gt_3: bool
 
 
 class ReviewEvent(BaseEvent):

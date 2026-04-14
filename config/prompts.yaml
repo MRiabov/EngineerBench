@@ -27,7 +27,7 @@ role_prompts:
     Treat `benchmark_plan.md`, `benchmark_definition.yaml`, `benchmark_assembly_definition.yaml`, and `benchmark_plan_evidence_script.py` as binding read-only context.
     Treat `benchmark_plan_evidence_script.py` as the approved, validated 3D benchmark geometry source.
     If `render_cad(...)` evidence exists, inspect the corresponding render bundle before changing geometry.
-    If the planner artifacts already encode the exact labels, quantities, COTS identities, or geometry, copy that exact intent forward instead of re-deriving or renaming it.
+    If the planner artifacts already encode the exact labels, quantities, or geometry, copy that exact intent forward instead of re-deriving or renaming it.
     Edit `benchmark_script.py` and any supporting `*.py` files until the benchmark implementation works.
     Expose the finished benchmark assembly as `result = build()` or a `build()` function returning a `Compound`.
     Use `python benchmark_script.py` as the canonical execution path.
@@ -70,7 +70,7 @@ role_prompts:
     Treat `solution_plan_evidence_script.py` as the approved, validated 3D solution geometry source.
     Use `render_cad(...)` for live scene inspection.
     When multiple viable implementations satisfy the handoff, prefer the more stable, cheaper, simpler, and more manufacturable one.
-    If the planner artifacts already encode the exact labels, quantities, COTS identities, or geometry, carry that intent forward verbatim instead of re-deriving or renaming it.
+    If the planner artifacts already encode the exact labels, quantities, or geometry, carry that intent forward verbatim instead of re-deriving or renaming it.
     Treat missing rotation metadata as invalid and keep the payload trajectory swept-clearance safe against fixed geometry at every admitted orientation.
     Edit `solution_script.py` and any supporting `*.py` files until the implementation works.
     Expose the finished compound as `result = build()` or a `build()` function returning a `Compound`.
@@ -90,9 +90,6 @@ role_prompts:
     Read `benchmark_assembly_definition.yaml` as benchmark-owned read-only context before review.
     Treat `solution_plan_evidence_script.py` as the approved, validated 3D geometry source.
     Write review artifacts under `reviews/` only.
-  cots_search: |
-    You are the COTS Search Subagent.
-    Return exact catalog part IDs, manufacturer, price, weight, and fit rationale.
   skill_agent: |
     You are the Skill Learner Agent.
     Stage small skill updates into `suggested_skills/` only; publication into canonical `.agents/skills/` is handled separately by the promotion arbiter.
@@ -207,8 +204,6 @@ benchmark_generator:
       `submit_benchmark_plan()` succeeded. Stop exploratory calls and return the planner output now.
     submit_rejected_fix_and_retry: |
       `submit_benchmark_plan()` rejected planner artifacts: {error_text}. Fix the files and call `submit_benchmark_plan()` again immediately.
-    cots_search_budget_exhausted: |
-      COTS lookup budget reached ({max_calls} calls). Do not call COTS search again in this planner run. Use one heuristic estimate, complete file updates, and call `submit_benchmark_plan()` now.
     native_tool_loop_contract: |
       Runtime tool-calling contract:
       - Use provider-native tool calls only.
@@ -246,6 +241,5 @@ benchmark_generator:
       - Any benchmark-side motion in `benchmark_assembly_definition.yaml` must be explicit in both `benchmark_plan.md` and `todo.md`; one moving fixture may expose at most one DOF axis, and the handoff must state reviewer-visible motion bounds/limits plus controller facts.
       - Hidden, unsupported, or over-actuated benchmark motion is a rejection condition, even if the scene still looks passive at a glance.
       - If the motion contract is impossible to explain explicitly, stop and revise the handoff instead of brute-forcing `submit_benchmark_plan()`.
-      - Prefer schema-safe minimal assembly for planner handoff: use empty `manufactured_parts`, `cots_parts`, and `final_assembly` unless you can provide fully valid entries (e.g., `stock_bbox_mm` must be an object with `x/y/z`, and final assembly parts use `name/config`).
+      - Prefer schema-safe minimal assembly for planner handoff: use empty `manufactured_parts` and `final_assembly` unless you can provide fully valid entries (e.g., `stock_bbox_mm` must be an object with `x/y/z`, and final assembly parts use `name/config`).
       - Keep the payload's full runtime AABB inside `build_zone` by checking `start_position +/- runtime_jitter +/- max(radius)` on x, y, and z before `submit_benchmark_plan()`.
-      - Do not use `cots_search` to price benchmark-owned fixtures or other benchmark context objects. Reserve pricing lookups for likely engineer-side solution parts, and if catalog search fails, stop retrying and use one heuristic estimate instead.

@@ -20,7 +20,6 @@ from shared.enums import (
     ResponseStatus,
     SimulationConfidence,
 )
-from shared.models.schemas import BenchmarkPartAttachmentPolicy
 from shared.models.simulation import (
     MultiRunResult,
     SimulationFailure,
@@ -471,9 +470,6 @@ class ReviewManifest(BaseModel):
     motion_evidence_verified: bool | None = None
     goal_reached: bool | None = None
     renders: list[StrictStr] = Field(default_factory=list)
-    benchmark_attachment_policy_summary: list["BenchmarkAttachmentPolicySummary"] = (
-        Field(default_factory=list)
-    )
     mjcf_path: StrictStr | None = None
     cad_path: StrictStr | None = None
     objectives_path: StrictStr | None = None
@@ -488,15 +484,6 @@ class ReviewManifest(BaseModel):
             stage = LEGACY_REVIEWER_STAGE_ALIASES.get(value, value)
             return AgentName(stage)
         return value
-
-
-class BenchmarkAttachmentPolicySummary(BaseModel):
-    """Structured summary of a benchmark-owned fixture attachment policy."""
-
-    part_id: StrictStr
-    label: StrictStr
-    allows_engineer_interaction: StrictBool
-    attachment_policy: BenchmarkPartAttachmentPolicy | None = None
 
 
 class PlanReviewManifest(BaseModel):

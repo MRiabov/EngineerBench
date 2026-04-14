@@ -189,11 +189,7 @@ class CommonAssemblyTraverser:
     @staticmethod
     def _resolve_material_id(metadata: Any) -> str | None:
         material_id = getattr(metadata, "material_id", None)
-        if material_id:
-            return material_id
-        if getattr(metadata, "cots_id", None):
-            return "cots-generic"
-        return None
+        return material_id or None
 
     @staticmethod
     def _is_structural_compound(node: Any) -> bool:

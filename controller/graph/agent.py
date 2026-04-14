@@ -1,6 +1,5 @@
 from controller.agent.benchmark.graph import define_graph
 from controller.agent.graph import (
-    cots_search_graph,
     engineer_planner_graph,
 )
 from controller.agent.graph import (
@@ -47,9 +46,6 @@ def _resolve_graph_bundle(
         AgentName.BENCHMARK_REVIEWER,
     }:
         return define_graph(), None
-
-    if agent_name == AgentName.COTS_SEARCH:
-        return cots_search_graph, None
 
     logger.error(
         "unknown_agent_name_falling_back_to_engineer",

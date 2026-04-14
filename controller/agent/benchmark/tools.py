@@ -10,7 +10,6 @@ import yaml
 from sqlalchemy import select
 
 from controller.agent.tools import (
-    _invoke_cots_search_subagent,
     filter_tools_for_agent,
     get_common_tools,
     run_validate_and_price_script,
@@ -122,50 +121,6 @@ def get_benchmark_planner_tools(
                 phrases.add(tokens[start:end])
         return phrases
 
-    def _phrase_matches(phrase_windows: set[tuple[str, ...]], candidate: str) -> bool:
-        candidate_tokens = _normalized_tokens(candidate)
-        return bool(candidate_tokens) and candidate_tokens in phrase_windows
-
-    async def _benchmark_owned_cots_query_reason(query: str) -> str | None:
-        raw = await fs.read_file_optional("benchmark_definition.yaml")
-        if raw is None:
-            return None
-
-        try:
-            data = yaml.safe_load(raw) or {}
-        except Exception:
-            return None
-
-        query_tokens = _normalized_tokens(query)
-        if not query_tokens:
-            return None
-        query_phrases = _contiguous_phrases(query_tokens)
-
-        benchmark_terms: set[str] = set()
-        benchmark_parts = data.get("benchmark_parts")
-        if isinstance(benchmark_parts, list):
-            for part in benchmark_parts:
-                if not isinstance(part, dict):
-                    continue
-                for field_name in ("part_id", "label"):
-                    field_value = part.get(field_name)
-                    if isinstance(field_value, str) and field_value.strip():
-                        benchmark_terms.add(field_value)
-
-        matches = sorted(
-            term for term in benchmark_terms if _phrase_matches(query_phrases, term)
-        )
-        if not matches:
-            return None
-
-        return (
-            "Benchmark-owned fixtures are read-only task context and are excluded "
-            "from COTS pricing/manufacturability. "
-            f"Do not use invoke_cots_search_subagent for query {query!r}. "
-            f"Matched benchmark-owned term(s): {', '.join(matches)}. "
-            "Use one heuristic estimate for the likely engineer-side solution instead."
-        )
-
     async def list_files(path: str = "/"):
         return await fs.list_files(path)
 
@@ -230,30 +185,6 @@ def get_benchmark_planner_tools(
             payload_path=payload_path,
             rendering_type=rendering_type,
             smoke_test_mode=smoke_test_mode,
-        )
-
-    async def invoke_cots_search_subagent(
-        query: str,
-        max_weight_g: float | None = None,
-        max_cost: float | None = None,
-        category: str | None = None,
-        limit: int = 5,
-    ) -> str:
-        """
-        Invoke the dedicated COTS search subagent for likely engineer-side parts only.
-
-        Benchmark-owned fixtures must not be priced through catalog search.
-        """
-        blocked_reason = await _benchmark_owned_cots_query_reason(query)
-        if blocked_reason:
-            raise ValueError(blocked_reason)
-        return await _invoke_cots_search_subagent(
-            query=query,
-            max_weight_g=max_weight_g,
-            max_cost=max_cost,
-            category=category,
-            limit=limit,
-            session_id=session_id,
         )
 
     async def submit_benchmark_plan() -> dict:
@@ -464,7 +395,6 @@ def get_benchmark_planner_tools(
             write_file,
             edit_file,
             grep,
-            invoke_cots_search_subagent,
             render_cad,
             submit_benchmark_plan,
         ],

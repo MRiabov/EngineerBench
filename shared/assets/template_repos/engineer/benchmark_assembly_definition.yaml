@@ -64,7 +64,6 @@ manufactured_parts:
     stock_volume_mm3: 432.0
     removed_volume_mm3: 0.0
     estimated_unit_cost_usd: 1.0
-cots_parts: []
 drafting:
   sheet_id: sheet-1
   title: Seeded benchmark drafting

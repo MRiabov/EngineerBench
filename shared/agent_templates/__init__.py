@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from shared.cots.providers import supported_cots_geometry_hints
 from shared.enums import AgentName
 
 AGENT_TEMPLATES_ROOT = Path(__file__).resolve().parent
@@ -72,12 +71,7 @@ def load_template_text(template_file: str | Path) -> str:
 
 def load_common_template_files() -> dict[str, str]:
     """Load the shared boilerplate starter files."""
-    loaded = _load_template_tree(COMMON_TEMPLATES_ROOT)
-    if "solution_script.py" in loaded:
-        loaded["solution_script.py"] = _render_registry_tied_solution_script(
-            loaded["solution_script.py"]
-        )
-    return loaded
+    return _load_template_tree(COMMON_TEMPLATES_ROOT)
 
 
 def load_template_repo_files(template_repo: str | Path) -> dict[str, str]:
@@ -118,20 +112,5 @@ def load_codex_template_files() -> dict[str, str]:
 
 
 def _render_registry_tied_solution_script(content: str) -> str:
-    """Rewrite the starter hint block from the live COTS geometry registry."""
-    hints = supported_cots_geometry_hints()
-    if not hints:
-        return content
-
-    lines = content.splitlines()
-    try:
-        start = lines.index("# COTS import hint:")
-    except ValueError:
-        return content
-
-    end = start + 1
-    while end < len(lines) and lines[end].startswith("#"):
-        end += 1
-
-    rendered_lines = lines[:start] + list(hints) + lines[end:]
-    return "\n".join(rendered_lines) + ("\n" if content.endswith("\n") else "")
+    """Return the starter script unchanged."""
+    return content

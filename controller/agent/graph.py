@@ -41,7 +41,6 @@ from shared.observability.events import emit_event
 from shared.observability.schemas import NodeEntryValidationFailedEvent
 
 from .nodes.coder import coder_node
-from .nodes.cots_search import cots_search_node
 from .nodes.execution_reviewer import engineer_execution_reviewer_node
 from .nodes.plan_reviewer import engineer_plan_reviewer_node
 from .nodes.planner import planner_node
@@ -530,10 +529,6 @@ builder.add_node(
         AgentName.ENGINEER_EXECUTION_REVIEWER, engineer_execution_reviewer_node
     ),
 )
-builder.add_node(
-    AgentName.COTS_SEARCH,
-    _guarded_node(AgentName.COTS_SEARCH, cots_search_node),
-)
 
 
 # Set the entry point and edges
@@ -608,8 +603,6 @@ builder.add_conditional_edges(
     },
 )
 
-builder.add_edge(AgentName.COTS_SEARCH, AgentName.ENGINEER_PLANNER)
-
 # T026: Implement Checkpointing
 memory = MemorySaver()
 
@@ -627,4 +620,3 @@ def _build_single_node_graph(node_name: AgentName, node_callable):
 engineer_planner_graph = _build_single_node_graph(
     AgentName.ENGINEER_PLANNER, planner_node
 )
-cots_search_graph = _build_single_node_graph(AgentName.COTS_SEARCH, cots_search_node)

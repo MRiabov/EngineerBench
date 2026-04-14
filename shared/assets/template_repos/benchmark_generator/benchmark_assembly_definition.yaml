@@ -6,8 +6,8 @@ units:
   currency: "USD"
 
 constraints:
-  benchmark_max_unit_cost_usd: 27.0
-  benchmark_max_weight_g: 30.0
+  benchmark_max_unit_cost_usd: 21.0
+  benchmark_max_weight_g: 22.7448
   planner_target_max_unit_cost_usd: 18.0
   planner_target_max_weight_g: 20.0
 
@@ -64,8 +64,6 @@ manufactured_parts:
     stock_volume_mm3: 432.0
     removed_volume_mm3: 0.0
     estimated_unit_cost_usd: 1.0
-cots_parts: []
-environment_drill_operations: []
 
 drafting:
   sheet_id: sheet-1

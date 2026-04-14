@@ -11,19 +11,10 @@ from controller.agent.tools import get_engineer_tools
 from controller.observability.tracing import record_worker_events
 from shared.enums import AgentName, ReviewDecision
 from shared.models.schemas import ReviewResult
-from shared.observability.schemas import (
-    ExcessiveDofDetectedEvent,
-    ReviewDecisionEvent,
-)
+from shared.observability.schemas import ReviewDecisionEvent
 from shared.type_checking import type_check
 
 from .base import BaseNode, SharedNodeContext
-from .dof_guard import (
-    apply_canonical_dof_checklist,
-    build_excessive_dof_event_payload,
-    collect_excessive_dof_findings,
-    has_accepted_dof_justification,
-)
 
 logger = structlog.get_logger(__name__)
 
@@ -66,139 +57,6 @@ class PlanReviewerNode(BaseNode):
         )
 
         await self._ensure_current_revision_render_inspection()
-
-        plan_markdown = state.plan or ""
-        with suppress(Exception):
-            plan_markdown = await self._read_optional_workspace_file(
-                "engineering_plan.md", plan_markdown
-            )
-
-        try:
-            findings = collect_excessive_dof_findings(assembly_definition)
-        except Exception as exc:
-            error_msg = f"Plan reviewer DOF validation failed: {exc}"
-            await record_worker_events(
-                episode_id=state.episode_id,
-                events=[
-                    {
-                        "event_type": "plan_review_validation_run",
-                        "data": {
-                            "reviewer_stage": AgentName.ENGINEER_PLAN_REVIEWER,
-                            "validator_status": "invalid_assembly_definition",
-                            "validator_error": str(exc),
-                        },
-                        "reviewer_stage": AgentName.ENGINEER_PLAN_REVIEWER,
-                        "validator_status": "invalid_assembly_definition",
-                        "validator_error": str(exc),
-                    }
-                ],
-            )
-            return state.model_copy(
-                update={
-                    "status": AgentStatus.FAILED,
-                    "feedback": error_msg,
-                    "journal": state.journal + f"\n[Plan Reviewer] {error_msg}",
-                    "turn_count": state.turn_count + 1,
-                }
-            )
-        for finding in findings:
-            payload = build_excessive_dof_event_payload(
-                finding, reviewer_stage=AgentName.ENGINEER_PLAN_REVIEWER
-            )
-            await record_worker_events(
-                episode_id=state.episode_id,
-                events=[ExcessiveDofDetectedEvent(**payload)],
-            )
-        unjustified = [
-            finding
-            for finding in findings
-            if not has_accepted_dof_justification(
-                plan_markdown, part_id=finding.part_id
-            )
-        ]
-        if unjustified:
-            await record_worker_events(
-                episode_id=state.episode_id,
-                events=[
-                    {
-                        "event_type": "plan_review_validation_run",
-                        "data": {
-                            "validator_status": "rejected_excessive_dof",
-                            "violation_count": len(unjustified),
-                        },
-                        "validator_status": "rejected_excessive_dof",
-                        "violation_count": len(unjustified),
-                    }
-                ],
-            )
-            summary = ", ".join(
-                f"{item.part_id}({item.dof_count})" for item in unjustified
-            )
-            expected_minimal_dofs = ", ".join(unjustified[0].dofs[:3])
-            feedback = (
-                "Plan reviewer rejected excessive DOFs: "
-                f"{summary}. Expected minimal engineering DOFs: "
-                f"{expected_minimal_dofs}. "
-                "This is a dof_minimality failure. "
-                "Add explicit DOF_JUSTIFICATION markers in engineering_plan.md."
-            )
-            review = apply_canonical_dof_checklist(
-                ReviewResult(
-                    decision=ReviewDecision.REJECTED,
-                    reason=feedback,
-                    required_fixes=[
-                        "Reduce the part DOF count to three or fewer, "
-                        "or add a DOF_JUSTIFICATION marker for the affected part."
-                    ],
-                    checklist={"dof_minimality": "fail"},
-                ),
-                reviewer_stage=AgentName.ENGINEER_PLAN_REVIEWER,
-                checklist_value="fail",
-                overwrite=True,
-            )
-            try:
-                (
-                    review_decision_path,
-                    review_comments_path,
-                ) = await self._persist_review_result(review, "engineering-plan-review")
-            except Exception as exc:
-                return state.model_copy(
-                    update={
-                        "status": AgentStatus.FAILED,
-                        "feedback": f"Plan Reviewer failed to persist review file: {exc}",
-                        "journal": (
-                            state.journal
-                            + f"\n[Plan Reviewer] Review persistence failed: {exc}"
-                        ),
-                        "turn_count": state.turn_count + 1,
-                    }
-                )
-
-            review_id = uuid.uuid4().hex
-            await record_worker_events(
-                episode_id=state.episode_id,
-                events=[
-                    ReviewDecisionEvent(
-                        decision=review.decision,
-                        reason=review.reason,
-                        review_id=review_id,
-                        evidence_stats={
-                            "is_plan_review": True,
-                            "review_decision_path": review_decision_path,
-                            "review_comments_path": review_comments_path,
-                        },
-                        checklist=review.checklist,
-                    )
-                ],
-            )
-            return state.model_copy(
-                update={
-                    "status": AgentStatus.PLAN_REJECTED,
-                    "feedback": feedback,
-                    "journal": state.journal + f"\n[Plan Reviewer] {feedback}",
-                    "turn_count": state.turn_count + 1,
-                }
-            )
 
         plan_refusal = ""
         with suppress(Exception):
@@ -245,9 +103,6 @@ class PlanReviewerNode(BaseNode):
             )
 
         review = ReviewResult.model_validate(prediction.review)
-        review = apply_canonical_dof_checklist(
-            review, reviewer_stage=AgentName.ENGINEER_PLAN_REVIEWER
-        )
         try:
             (
                 review_decision_path,

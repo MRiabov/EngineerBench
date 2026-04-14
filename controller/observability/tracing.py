@@ -74,13 +74,6 @@ async def record_worker_events(
                     name=name,
                     event_user_session_id=str(event_user_session_id),
                 )
-                if name == "excessive_dof_detected":
-                    logger.info(
-                        "recorded_excessive_dof_detected_event",
-                        episode_id=str(episode_uuid),
-                        content_preview=content[:500],
-                        metadata_keys=sorted(metadata.keys()),
-                    )
                 simulation_run_id = event_dict.get("simulation_run_id")
                 cots_query_id = event_dict.get("cots_query_id")
                 review_id = event_dict.get("review_id")

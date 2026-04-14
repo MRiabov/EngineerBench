@@ -9,9 +9,6 @@ import yaml
 from controller.middleware.remote_fs import EditOp, RemoteFilesystemMiddleware
 from controller.observability.middleware_helper import broadcast_file_update
 from controller.observability.tracing import record_worker_events
-from shared.cots.agent import (
-    search_cots_catalog as base_search_cots_catalog,
-)
 from shared.enums import AgentName
 from shared.git_utils import repo_revision
 from shared.models.schemas import PlannerSubmissionResult
@@ -100,68 +97,10 @@ def filter_tools_for_agent(
     return [tool for tool in tools if _tool_name(tool) in allowed]
 
 
-def _build_cots_subagent_requirement(
-    query: str,
-    max_weight_g: float | None = None,
-    max_cost: float | None = None,
-    category: str | None = None,
-    limit: int = 5,
-) -> str:
-    lines = [f"Find COTS parts for: {query.strip()}"]
-    constraints: list[str] = []
-    if category:
-        constraints.append(f"category={category}")
-    if max_weight_g is not None:
-        constraints.append(f"max_weight_g={max_weight_g}")
-    if max_cost is not None:
-        constraints.append(f"max_cost={max_cost}")
-    constraints.append(f"limit={limit}")
-    lines.append("Constraints: " + ", ".join(constraints))
-    lines.append(
-        "Return concise candidate parts with part_id, manufacturer, key specs, "
-        "unit_cost, source, and why they fit."
-    )
-    return "\n".join(lines)
-
-
-async def _invoke_cots_search_subagent(
-    *,
-    query: str,
-    max_weight_g: float | None = None,
-    max_cost: float | None = None,
-    category: str | None = None,
-    limit: int = 5,
-    session_id: str | None = None,
-) -> str:
-    from controller.agent.nodes.cots_search import cots_search_node
-    from controller.agent.state import AgentState
-
-    requirement = _build_cots_subagent_requirement(
-        query=query,
-        max_weight_g=max_weight_g,
-        max_cost=max_cost,
-        category=category,
-        limit=limit,
-    )
-    effective_session_id = session_id or f"cots-search-{uuid.uuid4().hex[:8]}"
-    state = AgentState(
-        task=requirement,
-        session_id=effective_session_id,
-        episode_id=str(uuid.uuid4()),
-    )
-    result = await cots_search_node(state)
-    messages = result.messages if isinstance(result, AgentState) else []
-    if messages:
-        content = getattr(messages[-1], "content", None)
-        if isinstance(content, str) and content.strip():
-            return content
-    return str(result)
-
-
 def get_common_tools(fs: RemoteFilesystemMiddleware, session_id: str) -> list[Callable]:
     """
     Get the set of common tools available to all agents (Engineer, Benchmark, etc.).
-    Includes filesystem operations and COTS catalog search.
+    Includes filesystem operations plus render and verification helpers.
     """
 
     default_script_path = authored_script_path_for_agent(fs.agent_role)
@@ -280,39 +219,6 @@ def get_common_tools(fs: RemoteFilesystemMiddleware, session_id: str) -> list[Ca
             smoke_test_mode=smoke_test_mode,
         )
 
-    async def search_cots_catalog(
-        query: str,
-        max_weight_g: float | None = None,
-        max_cost: float | None = None,
-        category: str | None = None,
-        limit: int = 5,
-    ) -> str:
-        """Search the COTS catalog for candidate components."""
-        return base_search_cots_catalog(
-            query=query,
-            max_weight_g=max_weight_g,
-            max_cost=max_cost,
-            category=category,
-            limit=limit,
-        )
-
-    async def invoke_cots_search_subagent(
-        query: str,
-        max_weight_g: float | None = None,
-        max_cost: float | None = None,
-        category: str | None = None,
-        limit: int = 5,
-    ) -> str:
-        """Invoke the dedicated COTS search subagent."""
-        return await _invoke_cots_search_subagent(
-            query=query,
-            max_weight_g=max_weight_g,
-            max_cost=max_cost,
-            category=category,
-            limit=limit,
-            session_id=session_id,
-        )
-
     tools = [
         list_files,
         read_file,
@@ -324,8 +230,6 @@ def get_common_tools(fs: RemoteFilesystemMiddleware, session_id: str) -> list[Ca
         inspect_topology,
         render_cad,
         verify,
-        search_cots_catalog,
-        invoke_cots_search_subagent,
     ]
     return filter_tools_for_agent(fs, tools)
 
@@ -339,18 +243,6 @@ def get_engineer_tools(
     return get_common_tools(fs, session_id)
 
 
-def get_cots_search_tools(
-    fs: RemoteFilesystemMiddleware, session_id: str
-) -> list[Callable]:
-    """
-    Narrow COTS search to direct catalog lookup plus explicit file reads.
-    The subagent should not browse the workspace like a planner/coder.
-    """
-    common_tools = get_common_tools(fs, session_id)
-    allowed = {"search_cots_catalog", "read_file"}
-    return [tool for tool in common_tools if _tool_name(tool) in allowed]
-
-
 def get_engineer_planner_tools(
     fs: RemoteFilesystemMiddleware,
     session_id: str,
@@ -362,75 +254,6 @@ def get_engineer_planner_tools(
     Includes explicit `submit_engineering_plan()` so planner completion is an intentional action.
     """
     common_tools = get_common_tools(fs, session_id)
-
-    async def planner_has_first_pass_assembly() -> tuple[bool, str]:
-        raw = await fs.read_file_optional("assembly_definition.yaml")
-        if raw is None:
-            return False, "Create assembly_definition.yaml first."
-
-        try:
-            data = yaml.safe_load(raw) or {}
-        except Exception as exc:
-            return False, f"assembly_definition.yaml must be readable YAML first: {exc}"
-
-        constraints = data.get("constraints") or {}
-        required_numeric_fields = (
-            "planner_target_max_unit_cost_usd",
-            "planner_target_max_weight_g",
-        )
-        missing_constraints = [
-            field
-            for field in required_numeric_fields
-            if not isinstance(constraints.get(field), (int, float))
-        ]
-        if missing_constraints:
-            return (
-                False,
-                "Fill concrete planner target constraints in assembly_definition.yaml "
-                "before COTS search: "
-                f"{', '.join(missing_constraints)}.",
-            )
-
-        manufactured_parts = data.get("manufactured_parts")
-        cots_parts = data.get("cots_parts")
-        final_assembly = data.get("final_assembly")
-        if not isinstance(manufactured_parts, list) or not manufactured_parts:
-            if not isinstance(cots_parts, list) or not cots_parts:
-                return (
-                    False,
-                    "Add at least one planned part entry to assembly_definition.yaml "
-                    "before COTS search.",
-                )
-        if not isinstance(final_assembly, list) or not final_assembly:
-            return (
-                False,
-                "Add a first-pass final_assembly entry to assembly_definition.yaml "
-                "before COTS search.",
-            )
-
-        return True, ""
-
-    async def invoke_cots_search_subagent(
-        query: str,
-        max_weight_g: float | None = None,
-        max_cost: float | None = None,
-        category: str | None = None,
-        limit: int = 5,
-    ) -> str:
-        """
-        Search the COTS catalog after the planner has authored a first-pass assembly.
-        """
-        allowed, reason = await planner_has_first_pass_assembly()
-        if not allowed:
-            raise ValueError(reason)
-        return await _invoke_cots_search_subagent(
-            query=query,
-            max_weight_g=max_weight_g,
-            max_cost=max_cost,
-            category=category,
-            limit=limit,
-            session_id=session_id,
-        )
 
     async def validate_costing_and_price() -> dict:
         """
@@ -649,16 +472,12 @@ def get_engineer_planner_tools(
         return result.model_dump(mode="json")
 
     planner_common_tools = [
-        tool
-        for tool in common_tools
-        if _tool_name(tool)
-        not in {"search_cots_catalog", "invoke_cots_search_subagent", "execute_command"}
+        tool for tool in common_tools if _tool_name(tool) != "execute_command"
     ]
     return filter_tools_for_agent(
         fs,
         [
             *planner_common_tools,
-            invoke_cots_search_subagent,
             validate_costing_and_price,
             submit_engineering_plan,
         ],

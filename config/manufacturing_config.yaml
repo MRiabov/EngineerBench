@@ -127,22 +127,6 @@ materials:
     material_class: "rigid"
     cost_per_kg: 3.20
 
-  cots-generic:
-    # Generic rigid fallback for COTS-only parts that do not declare
-    # a manufactured material explicitly in their metadata.
-    density_g_cm3: 2.7
-    density_kg_m3: 2700
-    color: "#9CA3AF"
-    elongation_stress_mpa: 276.0
-    restitution: 0.45
-    friction_coef: 0.55
-    youngs_modulus_pa: 68900000000.0
-    poissons_ratio: 0.33
-    yield_stress_pa: 276000000.0
-    ultimate_stress_pa: 310000000.0
-    material_class: "rigid"
-    cost_per_kg: 6.00
-
   silicone_rubber:
     density_g_cm3: 1.1
     density_kg_m3: 1100

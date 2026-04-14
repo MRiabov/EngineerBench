@@ -10,8 +10,6 @@ build123d-cad-drafting-skill:
   is_for_worker_agents: true
 commit-split-workflow:
   is_for_worker_agents: true
-cots-parts:
-  is_for_worker_agents: true
 engineer-coder:
   is_for_worker_agents: true
 engineer-plan-reviewer:
