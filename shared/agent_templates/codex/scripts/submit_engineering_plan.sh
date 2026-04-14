@@ -88,6 +88,6 @@ PY
   fi
 }
 
-check_current_role "submit_engineering_plan.sh" engineer_planner electronics_planner
+check_current_role "submit_engineering_plan.sh" engineer_planner
 
 exec "$PYTHON_BIN" scripts/submit_plan.py "$@"

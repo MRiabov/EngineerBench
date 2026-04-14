@@ -33,7 +33,6 @@
 3. **Post-Processing:**
 
    - `get_stress_report(part_label)`: Retrieves max/mean stress and safety factor.
-   - `preview_stress(part_label)`: Renders a heatmap (Blue = Low Stress, Red = High Stress).
 
 ## Interpreting Results
 

@@ -17,7 +17,6 @@ _REVIEW_PREFIX_BY_AGENT: dict[AgentName, str] = {
     AgentName.BENCHMARK_REVIEWER: "benchmark-execution-review",
     AgentName.ENGINEER_PLAN_REVIEWER: "engineering-plan-review",
     AgentName.ENGINEER_EXECUTION_REVIEWER: "engineering-execution-review",
-    AgentName.ELECTRONICS_REVIEWER: "electronics-review",
 }
 
 _MANIFEST_BY_AGENT: dict[AgentName, str] = {
@@ -25,7 +24,6 @@ _MANIFEST_BY_AGENT: dict[AgentName, str] = {
     AgentName.BENCHMARK_REVIEWER: ".manifests/benchmark_review_manifest.json",
     AgentName.ENGINEER_PLAN_REVIEWER: ".manifests/engineering_plan_review_manifest.json",
     AgentName.ENGINEER_EXECUTION_REVIEWER: ".manifests/engineering_execution_handoff_manifest.json",
-    AgentName.ELECTRONICS_REVIEWER: ".manifests/electronics_review_manifest.json",
 }
 
 

@@ -31,7 +31,7 @@ Use this skill as a router. Keep the main prompt lean and load only the referenc
 03. Every non-static DOF must map to a real mechanism.
     Bearings, sliders, motors, fasteners, or another allowed physical constraint must justify the motion. Convenience DOFs are review failures.
 04. Use the current runtime helpers for stress/fluid work.
-    `get_stress_report(...)`, `preview_stress(...)`, and `define_fluid(...)` are the current repo-level hooks; do not invent alternate analysis paths in prompts.
+    `get_stress_report(...)` is the current repo-level hook; do not invent alternate analysis paths in prompts.
 05. Keep manufacturing and physics aligned.
     Benchmark-owned fixtures are not priced as manufactured parts, but engineer-authored parts still need realistic geometry, materials, and attachment logic.
 06. Never guess a size.
