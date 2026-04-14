@@ -13,13 +13,10 @@ class SuccessEvaluator:
     def __init__(
         self,
         max_simulation_time: float,
-        motor_overload_threshold: float = 2.0,
         simulation_bounds: BoundingBox | None = None,
         session_id: str | None = None,
     ):
         self.max_simulation_time = max_simulation_time
-        self.motor_overload_threshold = motor_overload_threshold
-        self.motor_overload_timer: dict[str, float] = {}
         self.simulation_bounds = simulation_bounds
         self.session_id = session_id
 
@@ -73,34 +70,6 @@ class SuccessEvaluator:
                     return SimulationFailureMode.OUT_OF_BOUNDS
 
         return None
-
-    def check_motor_overload(
-        self,
-        motor_names: list[str],
-        forces: list[float],
-        limits: list[float],
-        dt: float,
-    ) -> bool:
-        """Identify motors stalled at their limit."""
-        for i, name in enumerate(motor_names):
-            limit = limits[i]
-            # Use a slightly more relaxed threshold (0.9 instead of 0.99) for robustness
-            if abs(forces[i]) >= limit * 0.9:
-                self.motor_overload_timer[name] = (
-                    self.motor_overload_timer.get(name, 0) + dt
-                )
-                if self.motor_overload_timer[name] >= self.motor_overload_threshold:
-                    logger.info(
-                        "motor_overload_triggered",
-                        motor=name,
-                        force=forces[i],
-                        limit=limit,
-                        session_id=self.session_id,
-                    )
-                    return True
-            else:
-                self.motor_overload_timer[name] = 0
-        return False
 
     def is_in_zone(
         self, pos: np.ndarray, zone_pos: np.ndarray, zone_size: np.ndarray

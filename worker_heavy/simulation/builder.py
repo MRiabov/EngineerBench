@@ -17,10 +17,6 @@ from shared.simulation.scene_builder import (
     CommonAssemblyTraverser,
     materialize_moved_object,
 )
-from worker_heavy.simulation.motor_contracts import (
-    resolve_solution_motor_contract,
-    resolve_solution_motor_joint_contract,
-)
 
 # YACV removed in favor of custom trimesh-based export capable of preserving topology
 # try:
@@ -29,48 +25,7 @@ from worker_heavy.simulation.motor_contracts import (
 #     export_all = None
 
 if TYPE_CHECKING:
-    from shared.models.schemas import (
-        BenchmarkDefinition,
-        MovingPart,
-    )
-
-
-def _normalize_joint_axis(axis: list[float] | None) -> list[float] | None:
-    if axis is None:
-        return None
-    return [float(value) for value in axis]
-
-
-def _resolve_controlled_joint_contract(
-    *,
-    part_name: str,
-    dofs: list[str],
-    joint_type: str | None,
-    joint_axis: list[float] | None,
-) -> tuple[str, list[float]]:
-    resolved_joint_type, resolved_joint_axis = resolve_solution_motor_joint_contract(
-        part_name=part_name,
-        dofs=dofs,
-    )
-    normalized_joint_axis = _normalize_joint_axis(joint_axis)
-
-    if joint_type is None:
-        joint_type = resolved_joint_type
-    elif str(joint_type).strip().lower() != resolved_joint_type:
-        raise ValueError(
-            f"motor '{part_name}' declares a joint type '{joint_type}' that does not "
-            f"match its DOF token '{dofs[0]}'"
-        )
-
-    if normalized_joint_axis is None:
-        normalized_joint_axis = resolved_joint_axis
-    elif [float(v) for v in normalized_joint_axis] != resolved_joint_axis:
-        raise ValueError(
-            f"motor '{part_name}' declares a joint axis {normalized_joint_axis} that "
-            f"does not match its DOF token '{dofs[0]}'"
-        )
-
-    return joint_type, normalized_joint_axis
+    from shared.models.schemas import BenchmarkDefinition
 
 
 logger = structlog.get_logger(__name__)
@@ -489,29 +444,6 @@ class SceneCompiler:
         final_kv = kv if kv is not None else 1.0
         final_forcerange = forcerange
 
-        # Try to derive from COTS if missing parameters
-        if not cots_id:
-            # Heuristic: find known motor ID in name
-            from shared.cots.parts.motors import ServoMotor
-
-            for motor_id in ServoMotor.motor_data:
-                if motor_id in name:
-                    cots_id = motor_id
-                    break
-
-        if cots_id:
-            from shared.cots.parts.motors import retrieve_cots_physics
-
-            physics = retrieve_cots_physics(cots_id)
-            if physics:
-                if forcerange is None:
-                    torque = physics["torque"]
-                    final_forcerange = (-torque, torque)
-                if kp is None:
-                    final_kp = physics["kp"]
-                if kv is None:
-                    final_kv = physics["kv"]
-
         attrs = {
             "name": name,
             "joint": joint,
@@ -555,8 +487,6 @@ class SimulationBuilderBase(ABC):
         self,
         assembly: Compound,
         objectives: BenchmarkDefinition | None = None,
-        moving_parts: list[MovingPart] | None = None,
-        electronics: Any | None = None,
         smoke_test_mode: bool = False,
     ) -> Path:
         """Converts an assembly of parts into a simulation scene."""
@@ -574,8 +504,6 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
         self,
         assembly: Compound,
         objectives: BenchmarkDefinition | None = None,
-        moving_parts: list[MovingPart] | None = None,
-        electronics: Any | None = None,
         smoke_test_mode: bool = False,
     ) -> Path:
         """Converts an assembly of parts into a MuJoCo scene.xml and associated STLs."""
@@ -655,13 +583,8 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
             )
 
         # 2. Add parts from assembly
-        parts_data = CommonAssemblyTraverser.traverse(assembly, electronics)
+        parts_data = CommonAssemblyTraverser.traverse(assembly)
         parts_by_name = {d.label: d for d in parts_data}
-        moving_parts_by_name = {
-            mp.part_name: mp
-            for mp in (moving_parts or [])
-            if getattr(mp, "control", None)
-        }
 
         for data in parts_data:
             if data.weld_target:
@@ -680,20 +603,6 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
                 material_id = data.material_id or (
                     "cots-generic" if data.cots_id else None
                 )
-                moving_part = moving_parts_by_name.get(data.label)
-                joint_type = data.joint_type
-                joint_axis = data.joint_axis
-                if moving_part is not None:
-                    if len(list(moving_part.dofs or [])) != 1:
-                        raise ValueError(
-                            f"moving part '{data.label}' must declare exactly one DOF"
-                        )
-                    joint_type, joint_axis = _resolve_controlled_joint_contract(
-                        part_name=data.label,
-                        dofs=list(moving_part.dofs or []),
-                        joint_type=joint_type,
-                        joint_axis=joint_axis,
-                    )
                 mesh_path_base = self.assets_dir / data.label
                 # Use coarser mesh for smoke tests
                 tolerance = 1.0 if smoke_test_mode else 0.1
@@ -720,8 +629,8 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
                     pos=data.pos,
                     euler=data.euler,
                     is_fixed=data.is_fixed,
-                    joint_type=joint_type,
-                    joint_axis=joint_axis,
+                    joint_type=data.joint_type,
+                    joint_axis=data.joint_axis,
                     joint_range=data.joint_range,
                     geom_rgba=self._resolve_geom_rgba(material_id, mfg_config),
                 )
@@ -770,109 +679,6 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
         for body1, body2 in weld_constraints:
             self.compiler.add_weld(body1, body2)
 
-        # 4. Add actuators for moving parts (T011)
-        if moving_parts:
-            for mp in moving_parts:
-                if not mp.control:
-                    continue
-
-                part_data = parts_by_name.get(mp.part_name)
-                if part_data is None:
-                    raise ValueError(
-                        f"moving part '{mp.part_name}' is not present in the assembly geometry"
-                    )
-                if part_data.is_fixed:
-                    raise ValueError(
-                        f"moving part '{mp.part_name}' is marked fixed in the assembly geometry"
-                    )
-                joint_type, joint_axis = _resolve_controlled_joint_contract(
-                    part_name=mp.part_name,
-                    dofs=list(mp.dofs or []),
-                    joint_type=part_data.joint_type,
-                    joint_axis=part_data.joint_axis,
-                )
-
-                contract = resolve_solution_motor_contract(
-                    part_name=mp.part_name,
-                    cots_id=part_data.cots_id,
-                    control=mp.control,
-                    joint_name=f"{mp.part_name}_joint",
-                )
-
-                # MuJoCo remains the reference actuator materialization path.
-                self.compiler.add_actuator(
-                    name=contract.part_name,
-                    joint=contract.joint_name,
-                    actuator_type=contract.actuator_type,
-                    cots_id=contract.cots_id,
-                )
-
-        # 5. Add Electronics (Wires/Tendons)
-        if electronics and hasattr(electronics, "wiring"):
-            for wire in electronics.wiring:
-                if not getattr(wire, "routed_in_3d", False):
-                    continue
-
-                site_names = []
-                waypoints = getattr(wire, "waypoints", [])
-
-                if waypoints:
-                    for j, pt in enumerate(waypoints):
-                        site_name = f"site_{wire.wire_id}_{j}"
-                        parent = None
-                        local_pos = list(pt)
-
-                        # Heuristic: first waypoint attached to from_comp, last to to_comp
-                        if j == 0:
-                            comp_id = wire.from_terminal.component
-                            if comp_id in body_locations:
-                                parent = comp_id
-                                b_pos, _ = body_locations[comp_id]
-                                local_pos = [pt[k] - b_pos[k] for k in range(3)]
-                        elif j == len(waypoints) - 1:
-                            comp_id = wire.to_terminal.component
-                            if comp_id in body_locations:
-                                parent = comp_id
-                                b_pos, _ = body_locations[comp_id]
-                                local_pos = [pt[k] - b_pos[k] for k in range(3)]
-
-                        self.compiler.add_site(
-                            name=site_name, pos=local_pos, parent_body_name=parent
-                        )
-                        site_names.append(site_name)
-                else:
-                    # Fallback: connect from/to components directly
-                    from_comp = wire.from_terminal.component
-                    to_comp = wire.to_terminal.component
-
-                    for comp_id in [from_comp, to_comp]:
-                        site_name = f"site_{comp_id}_{wire.wire_id}"
-                        pos = [0, 0, 0]
-                        parent = None
-                        if comp_id in body_locations:
-                            parent = comp_id
-                        self.compiler.add_site(
-                            name=site_name, pos=pos, parent_body_name=parent
-                        )
-                        site_names.append(site_name)
-
-                if len(site_names) >= 2:
-                    # Add tendon
-                    # Width scaling: AWG 10 is ~2.5mm, AWG 20 is ~0.8mm
-                    # Simple linear approx:
-                    width = 0.001 + (20 - wire.gauge_awg) * 0.0001
-                    # Wire material properties:
-                    # Copper has high stiffness, but tendons are 1D.
-                    # We use a value that prevents too much stretching.
-                    stiffness = 1000.0 * (1.26 ** (18 - wire.gauge_awg))
-                    self.compiler.add_spatial_tendon(
-                        name=wire.wire_id,
-                        site_names=site_names,
-                        width=max(0.0005, width),
-                        stiffness=stiffness,
-                        damping=stiffness * 0.1,
-                    )
-
         scene_path = self.output_dir / "scene.xml"
         self.compiler.save(scene_path)
         return scene_path
@@ -912,14 +718,12 @@ class GenesisSimulationBuilder(SimulationBuilderBase):
         self,
         assembly: Compound,
         objectives: BenchmarkDefinition | None = None,
-        moving_parts: list[MovingPart] | None = None,
-        electronics: Any | None = None,
         smoke_test_mode: bool = False,
     ) -> Path:
         """Converts an assembly of parts into a Genesis scene descriptor (JSON)."""
         self.assets_dir.mkdir(parents=True, exist_ok=True)
 
-        scene_data = {"entities": [], "fluids": [], "objectives": [], "cables": []}
+        scene_data = {"entities": []}
 
         # 1. Add zones from objectives
         if objectives:
@@ -968,7 +772,7 @@ class GenesisSimulationBuilder(SimulationBuilderBase):
             )
 
         # 2. Add parts from assembly
-        parts_data = CommonAssemblyTraverser.traverse(assembly, electronics)
+        parts_data = CommonAssemblyTraverser.traverse(assembly)
 
         # Load manufacturing config to check for deformable materials
         from worker_heavy.workbenches.config import load_config, load_merged_config
@@ -980,15 +784,6 @@ class GenesisSimulationBuilder(SimulationBuilderBase):
             mfg_config = load_config()
 
         for data in parts_data:
-            # Check if deformable
-            is_deformable = False
-            if objectives and objectives.physics and objectives.physics.fem_enabled:
-                is_deformable = True
-            else:
-                mat_def = mfg_config.materials.get(data.material_id)
-                if mat_def and mat_def.material_class in ["soft", "elastomer"]:
-                    is_deformable = True
-
             mesh_path_base = self.assets_dir / data.label
 
             # Use coarser mesh for smoke tests to speed up Genesis voxelization
@@ -1017,139 +812,12 @@ class GenesisSimulationBuilder(SimulationBuilderBase):
                 else None,
             }
 
-            # WP3 Forward Compatibility: Mark as electronics if referenced
-            if data.is_electronics:
-                entity_info["is_electronics"] = True
-
-            if is_deformable:
-                obj_path = mesh_path_base.with_suffix(".obj")
-                stl_path = mesh_path_base.with_suffix(".stl")
-                repaired_stl_path = mesh_path_base.with_suffix(".repaired.stl")
-
-                # Export to STL for processing
-                export_stl(
-                    data.part,
-                    str(stl_path),
-                    tolerance=tolerance,
-                    angular_tolerance=tolerance,
-                )
-
-                from worker_heavy.utils.mesh_utils import (
-                    repair_mesh_file,
-                )
-
-                try:
-                    # Repair mesh for cleaner tetrahedralization in backend
-                    repair_mesh_file(stl_path, repaired_stl_path)
-                    # Convert to OBJ for Genesis soft mesh loading
-                    import trimesh
-
-                    mesh = trimesh.load(str(repaired_stl_path))
-                    mesh.export(str(obj_path))
-                finally:
-                    # Cleanup intermediate files
-                    if stl_path.exists():
-                        stl_path.unlink()
-                    if repaired_stl_path.exists():
-                        repaired_stl_path.unlink()
-
-                entity_info["type"] = "soft_mesh"
-                entity_info["file"] = str(obj_path.relative_to(self.assets_dir.parent))
-            else:
-                entity_info["type"] = "mesh"
-                entity_info["file"] = str(
-                    mesh_path_base.with_suffix(".obj").relative_to(
-                        self.assets_dir.parent
-                    )
-                )
+            entity_info["type"] = "mesh"
+            entity_info["file"] = str(
+                mesh_path_base.with_suffix(".obj").relative_to(self.assets_dir.parent)
+            )
 
             scene_data["entities"].append(entity_info)
-
-        # 3. Add moving parts (Motors)
-        scene_data["motors"] = []
-        parts_by_name = {d.label: d for d in parts_data}
-        if moving_parts:
-            for mp in moving_parts:
-                if not mp.control:
-                    continue
-
-                part_data = parts_by_name.get(mp.part_name)
-                if part_data is None:
-                    raise ValueError(
-                        f"moving part '{mp.part_name}' is not present in the assembly geometry"
-                    )
-                if part_data.is_fixed:
-                    raise ValueError(
-                        f"moving part '{mp.part_name}' is marked fixed in the assembly geometry"
-                    )
-                joint_type, joint_axis = _resolve_controlled_joint_contract(
-                    part_name=mp.part_name,
-                    dofs=list(mp.dofs or []),
-                    joint_type=part_data.joint_type,
-                    joint_axis=part_data.joint_axis,
-                )
-
-                contract = resolve_solution_motor_contract(
-                    part_name=mp.part_name,
-                    cots_id=part_data.cots_id,
-                    control=mp.control,
-                    joint_name=f"{mp.part_name}_joint",
-                )
-                moving_part_type = getattr(mp.type, "value", str(mp.type))
-                scene_data["motors"].append(
-                    contract.to_scene_record(
-                        dofs=list(mp.dofs), moving_part_type=moving_part_type
-                    )
-                )
-                scene_data["motors"][-1]["joint_type"] = joint_type
-                scene_data["motors"][-1]["joint_axis"] = joint_axis
-        if objectives and hasattr(objectives, "fluids") and objectives.fluids:
-            for fluid in objectives.fluids:
-                scene_data["fluids"].append(fluid.model_dump())
-
-        # 4. Add Fluid Objectives
-        if (
-            objectives
-            and hasattr(objectives.objectives, "fluid_objectives")
-            and objectives.objectives.fluid_objectives
-        ):
-            for fo in objectives.objectives.fluid_objectives:
-                scene_data["objectives"].append(fo.model_dump())
-
-        # 5. Add Electronics (Wires/Cables)
-        scene_data["cables"] = []
-        if electronics and hasattr(electronics, "wiring"):
-            from shared.wire_utils import get_awg_properties
-
-            # Build lookup for part positions (needed for wire attachments)
-            {d.label: (d.pos, d.euler) for d in parts_data}
-            for wire in electronics.wiring:
-                if not getattr(wire, "routed_in_3d", False):
-                    continue
-
-                waypoints = getattr(wire, "waypoints", [])
-                if not waypoints:
-                    continue
-
-                # Calculate physical properties from AWG
-                props = get_awg_properties(wire.gauge_awg)
-                radius = props["diameter_mm"] / 2000.0
-                stiffness = 1000.0 * (1.26 ** (18 - wire.gauge_awg))
-
-                # Resolved points for Genesis
-                resolved_points = [list(pt) for pt in waypoints]
-
-                scene_data["cables"].append(
-                    {
-                        "wire_id": wire.wire_id,
-                        "name": wire.wire_id,
-                        "points": resolved_points,
-                        "radius": radius,
-                        "gauge_awg": wire.gauge_awg,
-                        "stiffness": stiffness,
-                        "length_mm": wire.length_mm,
-                    }
-                )
 
         scene_path = self.output_dir / "scene.json"
         with scene_path.open("w") as f:

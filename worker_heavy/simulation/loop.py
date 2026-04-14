@@ -9,7 +9,6 @@ from shared.config.simulation import simulation_settings
 from shared.enums import FailureReason, SimulationConfidence
 from shared.models.schemas import (
     BenchmarkDefinition,
-    ElectronicsSection,
     PayloadTrajectoryDefinition,
 )
 from shared.models.simulation import (
@@ -18,19 +17,14 @@ from shared.models.simulation import (
     SimulationRenderProvenance,
 )
 from shared.observability.events import emit_event
-from shared.observability.schemas import (
-    ElectricalFailureEvent,
-    SimulationBackendSelectedEvent,
-)
+from shared.observability.schemas import SimulationBackendSelectedEvent
 from shared.simulation.backends import SimulationScene
 from shared.simulation.schemas import (
     SimulatorBackendType,
     get_default_simulator_backend,
 )
-from shared.wire_utils import check_wire_clearance, get_awg_properties
 from shared.workers.schema import RenderBundleObjectPoseRecord
 from shared.workers.workbench_models import ManufacturingMethod
-from worker_heavy.simulation.electronics import ElectronicsManager
 from worker_heavy.simulation.evaluator import SuccessEvaluator
 from worker_heavy.simulation.factory import get_physics_backend
 from worker_heavy.simulation.frame_stream import SimulationFrameStreamPublisher
@@ -38,7 +32,6 @@ from worker_heavy.simulation.media import MediaRecorder
 from worker_heavy.simulation.metrics import MetricCollector
 from worker_heavy.simulation.naming import moved_object_scene_name
 from worker_heavy.simulation.object_pose import write_object_pose_parquet
-from worker_heavy.simulation.objectives import ObjectiveEvaluator
 from worker_heavy.simulation.payload_trajectory_monitor import (
     PayloadTrajectoryMonitor,
 )
@@ -58,7 +51,6 @@ class SimulationLoop:
         component: Part | Compound | None = None,
         max_simulation_time: float = simulation_settings.max_simulation_time_seconds,
         backend_type: SimulatorBackendType | None = None,
-        electronics: ElectronicsSection | None = None,
         objectives: BenchmarkDefinition | None = None,
         payload_trajectory_definition: PayloadTrajectoryDefinition | None = None,
         smoke_test_mode: bool | None = None,
@@ -73,16 +65,6 @@ class SimulationLoop:
         resolved_backend_type = backend_type or get_default_simulator_backend()
         if smoke_test_mode is None:
             smoke_test_mode = settings.smoke_test_mode
-        # WP2: Validate that fluids are NOT requested if using MuJoCo
-        if (
-            resolved_backend_type == SimulatorBackendType.MUJOCO
-            and objectives
-            and objectives.fluids
-        ):
-            raise ValueError(
-                "MuJoCo backend does not support fluids. Use Genesis instead."
-            )
-
         self.backend = get_physics_backend(
             resolved_backend_type,
             session_id=session_id,
@@ -117,7 +99,7 @@ class SimulationLoop:
                     backend=resolved_backend_type.value
                     if hasattr(resolved_backend_type, "value")
                     else resolved_backend_type,
-                    fem_enabled=objectives.physics.fem_enabled if objectives else False,
+                    fem_enabled=False,
                     compute_target=objectives.physics.compute_target
                     if objectives
                     else "auto",
@@ -136,16 +118,11 @@ class SimulationLoop:
             self.backend.load_scene(scene)
 
             self.component = component
-            self.electronics = (
-                electronics.model_copy(deep=True) if electronics else None
-            )
             self.objectives = objectives
             self.requested_quantity = resolve_requested_quantity(
                 benchmark_definition=self.objectives
             )
-            self.is_powered_map = {}
             self.validation_report = None
-            self.electronics_validation_error = None
             self.manufactured_part_labels = manufactured_part_labels or set()
 
             if self.component:
@@ -168,12 +145,6 @@ class SimulationLoop:
                         materials=list(self.config.materials.keys()),
                     )
 
-                fem_required = (
-                    self.objectives.physics.fem_enabled
-                    if self.objectives and self.objectives.physics
-                    else False
-                )
-
                 if self.manufactured_part_labels:
                     mfg_method = ManufacturingMethod.CNC
                     if self.manufactured_part_labels:
@@ -192,7 +163,7 @@ class SimulationLoop:
                         self.component,
                         self.config,
                         part_labels=self.manufactured_part_labels,
-                        fem_required=fem_required,
+                        fem_required=False,
                         default_method=mfg_method,
                         quantity=self.requested_quantity,
                     )
@@ -249,20 +220,11 @@ class SimulationLoop:
 
             # Performance optimizations: cache backend info
             self.actuator_names = self.backend.get_all_actuator_names()
-            fluid_ids: set[str] = set()
-            if self.objectives and self.objectives.fluids:
-                fluid_ids = {
-                    fluid.fluid_id
-                    for fluid in self.objectives.fluids
-                    if getattr(fluid, "fluid_id", None)
-                }
-
             self.body_names = [
                 b
                 for b in self.backend.get_all_body_names()
                 if b not in ["world", "0"]
                 and not b.startswith("zone_")
-                and b not in fluid_ids
             ]
 
             # Cache actuator limits for monitoring
@@ -288,35 +250,16 @@ class SimulationLoop:
 
             self.actuator_clamp_duration = {}
 
-            # T017: Set electronics for fluid damage detection
-            if self.electronics:
-                elec_names = [comp.component_id for comp in self.electronics.components]
-                if hasattr(self.backend, "set_electronics"):
-                    self.backend.set_electronics(elec_names)
-
-            self.electronics_manager = ElectronicsManager(
-                self.electronics, session_id=session_id
-            )
-            self._electronics_dirty = False
             self.metric_collector = MetricCollector()
             self.payload_trajectory_monitor = None
             self.payload_trajectory_monitor_init_error = None
             self.success_evaluator = SuccessEvaluator(
                 max_simulation_time=self.max_simulation_time,
-                motor_overload_threshold=simulation_settings.motor_overload_threshold_seconds,
                 simulation_bounds=self.objectives.simulation_bounds
                 if self.objectives
                 else None,
                 session_id=session_id,
             )
-            self.objective_evaluator = ObjectiveEvaluator(
-                objectives=self.objectives,
-                material_lookup=self.material_lookup,
-                config=self.config,
-                session_id=session_id,
-            )
-            self.objective_evaluator.initialize_flow_rate(self.backend)
-
             if payload_trajectory_definition is not None:
                 try:
                     self.payload_trajectory_monitor = PayloadTrajectoryMonitor(
@@ -335,13 +278,6 @@ class SimulationLoop:
                         session_id=session_id,
                     )
 
-            # T015: derive is_powered_map from electronics.circuit state
-            if self.electronics:
-                self._update_electronics(force=True)
-                self.wire_clearance_error = self._validate_wire_clearance()
-            else:
-                self.wire_clearance_error = None
-
             # Reset metrics
             self.reset_metrics()
         except Exception as e:
@@ -355,64 +291,17 @@ class SimulationLoop:
             )
             raise
 
-    def _validate_wire_clearance(self) -> str | None:
-        """T011: Check wire clearance using shared util."""
-        # Only check if we have both electronics wiring and a component to check against
-        if not self.electronics or not self.electronics.wiring or not self.component:
-            return None
-
-        # Ensure component is a Compound (build123d API requirements for distance check)
-        check_comp = self.component
-        if isinstance(self.component, Part):
-            check_comp = Compound(children=[self.component])
-
-        for wire in self.electronics.wiring:
-            # Skip wires that don't have enough waypoints or aren't routed in 3D
-            if not wire.waypoints or len(wire.waypoints) < 2:
-                continue
-
-            # Using default clearance of 2.0mm for now, or could come from constraints
-            if not check_wire_clearance(
-                wire.waypoints, check_comp, clearance_mm=2.0, session_id=self.session_id
-            ):
-                return f"Wire clearance violation detected for wire {wire.wire_id}."
-
-        return None
-
-    def _update_electronics(self, force=False):
-        """Update is_powered_map based on circuit state."""
-        self.electronics_manager.update(force=force)
-        # Bridge back is_powered_map for existing code compatibility if needed,
-        # but better to use electronics_manager.is_powered_map directly.
-        self.is_powered_map = self.electronics_manager.is_powered_map
-        self.electronics_validation_error = self.electronics_manager.validation_error
-
-    @property
-    def switch_states(self) -> dict[str, bool]:
-        """Expose electronics switch states for the agent/activity."""
-        return self.electronics_manager.switch_states
-
     @property
     def stress_summaries(self):
-        return self.objective_evaluator.stress_summaries
-
-    @property
-    def fluid_metrics(self):
-        return self.objective_evaluator.fluid_metrics
+        return self.backend.get_stress_summaries()
 
     def reset_metrics(self):
         self.metric_collector.reset()
         self.success = False
         self.fail_reason = None
-        self.overloaded_motors: list[str] = []
         self.actuator_clamp_duration = {}
-        self.success_evaluator.motor_overload_timer = {}
-        self.objective_evaluator.reset()
         if getattr(self, "payload_trajectory_monitor", None) is not None:
             self.payload_trajectory_monitor.reset()
-        # WP2: Re-initialize flow rate capture after reset to ensure first-step crossings are caught
-        if hasattr(self, "backend") and self.backend:
-            self.objective_evaluator.initialize_flow_rate(self.backend)
 
     def step(
         self,
@@ -509,8 +398,6 @@ class SimulationLoop:
                     error=str(exc),
                     session_id=self.session_id,
                 )
-        self.objective_evaluator.evaluate_final(self.backend, current_time)
-
         return self._build_simulation_metrics(current_time)
 
     def _step_internal(
@@ -523,12 +410,6 @@ class SimulationLoop:
         target_body_name: str | None,
     ) -> bool:
         """Internal step logic for the simulation loop. Returns True if simulation should stop."""
-        # Update electronics if state changed
-        if self.electronics and self._electronics_dirty:
-            self._update_electronics()
-            self._electronics_dirty = False
-            self._apply_gated_controls(control_inputs)
-
         # Apply dynamic controllers
         if dynamic_controllers:
             current_time = self.backend.get_state()["time"]
@@ -546,46 +427,10 @@ class SimulationLoop:
             ):
                 return True
 
-        return bool(self._handle_wire_failure())
+        return False
 
     def _get_stress_fields(self) -> dict[str, dict]:
-        fields = {}
-        if not self.objectives or not self.objectives.objectives:
-            return fields
-
-        for so in self.objectives.objectives.stress_objectives:
-            field = self.backend.get_stress_field(so.part_label)
-            if field is not None:
-                fields[so.part_label] = {
-                    "nodes": field.nodes.tolist(),
-                    "stress": field.stress.tolist(),
-                }
-        return fields
-
-    def _check_motor_overload(self, dt: float) -> str | None:
-        # Check all position/torque actuators for saturation
-        if not self._monitor_names:
-            return None
-
-        forces = [
-            abs(self.backend.get_actuator_state(n).force) for n in self._monitor_names
-        ]
-
-        # SuccessEvaluator.check_motor_overload returns bool but we want the name of the motor
-        # Wait, the evaluator's check_motor_overload returns bool.
-        # Let's see how it's implemented on main.
-        # It returns bool. If true, it means SOME motor is overloaded.
-        if self.success_evaluator.check_motor_overload(
-            self._monitor_names, forces, self._monitor_limits, dt
-        ):
-            # Find which one
-            for name in self._monitor_names:
-                if (
-                    self.success_evaluator.motor_overload_timer.get(name, 0)
-                    >= self.success_evaluator.motor_overload_threshold
-                ):
-                    return name
-        return None
+        return {}
 
     def check_goal_with_vertices(self, body_name: str) -> bool:
         """Check if any vertices of body_name are inside any of the goal sites."""
@@ -673,25 +518,6 @@ class SimulationLoop:
                 failure=self.fail_reason,
             )
 
-        if self.electronics_validation_error:
-            if isinstance(self.electronics_validation_error, SimulationFailure):
-                self.fail_reason = self.electronics_validation_error
-            else:
-                self.fail_reason = SimulationFailure(
-                    reason=FailureReason.VALIDATION_FAILED,
-                    detail=str(self.electronics_validation_error),
-                )
-            return SimulationMetrics(
-                total_time=0.0,
-                total_energy=0.0,
-                max_velocity=0.0,
-                success=False,
-                fail_reason=str(self.fail_reason),
-                fail_mode=self.fail_reason.reason,
-                failure=self.fail_reason,
-                confidence=SimulationConfidence.HIGH,
-            )
-
         if self.payload_trajectory_monitor_init_error:
             self.fail_reason = SimulationFailure(
                 reason=FailureReason.VALIDATION_FAILED,
@@ -713,21 +539,6 @@ class SimulationLoop:
                 confidence=SimulationConfidence.HIGH,
             )
 
-        if self.wire_clearance_error:
-            self.fail_reason = SimulationFailure(
-                reason=FailureReason.VALIDATION_FAILED,
-                detail=self.wire_clearance_error,
-            )
-            return SimulationMetrics(
-                total_time=0.0,
-                total_energy=0.0,
-                max_velocity=0.0,
-                success=False,
-                fail_reason=str(self.fail_reason),
-                fail_mode=self.fail_reason.reason,
-                failure=self.fail_reason,
-                confidence=SimulationConfidence.HIGH,
-            )
         return None
 
     def _get_simulation_timestep(self) -> float:
@@ -737,8 +548,6 @@ class SimulationLoop:
         if hasattr(self.backend, "model") and hasattr(self.backend.model, "opt"):
             return self.backend.model.opt.timestep
         if self.smoke_test_mode and self.backend_type == SimulatorBackendType.GENESIS:
-            if self.objectives and self.objectives.physics.fem_enabled:
-                return 0.002
             return 0.05
         return simulation_settings.simulation_step_s
 
@@ -748,20 +557,14 @@ class SimulationLoop:
         current_time: float | None = None,
         dynamic_controllers: dict[str, callable] | None = None,
     ):
-        """Apply power-gated controls to the backend."""
+        """Apply controls to the backend."""
         ctrls = {}
         if dynamic_controllers and current_time is not None:
             for name, controller in dynamic_controllers.items():
                 val = controller(current_time)
-                if self.electronics:
-                    power_scale = self.is_powered_map.get(name, 0.0)
-                    val *= power_scale
                 ctrls[name] = val
         else:
             for name, val in control_inputs.items():
-                if self.electronics:
-                    power_scale = self.is_powered_map.get(name, 0.0)
-                    val *= power_scale
                 ctrls[name] = val
         self.backend.apply_control(ctrls)
 
@@ -785,30 +588,19 @@ class SimulationLoop:
         max_stress = self.backend.get_max_stress()
         self.metric_collector.update(dt_interval, energy, target_vel, max_stress)
 
-        # 2. Objective Evaluator Checks
-        fail_sim = self.objective_evaluator.update(
-            self.backend,
-            current_time,
-            dt_interval,
-            getattr(self, "current_step_idx", 0),
-        )
-        if fail_sim:
-            self.fail_reason = fail_sim
-            return True
-
-        # 3. Backend failure checks
+        # 2. Backend failure checks
         if not res.success:
             self.fail_reason = self._resolve_backend_failure(res)
             return True
 
-        # 4. Payload trajectory monitor checks
+        # 3. Payload trajectory monitor checks
         if getattr(self, "payload_trajectory_monitor", None) is not None:
             monitor_failure = self.payload_trajectory_monitor.check(current_time)
             if monitor_failure:
                 self.fail_reason = monitor_failure
                 return True
 
-        # 5. SuccessEvaluator checks
+        # 4. SuccessEvaluator checks
         for bname in self.body_names:
             bstate = self.backend.get_body_state(bname)
             eval_fail_reason = self.success_evaluator.check_failure(
@@ -855,14 +647,6 @@ class SimulationLoop:
             self.success = True
             return True
 
-        # 7. Motor overload
-        overloaded_motor = self._check_motor_overload(dt_interval)
-        if overloaded_motor:
-            self.fail_reason = SimulationFailure(
-                reason=FailureReason.MOTOR_OVERLOAD, detail=overloaded_motor
-            )
-            return True
-
         return False
 
     def _resolve_backend_failure(self, res) -> SimulationFailure:
@@ -879,34 +663,11 @@ class SimulationLoop:
                     if ":" in res.failure_reason
                     else None
                 )
-                # Check for stress objective violation upgrade
-                if part_name and self.objectives and self.objectives.objectives:
-                    for so in self.objectives.objectives.stress_objectives:
-                        if so.part_label.lower() == part_name.lower():
-                            logger.info(
-                                "stress_objective_exceeded_via_breakage",
-                                part=part_name,
-                            )
-                            return SimulationFailure(
-                                reason=FailureReason.STRESS_OBJECTIVE_EXCEEDED,
-                                detail=part_name,
-                            )
                 return SimulationFailure(
                     reason=FailureReason.PART_BREAKAGE, detail=part_name
                 )
-            if res.failure_reason.startswith("ELECTRONICS_FLUID_DAMAGE"):
-                return SimulationFailure(reason=FailureReason.ELECTRONICS_FLUID_DAMAGE)
 
         # Default fallback: re-check breakage or assume instability
-        if self.objectives and self.objectives.physics.fem_enabled:
-            broken_part = self.objective_evaluator.check_part_breakage(
-                self.backend, getattr(self, "current_step_idx", 0)
-            )
-            if broken_part:
-                return SimulationFailure(
-                    reason=FailureReason.PART_BREAKAGE, detail=broken_part
-                )
-
         return SimulationFailure(reason=FailureReason.PHYSICS_INSTABILITY)
 
     def _identify_target_body(self) -> str | None:
@@ -937,20 +698,7 @@ class SimulationLoop:
         """Construct the final SimulationMetrics object."""
         metrics = self.metric_collector.get_metrics()
 
-        # WP2: Sync fail_reason from objective_evaluator if it was set during evaluate_final
-        if not self.fail_reason and self.objective_evaluator.fail_reason:
-            self.fail_reason = self.objective_evaluator.fail_reason
-
         # Final success determination
-        has_other_objectives = bool(
-            self.objectives
-            and self.objectives.objectives
-            and (
-                self.objectives.objectives.fluid_objectives
-                or self.objectives.objectives.stress_objectives
-            )
-        )
-
         if self.fail_reason:
             is_success = False
         elif self.smoke_test_mode:
@@ -961,8 +709,6 @@ class SimulationLoop:
             is_success = True
         elif self.goal_sites:
             is_success = self.success
-        elif has_other_objectives:
-            is_success = True
         else:
             is_success = True
 
@@ -982,7 +728,6 @@ class SimulationLoop:
             ),
             stress_summaries=self.stress_summaries,
             stress_fields=self._get_stress_fields(),
-            fluid_metrics=self.fluid_metrics,
             events=metrics.events,
             confidence=(
                 SimulationConfidence.APPROXIMATE
@@ -990,51 +735,3 @@ class SimulationLoop:
                 else SimulationConfidence.HIGH
             ),
         )
-
-    def _handle_wire_failure(self) -> bool:
-        """Check for wire tension and breakage."""
-        if not self.electronics:
-            return False
-
-        wire_broken = False
-        for wire in self.electronics.wiring:
-            if getattr(wire, "routed_in_3d", False):
-                try:
-                    tension = self.backend.get_tendon_tension(wire.wire_id)
-                    props = get_awg_properties(wire.gauge_awg)
-                    limit = props["tensile_strength_n"]
-                    if tension > limit:
-                        self.fail_reason = SimulationFailure(
-                            reason=FailureReason.WIRE_TORN, detail=wire.wire_id
-                        )
-                        emit_event(
-                            ElectricalFailureEvent(
-                                failure_type="wire_torn",
-                                component_id=wire.wire_id,
-                                message=(
-                                    f"Wire {wire.wire_id} torn due to "
-                                    f"high tension ({tension:.2f}N > "
-                                    f"{limit:.2f}N)"
-                                ),
-                            )
-                        )
-                        logger.info(
-                            "simulation_fail",
-                            reason="wire_torn",
-                            wire=wire.wire_id,
-                            tension=tension,
-                        )
-                        wire_broken = True
-                        new_wires = [
-                            w
-                            for w in self.electronics.wiring
-                            if w.wire_id != wire.wire_id
-                        ]
-                        self.electronics.wiring = new_wires
-                        self._electronics_dirty = True
-                        self._update_electronics()
-                        self._electronics_dirty = False
-                        break
-                except Exception:
-                    pass
-        return wire_broken
