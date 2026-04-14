@@ -1,7 +1,7 @@
 transcript:
 - node: engineer_planner
   steps:
-  - thought: I will generate the engineering plan for the 10x10x10mm box.
+  - thought: Create deterministic planner artifacts for the simple box scenario.
     tool_name: write_file
     tool_args:
       path: engineering_plan.md
@@ -26,15 +26,33 @@ transcript:
       overwrite: true
       content_file: INT-002/engineer_planner/entry_01/04__benchmark_definition.yaml
     expected_observation: success
-  - tool_name: submit_engineering_plan
-    expected_observation: submitted
-  - thought: Inspect the seeded render preview before finishing.
+  - tool_name: write_file
+    tool_args:
+      path: solution_plan_evidence_script.py
+      overwrite: true
+      content_file: INT-002/engineer_planner/entry_01/05__solution_plan_evidence_script.py
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: solution_plan_technical_drawing_script.py
+      overwrite: true
+      content_file: INT-002/engineer_planner/entry_01/06__solution_plan_technical_drawing_script.py
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: renders/engineer_plan_renders/render_manifest.json
+      overwrite: true
+      content_file: INT-002/engineer_planner/entry_01/07__render_manifest.json
+    expected_observation: success
+  - thought: Inspect the seeded render preview before submission.
     tool_name: inspect_media
     tool_args:
       path: renders/render_e45_a45.png
-    expected_observation: success
+    expected_observation: attached_to_model
+  - tool_name: submit_engineering_plan
+    expected_observation: submitted
   - finished: true
-    summary: Plan for 10x10x10mm box generated.
+    summary: Planner artifacts generated and submitted.
 - node: electronics_planner
   steps:
   - thought: No electronics needed.
@@ -56,15 +74,20 @@ transcript:
       required_fixes: []
 - node: engineer_coder
   steps:
-  - thought: Implement build123d script with valid metadata and build() entrypoint.
+  - thought: Implement the current-generation solution script for the box scenario.
     tool_name: write_file
     tool_args:
       path: solution_script.py
       overwrite: true
       content_file: INT-002/engineer_coder/entry_01/01__solution_script.py
     expected_observation: success
+  - thought: Run the authored script through validation, simulation, and review handoff.
+    tool_name: execute_command
+    tool_args:
+      command: python solution_script.py
+    expected_observation: 'True'
   - finished: true
-    journal: Implemented build() entrypoint and metadata-compliant CAD script.
+    journal: Implemented current-generation validate/simulate/review solution script.
     thought: Implementation complete.
 - node: engineer_execution_reviewer
   steps:

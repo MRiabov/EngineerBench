@@ -1,0 +1,54 @@
+{
+  "version": "1.0",
+  "bundle_id": "INT-002-engineer-planner",
+  "created_at": "2026-04-02T22:41:00+00:00",
+  "episode_id": "INT-002-engineer-planner",
+  "worker_session_id": "INT-002",
+  "revision": "INT-002-revision",
+  "scene_hash": "INT-002-engineer-planner",
+  "bundle_path": "renders/engineer_plan_renders",
+  "environment_version": "integration-test",
+  "drafting": true,
+  "source_script_sha256": "375d26452d6c1060ae807cac81fa3d1cfc275ff2eff7c0e842cee783d5c1fe57",
+  "preview_evidence_paths": [
+    "renders/render_e45_a45.png",
+    "renders/render_e45_a45_depth.png",
+    "renders/render_e45_a45_segmentation.png"
+  ],
+  "artifacts": {
+    "renders/render_e45_a45.png": {
+      "modality": "rgb",
+      "group_key": "render_e45_a45",
+      "siblings": {
+        "rgb": "renders/render_e45_a45.png",
+        "depth": "renders/render_e45_a45_depth.png",
+        "segmentation": "renders/render_e45_a45_segmentation.png",
+        "svg": "renders/render_e45_a45.svg",
+        "dxf": "renders/render_e45_a45.dxf"
+      }
+    },
+    "renders/render_e45_a45_depth.png": {
+      "modality": "depth",
+      "group_key": "render_e45_a45",
+      "siblings": {
+        "rgb": "renders/render_e45_a45.png",
+        "depth": "renders/render_e45_a45_depth.png",
+        "segmentation": "renders/render_e45_a45_segmentation.png",
+        "svg": "renders/render_e45_a45.svg",
+        "dxf": "renders/render_e45_a45.dxf"
+      },
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range."
+    },
+    "renders/render_e45_a45_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "render_e45_a45",
+      "siblings": {
+        "rgb": "renders/render_e45_a45.png",
+        "depth": "renders/render_e45_a45_depth.png",
+        "segmentation": "renders/render_e45_a45_segmentation.png",
+        "svg": "renders/render_e45_a45.svg",
+        "dxf": "renders/render_e45_a45.dxf"
+      }
+    }
+  }
+}
