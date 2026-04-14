@@ -36,9 +36,7 @@ from shared.agent_templates import (
     load_codex_template_files,
     load_common_template_files,
     load_role_template_files,
-    load_template_repo_files,
 )
-from shared.agents.config import DraftingMode, load_agents_config
 from shared.current_role import current_role_manifest_json, parse_current_role_manifest
 from shared.enums import AgentName
 from shared.git_utils import init_workspace_repo
@@ -48,11 +46,6 @@ from shared.models.schemas import (
     AssemblyPartConfig,
     BenchmarkDefinition,
     CostTotals,
-    DraftingCallout,
-    DraftingDimension,
-    DraftingNote,
-    DraftingSheet,
-    DraftingView,
     PartConfig,
     ReviewComments,
     ReviewFrontmatter,
@@ -94,25 +87,6 @@ _BINARY_SUFFIXES = {
     ".stl",
     ".glb",
 }
-_ENGINEER_DRAFTING_TARGETS = {
-    AgentName.ENGINEER_PLANNER,
-    AgentName.ENGINEER_PLAN_REVIEWER,
-    AgentName.ENGINEER_CODER,
-    AgentName.ENGINEER_EXECUTION_REVIEWER,
-}
-
-_ENGINEER_BENCHMARK_CONTEXT_TARGETS = {
-    AgentName.ENGINEER_PLANNER,
-    AgentName.ENGINEER_CODER,
-}
-
-_BENCHMARK_DRAFTING_TARGETS = {
-    AgentName.BENCHMARK_PLANNER,
-    AgentName.BENCHMARK_PLAN_REVIEWER,
-    AgentName.BENCHMARK_CODER,
-    AgentName.BENCHMARK_REVIEWER,
-}
-
 _CURRENT_ROLE_MANIFEST_PATH = Path(".manifests/current_role.json")
 
 
@@ -370,28 +344,6 @@ def _write_current_role_manifest(dst_root: Path, agent_name: AgentName) -> str:
     return _CURRENT_ROLE_MANIFEST_PATH.as_posix()
 
 
-def _technical_drawing_mode_active(mode: DraftingMode) -> bool:
-    return mode in (DraftingMode.MINIMAL, DraftingMode.FULL)
-
-
-def _engineering_technical_drawing_mode_active() -> bool:
-    try:
-        return _technical_drawing_mode_active(
-            load_agents_config().get_technical_drawing_mode(AgentName.ENGINEER_PLANNER)
-        )
-    except Exception:
-        return False
-
-
-def _benchmark_technical_drawing_mode_active() -> bool:
-    try:
-        return _technical_drawing_mode_active(
-            load_agents_config().get_technical_drawing_mode(AgentName.BENCHMARK_PLANNER)
-        )
-    except Exception:
-        return False
-
-
 def _collect_assembly_targets(assembly_definition: AssemblyDefinition) -> list[str]:
     targets: list[str] = []
 
@@ -413,108 +365,6 @@ def _collect_assembly_targets(assembly_definition: AssemblyDefinition) -> list[s
         for part in item.parts:
             _add(part.name)
     return targets
-
-
-def _starter_drafting_sheet(target_name: str) -> DraftingSheet:
-    return DraftingSheet(
-        sheet_id="sheet-1",
-        title="Starter Drafting Package",
-        views=[
-            DraftingView(
-                view_id="front",
-                target=target_name,
-                projection="front",
-                scale=1.0,
-                datums=["A", "B"],
-                dimensions=[
-                    DraftingDimension(
-                        dimension_id="starter_width",
-                        kind="linear",
-                        target=target_name,
-                        value=1.0,
-                        binding=True,
-                        note="Starter placeholder dimension.",
-                    )
-                ],
-                callouts=[
-                    DraftingCallout(
-                        callout_id="1",
-                        label="Starter assembly",
-                        target=target_name,
-                    )
-                ],
-                notes=[
-                    DraftingNote(
-                        note_id="n1",
-                        text="Starter drafting placeholder for the seeded workspace.",
-                        critical=False,
-                    )
-                ],
-            ),
-            DraftingView(
-                view_id="top",
-                target=target_name,
-                projection="top",
-                scale=1.0,
-                datums=["A", "C"],
-                dimensions=[
-                    DraftingDimension(
-                        dimension_id="starter_depth",
-                        kind="linear",
-                        target=target_name,
-                        value=1.0,
-                        binding=True,
-                        note="Starter placeholder dimension.",
-                    )
-                ],
-                callouts=[
-                    DraftingCallout(
-                        callout_id="2",
-                        label="Starter assembly",
-                        target=target_name,
-                    )
-                ],
-                notes=[
-                    DraftingNote(
-                        note_id="n2",
-                        text="Starter drafting placeholder for the seeded workspace.",
-                        critical=False,
-                    )
-                ],
-            ),
-            DraftingView(
-                view_id="side",
-                target=target_name,
-                projection="side",
-                scale=1.0,
-                datums=["B", "C"],
-                dimensions=[
-                    DraftingDimension(
-                        dimension_id="starter_height",
-                        kind="linear",
-                        target=target_name,
-                        value=1.0,
-                        binding=True,
-                        note="Starter placeholder dimension.",
-                    )
-                ],
-                callouts=[
-                    DraftingCallout(
-                        callout_id="3",
-                        label="Starter assembly",
-                        target=target_name,
-                    )
-                ],
-                notes=[
-                    DraftingNote(
-                        note_id="n3",
-                        text="Starter drafting placeholder for the seeded workspace.",
-                        critical=False,
-                    )
-                ],
-            ),
-        ],
-    )
 
 
 def _load_benchmark_caps(workspace_dir: Path) -> tuple[float, float]:
@@ -565,7 +415,6 @@ def _starter_engineer_assembly(workspace_dir: Path) -> AssemblyDefinition:
             estimated_weight_g=0.0,
             estimate_confidence="high",
         ),
-        drafting=_starter_drafting_sheet(target_name),
     )
 
 
@@ -592,102 +441,7 @@ def _starter_benchmark_assembly(workspace_dir: Path) -> AssemblyDefinition:
             estimated_weight_g=0.0,
             estimate_confidence="high",
         ),
-        drafting=_starter_drafting_sheet(target_name),
     )
-
-
-def _ensure_engineer_drafting_contract(workspace_dir: Path) -> list[str]:
-    assembly_path = workspace_dir / "assembly_definition.yaml"
-    if not assembly_path.exists():
-        return []
-
-    raw_content = assembly_path.read_text(encoding="utf-8")
-    try:
-        parsed = yaml.safe_load(raw_content) or {}
-        assembly = AssemblyDefinition.model_validate(parsed)
-    except Exception:
-        starter = _starter_engineer_assembly(workspace_dir)
-        assembly_path.write_text(
-            yaml.safe_dump(
-                starter.model_dump(mode="json", by_alias=True, exclude_none=True),
-                sort_keys=False,
-            ),
-            encoding="utf-8",
-        )
-        return ["assembly_definition.yaml"]
-
-    if assembly.drafting is not None:
-        return []
-
-    targets = _collect_assembly_targets(assembly)
-    if not targets:
-        starter = _starter_engineer_assembly(workspace_dir)
-        assembly_path.write_text(
-            yaml.safe_dump(
-                starter.model_dump(mode="json", by_alias=True, exclude_none=True),
-                sort_keys=False,
-            ),
-            encoding="utf-8",
-        )
-        return ["assembly_definition.yaml"]
-
-    updated = assembly.model_copy(deep=True)
-    updated.drafting = _starter_drafting_sheet(targets[0])
-    assembly_path.write_text(
-        yaml.safe_dump(
-            updated.model_dump(mode="json", by_alias=True, exclude_none=True),
-            sort_keys=False,
-        ),
-        encoding="utf-8",
-    )
-    return ["assembly_definition.yaml"]
-
-
-def _ensure_benchmark_drafting_contract(workspace_dir: Path) -> list[str]:
-    assembly_path = workspace_dir / "benchmark_assembly_definition.yaml"
-    if not assembly_path.exists():
-        return []
-
-    raw_content = assembly_path.read_text(encoding="utf-8")
-    try:
-        parsed = yaml.safe_load(raw_content) or {}
-        assembly = AssemblyDefinition.model_validate(parsed)
-    except Exception:
-        starter = _starter_benchmark_assembly(workspace_dir)
-        assembly_path.write_text(
-            yaml.safe_dump(
-                starter.model_dump(mode="json", by_alias=True, exclude_none=True),
-                sort_keys=False,
-            ),
-            encoding="utf-8",
-        )
-        return ["benchmark_assembly_definition.yaml"]
-
-    if assembly.drafting is not None:
-        return []
-
-    targets = _collect_assembly_targets(assembly)
-    if not targets:
-        starter = _starter_benchmark_assembly(workspace_dir)
-        assembly_path.write_text(
-            yaml.safe_dump(
-                starter.model_dump(mode="json", by_alias=True, exclude_none=True),
-                sort_keys=False,
-            ),
-            encoding="utf-8",
-        )
-        return ["benchmark_assembly_definition.yaml"]
-
-    updated = assembly.model_copy(deep=True)
-    updated.drafting = _starter_drafting_sheet(targets[0])
-    assembly_path.write_text(
-        yaml.safe_dump(
-            updated.model_dump(mode="json", by_alias=True, exclude_none=True),
-            sort_keys=False,
-        ),
-        encoding="utf-8",
-    )
-    return ["benchmark_assembly_definition.yaml"]
 
 
 def copy_workspace_contents(
@@ -1140,36 +894,6 @@ def materialize_seed_workspace(
                 encoding="utf-8",
             )
             copied_paths.append("plan.md")
-
-    if (
-        agent_name in _ENGINEER_DRAFTING_TARGETS
-        and _engineering_technical_drawing_mode_active()
-    ):
-        copied_paths.extend(
-            _write_missing_template_files(
-                workspace_dir, load_template_repo_files("engineer/drafting")
-            )
-        )
-        copied_paths.extend(_ensure_engineer_drafting_contract(workspace_dir))
-    if (
-        agent_name in _ENGINEER_BENCHMARK_CONTEXT_TARGETS
-        and _benchmark_technical_drawing_mode_active()
-    ):
-        copied_paths.extend(
-            _write_missing_template_files(
-                workspace_dir, load_template_repo_files("benchmark_generator/drafting")
-            )
-        )
-    if (
-        agent_name in _BENCHMARK_DRAFTING_TARGETS
-        and _benchmark_technical_drawing_mode_active()
-    ):
-        copied_paths.extend(
-            _write_missing_template_files(
-                workspace_dir, load_template_repo_files("benchmark_generator/drafting")
-            )
-        )
-        copied_paths.extend(_ensure_benchmark_drafting_contract(workspace_dir))
 
     if (
         agent_name

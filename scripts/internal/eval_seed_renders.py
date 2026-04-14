@@ -23,7 +23,6 @@ if str(ROOT) not in sys.path:
 import colorsys
 
 from shared.agents import get_image_render_resolution
-from shared.agents.config import DraftingMode
 from shared.current_role import current_role_manifest_json
 from shared.enums import AgentName
 from shared.git_utils import repo_revision
@@ -33,16 +32,12 @@ from shared.rendering import (
     normalize_render_manifest,
     render_static_preview,
 )
-from shared.rendering.renderer_client import (
-    bundle_workspace_base64,
-    render_technical_drawing,
-)
+from shared.rendering.renderer_client import bundle_workspace_base64
 from shared.script_contracts import (
     BENCHMARK_SCRIPT_PATH,
     CURRENT_ROLE_MANIFEST_PATH,
     SOLUTION_SCRIPT_PATH,
     authored_script_path_for_agent,
-    technical_drawing_script_path_for_agent,
 )
 from shared.workers.loader import load_component_from_script
 from shared.workers.schema import (
@@ -302,10 +297,6 @@ def _seed_render_bundle_names(role_name: str) -> list[str]:
     ]
 
 
-def _technical_drawing_mode_active(mode: DraftingMode) -> bool:
-    return mode in (DraftingMode.MINIMAL, DraftingMode.FULL)
-
-
 def _remove_unneeded_render_bundles(renders_dir: Path, *, allowed: set[str]) -> None:
     if not renders_dir.exists():
         return
@@ -366,7 +357,6 @@ def _refresh_benchmark_bundle(
     artifact_dir: Path,
     staging_root: Path,
     session_id: str,
-    technical_drawing_mode: DraftingMode,
 ) -> list[str]:
     role_manifest_path = staging_root / CURRENT_ROLE_MANIFEST_PATH
     original_role_manifest = (
@@ -419,115 +409,51 @@ def _refresh_engineer_plan_bundle(
     artifact_dir: Path,
     staging_root: Path,
     session_id: str,
-    technical_drawing_mode: DraftingMode,
 ) -> list[str]:
-    source_script_path = artifact_dir / technical_drawing_script_path_for_agent(
+    source_script_path = artifact_dir / authored_script_path_for_agent(
         AgentName.ENGINEER_PLANNER
     )
     source_script_sha256 = hashlib.sha256(source_script_path.read_bytes()).hexdigest()
-    bundle_base64 = bundle_workspace_base64(staging_root)
-    if _technical_drawing_mode_active(technical_drawing_mode):
-        response = render_technical_drawing(
-            bundle_base64=bundle_base64,
-            script_path=Path(
-                technical_drawing_script_path_for_agent(AgentName.ENGINEER_PLANNER)
-            ).name,
-            orbit_pitch=45.0,
-            orbit_yaw=45.0,
-            session_id=session_id,
-            agent_role="engineer_planner",
-        )
-        if not response.success:
-            raise RuntimeError(
-                response.message or response.status_text or "render regeneration failed"
-            )
-        renders_root = artifact_dir / "renders"
-        renders_root.mkdir(parents=True, exist_ok=True)
-        bundle_dir = renders_root / "engineer_plan_renders"
-        remapped_artifacts = _remap_render_bundle_artifacts(
-            response,
-            source_bundle="current-episode",
-            target_bundle="engineer_plan_renders",
-        )
-        with tempfile.TemporaryDirectory(
-            prefix="engineer_plan_renders_", dir=str(renders_root)
-        ) as tmpdir:
-            tmp_root = Path(tmpdir)
-            saved_paths = materialize_render_artifacts(remapped_artifacts, tmp_root)
-            if not saved_paths:
-                raise RuntimeError(
-                    "render regeneration produced no materialized drafting artifacts"
-                )
-            manifest = normalize_render_manifest(
-                render_paths=saved_paths,
-                workspace_root=tmp_root,
-                episode_id=artifact_dir.name,
-                worker_session_id=artifact_dir.name,
-                bundle_path="renders/engineer_plan_renders",
-                drafting=True,
-                source_script_sha256=source_script_sha256,
-            )
-            manifest_path = (
-                tmp_root / "renders" / "engineer_plan_renders" / "render_manifest.json"
-            )
-            manifest_path.write_text(
-                manifest.model_dump_json(indent=2), encoding="utf-8"
-            )
-            source_bundle_dir = tmp_root / "renders" / "engineer_plan_renders"
-            if bundle_dir.exists():
-                shutil.rmtree(bundle_dir)
-            shutil.copytree(source_bundle_dir, bundle_dir)
-        if "renders/engineer_plan_renders/render_manifest.json" not in saved_paths:
-            saved_paths.append("renders/engineer_plan_renders/render_manifest.json")
-        return saved_paths
-
     response = render_static_preview(
-        bundle_base64=bundle_base64,
-        script_path=Path(
-            technical_drawing_script_path_for_agent(AgentName.ENGINEER_PLANNER)
-        ).name,
+        bundle_base64=bundle_workspace_base64(staging_root),
+        script_path=Path(authored_script_path_for_agent(AgentName.ENGINEER_PLANNER)).name,
         session_id=session_id,
-        agent_role="benchmark_reviewer",
+        agent_role="engineer_planner",
     )
     if not response.success:
         raise RuntimeError(
             response.message or response.status_text or "render regeneration failed"
         )
 
-    remapped_artifacts = _remap_render_bundle_artifacts(
-        response.artifacts,
-        source_bundle="benchmark_renders",
-        target_bundle="engineer_plan_renders",
-    )
     renders_root = artifact_dir / "renders"
     renders_root.mkdir(parents=True, exist_ok=True)
+    bundle_dir = renders_root / "engineer_plan_renders"
     with tempfile.TemporaryDirectory(
         prefix="engineer_plan_renders_", dir=str(renders_root)
     ) as tmpdir:
         tmp_root = Path(tmpdir)
-        saved_paths = materialize_render_artifacts(remapped_artifacts, tmp_root)
+        saved_paths = materialize_render_artifacts(response.artifacts, tmp_root)
         if not saved_paths:
             raise RuntimeError(
                 "render regeneration produced no materialized drafting artifacts"
             )
 
         manifest = normalize_render_manifest(
-            render_paths=saved_paths,
-            workspace_root=tmp_root,
-            episode_id=artifact_dir.name,
-            worker_session_id=artifact_dir.name,
-            bundle_path="renders/engineer_plan_renders",
-            drafting=True,
-            source_script_sha256=source_script_sha256,
-        )
+                render_paths=saved_paths,
+                workspace_root=tmp_root,
+                episode_id=artifact_dir.name,
+                worker_session_id=artifact_dir.name,
+                bundle_path="renders/engineer_plan_renders",
+                drafting=False,
+                source_script_sha256=source_script_sha256,
+            )
         manifest_path = (
             tmp_root / "renders" / "engineer_plan_renders" / "render_manifest.json"
         )
         manifest_path.write_text(manifest.model_dump_json(indent=2), encoding="utf-8")
-        target_bundle_dir = renders_root / "engineer_plan_renders"
-        if target_bundle_dir.exists():
-            shutil.rmtree(target_bundle_dir)
-        shutil.copytree(manifest_path.parent, target_bundle_dir)
+        if bundle_dir.exists():
+            shutil.rmtree(bundle_dir)
+        shutil.copytree(manifest_path.parent, bundle_dir)
     if "renders/engineer_plan_renders/render_manifest.json" not in saved_paths:
         saved_paths.append("renders/engineer_plan_renders/render_manifest.json")
     return saved_paths
@@ -1030,8 +956,6 @@ def _manifest_for_render_paths(
 
 def update_seed_artifact_renders(
     artifact_dir: Path,
-    *,
-    technical_drawing_mode: DraftingMode,
 ) -> list[str]:
     artifact_dir = Path(artifact_dir)
     role_name = _role_name_for_artifact(artifact_dir)
@@ -1060,7 +984,6 @@ def update_seed_artifact_renders(
                         artifact_dir=artifact_dir,
                         staging_root=staging_root,
                         session_id=session_id,
-                        technical_drawing_mode=technical_drawing_mode,
                     )
                 )
                 continue
@@ -1070,7 +993,6 @@ def update_seed_artifact_renders(
                         artifact_dir=artifact_dir,
                         staging_root=staging_root,
                         session_id=session_id,
-                        technical_drawing_mode=technical_drawing_mode,
                     )
                 )
                 continue

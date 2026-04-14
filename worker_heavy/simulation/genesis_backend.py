@@ -70,7 +70,6 @@ class GenesisBackend(PhysicsRendererBackend):
         self.applied_controls = {}  # name -> float
         self.current_time = 0.0
         self.mfg_config = None
-        self.current_particle_multiplier = 1.0
         self.particle_budget = None
         self.smoke_test_mode = False
         self._is_built = False
@@ -255,13 +254,8 @@ class GenesisBackend(PhysicsRendererBackend):
                 self._is_built = True
                 return
 
-            # T017: GPU OOM Auto-Retry Logic
+            # Keep the build fail-closed on transient Genesis build failures.
             max_retries = 3
-            particle_reduction_factor = 0.75
-
-            # Initial multiplier based on requested budget (default 100k -> multiplier 1.0)
-            requested_budget = getattr(scene.config, "particle_budget", 100000)
-            self.current_particle_multiplier = requested_budget / 100000.0
 
             for attempt in range(max_retries):
                 try:
@@ -277,24 +271,10 @@ class GenesisBackend(PhysicsRendererBackend):
                         "out of memory" in error_str
                         or "cuda error: out of memory" in error_str
                     ):
-                        from shared.observability.events import emit_event
-                        from shared.observability.schemas import GpuOomRetryEvent
-
-                        original_count = int(10000 * self.current_particle_multiplier)
-                        self.current_particle_multiplier *= particle_reduction_factor
-                        reduced_count = int(10000 * self.current_particle_multiplier)
-
-                        emit_event(
-                            GpuOomRetryEvent(
-                                original_particles=original_count,
-                                reduced_particles=reduced_count,
-                            )
-                        )
-
                         logger.warning(
                             "genesis_oom_detected",
                             attempt=attempt + 1,
-                            reduction=particle_reduction_factor,
+                            reduction=0.0,
                         )
                         # Clean up and retry
                         self.close()
@@ -346,7 +326,7 @@ class GenesisBackend(PhysicsRendererBackend):
         if gs is None:
             raise ImportError("Genesis not installed")
 
-                # Optimization for smoke tests: substeps help with Genesis stability.
+        # Optimization for smoke tests: substeps help with Genesis stability.
         # We use production dt for stability.
         is_smoke = getattr(self, "smoke_test_mode", False)
         sim_options = gs.options.SimOptions(
@@ -357,10 +337,6 @@ class GenesisBackend(PhysicsRendererBackend):
         self.scene = gs.Scene(
             sim_options=sim_options,
             show_viewer=False,
-            vis_options=gs.options.VisOptions(
-                particle_size_scale=1.0,
-                render_particle_as="sphere",
-            ),
         )
 
         # Add default ground plane
@@ -744,25 +720,6 @@ class GenesisBackend(PhysicsRendererBackend):
             "time": self.current_time,
             "n_entities": len(self.entities),
         }
-
-    def get_particle_positions(self) -> np.ndarray | None:
-        # Genesis particle systems are only surfaced when present in the scene.
-        all_particles = []
-        for _, entity in self.entities.items():
-            # Genesis particle systems expose per-particle positions.
-            try:
-                state = entity.get_state()
-                if hasattr(state, "pos") and not hasattr(state, "von_mises"):
-                    # Particle systems expose positions without stress tensors.
-                    pos = state.pos[0].cpu().numpy()
-                    all_particles.append(pos)
-            except Exception:
-                continue
-
-        if not all_particles:
-            return None
-
-        return np.concatenate(all_particles, axis=0)
 
     # Rendering & Visualization
     def render(self) -> np.ndarray:
