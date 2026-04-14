@@ -1,0 +1,13 @@
+{
+  "artifact_hashes": {
+    "assembly_definition.yaml": "d2de460b1b417b378923c6f13c3ce5af760d4f9f3f972da7e0865611008d278f",
+    "plan.md": "9587e54e55721b710a8c3ce9ebb0481dbbcac1a150f05442743a7e98e2b056b2",
+    "todo.md": "03804d4e120d6d291a889ac36eb437b08ad73e4064c5d0717211f1fc68508c6b",
+    "solution_plan_evidence_script.py": "4ff819d0c682ed85fd49b79953c197ce8811a83c264ec1e9a191dbb06eb7b3fb",
+    "solution_plan_technical_drawing_script.py": "152740d63ac39b061ef8b72665bde8716c1617a8c39f9f2adc46c0092648b822"
+  },
+  "planner_node_type": "engineer_planner",
+  "reviewer_stage": "engineer_plan_reviewer",
+  "session_id": "seed-epr-003-no-drill-transfer",
+  "status": "ready_for_review"
+}

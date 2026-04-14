@@ -1,0 +1,20 @@
+{
+  "status": "ready_for_review",
+  "reviewer_stage": "benchmark_reviewer",
+  "timestamp": "2026-03-10T09:00:00Z",
+  "session_id": "seed-br-011",
+  "revision": "ff8f1fdd96d3dca9a7055d814f92a4635a790544",
+  "script_path": "benchmark_script.py",
+  "script_sha256": "172ef1773cc229cb61601cc7ab469b0e28f11ff9fbeea9c2554b93795cd32cf5",
+  "validation_success": true,
+  "validation_timestamp": 1710060000.0,
+  "simulation_success": true,
+  "simulation_summary": "Goal achieved: projectile_ball reached the goal zone.",
+  "simulation_timestamp": 1710060100.0,
+  "goal_reached": true,
+  "renders": [],
+  "mjcf_path": "benchmark.xml",
+  "cad_path": "benchmark_script.py",
+  "objectives_path": "benchmark_definition.yaml",
+  "assembly_definition_path": "assembly_definition.yaml"
+}

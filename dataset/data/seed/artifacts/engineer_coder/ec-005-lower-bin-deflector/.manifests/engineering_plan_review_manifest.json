@@ -1,0 +1,11 @@
+{
+  "artifact_hashes": {
+    "assembly_definition.yaml": "03b45e5e743dbc4d6c4903edd53b3fda232c5b6289dca2e4d7827e83a9d16d11",
+    "plan.md": "d0b2a2a46a71561edd3010f119936997b1da6662e6e46655ec161c2cab4e60c0",
+    "todo.md": "545ca589d486b489bcac0cf0c8c230ce1a50255c178b884fd71211f29212919c"
+  },
+  "planner_node_type": "engineer_planner",
+  "reviewer_stage": "engineer_plan_reviewer",
+  "session_id": "seed-ec-005-lower-bin-deflector",
+  "status": "ready_for_review"
+}

@@ -1,0 +1,11 @@
+{
+  "artifact_hashes": {
+    "assembly_definition.yaml": "48453cd52e85567b139c132de509b13396eff5ed58d5ae1f2e361be22a38fc1e",
+    "plan.md": "a5560ae1ea1692b184d6057be5d572d9fb4b81e2305cc6e62549af13eb5df8fc",
+    "todo.md": "03804d4e120d6d291a889ac36eb437b08ad73e4064c5d0717211f1fc68508c6b"
+  },
+  "planner_node_type": "engineer_planner",
+  "reviewer_stage": "engineer_plan_reviewer",
+  "session_id": "seed-ec-001-no-drill-transfer",
+  "status": "ready_for_review"
+}

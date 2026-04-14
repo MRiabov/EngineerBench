@@ -1,0 +1,1769 @@
+{
+  "version": "1.0",
+  "bundle_id": "1dd77f90-6935-5f33-b3ee-a177daa0a313",
+  "created_at": "2026-04-08T06:53:26.887043+00:00",
+  "episode_id": "59c0aceb-5160-5496-96bd-3e7a41b39476",
+  "worker_session_id": "seed-renders-epr-006-narrow-goal-funnel-caaa4830",
+  "revision": "ff8f1fdd96d3dca9a7055d814f92a4635a790544",
+  "scene_hash": "7968f26b8361b5e5183001d8db54d5f752c3b144be7e5769b56e5c7fa64882fc",
+  "bundle_path": "renders/benchmark_renders",
+  "environment_version": "1.0",
+  "drafting": false,
+  "source_script_sha256": null,
+  "preview_evidence_paths": [
+    "renders/benchmark_renders/benchmark_environment_render_e15_a0.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a0_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a0_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a135.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a135_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a135_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a180.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a180_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a180_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a225.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a225_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a225_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a270.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a270_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a270_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a315.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a315_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a315_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a45.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a45_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a45_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a90.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a90_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a90_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a0.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a0_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a0_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a135.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a135_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a135_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a180.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a180_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a180_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a225.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a225_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a225_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a270.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a270_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a270_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a315.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a315_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a315_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a45.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a45_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a45_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a90.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a90_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a90_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a0.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a0_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a0_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a135.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a135_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a135_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a180.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a180_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a180_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a225.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a225_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a225_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a270.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a270_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a270_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a315.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a315_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a315_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a45.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a45_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a45_segmentation.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a90.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a90_depth.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a90_segmentation.png"
+  ],
+  "artifacts": {
+    "renders/benchmark_renders/benchmark_environment_render_e15_a0.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e15_a0",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a0.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a0_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a0_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a0_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e15_a0",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a0.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a0_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a0_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 1904.0184326171875,
+      "depth_max_m": 1924.850830078125,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a0_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e15_a0",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a0.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a0_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a0_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a45.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e15_a45",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a45.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a45_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a45_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a45_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e15_a45",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a45.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a45_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a45_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 2102.10009765625,
+      "depth_max_m": 2122.248046875,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a45_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e15_a45",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a45.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a45_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a45_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a90.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e15_a90",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a90.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a90_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a90_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a90_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e15_a90",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a90.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a90_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a90_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 2184.1494140625,
+      "depth_max_m": 2202.141845703125,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a90_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e15_a90",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a90.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a90_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a90_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a135.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e15_a135",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a135.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a135_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a135_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a135_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e15_a135",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a135.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a135_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a135_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 2102.100341796875,
+      "depth_max_m": 2122.245849609375,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a135_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e15_a135",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a135.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a135_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a135_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a180.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e15_a180",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a180.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a180_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a180_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a180_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e15_a180",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a180.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a180_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a180_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 1904.0184326171875,
+      "depth_max_m": 1924.8515625,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a180_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e15_a180",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a180.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a180_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a180_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a225.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e15_a225",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a225.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a225_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a225_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a225_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e15_a225",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a225.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a225_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a225_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 1705.9344482421875,
+      "depth_max_m": 1725.568603515625,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a225_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e15_a225",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a225.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a225_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a225_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a270.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e15_a270",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a270.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a270_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a270_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a270_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e15_a270",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a270.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a270_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a270_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 1623.90576171875,
+      "depth_max_m": 1642.6402587890625,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a270_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e15_a270",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a270.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a270_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a270_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a315.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e15_a315",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a315.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a315_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a315_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a315_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e15_a315",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a315.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a315_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a315_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 1705.9344482421875,
+      "depth_max_m": 1725.5682373046875,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e15_a315_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e15_a315",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a315.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a315_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a315_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a0.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e45_a0",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a0.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a0_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a0_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a0_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e45_a0",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a0.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a0_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a0_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 1888.3363037109375,
+      "depth_max_m": 1909.6998291015625,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a0_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e45_a0",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a0.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a0_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a0_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a45.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e45_a45",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a45.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a45_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a45_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a45_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e45_a45",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a45.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a45_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a45_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 2033.32421875,
+      "depth_max_m": 2054.651123046875,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a45_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e45_a45",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a45.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a45_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a45_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a90.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e45_a90",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a90.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a90_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a90_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a90_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e45_a90",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a90.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a90_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a90_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 2093.392333984375,
+      "depth_max_m": 2114.384521484375,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a90_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e45_a90",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a90.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a90_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a90_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a135.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e45_a135",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a135.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a135_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a135_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a135_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e45_a135",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a135.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a135_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a135_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 2033.32421875,
+      "depth_max_m": 2054.6533203125,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a135_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e45_a135",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a135.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a135_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a135_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a180.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e45_a180",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a180.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a180_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a180_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a180_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e45_a180",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a180.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a180_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a180_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 1888.3363037109375,
+      "depth_max_m": 1909.700439453125,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a180_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e45_a180",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a180.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a180_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a180_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a225.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e45_a225",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a225.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a225_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a225_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a225_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e45_a225",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a225.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a225_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a225_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 1743.3218994140625,
+      "depth_max_m": 1764.3079833984375,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a225_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e45_a225",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a225.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a225_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a225_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a270.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e45_a270",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a270.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a270_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a270_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a270_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e45_a270",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a270.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a270_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a270_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 1683.27099609375,
+      "depth_max_m": 1703.3441162109375,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a270_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e45_a270",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a270.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a270_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a270_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a315.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e45_a315",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a315.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a315_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a315_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a315_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e45_a315",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a315.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a315_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a315_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 1743.322021484375,
+      "depth_max_m": 1764.3079833984375,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e45_a315_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e45_a315",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a315.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a315_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a315_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a0.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e75_a0",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a0.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a0_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a0_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a0_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e75_a0",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a0.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a0_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a0_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 1879.2701416015625,
+      "depth_max_m": 1899.1126708984375,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a0_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e75_a0",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a0.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a0_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a0_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a45.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e75_a45",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a45.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a45_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a45_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a45_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e75_a45",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a45.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a45_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a45_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 1932.3392333984375,
+      "depth_max_m": 1953.412841796875,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a45_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e75_a45",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a45.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a45_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a45_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a90.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e75_a90",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a90.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a90_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a90_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a90_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e75_a90",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a90.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a90_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a90_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 1954.341064453125,
+      "depth_max_m": 1976.14404296875,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a90_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e75_a90",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a90.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a90_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a90_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a135.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e75_a135",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a135.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a135_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a135_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a135_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e75_a135",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a135.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a135_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a135_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 1932.3392333984375,
+      "depth_max_m": 1953.41162109375,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a135_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e75_a135",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a135.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a135_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a135_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a180.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e75_a180",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a180.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a180_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a180_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a180_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e75_a180",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a180.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a180_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a180_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 1879.27001953125,
+      "depth_max_m": 1899.1124267578125,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a180_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e75_a180",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a180.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a180_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a180_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a225.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e75_a225",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a225.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a225_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a225_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a225_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e75_a225",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a225.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a225_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a225_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 1826.18994140625,
+      "depth_max_m": 1846.97607421875,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a225_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e75_a225",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a225.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a225_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a225_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a270.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e75_a270",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a270.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a270_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a270_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a270_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e75_a270",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a270.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a270_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a270_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 1804.207763671875,
+      "depth_max_m": 1826.7298583984375,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a270_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e75_a270",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a270.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a270_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a270_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a315.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_environment_render_e75_a315",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a315.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a315_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a315_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a315_depth.png": {
+      "modality": "depth",
+      "group_key": "benchmark_environment_render_e75_a315",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a315.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a315_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a315_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": 1826.18994140625,
+      "depth_max_m": 1846.9766845703125,
+      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_environment_render_e75_a315_segmentation.png": {
+      "modality": "segmentation",
+      "group_key": "benchmark_environment_render_e75_a315",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a315.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a315_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a315_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": [
+        {
+          "instance_id": "projectile_ball",
+          "instance_name": "projectile_ball",
+          "semantic_label": "projectile_ball",
+          "object_type": "part",
+          "object_id": 0,
+          "body_name": "projectile_ball",
+          "geom_name": "projectile_ball",
+          "color_rgb": [
+            235,
+            59,
+            59
+          ],
+          "color_hex": "#eb3b3b"
+        }
+      ]
+    }
+  }
+}

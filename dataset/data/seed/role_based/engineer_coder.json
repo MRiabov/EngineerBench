@@ -1,37 +1,37 @@
 [
   {
-    "id": "ec-006",
+    "id": "ec-001",
     "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the freestanding no-drill transfer in `solution_script.py`. Respect the no-attachment constraint from the reviewed package, keep the planner files semantically consistent, and update `todo.md` and `journal.md` during implementation.",
     "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-006-no-drill-transfer",
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-001-no-drill-transfer",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed freestanding handoff package, implements the no-drill transfer solution in `solution_script.py`, and preserves the seeded planner contract while updating execution progress."
   },
   {
-    "id": "ec-007",
+    "id": "ec-002",
     "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the low-friction cube guide in `solution_script.py`. Preserve the reviewed planner artifacts, keep the guide geometry matched to the low-friction slip assumptions, and update `todo.md` and `journal.md` as execution progresses.",
     "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-007-low-friction-cube",
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-002-low-friction-cube",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins from a reviewed low-friction cube package, implements the guide geometry in `solution_script.py`, and preserves the planner contract and seeded routing assumptions."
   },
   {
-    "id": "ec-008",
+    "id": "ec-003",
     "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the lift-platform handoff guide in `solution_script.py`. Keep the reviewed planner files coherent, preserve the passive handoff strategy around the moving benchmark platform, and update `todo.md` and `journal.md` while the implementation progresses.",
     "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-008-lift-platform-handoff",
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-003-lift-platform-handoff",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed lift-platform handoff package, implements the passive catch-and-guide assembly in `solution_script.py`, and preserves the planner contract and platform-clearance assumptions."
   },
   {
-    "id": "ec-009",
+    "id": "ec-004",
     "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the narrow-goal funnel solution in `solution_script.py`. Preserve the reviewed planner files, keep the precision-guidance geometry consistent with the seeded tolerance assumptions, and update `todo.md` and `journal.md` during execution.",
     "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-009-narrow-goal-funnel",
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-004-narrow-goal-funnel",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins from a reviewed narrow-goal handoff package, implements the precision funnel in `solution_script.py`, and preserves the planner contract and seeded budget assumptions."
   },
   {
-    "id": "ec-010",
+    "id": "ec-005",
     "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the lower-bin deflector in `solution_script.py`. Keep the reviewed planner artifacts aligned with the passive drop-redirection strategy, respect the dead-zone keepout, and update `todo.md` and `journal.md` as execution progresses.",
     "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-010-lower-bin-deflector",
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-005-lower-bin-deflector",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed lower-bin handoff package, implements the passive deflector assembly in `solution_script.py`, and preserves the seeded planner contract and dead-zone constraints."
   }
 ]

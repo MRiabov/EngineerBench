@@ -1,0 +1,20 @@
+{
+  "status": "ready_for_review",
+  "reviewer_stage": "benchmark_reviewer",
+  "timestamp": "2026-03-10T09:00:00Z",
+  "session_id": "seed-br-002-sideways-ball-infeasible-goal",
+  "revision": "ff8f1fdd96d3dca9a7055d814f92a4635a790544",
+  "script_path": "benchmark_script.py",
+  "script_sha256": "312cf70aa4a3b39822ca22eeb768b44e1c7e86dd6128f217521db85f21efd5ae",
+  "validation_success": true,
+  "validation_timestamp": 1710060000.0,
+  "simulation_success": true,
+  "simulation_summary": "Benchmark geometry compiles, but the seeded goal zone sits outside the feasible build and simulation envelope.",
+  "simulation_timestamp": 1710060100.0,
+  "goal_reached": true,
+  "renders": [],
+  "mjcf_path": "benchmark.xml",
+  "cad_path": "benchmark_script.py",
+  "objectives_path": "benchmark_definition.yaml",
+  "assembly_definition_path": "assembly_definition.yaml"
+}

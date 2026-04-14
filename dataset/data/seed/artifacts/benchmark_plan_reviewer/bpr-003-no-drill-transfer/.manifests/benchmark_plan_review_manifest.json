@@ -1,0 +1,12 @@
+{
+  "status": "ready_for_review",
+  "reviewer_stage": "benchmark_plan_reviewer",
+  "session_id": "seed-bpr-003-no-drill-transfer",
+  "planner_node_type": "benchmark_planner",
+  "artifact_hashes": {
+    "benchmark_assembly_definition.yaml": "2e3bb689692044bce1de20ee943ae450aa60784559bef6aeb0a44e8cc780bf89",
+    "benchmark_definition.yaml": "b6c76dfe89d1443f7771be2415185ef0687d8c096b969740d8eb4483a4a3a4ab",
+    "todo.md": "abb388eeb3937aca88de82f7a0e287adbb75c89ac7d603a2f78293647aff0741",
+    "benchmark_plan.md": "8e5224a52f18eead4c9fbc8f9887ac897901b463d4b9d6df52d6869be295702e"
+  }
+}

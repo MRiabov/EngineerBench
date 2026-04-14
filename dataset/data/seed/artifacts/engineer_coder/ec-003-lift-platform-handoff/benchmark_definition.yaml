@@ -1,0 +1,38 @@
+objectives:
+  goal_zone:
+    min: [180.0, -55.0, 215.0]
+    max: [280.0, 55.0, 290.0]
+  forbid_zones:
+    - name: platform_travel_clearance
+      min: [90.0, -90.0, 0.0]
+      max: [170.0, 90.0, 210.0]
+  build_zone:
+    min: [-180.0, -160.0, 0.0]
+    max: [320.0, 160.0, 340.0]
+benchmark_parts:
+  - part_id: lift_platform
+    label: lift_platform
+    metadata:
+      fixed: false
+      material_id: aluminum_6061
+
+physics:
+  backend: GENESIS
+  compute_target: auto
+simulation_bounds:
+  min: [-240.0, -200.0, -10.0]
+  max: [380.0, 200.0, 380.0]
+payload:
+  label: projectile_ball
+  shape: sphere
+  material_id: abs
+  static_randomization:
+    radius: [24.0, 24.0]
+  start_position: [0.0, 0.0, 125.0]
+  runtime_jitter: [6.0, 6.0, 5.0]
+constraints:
+  max_unit_cost: 52.0
+  max_weight_g: 980.0
+randomization:
+  static_variation_id: engineer_coder_platform_handoff_v1
+  runtime_jitter_enabled: true

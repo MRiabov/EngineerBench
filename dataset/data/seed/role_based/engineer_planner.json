@@ -1,51 +1,51 @@
 [
   {
-    "id": "ep-002",
+    "id": "ep-001",
     "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a stable bridge or guided transfer that carries the low-friction cube across the central gap into the far goal zone. Keep the design inside the build zone, account for the gap forbid zone, and produce planner artifacts that an engineer coder can implement without re-planning.",
     "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-002-gap-launch",
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-001-gap-launch",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts define a realistic cube gap-crossing mechanism, keep all budgets under the benchmark caps, and provide implementation-ready costing and TODO steps."
   },
   {
-    "id": "ep-003",
+    "id": "ep-002",
     "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a route that gets the projectile ball around the central forbid zone and into the goal zone. The design must absorb the listed spawn jitter instead of depending on lucky bounces, and the final assembly should avoid unnecessary moving DOFs.",
     "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-003-central-forbid-route",
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-002-central-forbid-route",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts describe a robust around-obstacle transport mechanism, include explicit risk mitigation for the forbid zone and jitter, and keep `assembly_definition.yaml` minimal in DOFs and within budget."
   },
   {
-    "id": "ep-005",
+    "id": "ep-003",
     "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a freestanding transfer from the left start area to the right goal zone. No drilling, clamping, or attachment to the surrounding environment is allowed, so the plan must stay self-supporting inside the build zone and remain stable under runtime jitter.",
     "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-005-no-drill-transfer",
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-003-no-drill-transfer",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts describe a manufacturable freestanding mechanism, avoid environment attachment assumptions, and keep costs and weight under the seeded benchmark caps."
   },
   {
-    "id": "ep-006",
+    "id": "ep-004",
     "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a solution for the low-friction cube. The cube must avoid the seeded forbid zone and still reach the goal reliably, so the plan should account for low-friction slip and guide geometry instead of assuming ideal sticking contact.",
     "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-006-low-friction-cube",
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-004-low-friction-cube",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts select geometry appropriate for a low-friction cube, account for the forbid zone, and produce consistent costed parts plus implementation-ready TODO items."
   },
   {
-    "id": "ep-007",
+    "id": "ep-005",
     "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a mechanism that receives the payload from an external lift platform and guides it into the elevated goal zone. The plan should describe the handoff strategy clearly, stay inside the build zone, and avoid adding unnecessary actuation on top of the moving benchmark fixture.",
     "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-007-lift-platform-handoff",
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-005-lift-platform-handoff",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts explain the platform handoff, keep the mechanism mostly passive unless motion is justified, and produce valid budgets and assembly data under the benchmark caps."
   },
   {
-    "id": "ep-008",
+    "id": "ep-006",
     "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan for a narrow, precision goal zone. The mechanism should widen the capture area upstream and then funnel the object into the narrow goal without violating the build zone or the seeded cost and weight caps.",
     "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-008-narrow-goal",
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-006-narrow-goal",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts include a realistic precision-guidance strategy, mention tolerance and jitter risks explicitly, and produce contract-valid handoff files with tighter planner budgets."
   },
   {
-    "id": "ep-010",
+    "id": "ep-007",
     "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a controlled drop or redirection that sends the projectile ball from the elevated start region into the lower bin goal zone. The plan should handle the vertical drop cleanly, remain manufacturable, and stay within the benchmark cost and weight caps.",
     "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-010-lower-bin",
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-007-lower-bin",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts define a gravity-aware lower-bin solution, include concrete risk mitigations for bounce and escape, and produce valid engineering handoff files under the benchmark caps."
   }
 ]

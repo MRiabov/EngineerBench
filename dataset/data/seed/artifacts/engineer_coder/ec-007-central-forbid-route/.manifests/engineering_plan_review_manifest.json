@@ -1,0 +1,11 @@
+{
+  "artifact_hashes": {
+    "assembly_definition.yaml": "13f7c60efed7a36faa93ecc2ac2f07422e73984f035b652a3c65df1a0e1888d3",
+    "plan.md": "5f61d035b3bbc8e3f5809ef7f8a988ee393911651871c43651f027d15fa0d5ff",
+    "todo.md": "c6c3186bdf2c43f8705a055551124a0c22f000ec5c5647e8214fb54fffa22eaa"
+  },
+  "planner_node_type": "engineer_planner",
+  "reviewer_stage": "engineer_plan_reviewer",
+  "session_id": "seed-ec-007-central-forbid-route",
+  "status": "ready_for_review"
+}

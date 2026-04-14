@@ -1,23 +1,23 @@
 [
   {
-    "id": "bc-011-sideways-ball",
+    "id": "bc-001",
     "task": "Use the seeded benchmark planner artifacts in the workspace to implement the sideways-ball benchmark in `benchmark_script.py`. Keep `benchmark_plan.md`, `todo.md`, and `benchmark_definition.yaml` consistent, preserve `benchmark_plan_evidence_script.py` and `benchmark_plan_technical_drawing_script.py` as read-only planner context, update `journal.md`, and keep `benchmark_script.py` import-safe with no `__main__` block or in-module review submission call. Render preview artifacts must write to `renders/current-episode/` (scratch-only, deleted at handoff); persistent render bundles under `renders/benchmark_renders/`, `renders/engineer_plan_renders/`, and `renders/final_solution_submission_renders/` are backend-owned read-only paths.",
     "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_coder/bc-011-sideways-ball",
+    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_coder/bc-001-sideways-ball",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_coder` and the seeded workspace to match that role. Writes benchmark implementation artifacts and runnable benchmark code consistent with 40mm-radius steel sphere moved 1m sideways while preserving the seeded benchmark drafting context. Render scratch path uses `renders/current-episode/` only; persistent bundles remain read-only to agent roles."
   },
   {
-    "id": "bc-002-tunnel",
+    "id": "bc-002",
     "task": "Use the seeded benchmark planner artifacts in the workspace to implement the tunnel benchmark in `benchmark_script.py`. Keep `benchmark_plan.md`, `todo.md`, and `benchmark_definition.yaml` consistent, preserve `benchmark_plan_evidence_script.py` and `benchmark_plan_technical_drawing_script.py` as read-only planner context, update `journal.md`, and keep `benchmark_script.py` import-safe with no `__main__` block or in-module review submission call.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_coder/bc-002-tunnel",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_coder` and the seeded workspace to match that role. Implements geometry and goal artifacts without planner-file regressions while preserving the seeded benchmark drafting context."
   },
   {
-    "id": "bc-013-sidedeflect",
+    "id": "bc-003",
     "task": "Use the seeded benchmark planner artifacts in the workspace to implement the side-deflect ramp benchmark in `benchmark_script.py`. The benchmark drops an ABS sphere from [0, 0, 120] mm onto a 30° angled deflector ramp that must redirect the ball into a side goal bin while avoiding a forbid zone below the spawn. Keep `benchmark_plan.md`, `todo.md`, and `benchmark_definition.yaml` consistent, preserve `benchmark_plan_evidence_script.py` and `benchmark_plan_technical_drawing_script.py` as read-only planner context, update `journal.md`, and keep `benchmark_script.py` import-safe with no `__main__` block or in-module review submission call.",
     "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_coder/bc-013-sidedeflect",
+    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_coder/bc-003-sidedeflect",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_coder` and the seeded workspace to match that role. Writes benchmark implementation artifacts for a gravity-driven ball-deflection benchmark with `base_plate`, `deflector_ramp`, `side_goal_wall`, and `catch_bin` geometry that preserves the seeded benchmark drafting context and handles the payload contract correctly."
   }
 ]

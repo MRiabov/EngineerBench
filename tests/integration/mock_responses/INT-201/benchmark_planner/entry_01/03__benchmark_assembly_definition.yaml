@@ -23,9 +23,6 @@ final_assembly:
     config:
       dofs:
         - slide_y
-      control:
-        mode: ON_OFF
-        speed: 0.15
   - name: gap_floor_guard
     config:
       dofs: []
