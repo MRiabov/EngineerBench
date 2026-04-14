@@ -90,7 +90,7 @@ enough to prevent orientation-sensitive collisions.
 02. If the planner wants a single pose, that pose is explicit. If the planner
     wants freedom, the admissible rotation envelope is explicit.
 03. The validator proves clearance against all fixed parts in the composed
-    scene, where fixed means zero DOF regardless of ownership.
+    scene, where fixed means zero motion regardless of ownership.
 04. The validator also proves that the payload stays inside the allowed
     objective envelope and outside forbid zones at each checked pose.
 05. The validator checks every sampled path step against every admissible
@@ -118,7 +118,7 @@ enough to prevent orientation-sensitive collisions.
 2. `admissible rotation envelope` means the explicit set or bounded range of
    rotations the step allows.
 3. `fixed part` means any part in the assembled scene that resolves to zero
-   DOF, including benchmark fixtures and solution parts that are locked in
+   motion axis, including benchmark fixtures and solution parts that are locked in
    place.
 4. `objective-envelope proof` means the claim that the payload remains within
    the allowed objective bounds and outside forbid zones at every sampled
@@ -141,7 +141,7 @@ enough to prevent orientation-sensitive collisions.
 03. The objective-envelope rule is equally conservative: if the payload leaves
     the allowed objective bounds or enters a forbid zone at any sampled step,
     the path is invalid.
-04. The fixed-part set should be derived from the scene graph and the zero-DOF
+04. The fixed-part set should be derived from the scene graph and the zero-motion
     contract, not from a filename list or a hand-maintained ownership table.
 05. `trimesh` is an acceleration layer only. It may cache broad-phase bounds and
     repeated intersection queries, but it does not replace the canonical

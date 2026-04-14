@@ -12,13 +12,11 @@ from utils.preview import (
     pick_preview_pixel,
     pick_preview_pixels,
     render_cad,
-    render_technical_drawing,
     query_render_bundle,
 )
 ```
 
 - `render_cad(component: Part | Compound, orbit_pitch: float | list[float] = 45, orbit_yaw: float | list[float] = 45, rgb: bool | None = None, depth: bool | None = None, segmentation: bool | None = None, payload_path: bool = False, rendering_type: PreviewRenderingType | str | None = None) -> _PreviewResponseProxy`
-- `render_technical_drawing(component: Part | Compound, orbit_pitch: float | list[float] = 45, orbit_yaw: float | list[float] = 45) -> _PreviewResponseProxy`
 - `objectives_geometry() -> Any`
 
 ## Render-Bundle Helpers

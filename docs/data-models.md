@@ -18,7 +18,7 @@
 | Model | Important Fields |
 | -- | -- |
 | `Episode` | `id`, `user_session_id`, `task`, `status`, `created_at`, `updated_at`, `skill_git_hash`, `template_versions`, `metadata_vars`, `seed_id`, `seed_dataset`, `seed_match_method`, `generation_kind`, `parent_seed_id`, `todo_list`, `journal`, `plan` |
-| `Trace` | `id`, `episode_id`, `user_session_id`, `langfuse_trace_id`, `simulation_run_id`, `cots_query_id`, `review_id`, `trace_type`, `name`, `content`, `metadata_vars`, `feedback_score`, `feedback_comment`, `created_at` |
+| `Trace` | `id`, `episode_id`, `user_session_id`, `langfuse_trace_id`, `simulation_run_id`, `review_id`, `trace_type`, `name`, `content`, `metadata_vars`, `feedback_score`, `feedback_comment`, `created_at` |
 | `Asset` | `id`, `episode_id`, `user_session_id`, `asset_type`, `s3_path`, `content`, `created_at` |
 
 ## Benchmark and Handover Schemas
@@ -28,7 +28,7 @@
 | `EpisodeMetadata` | Stores lineage, generation kind, worker session ID, custom objectives, and execution metadata |
 | `TraceMetadata` | Stores trace-specific metadata and provenance |
 | `BenchmarkDefinition` | Defines benchmark objectives, moved object, randomization, and benchmark-owned fixture metadata |
-| `AssemblyDefinition` | Defines the engineer-owned assembly, costing inputs, fasteners, wires, and final assembly structure |
+| `AssemblyDefinition` | Defines the engineer-owned assembly, costing inputs, wires, and final assembly structure |
 | `ReviewResult` | Structured review decision, reason, and checklist payload |
 | `ReviewFrontmatter` | YAML frontmatter for reviewer outputs |
 | `PlanRefusalFrontmatter` | Structured refusal artifact for valid coder refusal loops |

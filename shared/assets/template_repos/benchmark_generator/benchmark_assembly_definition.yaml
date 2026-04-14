@@ -65,73 +65,15 @@ manufactured_parts:
     removed_volume_mm3: 0.0
     estimated_unit_cost_usd: 1.0
 
-drafting:
-  sheet_id: sheet-1
-  title: Seeded benchmark drafting
-  goal_zone_overlap_intents:
-    - zone_name: goal_zone
-      target: right_goal_deck
-  views:
-    - view_id: front
-      target: left_start_deck
-      projection: front
-      scale: 1.0
-      datums: [A, B]
-      dimensions:
-        - dimension_id: width
-          kind: linear
-          target: left_start_deck
-          value: 28.0
-          binding: true
-      callouts:
-        - callout_id: 1
-          label: left_start_deck
-          target: left_start_deck
-    - view_id: top
-      target: right_goal_deck
-      projection: top
-      scale: 1.0
-      datums: [A, C]
-      dimensions:
-        - dimension_id: depth
-          kind: linear
-          target: right_goal_deck
-          value: 18.0
-          binding: true
-      callouts:
-        - callout_id: 2
-          label: right_goal_deck
-          target: right_goal_deck
-    - view_id: side
-      target: bridge_reference_table
-      projection: side
-      scale: 1.0
-      datums: [B, C]
-      dimensions:
-        - dimension_id: height
-          kind: linear
-          target: bridge_reference_table
-          value: 18.0
-          binding: true
-      callouts:
-        - callout_id: 3
-          label: bridge_reference_table
-          target: bridge_reference_table
-  notes: []
-
 final_assembly:
   - name: left_start_deck
     config:
-      dofs: []
   - name: right_goal_deck
     config:
-      dofs: []
   - name: bridge_reference_table
     config:
-      dofs: []
   - name: gap_floor_guard
     config:
-      dofs: []
 
 totals:
   estimated_unit_cost_usd: 14.0

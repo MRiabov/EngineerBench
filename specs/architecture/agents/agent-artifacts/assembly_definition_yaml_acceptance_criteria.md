@@ -9,7 +9,6 @@ It is worth being a dedicated agent artifact because it is the main binding betw
 
 - The file schema-validates before execution continues.
 - `manufactured_parts` include method, material, and method-specific costing fields.
-- `cots_parts` include exact catalog-backed `part_id`, manufacturer, and source data.
 - `final_assembly` includes the subassemblies, reuse, and joints that the solution actually exposes.
 - Planner-owned caps from `benchmark_definition.yaml` are copied through exactly and remain internally consistent.
 - Planner-target unit cost and weight fields are derived from validated totals, not invented later.
@@ -26,7 +25,7 @@ It is worth being a dedicated agent artifact because it is the main binding betw
 ## Reviewer Look-Fors: File Antipatterns to Look For
 
 - Placeholder values, stale revision data, or schema drift appear.
-- COTS components are backed by invented prices, manufacturers, or catalog IDs.
+- Component rows are backed by invented prices, manufacturers, or source IDs.
 - Benchmark-owned geometry is treated as editable engineer scope.
 - Final-assembly totals do not reconcile with the grounded costing and motion contract.
 

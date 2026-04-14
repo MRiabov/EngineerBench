@@ -50,8 +50,8 @@ Runtime conversations use four message roles: `system`, `user`, `assistant`, and
 | Benchmark Plan Reviewer | Verify cross-artifact consistency before implementation starts | Read-only; routes back on inconsistency, ambiguity, or unsupported motion |
 | Benchmark Coder | Implement the approved benchmark | May refuse only when the plan is infeasible to implement |
 | Benchmark Reviewer | Verify the implemented benchmark is valid, solvable, and reviewable | Requires latest revision evidence and dynamic evidence for moving fixtures |
-| Engineering Planner | Design a physically feasible solution under cost and weight caps | Must keep planner-owned totals under benchmark caps and use realistic COTS pricing |
-| Engineering Plan Reviewer | Validate the combined engineering handoff before coding | Must re-run cost/price validation and reject excessive DOFs or impossible designs |
+| Engineering Planner | Design a physically feasible solution under cost and weight caps | Must keep planner-owned totals under benchmark caps and stay within the rigid-body contract |
+| Engineering Plan Reviewer | Validate the combined engineering handoff before coding | Must re-run cost/price validation and reject impossible designs |
 | Engineering Coder | Implement the approved unified solution in one revision | May refuse only with a valid `plan_refusal.md` and proof |
 | Engineering Execution Reviewer | Final review after validation and simulation success | Requires latest revision evidence, visual inspection when renders exist, and robustness checks |
 
@@ -89,7 +89,6 @@ Runtime conversations use four message roles: `system`, `user`, `assistant`, and
 | `validate_benchmark()` / `validate_engineering()` | Role-scoped geometry validation plus fast preview generation |
 | `simulate_benchmark()` / `simulate_engineering()` | Physics-backed simulation or benchmark simulation path |
 | `validate_and_price` | Manufacturability and price validation for engineer-owned parts and assemblies |
-| `invoke_cots_search_subagent` | Single prompt-only request to the shared COTS Search node |
 | Workspace paths | Canonical paths are workspace-relative; `/workspace` exists only as a compatibility alias |
 
 ### Filesystem ownership
@@ -121,12 +120,9 @@ Runtime conversations use four message roles: `system`, `user`, `assistant`, and
 | -- | -- |
 | Part metadata | Engineer-owned parts must carry manufacturing metadata; benchmark fixtures may carry read-only fixture metadata |
 | Ownership split | Benchmark environment, input objects, and objective markers are read-only task fixtures |
-| COTS parts | Catalog parts may appear in benchmark fixtures or engineer solutions, but pricing only counts engineer-owned outputs |
 | Supported workbenches | CNC, injection molding, and 3D printing |
-| Fasteners | Rigid connections use build123d joints and bd-warehouse fasteners |
-| DOFs | Engineering solutions default to static parts; non-empty DOFs must be mechanism-necessary |
-| Benchmark fixture motion | Benchmark fixtures may use any explicit motion profile, including fully free rigid bodies, but the benchmark contract must declare and validate the motion; benchmark-side motion is not subject to the engineering minimum-DOF rule |
-| Drill policy | Benchmark-owned drilling is forbidden unless the benchmark explicitly declares a drill policy |
+| Joints | Rigid connections use build123d joints |
+| Benchmark fixture motion | Benchmark fixtures are static in the publication bundle |
 | Renders | Static validation preview uses 24 views by default, with RGB, depth, and segmentation siblings and a `render_manifest.json` companion |
 | Segmentation legend | Legend entries must distinguish semantic labels from instance identifiers |
 
@@ -138,18 +134,11 @@ Runtime conversations use four message roles: `system`, `user`, `assistant`, and
 | Validation | `/benchmark/validate` and `/engineering/validate` use MuJoCo for static preview by default even if the simulation backend is Genesis |
 | Success | The target object reaches the goal zone without violating forbid zones or other success constraints |
 | Failure taxonomy | Out-of-bounds, timeout, instability, breakage, forbidden contact, and circuit/power failures must be classified explicitly |
-| Constraint realism | Engineer-authored constraints must be physically plausible; CAD constraints cannot stand in for real-world fasteners or joints |
+| Constraint realism | Engineer-authored constraints must be physically plausible; CAD constraints cannot stand in for real-world joints |
 | Joints | `RigidJoint` maps to welds, `RevoluteJoint` maps to hinges, and `PrismaticJoint` maps to slides in the simulator contract |
 | Motion evidence | Moving benchmarks require dynamic evidence in addition to static preview images, and the observed motion must match the declared benchmark contract |
 | Benchmark exception | Benchmark-owned moving fixtures may be less complete than engineer solutions, but they cannot be teleporting or unstable |
 | Timing | The rigid-body timestep is `0.002 s` and max simulation time is `30 s` unless a config says otherwise |
-
-### Capability branches
-
-| Branch | Stable contract |
-| -- | -- |
-| Fluids and deformables | Genesis is the required backend, materials must carry stress-relevant properties, and benchmark definitions may declare fluid and stress objectives |
-| Electronics and electromechanics | Benchmark definitions may declare electrical requirements, unified engineering solutions may define `electronics` in `assembly_definition.yaml`, and circuit validity gates motion |
 
 ## 9. Evals and Gates
 
@@ -171,7 +160,7 @@ Runtime conversations use four message roles: `system`, `user`, `assistant`, and
 
 | Category | Contract |
 | -- | -- |
-| Core IDs | `user_session_id`, `episode_id`, `simulation_run_id`, `cots_query_id`, `review_id`, and `trace_id` |
+| Core IDs | `user_session_id`, `episode_id`, `simulation_run_id`, `review_id`, and `trace_id` |
 | Lineage fields | `seed_id`, `seed_dataset`, `seed_match_method`, `generation_kind`, `parent_seed_id`, `is_integration_test`, `integration_test_id` |
 | Event families | Tool calls, simulations, manufacturability checks, review decisions, refusals, lint failures, and media inspections |
 | Error stream | Machine-readable backend errors must remain attributable to a run-level identifier |

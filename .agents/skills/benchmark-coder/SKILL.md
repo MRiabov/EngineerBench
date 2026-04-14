@@ -1,6 +1,6 @@
 ---
 name: benchmark-coder
-description: Benchmark implementation role for turning approved benchmark plans into benchmark_script.py and helper modules, validating and simulating benchmark revisions, preserving planner inventory exactness, handling benchmark-side motion or COTS-backed fixture geometry, and refusing only when the approved plan is infeasible. Use when working as the Benchmark Coder after plan approval, when fixing benchmark validation or simulation failures, when producing review-ready benchmark evidence, when deciding whether to write plan_refusal.md, or when inspecting simulation evidence through frame-indexed `objects.parquet` sidecars.
+description: Benchmark implementation role for turning approved benchmark plans into benchmark_script.py and helper modules, validating and simulating benchmark revisions, preserving planner inventory exactness, handling benchmark-side motion or imported fixture geometry, and refusing only when the approved plan is infeasible. Use when working as the Benchmark Coder after plan approval, when fixing benchmark validation or simulation failures, when producing review-ready benchmark evidence, when deciding whether to write plan_refusal.md, or when inspecting simulation evidence through frame-indexed `objects.parquet` sidecars.
 ---
 
 # Benchmark Coder
@@ -27,14 +27,13 @@ from utils.preview import (
     pick_preview_pixel,
     pick_preview_pixels,
     render_cad,
-    render_technical_drawing,
     query_render_bundle,
 )
 ```
 
 - `validate_benchmark(result)` and `simulate_benchmark(result)` are the required pre-handoff checks.
 - `submit_benchmark_for_review(result)` is the final benchmark review handoff helper.
-- `render_cad(...)` is the live scene and objective-overlay path; use `payload_path=True` only when the current workflow needs the live payload-path overlay. `render_technical_drawing()` is the drafting-package path and keeps the payload overlay off.
+- `render_cad(...)` is the live scene and objective-overlay path; use `payload_path=True` only when the current workflow needs the live payload-path overlay.
 - `objectives_geometry()` reconstructs benchmark objective overlays when needed.
 - `list_render_bundles()` selects the exact current or historical render bundle before you inspect media or point-pick results.
 - `query_render_bundle()` returns compact bundle metadata and frame/object slices without pulling the full media payload.
@@ -44,7 +43,7 @@ from utils.preview import (
 
 ## Geometry Contract
 
-- Base every size, offset, and clearance on approved geometry, COTS dimensions, or explicit formulas.
+- Base every size, offset, and clearance on approved geometry, declared dimensions, or explicit formulas.
 - Do not guess a number. If the handoff or workspace context is missing a needed value, treat it as a defect and stop.
 - For moving benchmark fixtures, derive pose and travel from the declared axis or joint frame, not from an arbitrary world coordinate.
 - Prefer selector-driven placement over free-form XYZ positioning. Use face/axis selectors and explicit mates/joints when materializing the approved benchmark geometry; if the plan truly requires absolute 3-coordinate anchors, preserve only the few already approved and treat them as prone to mispositioning.
@@ -59,7 +58,7 @@ from utils.preview import (
 ## What This Skill Does Not Own
 
 - `benchmark_definition.yaml` or `benchmark_assembly_definition.yaml`; those are benchmark-owned read-only context after plan approval.
-- `benchmark_plan_evidence_script.py` or `benchmark_plan_technical_drawing_script.py`; those are planner-owned read-only context.
+- `benchmark_plan_evidence_script.py`; that is planner-owned read-only context.
 - Reviewer outputs under `reviews/`.
 - Engineer solution files such as `solution_script.py`.
 
@@ -73,7 +72,6 @@ Start with the benchmark handoff package:
 - `benchmark_assembly_definition.yaml`
 - `benchmark_script.py` when it already exists
 - `benchmark_plan_evidence_script.py`
-- `benchmark_plan_technical_drawing_script.py`
 - `validation_results.json`
 - `simulation_result.json`
 - `scene.json`
@@ -82,8 +80,8 @@ Start with the benchmark handoff package:
 
 ## Plan Grounding
 
-When `benchmark_plan.md` or the planner-authored evidence/drawing scripts already encode the approved labels, repeated quantities, COTS identities, or geometry, copy that exact contract forward into `benchmark_script.py` instead of re-deriving it. The benchmark coder translates the approved plan into build123d; it does not reinterpret the contract.
-Treat the planner YAML handoff as the machine-readable source of truth and the two planner scripts as the inspectable source of the approved benchmark solution.
+When `benchmark_plan.md` or the planner-authored evidence script already encode the approved labels, repeated quantities, or geometry, copy that exact contract forward into `benchmark_script.py` instead of re-deriving it. The benchmark coder translates the approved plan into build123d; it does not reinterpret the contract.
+Treat the planner YAML handoff as the machine-readable source of truth and the planner evidence script as the inspectable source of the approved benchmark solution.
 Because the approved planner handoff has already passed collision and geometry review, treat its layout as collision-validated and preserve the exact dimensions, offsets, and clearances whenever the plan is feasible to implement as written.
 That collision review does not imply manufacturability validation or simulation coverage; the coder still has to validate and simulate the implemented revision before handoff.
 When the benchmark planner uses its structured template, read `benchmark_plan.md` as a sectioned contract, not prose: the useful sections include `Learning objective`, `Environment geometry (with static randomization)`, `Input objective (payload)`, `Objective locations`, `Simulation bounds`, `Constraints handed to engineering`, `Success criteria`, and `Planner artifacts`.
@@ -95,7 +93,6 @@ Load sibling skill guidance only when it changes the implementation outcome:
 - [runtime-script-contract](../runtime-script-contract/SKILL.md)
 - [build123d-cad-drafting-skill](../build123d-cad-drafting-skill/SKILL.md)
 - [mechanical-engineering](../mechanical-engineering/SKILL.md)
-- [cots-parts](../cots-parts/SKILL.md) when exact catalog identity matters.
 - [manufacturing-knowledge](../manufacturing-knowledge/SKILL.md) when cost or weight constraints drive the design.
 - [electronics-engineering](../electronics-engineering/SKILL.md) only when the approved benchmark explicitly requires electronics.
 - [specs/architecture/agents/agent-artifacts/README.md](../../../specs/architecture/agents/agent-artifacts/README.md) when you need file-level acceptance criteria for `benchmark_script.py`, validation, simulation, `scene.json`, `plan_refusal.md`, or render evidence.
@@ -128,12 +125,12 @@ Do not invent fallback behavior to paper over contradictions. If the approved pl
 - Prefer passive geometry unless the approved benchmark explicitly requires motion.
 - Never invent benchmark-side motion, fallback labels, hidden constraints, or undeclared fixture behavior.
 - Keep benchmark-owned fixtures and objective overlays read-only and reconstruct them faithfully.
-- Keep planner-authored evidence and technical-drawing scripts grounded in the approved inventory. The labels, repeated quantities, and COTS identities in those scripts and in `benchmark_plan.md` must match the approved handoff exactly; missing, extra, or relabeled items are contract failures, not implementation freedom.
+- Keep planner-authored evidence grounded in the approved inventory. The labels and repeated quantities in that script and in `benchmark_plan.md` must match the approved handoff exactly; missing, extra, or relabeled items are contract failures, not implementation freedom.
 - Do not "clean up" or resize a collision-validated planner layout to make it look simpler; preserve the approved dimensions and placement relationships unless the plan is genuinely infeasible and must be refused.
 - Preserve explicit motion contracts for any moving benchmark fixture: identity, motion kind, axis or path, bounds, trigger, and engineer interaction flag if relevant.
 - Keep authored labels unique and stable.
 - Use the simplest geometry that still satisfies the reviewed plan and the runtime jitter.
-- Use COTS only when exact part identity matters, and preserve the concrete part instance.
+- Use imported components only when exact part identity matters, and preserve the concrete part instance.
 - Keep scripts import-safe. The final benchmark assembly must be exposed as `result = build()` or as a `build()` function returning a `Compound`.
 
 ### Ball-Transfer Benchmarks

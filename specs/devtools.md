@@ -25,7 +25,7 @@ The developer instrumentation layer is split into a small set of canonical entry
 | Eval orchestration | `dataset/evals/run_evals.py`, `evals/logic/runner.py` (split into reusable helpers under `evals/logic/`), `dataset/evals/materialize_seed_workspace.py` | Run evals, materialize seeded workspaces, and expose the CLI-provider-backed debug path | Public wrapper plus internal implementation |
 | Eval coordination | `scripts/internal/eval_run_lock.py`, `scripts/internal/eval_seed_renders.py` | Serialize eval runs and support deterministic seed render regeneration for maintainer tooling | Internal helper modules |
 | Seed and fixture validation | `scripts/validate_eval_seed.py`, `scripts/update_eval_seed_renders.py`, `scripts/validate_integration_mock_response_preflight.py`, `scripts/normalize_integration_mock_responses.py` | Validate seeded eval rows against the current seeded-entry contract, update deterministic seed render bundles, validate integration mock-response scenarios, and repair deterministic fixture drift | Public maintenance utilities |
-| Derived artifact regeneration | `scripts/generate_openapi.py`, `scripts/persist_test_results.py` | Regenerate API schemas and persist test-history outputs | Public utilities |
+| Derived artifact regeneration | `scripts/persist_test_results.py` | Persist test-history outputs | Public utilities |
 | Bug-report archival | `scripts/persist_bug_reports.py` | Copy `bug_report.md` into `logs/bug_reports/` with run/session metadata | Public utility |
 | Compatibility and environment helpers | `scripts/ensure_docker_vfs.sh`, `scripts/cleanup_local_s3.py` | Make the local stack runnable in constrained environments and clear object-store state before runs | Public support scripts |
 | Experimental probes | `scripts/experiments/**` | Measure or compare runtime behavior without defining the stable contract | Non-contractual |
@@ -41,7 +41,6 @@ The developer instrumentation layer is split into a small set of canonical entry
 - The script loads `.env` when present, exports the selected profile, and reuses the shared stack-profile helper from `evals.logic.stack_profiles`.
 - It stops the selected profile first, then starts infra and application services.
 - It starts the containerized infra stack from `docker-compose.test.yaml`, ensures migrations are at Alembic head, launches the local controller and workers, and starts the renderer in Docker. The migration step skips the upgrade when the database is already current unless `--force-run-alembic` is passed.
-- It also starts the frontend dev server only when the port is available and the stack profile asks for it.
 - It performs local compatibility setup before bootstrapping services, including Docker VFS readiness checks.
 
 ### `scripts/env_down.sh`
@@ -83,7 +82,6 @@ The integration runner is a real-stack boundary contract, not a synthetic test h
 - Its startup and teardown chatter is quiet by default; set `INTEGRATION_RUNNER_VERBOSE=1` when you want detailed orchestration progress in the terminal.
 - It can split the default suite into deterministic marker buckets so P0/P1 coverage is reached before the broader slices.
 - It performs backend-error early stop when enabled and only falls through to full-duration runs when the errors are allowlisted or the gate is disabled.
-- It drives the frontend build only when the selected pytest scope actually needs it.
 
 ### Integration run state
 
@@ -217,12 +215,6 @@ The validation helpers are developer tooling, not product behavior.
 ## Derived outputs
 
 These scripts own a few generated or persisted artifacts that should be treated as outputs, not hand-edited source.
-
-### OpenAPI generation
-
-- `scripts/generate_openapi.py` regenerates `controller_openapi.json` and `worker_openapi.json`.
-- The script exists so API and UI contract changes can be refreshed from the live FastAPI app definitions.
-- When controller or worker routes change, this regeneration step belongs in the same change set.
 
 ### Test history persistence
 

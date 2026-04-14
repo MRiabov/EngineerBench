@@ -16,7 +16,6 @@ This document maps the architecture spec set to the self-contained docs bundle. 
 | `architecture/agents/tools.md` | `docs/backend-reference.md`, `docs/api-contracts.md` | Tool surface, submission gates, and validation helpers |
 | `architecture/distributed-execution.md` | `docs/architecture.md`, `docs/backend-reference.md`, `docs/deployment-guide.md` | Controller/worker split, Temporal boundary, and worker admission |
 | `architecture/CAD-and-other-infra.md` | `docs/backend-reference.md`, `docs/data-models.md` | Metadata, rendering, workbenches, and supporting infra |
-| `architecture/application-acceptance-criteria.md` | `docs/backend-reference.md`, `docs/development-guide.md`, `docs/project-scan-report.json` | Legacy application acceptance surface and seeded-eval preflight contract |
 | `architecture/evals-architecture.md` | `docs/backend-reference.md`, `docs/development-guide.md`, `docs/project-scan-report.json` | Evaluation tiers, terminal states, and fail-closed gates |
 | `architecture/agent/reward-architecture.md` | `docs/backend-reference.md`, `docs/development-guide.md` | Reward shaping and downstream training signals |
 | `architecture/simulation-and-rendering.md` | `docs/backend-reference.md`, `docs/architecture.md` | Physics contract, constraints realism, and rendering / preview ownership |

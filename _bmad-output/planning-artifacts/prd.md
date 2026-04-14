@@ -23,7 +23,6 @@ inputDocuments:
   - specs/architecture/agents/tools.md
   - specs/architecture/distributed-execution.md
   - specs/architecture/CAD-and-other-infra.md
-  - specs/architecture/application-acceptance-criteria.md
   - specs/architecture/evals-architecture.md
   - specs/architecture/agent/reward-architecture.md
   - specs/architecture/simulation-and-dod.md

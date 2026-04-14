@@ -8,7 +8,6 @@
   "scene_hash": "engineer-plan-template",
   "bundle_path": "renders/engineer_plan_renders",
   "environment_version": "1.0",
-  "drafting": true,
   "source_script_sha256": "ea1ee30a9ccdf9d8429d831013b3cb298f4f9d1f80471888d651454c65b4708f",
   "preview_evidence_paths": [
     "renders/render_e45_a45.png",

@@ -12,7 +12,6 @@ Use this skill to decide whether the implemented benchmark is ready to hand off 
 When render evidence or objective overlays are present, use the shared preview helpers explicitly:
 
 - `render_cad(...)` for live scene previews or benchmark evidence inspection
-- `render_technical_drawing()` for drafting-package review evidence
 - `objectives_geometry()` when a benchmark preview needs reconstructed objective overlays
 - `list_render_bundles()` when exact bundle identity matters
 - `query_render_bundle()` when you need bundle metadata without the full media payload or frame/object slices from a simulation bundle
@@ -22,7 +21,7 @@ When render evidence or objective overlays are present, use the shared preview h
 ## Review Checklist
 
 - [ ] Confirm the latest revision and valid `.manifests/benchmark_review_manifest.json`.
-- [ ] Read `benchmark_script.py`, `benchmark_definition.yaml`, `benchmark_assembly_definition.yaml`, `benchmark_plan.md`, `todo.md`, `validation_results.json`, `simulation_result.json`, `scene.json`, `benchmark_plan_evidence_script.py`, `benchmark_plan_technical_drawing_script.py`, and any `renders/benchmark_renders/**` as read-only context.
+- [ ] Read `benchmark_script.py`, `benchmark_definition.yaml`, `benchmark_assembly_definition.yaml`, `benchmark_plan.md`, `todo.md`, `validation_results.json`, `simulation_result.json`, `scene.json`, `benchmark_plan_evidence_script.py`, and any `renders/benchmark_renders/**` as read-only context.
 - [ ] Read `plan_refusal.md` when present.
 - [ ] Read `renders/current-episode/**` when it exists.
 - [ ] Require validation and simulation success for the latest revision; benchmark approval does not depend on `goal_reached`.
@@ -30,7 +29,7 @@ When render evidence or objective overlays are present, use the shared preview h
 - [ ] If simulation evidence exists, inspect the MP4 and the sampled frame-indexed `objects.parquet` pose-history sidecar together; `frames.jsonl` is sparse timing metadata, not pose history.
 - [ ] If bundle identity or a pixel-to-world question matters, resolve the exact bundle with `list_render_bundles()` and query that bundle-local snapshot before approval.
 - [ ] After any significant blocker or repeated failure on the same issue, inspect the current render or simulation evidence before the next approval decision. If the same issue has failed more than three times in a row, keep inspecting render evidence on every subsequent retry until the blocker changes; use `../render-evidence/SKILL.md` as the visual-inspection playbook.
-- [ ] Treat `benchmark_plan_evidence_script.py` and `benchmark_plan_technical_drawing_script.py` as the inspectable source of the approved benchmark contract.
+- [ ] Treat `benchmark_plan_evidence_script.py` as the inspectable source of the approved benchmark contract.
 - [ ] Verify geometric validity, solvability, runtime randomization, exact inventory grounding, and benchmark-side motion against the approved contract and observed evidence. See `references/review_contracts.md`.
 - [ ] Reject implementations that rely on free-form XYZ placement instead of selector-driven placement, explicit mates/joints, or the few absolute anchors already fixed by the approved plan.
 - [ ] Reject stale or missing validation/simulation evidence, invisible benchmark-side motion, or any benchmark-owned fixture that is silently reinterpreted as engineer-owned work.

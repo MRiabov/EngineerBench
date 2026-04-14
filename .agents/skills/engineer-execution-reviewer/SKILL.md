@@ -1,6 +1,6 @@
 ---
 name: engineer-execution-reviewer
-description: Engineer-side execution-review skill for validating the latest solution revision after validation and simulation. Use when reviewing `solution_script.py`, helper modules, `validation_results.json`, `simulation_result.json`, `scene.json`, render or video evidence, sampled frame-indexed `objects.parquet` pose-history sidecars, or stage-specific execution review artifacts; when applying the execution review checklist for exact inventory grounding, plan fidelity, robustness, manufacturability, cost/weight compliance, motion plausibility, or `assembly_definition.yaml.drafting.goal_zone_overlap_intents` checks; or when writing the stage-scoped execution review YAML pair and submitting through the review gate.
+description: Engineer-side execution-review skill for validating the latest solution revision after validation and simulation. Use when reviewing `solution_script.py`, helper modules, `validation_results.json`, `simulation_result.json`, `scene.json`, render or video evidence, sampled frame-indexed `objects.parquet` pose-history sidecars, or stage-specific execution review artifacts; when applying the execution review checklist for exact inventory grounding, plan fidelity, robustness, manufacturability, cost/weight compliance, or motion plausibility; or when writing the stage-scoped execution review YAML pair and submitting through the review gate.
 ---
 
 # Engineer Execution Reviewer
@@ -12,7 +12,6 @@ Use this skill for the engineering execution gate after the coder has produced a
 When execution evidence needs visual checking, use the shared preview helpers explicitly:
 
 - `render_cad(...)` for live scene or engineer preview inspection
-- `render_technical_drawing()` for drafting-package review evidence
 - `objectives_geometry()` when a preview scene needs benchmark objective overlays reconstructed
 - `list_render_bundles()` when exact bundle identity matters
 - `query_render_bundle()` when you need bundle metadata or frame/object slices without the full media payload
@@ -35,7 +34,6 @@ When execution evidence needs visual checking, use the shared preview helpers ex
 - [ ] If bundle identity or a pixel-to-world question matters, resolve the exact bundle with `list_render_bundles()` and query that bundle-local snapshot before making the review call.
 - [ ] After any significant blocker or repeated failure on the same issue, inspect the current render or simulation evidence before the next review decision. If the same issue has failed more than three times in a row, keep inspecting render evidence on every subsequent retry until the blocker changes; use `../render-evidence/SKILL.md` as the visual-inspection playbook.
 - [ ] Verify plan fidelity, exact inventory grounding, robustness, manufacturability, cost/weight compliance, and motion plausibility against the approved contract and evidence.
-- [ ] If the latest revision still relies on intentional goal-zone or target-zone overlap, verify the matching `assembly_definition.yaml.drafting.goal_zone_overlap_intents` entry survived unchanged; markdown prose is not authorization.
 - [ ] Reject flaky runtime-jitter behavior, excessive or unjustified DOFs, or any render/video evidence that was not inspected.
 - [ ] Treat the simulation monitor as authoritative runtime evidence; static payload-trajectory proof is not sufficient if the latest run fails closed on anchor drift, impossible first-contact ordering, or unreachable terminal goal proof.
 - [ ] Write only the stage-scoped execution review decision and comments YAML pair.
@@ -43,7 +41,7 @@ When execution evidence needs visual checking, use the shared preview helpers ex
 
 ### Sandbox render fallback
 
-When `render_cad(...)` or `render_technical_drawing()` hit `httpx.ConnectError: [Errno 1] Operation not permitted` or `worker_light_preview_failed`, this is a Codex-sandbox infra barrier — not a geometry defect.
+When `render_cad(...)` hits `httpx.ConnectError: [Errno 1] Operation not permitted` or `worker_light_preview_failed`, this is a Codex-sandbox infra barrier — not a geometry defect.
 
 - Do not investigate GL backend types, EGL init paths, or worker-light connectivity.
 - Do not retry the same render call more than once.

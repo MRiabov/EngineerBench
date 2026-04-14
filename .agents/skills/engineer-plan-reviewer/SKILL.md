@@ -1,6 +1,6 @@
 ---
 name: engineer-plan-reviewer
-description: Engineer-side review workflow for validating plan and execution handoffs, review manifests, render and simulation evidence, exact inventory grounding, formula-backed motion and payload trajectory derivations, motion-contract plausibility, plan refusals, stage-scoped review YAML outputs, and `assembly_definition.yaml.drafting.goal_zone_overlap_intents` checks for intentional goal/target-zone overlap. Use when reviewing engineering `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, `assembly_definition.yaml`, `solution_script.py`, validation or simulation artifacts, review manifests, or refusal evidence for the Engineering Plan Reviewer or Engineering Execution Reviewer roles; when inspecting simulation evidence through frame-indexed `objects.parquet` sidecars; or when applying the engineer review checklist for plan, execution, and refusal gates.
+description: Engineer-side review workflow for validating plan and execution handoffs, review manifests, render and simulation evidence, exact inventory grounding, formula-backed motion and payload trajectory derivations, motion-contract plausibility, plan refusals, and stage-scoped review YAML outputs. Use when reviewing engineering `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, `assembly_definition.yaml`, `solution_script.py`, validation or simulation artifacts, review manifests, or refusal evidence for the Engineering Plan Reviewer or Engineering Execution Reviewer roles; when inspecting simulation evidence through frame-indexed `objects.parquet` sidecars; or when applying the engineer review checklist for plan, execution, and refusal gates.
 ---
 
 # Engineer Plan Reviewer
@@ -12,7 +12,6 @@ Use this skill for both the engineering plan-review and execution-review gates. 
 When plan or execution evidence needs visual checking, use the shared preview helpers explicitly:
 
 - `render_cad(...)` for live scene or engineer preview inspection
-- `render_technical_drawing()` for drafting-package review evidence
 - `objectives_geometry()` when a preview scene needs benchmark objective overlays reconstructed
 - `list_render_bundles()` when exact bundle identity matters
 - `query_render_bundle()` when you need bundle metadata without the full media payload or frame/object slices from a simulation bundle
@@ -40,13 +39,12 @@ When plan or execution evidence needs visual checking, use the shared preview he
 
 ### Plan Review Checklist
 
-- [ ] Read `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, `assembly_definition.yaml`, `solution_plan_evidence_script.py`, and `solution_plan_technical_drawing_script.py`.
-- [ ] Treat `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` as the inspectable source of the approved plan, and inspect render evidence with `inspect_media(...)` when present.
+- [ ] Read `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, `assembly_definition.yaml`, and `solution_plan_evidence_script.py`.
+- [ ] Treat `solution_plan_evidence_script.py` as the inspectable source of the approved plan, and inspect render evidence with `inspect_media(...)` when present.
 - [ ] When render evidence is bundle-scoped, use `list_render_bundles()` or `query_render_bundle()` to select the exact bundle before judging it.
 - [ ] Verify exact inventory grounding, exact identifier mentions, budget realism, and operating-envelope clarity.
-- [ ] Reject invented materials, unsupported mechanisms, hidden DOFs, or a technical-drawing script without a real `TechnicalDrawing` construction path.
+- [ ] Reject invented materials, unsupported mechanisms, or hidden DOFs.
 - [ ] Reject plans that exceed benchmark caps or leave the solution mechanically ambiguous.
-- [ ] If drafted geometry intentionally overlaps a goal zone or target zone, verify the matching `assembly_definition.yaml.drafting.goal_zone_overlap_intents` entry exists; markdown prose is not authorization.
 - [ ] For moving engineer-owned parts, do not treat static payload-trajectory proof as runtime evidence; the plan must stay compatible with the fail-closed simulation monitor and its anchor, contact-order, and terminal-goal expectations.
 
 ### Execution Review Checklist
@@ -54,7 +52,6 @@ When plan or execution evidence needs visual checking, use the shared preview he
 - [ ] Read `solution_script.py`, helper modules, `validation_results.json`, `simulation_result.json`, and the active plan context.
 - [ ] Require validation and simulation success for the latest revision.
 - [ ] Verify plan fidelity, robustness, manufacturability, and cost/weight compliance against the approved plan.
-- [ ] If the latest revision still relies on intentional goal-zone or target-zone overlap, verify the matching `assembly_definition.yaml.drafting.goal_zone_overlap_intents` entry survived unchanged; markdown prose is not authorization.
 - [ ] Reject flaky runtime-jitter behavior, excessive or unjustified DOFs, or any render/video evidence that was not inspected.
 
 ### Refusal Review Checklist

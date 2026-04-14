@@ -9,7 +9,7 @@ Problemologist-AI runs in two practical modes:
 1. A local development mode that starts the services with `scripts/env_up.sh`.
 2. A containerized stack defined by `docker-compose.yml` and `docker-compose.test.yaml`.
 
-The local workflow is the main entry point for day-to-day backend engineering. The containerized stack is the closest thing to a production deployment shape and is the reference for service dependencies and ports. The frontend is optional for backend-only work.
+The local workflow is the main entry point for day-to-day backend engineering. The containerized stack is the closest thing to a production deployment shape and is the reference for service dependencies and ports.
 
 ## Prerequisites
 
@@ -18,7 +18,7 @@ The local workflow is the main entry point for day-to-day backend engineering. T
 | Python 3.12 | Runs the controller, workers, scripts, and tests |
 | `uv` | Installs and runs the Python environment |
 | Docker or Podman | Starts PostgreSQL, MinIO, Temporal, and the service containers |
-| Node.js and npm | Only needed when you are working on the frontend |
+| Node.js and npm | Only needed for legacy frontend development workflows |
 
 ## Local Development Deployment
 
@@ -36,7 +36,7 @@ This script:
 - Starts the test infrastructure containers from `docker-compose.test.yaml`.
 - Runs database migrations.
 - Starts the controller, worker-light, worker-heavy, controller-temporal-worker, and worker-heavy Temporal worker as local processes.
-- Starts the frontend dev server on port `15173` if the port is free and the UI is needed.
+- Starts the optional legacy frontend dev server on port `15173` if the UI tree is present.
 
 ### Stop
 
@@ -46,7 +46,7 @@ This script:
 
 This script:
 
-- Stops the local Python and optional frontend processes using the saved PID files.
+- Stops the local Python processes using the saved PID files.
 - Kills any leftover Uvicorn or Temporal worker processes.
 - Brings down the test infrastructure containers.
 - Removes the local MinIO test volume so object-store state does not leak between runs.
@@ -139,7 +139,6 @@ This stack is intentionally smaller than the full compose file because the appli
 - `worker-heavy` is single-flight by design, so a busy instance should be treated as temporarily unavailable rather than overloaded.
 - `./scripts/run_integration_tests.sh` is the source of truth for integration orchestration; it archives prior `logs/integration_tests/` content into `logs/archives/run_*` and rewires the current-run symlinks for each invocation.
 - If the local environment gets stuck on stale ports or unhealthy containers, run `./scripts/env_down.sh` before retrying the integration runner.
-- If you change controller routes, regenerate the frontend OpenAPI client under `frontend/src/api/generated/`.
 
 ## Common Operational Commands
 
@@ -147,7 +146,6 @@ This stack is intentionally smaller than the full compose file because the appli
 ./scripts/env_up.sh
 ./scripts/env_down.sh
 ./scripts/run_integration_tests.sh
-cd frontend && npm run build
 ```
 
 ## Deployment Checklist
@@ -156,5 +154,5 @@ cd frontend && npm run build
 2. Start the environment with `./scripts/env_up.sh`.
 3. Verify controller, worker-light, worker-heavy, PostgreSQL, MinIO, and Temporal are healthy.
 4. Run the integration suite with `./scripts/run_integration_tests.sh`.
-5. Check the frontend at `http://127.0.0.1:15173` only if you are working on the UI.
+5. Ignore the legacy frontend port unless you are restoring the archived UI tree.
 6. Review the logs in `logs/manual_run/` if any service fails to start.

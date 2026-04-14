@@ -1,6 +1,6 @@
 ---
 name: benchmark-planner
-description: Benchmark planning and handoff authoring for Problemologist. Use when creating or revising benchmark planner artifacts (`benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, `benchmark_assembly_definition.yaml`, `benchmark_plan_evidence_script.py`, `benchmark_plan_technical_drawing_script.py`), checking benchmark solvability or randomization, defining benchmark-owned fixture motion, reviewing planner drafting output with `render_technical_drawing()`, enforcing exact-grounded inventory mentions, preparing the plan for `submit_benchmark_plan()`, or inspecting simulation evidence through frame-indexed `objects.parquet` sidecars.
+description: Benchmark planning and handoff authoring for Problemologist. Use when creating or revising benchmark planner artifacts (`benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, `benchmark_assembly_definition.yaml`, `benchmark_plan_evidence_script.py`), checking benchmark solvability or randomization, defining benchmark-owned fixture motion, enforcing exact-grounded inventory mentions, preparing the plan for `submit_benchmark_plan()`, or inspecting simulation evidence through frame-indexed `objects.parquet` sidecars.
 ---
 
 # Benchmark Planner
@@ -19,7 +19,6 @@ Turn a benchmark brief into a complete handoff that the benchmark coder can impl
 Use the shared preview helpers when evidence or objective overlays are part of the plan:
 
 - `render_cad(...)` for live scene inspection and benchmark preview renders
-- `render_technical_drawing()` for drafting packages and orthographic plan evidence
 - `objectives_geometry()` when a benchmark preview needs reconstructed objective overlays
 - `list_render_bundles()` when the task depends on the exact bundle revision
 - `query_render_bundle()` when you need compact bundle metadata or frame/object slices from a simulation bundle; use the sampled frame-indexed `objects.parquet` pose-history sidecar instead of treating `frames.jsonl` as pose data
@@ -28,12 +27,12 @@ Use the shared preview helpers when evidence or objective overlays are part of t
 
 ## Geometry Contract
 
-- Base every size, offset, and clearance on declared geometry, COTS dimensions, or an explicit formula.
+- Base every size, offset, and clearance on declared geometry, declared dimensions, or an explicit formula.
 - Do not guess a number. If the handoff is missing a needed value, treat the draft as incomplete instead of inventing one.
 - Treat weak geometry or physics derivations as a hard failure, not a minor gap. In practice, handoffs that cannot rigorously justify the motion or placement math have repeatedly failed downstream.
 - When a fixture moves, derive its pose from the declared axis or joint frame instead of a world-coordinate guess.
 - Prefer selector-driven placement over free-form XYZ positioning. Use face/axis selectors and explicit mates/joints to constrain parts to each other and to the environment; if an absolute 3-coordinate anchor is unavoidable, keep it to one or two top-level placements at most and treat it as fragile.
-- Treat the planner handoff as YAML-backed: `benchmark_definition.yaml` and `benchmark_assembly_definition.yaml` are the machine-readable contract, while `benchmark_plan_evidence_script.py` and `benchmark_plan_technical_drawing_script.py` are the inspectable source of the approved geometry.
+- Treat the planner handoff as YAML-backed: `benchmark_definition.yaml` and `benchmark_assembly_definition.yaml` are the machine-readable contract, while `benchmark_plan_evidence_script.py` is the inspectable source of the approved geometry.
 
 ## Read First
 
@@ -50,7 +49,6 @@ Read these before drafting or revising the handoff:
 - `../build123d-cad-drafting-skill/SKILL.md`
 - `../render-evidence/SKILL.md` when render evidence already exists or preview judgment is needed
 - `../mechanical-engineering/SKILL.md` when geometry or motion needs mechanical reasoning
-- `../cots-parts/SKILL.md` when a benchmark-owned fixture uses a catalog-backed component
 - `../manufacturing-knowledge/SKILL.md` when explicit cost or quantity reasoning matters
 
 ## Working Rules
@@ -59,7 +57,7 @@ Read these before drafting or revising the handoff:
 02. Keep the challenge singular: one objective, one failure mode, one obvious path to success.
 03. Keep `benchmark_definition.yaml` as the source of truth for objective geometry, randomization, and benchmark estimates.
 04. Keep `benchmark_assembly_definition.yaml` as benchmark-owned fixture structure and motion contract.
-05. Keep `benchmark_plan.md`, `todo.md`, the YAML files, and both benchmark planning scripts mutually consistent.
+05. Keep `benchmark_plan.md`, `todo.md`, the YAML files, and the benchmark evidence script mutually consistent.
 06. Do not expect `benchmark_script.py` in the planner workspace before plan approval.
 07. Treat benchmark-owned fixtures as downstream read-only context. Do not drift into engineer solution design.
 08. Preserve exact part identity when a benchmark fixture is catalog-backed. Do not replace it with anonymous solids.
@@ -71,7 +69,7 @@ Read these before drafting or revising the handoff:
 1. Reconstruct the objective, build zone, forbid zones, runtime jitter, and any benchmark-owned fixtures.
 2. Choose the simplest benchmark family that still teaches the intended behavior.
 3. Draft the benchmark geometry and any benchmark-owned fixture motion with explicit limits and clear visibility in the handoff.
-4. Write `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, `benchmark_assembly_definition.yaml`, `benchmark_plan_evidence_script.py`, and `benchmark_plan_technical_drawing_script.py`.
+4. Write `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, `benchmark_assembly_definition.yaml`, and `benchmark_plan_evidence_script.py`.
 5. Cross-check labels, AABBs, motion, and script geometry against the YAML before submission.
 6. Call `submit_benchmark_plan()` only after the handoff is coherent and placeholder-free.
 
@@ -79,13 +77,11 @@ Read these before drafting or revising the handoff:
 
 - Keep `benchmark_plan.md` narrative-first and specific enough that the benchmark coder can implement without re-deciding the benchmark shape.
 - Keep `todo.md` actionable and ordered for the benchmark coder.
-- Keep `benchmark_plan_evidence_script.py` and `benchmark_plan_technical_drawing_script.py` aligned with the same geometry, labels, repeated quantities, and COTS identities as the approved inventory, and ensure every planner-declared inventory label and selected COTS `part_id` appears in `benchmark_plan.md` at least once as an exact identifier mention.
-- Treat `benchmark_plan_technical_drawing_script.py` as display-only: it should not re-author a duplicate shape tree or a second copy of the benchmark geometry, only the orthographic drawing/view scaffolding for the same approved contract.
+- Keep `benchmark_plan_evidence_script.py` aligned with the same geometry, labels, and repeated quantities as the approved inventory, and ensure every planner-declared inventory label appears in `benchmark_plan.md` at least once as an exact identifier mention.
 - Keep every dimension formula-backed; if the handoff is missing a needed length, thickness, clearance, or placement datum, fix the source rather than guessing.
-- Use `render_cad(...)` for live scene previews and `render_technical_drawing()` for drafting packages; they are not interchangeable.
+- Use `render_cad(...)` for live scene previews and objective-overlay evidence.
 - Use `payload_path=True` on `render_cad(...)` when the live payload-path overlay is part of the inspection.
-- When drawings are part of the handoff, inspect the drafted package with `render_technical_drawing()` before `submit_benchmark_plan()`.
-- After any significant blocker or repeated failure on the same issue, inspect the current render or drawing evidence before the next plan revision. If the same issue has failed more than three times in a row, keep inspecting render evidence on every subsequent retry until the blocker changes; use `../render-evidence/SKILL.md` as the visual-inspection playbook.
+- After any significant blocker or repeated failure on the same issue, inspect the current render evidence before the next plan revision. If the same issue has failed more than three times in a row, keep inspecting render evidence on every subsequent retry until the blocker changes; use `../render-evidence/SKILL.md` as the visual-inspection playbook.
 - If simulation evidence already exists, inspect the MP4 and the sampled frame-indexed `objects.parquet` pose-history sidecar together; `frames.jsonl` is sparse timing metadata, not pose history.
 - If the review depends on bundle identity or a click-to-world answer, select the exact bundle with `list_render_bundles()` and inspect or query that bundle-local snapshot instead of assuming the newest visible render is the right one.
 - Make the benchmark-owned motion contract explicit if any fixture moves. State the motion topology / DOF profile, the motion kind, and any axis or path reference when applicable; spell out the controller facts and limits.

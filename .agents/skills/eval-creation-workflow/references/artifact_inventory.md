@@ -25,10 +25,8 @@ The canonical per-file acceptance criteria now live in `specs/architecture/agent
 | Engineer assembly context | `assembly_definition.yaml` | `assembly_definition_yaml_acceptance_criteria.md` | covered |
 | Benchmark implementation source | `benchmark_script.py` | `benchmark_script_py_acceptance_criteria.md` | covered |
 | Engineer implementation source | `solution_script.py` | `solution_script_py_acceptance_criteria.md` | covered |
-| Benchmark technical drawing evidence | `benchmark_plan_evidence_script.py` | `benchmark_plan_evidence_script_py_acceptance_criteria.md` | covered |
-| Benchmark drafting drawing | `benchmark_plan_technical_drawing_script.py` | `benchmark_plan_technical_drawing_script_py_acceptance_criteria.md` | covered |
-| Engineer technical drawing evidence | `solution_plan_evidence_script.py` | `solution_plan_evidence_script_py_acceptance_criteria.md` | covered |
-| Engineer drafting drawing | `solution_plan_technical_drawing_script.py` | `solution_plan_technical_drawing_script_py_acceptance_criteria.md` | covered |
+| Benchmark evidence scene | `benchmark_plan_evidence_script.py` | `benchmark_plan_evidence_script_py_acceptance_criteria.md` | covered |
+| Engineer evidence scene | `solution_plan_evidence_script.py` | `solution_plan_evidence_script_py_acceptance_criteria.md` | covered |
 | Deterministic validation output | `validation_results.json` | `validation_results_json_acceptance_criteria.md` | covered |
 | Deterministic simulation output | `simulation_result.json` | `simulation_result_json_acceptance_criteria.md` | covered |
 | Benchmark XML summary | `benchmark.xml` | none yet | needs criteria |
@@ -76,7 +74,7 @@ Some older references still say `engineering_execution_review_manifest.json`; tr
 | Simulation video | `*.mp4` | `renders_acceptance_criteria.md` | covered by render family |
 | Static render image | `*.png`, `*.jpg`, `*.jpeg` | `renders_acceptance_criteria.md` | covered by render family |
 | Rendered vector image | `*.svg` | `renders_acceptance_criteria.md` | covered by render family |
-| Technical drawing export | `*.dxf` | `renders_acceptance_criteria.md` | covered by render family |
+| Vector export | `*.dxf` | `renders_acceptance_criteria.md` | covered by render family |
 | Event log | `events.jsonl` | none yet | needs criteria |
 
 ## Geometry and Export Assets

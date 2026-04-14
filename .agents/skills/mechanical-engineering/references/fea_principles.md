@@ -32,7 +32,7 @@
 
 3. **Post-Processing:**
 
-   - `get_stress_report(part_label)`: Retrieves max/mean stress and safety factor.
+   - Inspect the simulation output metrics that matter for the current mechanism.
 
 ## Interpreting Results
 

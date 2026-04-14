@@ -10,9 +10,8 @@ Use these rules when repairing or extending eval seeds for the engineering plann
 
 ## Drafting Seeds
 
-- Keep `benchmark_plan_evidence_script.py` and `benchmark_plan_technical_drawing_script.py` aligned with the benchmark-owned fixture contract only.
+- Keep `benchmark_plan_evidence_script.py` aligned with the benchmark-owned fixture contract only.
 - Do not pull solution-side parts into benchmark drafting geometry.
-- Ensure every technical-drawing script imports and calls `TechnicalDrawing(...)` when drafting mode is active.
 - Preserve checked-in render bundles and manifests when the seed contract expects them.
 - Do not rely on ad hoc regeneration to make a seed valid if the repository is supposed to own the render artifacts.
 
@@ -27,6 +26,5 @@ Use these rules when repairing or extending eval seeds for the engineering plann
 When a seed is close but still failing, inspect the current failure mode and patch the source contract directly:
 
 - missing or stale render bundle manifests
-- benchmark drafting scripts that drift beyond the benchmark-owned fixture
+- benchmark evidence scripts that drift beyond the benchmark-owned fixture
 - plan text that omits a required exact identifier mention
-- technical drawing scripts that omit `TechnicalDrawing(...)`

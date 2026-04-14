@@ -144,7 +144,6 @@ We separate agents into:
     \item Other/infrastructure agents:
     \begin{itemize}
         \item Skill creator agent.
-        \item COTS search agent.
     \end{itemize}
 \end{itemize}
 
@@ -184,7 +183,7 @@ A recent introduction of agent skills allows for tuning skills instead of prompt
 
 \begin{itemize}
     \item How to properly write \texttt{build123d} 3D models.
-    \item How to search for off-the-shelf components such as actuators and fasteners, structural beams.
+    \item How to search for off-the-shelf components such as actuators and structural beams.
     \item Evaluating designs of other agents for robustness.
     \item Planning for and creating robust solutions.
     \item Electronics knowledge, especially relevant to the current evaluation system.
@@ -418,7 +417,6 @@ Feedback / Formula
 \texttt{judge\_evaluation} & \texttt{robustness} & 0.01 & checklist item & Solution is robust rather than passing a single lucky run. & - \\
 \texttt{judge\_evaluation} & \texttt{cost\_weight\_compliance} & 0.005 & checklist item & Final solution stays within cost and weight targets. & - \\
 \texttt{judge\_evaluation} & \texttt{manufacturability\_compliance} & 0.01 & checklist item & Final solution remains manufacturable under the chosen process. & - \\
-\texttt{judge\_evaluation} & \texttt{dof\_deviation\_justified} & 0.005 & checklist item & Any DOF deviation from the approved plan is justified and reviewable. & - \\
 \texttt{judge\_evaluation} & \texttt{feedback\_response\_score} & 0.03 & partial score & Fraction of valid failed reviewer checklist items addressed on the next coding revision without introducing new blocker regressions. & Partial score. \\
 \texttt{judge\_evaluation} & \texttt{bad\_feedback\_resistance\_score} & 0.02 & partial score & Score for following valid reviewer feedback while resisting incorrect or non-applicable requests in mixed-quality review seeds. & Partial score. \\
 \end{longtable}

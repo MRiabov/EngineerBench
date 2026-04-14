@@ -19,7 +19,6 @@ When you are seeding a row that should look like another agent's output, read th
 - `engineer_plan_reviewer`: `../engineer-planner/SKILL.md`, `../engineer-coder/SKILL.md`, `../engineer-plan-reviewer/SKILL.md`, `../benchmark-reviewer/SKILL.md`
 - `engineer_coder`: `../engineer-planner/SKILL.md`, `../benchmark-planner/SKILL.md`, `../benchmark-coder/SKILL.md`, `../engineer-plan-reviewer/SKILL.md`, `../benchmark-reviewer/SKILL.md`
 - `engineer_execution_reviewer`: `../engineer-coder/SKILL.md`, `../engineer-plan-reviewer/SKILL.md`, `../benchmark-reviewer/SKILL.md`, plus `../../../specs/architecture/agents/handover-contracts.md` when you need the stage contract instead of a local skill file
-- `electronics_reviewer`: `../electronics-engineering/SKILL.md`, `../engineer-planner/SKILL.md`, `../engineer-coder/SKILL.md`
 
 The main rule is simple: non-initial roles do not get plain prompt-only rows. They get seeded workspace files that match the handoff contract for that stage.
 
@@ -137,9 +136,7 @@ The canonical files in that library use the same basenames as the workspace arti
 - `todo_md_acceptance_criteria.md`
 - `journal_md_acceptance_criteria.md`
 - `benchmark_plan_evidence_script_py_acceptance_criteria.md`
-- `benchmark_plan_technical_drawing_script_py_acceptance_criteria.md`
 - `solution_plan_evidence_script_py_acceptance_criteria.md`
-- `solution_plan_technical_drawing_script_py_acceptance_criteria.md`
 - `benchmark_script_py_acceptance_criteria.md`
 - `solution_script_py_acceptance_criteria.md`
 - `validation_results_json_acceptance_criteria.md`

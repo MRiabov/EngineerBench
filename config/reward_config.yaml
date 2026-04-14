@@ -70,13 +70,6 @@ benchmark:
           non-overlapping (goal ∩ forbid = ∅, build_zone ⊂ sim_bounds).
           Binary: either consistent or not.
 
-      # Gate 6 — COTS parts referenced with valid catalog IDs
-      cots_ids_valid:
-        weight: 0.05
-        description: >
-          All COTS part IDs in benchmark_assembly_definition.yaml resolve to known
-          entries in the parts catalog DB.
-
     judge_evaluation:
       # Judge 1 — plan passes reviewer acceptance
       reviewer_accepted:
@@ -109,10 +102,10 @@ benchmark:
           weight: 0.02
           description: >
             Moving benchmark fixtures expose complete motion metadata for engineering intake.
-        benchmark_dof_minimality:
+        benchmark_motion_minimality:
           weight: 0.02
           description: >
-            Benchmark-side degrees of freedom are minimal and puzzle-justified.
+            Benchmark-side motion is minimal and puzzle-justified.
         ambiguity_free:
           weight: 0.02
           description: >
@@ -261,10 +254,6 @@ benchmark:
           weight: 0.03
           description: >
             Reviewer correctly judged moving-fixture motion contract completeness.
-        benchmark_dof_minimality:
-          weight: 0.02
-          description: >
-            Reviewer correctly judged benchmark-side DOF minimality.
         ambiguity_free:
           weight: 0.02
           description: >
@@ -334,7 +323,7 @@ benchmark:
         benchmark_motion_justified:
           weight: 0.03
           description: >
-            Reviewer correctly judged whether benchmark-side motion remained justified.
+            Reviewer correctly judged whether benchmark-owned motion remained justified.
       review_actionable:
         weight: 0.20
         description: >
@@ -381,13 +370,7 @@ engineer:
         partial: true
         penalty_formula: "max(0.0, 1.0 - max(0.0, estimated_weight / max_weight_g - 1.0))"
 
-      # Gate 5 — COTS parts valid
-      cots_ids_valid:
-        weight: 0.05
-        description: >
-          All COTS part IDs resolve to catalog entries.
-
-      # Gate 6 — mechanism fits build zone
+      # Gate 5 — mechanism fits build zone
       mechanism_fits_build_zone:
         weight: 0.10
         description: >
@@ -429,14 +412,6 @@ engineer:
           weight: 0.02
           description: >
             Planned mechanism fits the benchmark build zone.
-        cots_valid:
-          weight: 0.01
-          description: >
-            Planned COTS selections are valid and properly identified.
-        dof_minimality:
-          weight: 0.01
-          description: >
-            Proposed motion complexity is minimal and mechanism-justified.
         ambiguity_free:
           weight: 0.01
           description: >
@@ -471,16 +446,7 @@ engineer:
         success_feedback: "CAD geometry is valid and successfully exported."
         failure_feedback: "CAD geometry is invalid, has self-intersections, or failed to export."
 
-      # Gate 3 — manufacturability passes
-      manufacturability_valid:
-        weight: 0.07
-        description: >
-          All parts pass workbench manufacturability checks (e.g. no CNC
-          undercuts, wall thickness >= minimum for injection molding).
-        success_feedback: "The design passed all manufacturability constraints (CNC/Injection Molding)."
-        failure_feedback: "The design has manufacturability issues (e.g. undercuts, thin walls). Review manufacturing constraints."
-
-      # Gate 4 — parts within build zone
+      # Gate 3 — parts within build zone
       parts_within_build_zone:
         weight: 0.05
         description: >
@@ -567,10 +533,6 @@ engineer:
           weight: 0.01
           description: >
             Final solution remains manufacturable under the chosen process.
-        dof_deviation_justified:
-          weight: 0.005
-          description: >
-            Any DOF deviation from the approved plan is justified and reviewable.
       feedback_response_score:
         weight: 0.03
         description: >
@@ -621,14 +583,6 @@ engineer:
           weight: 0.04
           description: >
             Reviewer correctly judged build-zone fit.
-        cots_valid:
-          weight: 0.03
-          description: >
-            Reviewer correctly judged COTS validity and specificity.
-        dof_minimality:
-          weight: 0.04
-          description: >
-            Reviewer correctly judged whether the mechanism used minimal justified DOFs.
         ambiguity_free:
           weight: 0.03
           description: >
@@ -695,10 +649,6 @@ engineer:
           weight: 0.03
           description: >
             Reviewer correctly judged manufacturability compliance.
-        dof_deviation_justified:
-          weight: 0.05
-          description: >
-            Reviewer correctly judged whether DOF deviations were justified.
       review_actionable:
         weight: 0.20
         description: >

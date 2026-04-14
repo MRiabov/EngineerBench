@@ -18,14 +18,14 @@ Read this skill and the relevant reference files below before planning any `buil
 07. **Assembly Labels**: Use `.label = "stator"` and `.label = "rotor"` for automatic motor/joint injection in MJCF.
 08. **Label Namespace Hygiene**: Top-level authored labels must be unique and must not be `environment` or start with `zone_`. The simulator reserves those names for the scene root and generated objective bodies, and duplicate labels collide with MJCF mesh/body names.
 09. **Intersection Checks**: For pairwise geometry, use `shape_a.intersect(shape_b)`. The returned shape has a `.volume` property; if that volume is greater than zero, the shapes intersect, and you can inspect or render the returned intersection shape for debugging. For grouped children, wrap the parts in `Compound(children=[...])` and call `do_children_intersect()` on the compound; in this runtime it returns `(intersects, (shape_a, shape_b), volume)`, so unpack it for logging.
-10. **COTS Parts**: If the geometry includes catalog-backed components, load `skills/cots-parts/SKILL.md` and keep the concrete COTS instance intact. Do not strip provenance or replace it with anonymous solids when the task still depends on part identity.
+10. **Imported Components**: If the geometry includes imported components, keep the concrete part instance intact. Do not strip provenance or replace it with anonymous solids when the task still depends on part identity.
 
 ## Positioning Hierarchy
 
 - If environment fixtures are available for attachment, prefer faces, edges, and other fixture features over raw coordinates.
 - Use constraint chains and derived formulas from source geometry or environment properties such as `Wire.length` before reaching for absolute world positions. Use calculator-backed or scripted derivations for computed values; derived formulas are better than hand math, and hardcoded values are the last resort.
 - Use `with Locations(...)` when you need a placement context for repeated instances. `Location(...)` is a pose object, not a context manager.
-- Treat absolute locations outside of COTS constants as a drafting smell. Keep them minimal, traceable, and only use them when no attachment or datum relationship is available.
+- Treat absolute locations outside of declared constants as a drafting smell. Keep them minimal, traceable, and only use them when no attachment or datum relationship is available.
 
 ## Repo-Specific Contracts
 
@@ -119,15 +119,9 @@ rail_lower = rail_builder.part.moved(Location((0, -0.06, 0.09), (0, 2, 0)))
 - Source-value tables, derived dimensions, and joint-driven placement
 - Spreadsheet-style modeling with formulas instead of guessed sizes
 
-### [technical_drawing.md](references/technical_drawing.md) (Technical Drawing)
+### Imported Components
 
-- `TechnicalDrawing(...)` border/title block setup
-- `project_to_viewport(...)`, `ExtensionLine(...)`, `Text(...)`, and `Draft(...)`
-- `ExportSVG(...)` / `ExportDXF(...)` sheet export and preview workflow
-
-### [cots-parts](../cots-parts/SKILL.md) (Catalog-Backed Components)
-
-- Class-first COTS construction and provenance
+- Preserve imported-component provenance and exact identity when it matters for the approved handoff.
 - Motor local frames and placement contract
 - Fixtures vs solution parts
 - Declared-vs-used validation and anti-patterns

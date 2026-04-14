@@ -16,7 +16,7 @@
   bounds.
 - [ ] Write `benchmark_assembly_definition.yaml` with a schema-valid passive
   fixture handoff.
-- [ ] Keep any benchmark-side motion out of scope unless it remains passive
+- [ ] Keep any benchmark-owned motion out of scope unless it remains passive
   and reviewable.
 
 ## Validation

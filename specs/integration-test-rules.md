@@ -25,11 +25,10 @@ Additionally:
 
 ## Non-negotiable Integration Execution Contract (applies to every `INT-xxx` and `INT-NEG-###`)
 
-01. Test target is a running compose stack (`controller`, `worker`, Temporal worker service `controller-temporal-worker`, infra services), not imported Python functions.
-    In this spec, `controller-temporal-worker` is the Temporal worker service label only; it is not the controller.
+01. Test target is a running compose stack (`controller`, `worker`, `worker-renderer`, infra services), not imported Python functions.
 02. Test traffic goes through HTTP APIs only.
 03. Files/artifacts are created by API/tool-call pathways, not by direct local writes to app internals.
-04. No `patch`, `monkeypatch`, or fake clients for controller/worker/temporal/s3 paths in integration tests.
+04. No `patch`, `monkeypatch`, or fake clients for controller/worker/s3 paths in integration tests.
 05. Assertions are on observable boundaries: HTTP responses, container logs, DB rows, object storage objects, emitted events.
 06. Every test must include at least one expected-fail assertion where architecture specifies fail behavior.
 07. Any unavoidable mock must be isolated to external third-party instability only, and must not mock project modules.
@@ -58,7 +57,6 @@ The integration suite is designed for high-velocity local execution and CI parit
   - `controller_errors.json`
   - `worker_light_errors.json`
   - `worker_heavy_errors.json`
-  - `temporal_worker_errors.json`
   - `backend_error_allowlisted_prefixes.json` (auto-generated/cache file containing per-`INT-xxx` and `INT-NEG-###` backend-error allowlist rules derived from test markers; consumed by integration-runner early-stop filtering)
 - **Backend error-log attribution contract**: Structured `ERROR` lines written to dedicated backend error logs must include `session_id` or `episode_id` (ideally both) so strict integration teardown can attribute failures to the owning test context and avoid cross-session leakage.
 - **`test_output/`**: Stores JUnit XML results and the persisted test history used for trend analysis.
@@ -161,7 +159,7 @@ Validation-preview tests should therefore assert:
 
 ### Heavy-request routing contract
 
-Controller-initiated heavy operations are expected to travel through Temporal workflows. Integration tests that verify product behavior from controller or agent tool paths should assert workflow lifecycle, persisted events, and returned results from the Temporal-mediated path.
+Controller-initiated heavy operations are expected to travel through the live controller/worker HTTP flow. Integration tests that verify product behavior from controller or agent tool paths should assert persisted events, artifact results, and returned results from the worker-mediated path.
 
 Direct `worker-heavy` HTTP requests remain valid only in integration tests that exercise worker-level boundaries such as single-flight admission, crash containment, and preview artifact generation. They are not the product-path routing model for controller tool calls.
 

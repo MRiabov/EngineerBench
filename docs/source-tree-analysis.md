@@ -14,7 +14,6 @@ The repository is organized around a controller-led runtime with split worker se
 |-- worker_light/
 |-- worker_heavy/
 |-- shared/
-|-- frontend/
 |-- config/
 |-- scripts/
 |-- tests/
@@ -36,7 +35,6 @@ The repository is organized around a controller-led runtime with split worker se
 | `worker_heavy/` | Validation, simulation, workbench analysis, and simulation render coordination | `app.py`, `api/routes.py`, `simulation/`, `workbenches/`, `runtime/simulation_runner.py`, `utils/` |
 | `worker_renderer/` | Dedicated headless preview rendering and render-manifest persistence | `app.py`, `api/routes.py`, `utils/` |
 | `shared/` | Shared schemas, enums, observability, workers, and simulation types | `models/`, `observability/`, `simulation/`, `workers/`, `agents/config.py` |
-| `frontend/` | Operator dashboard and generated API client | `src/App.tsx`, `src/pages/`, `src/components/`, `src/api/generated/`, `openapi.json` |
 | `config/` | Runtime configuration and policy files | `agents_config.yaml`, `prompts.yaml`, `manufacturing_config.yaml`, `reward_config.yaml`, `lint_config.yaml` |
 | `scripts/` | Local environment and test automation scripts | `env_up.sh`, `env_down.sh`, `run_integration_tests.sh`, `cleanup_local_s3.py` |
 | `tests/` | Integration coverage and support test data | `integration/`, `e2e/`, `controller/`, `worker_light/`, `worker_heavy/` |
@@ -56,7 +54,6 @@ The repository is organized around a controller-led runtime with split worker se
 | `controller/temporal_worker.py` | Controller Temporal worker for durable orchestration |
 | `worker_heavy/temporal_worker.py` | Heavy-worker Temporal worker for simulation and validation workflows |
 | `worker_renderer/app.py` | Dedicated headless renderer app for preview and media generation |
-| `frontend/src/main.tsx` | Vite entry point for the dashboard |
 | `scripts/env_up.sh` | Local infrastructure and application bootstrap |
 | `scripts/run_integration_tests.sh` | Canonical integration test runner |
 
@@ -67,10 +64,8 @@ The repository is organized around a controller-led runtime with split worker se
 | `api/routes/` | HTTP route groups, usually organized by product area |
 | `agent/nodes/` | LangGraph node implementations for planner, coder, and reviewer roles |
 | `agent/benchmark/` | Benchmark-generation graph, state, and benchmark-specific utilities |
-| `shared/models/` | Strict Pydantic contracts used across services and frontend generation |
+| `shared/models/` | Strict Pydantic contracts used across services |
 | `worker_heavy/workbenches/` | Manufacturing and pricing logic for CNC, injection molding, and 3D printing |
-| `frontend/src/components/` | Reusable UI pieces, grouped by layout, workspace, visualization, and shared controls |
-| `frontend/src/api/generated/` | OpenAPI-generated TypeScript client and models |
 
 ## Notes
 

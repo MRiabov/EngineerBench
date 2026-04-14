@@ -51,7 +51,7 @@ The project is brownfield and already has a working integration-test harness. Th
 | -- | -- |
 | Benchmark generation graph | Planner, plan reviewer, coder, and reviewer stages with deterministic handoff checks |
 | Engineer graph | Planner, plan reviewer, coder, and execution reviewer |
-| COTS search | Shared subagent and catalog-backed part search path for planners and coders |
+| Rigid-body mechanics | Pure rigid-body benchmark generation and solution flow |
 | Workbench analysis | Cost and manufacturability checks driven by the manufacturing configuration |
 | Simulation split | Fast validation preview versus backend simulation are intentionally separate |
 | Visual review policy | Render inspection is policy-driven and enforced when images are available |
@@ -67,7 +67,7 @@ The project is brownfield and already has a working integration-test harness. Th
 | Language runtime | Python 3.12 |
 | Frontend | React 19, TypeScript, Vite, Tailwind CSS |
 | Simulation | Genesis and MuJoCo |
-| CAD | build123d and bd-warehouse fasteners |
+| CAD | build123d |
 | Persistence | PostgreSQL, SQLAlchemy, Alembic |
 | Object storage | MinIO-backed S3-compatible storage |
 | Durable workflows | Temporal |

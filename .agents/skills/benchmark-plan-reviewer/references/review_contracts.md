@@ -6,10 +6,9 @@
 - Treat planner-owned artifacts as read-only.
 - Fail closed on missing, stale, invalid, or cross-revision artifacts.
 - Use `inspect_media(...)` for render, image, or video evidence. Do not rely on filenames or text summaries alone.
-- If technical drawing evidence must be materialized for the current revision, call `render_technical_drawing()` first and inspect the persisted output.
 - Use `specs/architecture/agents/agent-artifacts/README.md` for the file-level acceptance criteria that sit underneath this review contract.
 - Keep the decision YAML as the routing source of truth. Keep the comments YAML explanatory and evidence-based.
-- Treat `benchmark_plan_evidence_script.py` and `benchmark_plan_technical_drawing_script.py` as the inspectable source of the approved benchmark contract.
+- Treat `benchmark_plan_evidence_script.py` as the inspectable source of the approved benchmark contract.
 
 ## Required planner handoff
 
@@ -20,18 +19,17 @@
 - `benchmark_assembly_definition.yaml`
 - `payload_trajectory_definition.yaml` when the planner bundle provides a refined path contract
 - `benchmark_plan_evidence_script.py`
-- `benchmark_plan_technical_drawing_script.py`
 - `renders/**` when planner-side previews already exist
 
 ## Cross-artifact checklist
 
-- Match all object names, labels, repeated quantities, and COTS identities across `benchmark_plan.md`, the YAML files, and both planner scripts.
+- Match all object names, labels, repeated quantities, and COTS identities across `benchmark_plan.md`, the YAML files, and the planner evidence script.
 - Ensure every planner-declared inventory label and selected COTS `part_id` appears in `benchmark_plan.md` as an exact identifier mention.
 - Reject nonexistent objects, relabeled inventory, silent renames, or missing repeated entries.
 - Require `benchmark_assembly_definition.yaml` to be a schema-valid full `AssemblyDefinition`.
 - Require `payload.material_id` to be present and to reference a known material from `manufacturing_config.yaml`.
 - Require zone geometry, randomization, runtime jitter, and build-zone bounds to stay mutually consistent.
-- Reject planner drafting scripts that drift from the approved inventory or omit a real `TechnicalDrawing` construction path.
+- Reject planner evidence scripts that drift from the approved inventory.
 
 ## Motion checklist
 

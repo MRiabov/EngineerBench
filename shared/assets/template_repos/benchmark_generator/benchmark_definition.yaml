@@ -14,25 +14,21 @@ benchmark_parts:
     label: left_start_deck
     metadata:
       fixed: true
-      allows_engineer_interaction: false
       material_id: aluminum_6061
   - part_id: right_goal_deck
     label: right_goal_deck
     metadata:
       fixed: true
-      allows_engineer_interaction: false
       material_id: aluminum_6061
   - part_id: bridge_reference_table
     label: bridge_reference_table
     metadata:
       fixed: true
-      allows_engineer_interaction: false
       material_id: aluminum_6061
   - part_id: gap_floor_guard
     label: gap_floor_guard
     metadata:
       fixed: true
-      allows_engineer_interaction: false
       material_id: aluminum_6061
 physics:
   backend: GENESIS

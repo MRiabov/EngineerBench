@@ -2,7 +2,7 @@
 
 Use this reference when a build123d task moves from solid modeling into sheet layout.
 
-- `TechnicalDrawing(...)` creates the border and title block.
+- This legacy reference covered sheet-layout concepts for older workflows.
 
 - `project_to_viewport(...)` projects the 3D model into visible and hidden 2D edge sets.
 

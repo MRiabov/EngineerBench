@@ -5,10 +5,9 @@
 1. [How to choose](#how-to-choose)
 2. [Passive transfer](#passive-transfer)
 3. [Actuated solutions](#actuated-solutions)
-4. [COTS-backed solutions](#cots-backed-solutions)
-5. [Electronics-backed solutions](#electronics-backed-solutions)
-6. [Render history and point-pick](#render-history-and-point-pick)
-7. [Convergence heuristics](#convergence-heuristics)
+4. [Electronics-backed solutions](#electronics-backed-solutions)
+5. [Render history and point-pick](#render-history-and-point-pick)
+6. [Convergence heuristics](#convergence-heuristics)
 
 ## How to choose
 
@@ -16,7 +15,6 @@ Choose the smallest mechanism family that can satisfy the objective under runtim
 
 - If gravity and geometry are enough, use a passive transfer family.
 - If the task needs timing, reset, or sequencing, add only the minimum actuation needed.
-- If the handoff depends on exact part identity, use a COTS-backed design.
 - If the handoff explicitly includes electronics, keep the logical circuit and the physical routing consistent.
 
 When in doubt, start with the simplest family that can plausibly solve the problem and only escalate after a concrete failure explains why.
@@ -93,38 +91,6 @@ First response:
 - Add clear stops and path constraints.
 - Reconcile the motion path with the surrounding geometry.
 
-## COTS-backed solutions
-
-Use when a catalog part materially improves the design or is required by the handoff.
-
-Rules:
-
-- Preserve the exact part identity.
-- Keep the local frame and placement explicit.
-- Do not replace the part with anonymous solids when provenance matters.
-- Keep the chosen part visible in the authored geometry.
-
-Good uses:
-
-- Motors
-- Switches
-- Bearings
-- Fasteners
-- Connectors
-- Fixture interfaces that depend on a real product shape
-
-Typical failure modes:
-
-- The part is declared but never actually used.
-- The geometry fits, but the frame or orientation is wrong.
-- The part is conceptually present but not preserved as the concrete component instance.
-
-First response:
-
-- Re-read the part contract.
-- Re-place the part from its real frame.
-- Check clearances and provenance after placement.
-
 ## Electronics-backed solutions
 
 Use only when the approved handoff explicitly requires electronics or the benchmark declares electronics requirements.
@@ -154,7 +120,6 @@ Use when you need to interpret render bundles, drafting packages, or screen-spac
 Common forms:
 
 - Live scene preview via `render_cad(...)`
-- Drafting package via `render_technical_drawing()`
 - Bundle history selection via `list_render_bundles()`
 - Compact bundle slices via `query_render_bundle()`
 - Screen-space click-to-world queries via `pick_preview_pixel()` and `pick_preview_pixels()`
@@ -163,7 +128,6 @@ Drafting cues:
 
 - Select the exact bundle that matches the revision under test before inspecting media.
 - Use `payload_path=True` only when verifying the live payload-path overlay in a render bundle.
-- Keep `render_cad(...)` and `render_technical_drawing()` separate; they answer different questions.
 - Treat bundle-local history as authoritative; do not infer a world point from image bytes or a stale filename.
 - Use batch point-picks when you need to compare several candidate pixels against the same bundle snapshot.
 

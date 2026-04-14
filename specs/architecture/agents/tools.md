@@ -78,13 +78,9 @@ This is mostly for integration tests where such bypass is convenient (for system
 - `grep` Structured text search.
 - `inspect_media` Read visual evidence (`.png`, `.jpg`, `.jpeg`, and supported video frame bundles) and attach it to the model as media input for the current tool step.
 - `inspect_topology` Inspect assembly/topology metadata.
-- `search_cots_catalog` Search COTS parts catalog.
-- `invoke_cots_search_subagent(query: str)` Hand off one request string to the shared COTS Search node.
 - `submit_benchmark_plan` Validate and submit benchmark planner handoff artifacts.
 - `submit_engineering_plan` Validate and submit engineering planner handoff artifacts.
 - `save_suggested_skill` Persist skill-agent suggested skill output.
-
-`invoke_cots_search_subagent(query: str)` is a prompt-only handoff. It passes exactly one request string to the shared `COTS Search` node and does not inherit planner/coder `task`, `plan`, or `journal` state or use graph-specific signature variants.
 
 Importantly, we have all these methods as async functions, their names with `aread`, `awrite`, `aedit`, etc. This is likely the preferred way to call all these functions.
 
@@ -301,10 +297,10 @@ Run the workbench interface to validate the part for manufacturability; if passe
 
 1. Check cache for if we need to reverify the solution, early exit if not,
 2. If there is the environment in the assembly (as required by `simulate_engineering` command), assert that it is in the correct position,
-3. Split the assembly into benchmark-owned read-only fixtures versus engineer-owned manufactured parts / COTS parts.
+3. Split the assembly into benchmark-owned read-only fixtures versus engineer-owned manufactured parts / imported parts.
 4. Validate manufacturability as per the Workbench interface only for engineer-owned manufactured parts. Do not reject because benchmark environment/input-objective fixtures lack manufacturing metadata.
 5. Validate full-assembly placement and build-zone bounds, including interactions with the benchmark environment/objectives.
-6. Determine cost for engineer-owned manufactured parts and selected COTS parts only. Benchmark-owned fixtures never flow into engineer solution pricing,
+6. Determine cost for engineer-owned manufactured parts and selected imported parts only. Benchmark-owned fixtures never flow into engineer solution pricing,
 7. Validate for cost,
 8. Validate for weight.
 

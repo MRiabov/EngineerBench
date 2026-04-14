@@ -42,7 +42,6 @@ Within the agents tree, `specs/architecture/agents/roles-detailed/` is the sourc
 
 ### Evaluation and quality gates
 
-- [Application acceptance criteria](./architecture/application-acceptance-criteria.md): legacy application acceptance surface; the current product acceptance criteria live in `_bmad-output/planning-artifacts/prd.md` and `_bmad-output/planning-artifacts/epics.md`.
 - [Eval architecture](./architecture/evals-architecture.md): how eval tiers, pass criteria, terminalization, and fail-closed gates work.
 - [Agent reward architecture](./architecture/agents/reward-architecture.md): reward shaping used for downstream training and optimization.
 - [Integration test rules](./integration-test-rules.md) and [integration test catalog](./integration-test-list.md): HTTP-only release-gate contracts and canonical `INT-xxx` / `INT-NEG-###` mappings for the system boundary checks.
@@ -51,7 +50,6 @@ Within the agents tree, `specs/architecture/agents/roles-detailed/` is the sourc
 
 - [Simulation and rendering](./architecture/simulation-and-rendering.md): physics assumptions, backend responsibility split, dedicated renderer worker, constraints model, and rendering/preview ownership.
 - [Fluids, FEM, and stress validation](./architecture/fluids-and-deformables.md): Genesis-backed fluid simulation, deformable-material contracts, stress objectives, smoke-test policy, and WP2-specific artifacts.
-- [Electronics and electromechanical systems](./architecture/electronics-and-electromechanics.md): electrical schema, circuit-validation gate, 3D wire routing, power-gated actuation, and WP3-specific artifacts.
 
 ### Observability
 

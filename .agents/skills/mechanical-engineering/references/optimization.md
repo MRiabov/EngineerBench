@@ -3,12 +3,12 @@
 ## Iterative Design Refinement
 
 1. **Initial Design:** Create the geometry based on the benchmark requirements.
-2. **Simulation:** Run the benchmark and inspect the resulting stress metrics.
-3. **Analyze:** Call `get_stress_report(part_label)`.
+2. **Simulation:** Run the benchmark and inspect the resulting evidence.
+3. **Analyze:** Compare the observed behavior to the target geometry, motion, cost, and weight goals.
 4. **Refine:**
-   - **If Safety Factor < 1.5 (Stress High):** Add material (increase wall thickness, add fillets, add ribs).
-   - **If Safety Factor > 5.0 (Overdesign):** Remove material (hollow out parts, use thinner walls, add cutouts).
-5. **Re-Verify:** Run the simulation again to confirm the safety factor is within the 1.5 - 5.0 range.
+   - If the design is too heavy or costly, remove material or simplify the mechanism.
+   - If the design is too fragile, add material or change the part family.
+5. **Re-Verify:** Run the simulation again to confirm the revised geometry behaves as intended.
 
 ## Material Selection Optimization
 

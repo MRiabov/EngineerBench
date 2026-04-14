@@ -38,7 +38,6 @@ from utils.preview import (
     pick_preview_pixel,
     pick_preview_pixels,
     preview,
-    render_technical_drawing,
     query_render_bundle,
 )
 ```
@@ -70,7 +69,7 @@ Use this sequence for benchmark-coder and engineer-coder evals:
 01. Read `benchmark_plan.md` for benchmark-coder tasks or `engineering_plan.md` for engineer-coder tasks, plus `todo.md`, `assembly_definition.yaml`, and `benchmark_definition.yaml`.
 02. If benchmark geometry exists, read `benchmark_script.py` as read-only context before drafting the solution.
 03. Read `skills/build123d-cad-drafting-skill/SKILL.md` before the first geometry draft.
-04. If the design includes catalog-backed components, read `skills/cots-parts/SKILL.md` before drafting the part geometry or motion contract.
+04. If the design includes imported components, read the relevant part-identity guidance before drafting the part geometry or motion contract.
 05. Only read `skills/electronics-engineering/SKILL.md` if the approved handoff explicitly contains an `electronics` section or the benchmark declares `electronics_requirements`. Motors alone do not imply an electronics task, and mechanical wire-routing placeholders do not qualify.
 06. Keep the first `solution_script.py` draft compact and complete for the handoff. Prefer a direct `result = ...` binding and avoid extra helper files.
 07. Run one cheap syntax check first, then one real probe against the authored file:

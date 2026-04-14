@@ -13,7 +13,6 @@ from pydantic import ValidationError
 
 # Add project root to path to import shared models
 sys.path.append(str(Path(__file__).parents[3]))
-from shared.cots.runtime import get_catalog_item_with_metadata
 from shared.enums import ManufacturingMethod
 from shared.models.schemas import AssemblyDefinition
 from worker_heavy.utils.dfm import (
@@ -64,61 +63,6 @@ def main():
                     )
                 else:
                     part["removed_volume_mm3"] = 0.0
-
-        # 1b. Normalize COTS entries using the exact catalog snapshot.
-        for part in data.get("cots_parts", []):
-            part_id = part.get("part_id")
-            if not part_id:
-                print("Error: cots_parts entry is missing part_id.")
-                sys.exit(1)
-
-            lookup = get_catalog_item_with_metadata(str(part_id))
-            if lookup is None:
-                print(
-                    f"Error: cots_parts entry '{part_id}' does not resolve to a catalog item."
-                )
-                sys.exit(1)
-
-            catalog_item, catalog_metadata = lookup
-            catalog_details = catalog_item.metadata or {}
-
-            manufacturer = catalog_details.get("manufacturer", "unknown")
-            if part.get("manufacturer") not in (None, "", manufacturer):
-                print(
-                    f"Error: cots_parts entry '{part_id}' manufacturer must match catalog manufacturer '{manufacturer}'."
-                )
-                sys.exit(1)
-            part["manufacturer"] = manufacturer
-
-            unit_cost = float(catalog_item.unit_cost)
-            if (
-                part.get("unit_cost_usd") is not None
-                and abs(float(part["unit_cost_usd"]) - unit_cost) > 1e-6
-            ):
-                print(
-                    f"Error: cots_parts entry '{part_id}' unit_cost_usd must match catalog unit cost {unit_cost}."
-                )
-                sys.exit(1)
-            part["unit_cost_usd"] = round(unit_cost, 6)
-
-            weight_g = float(catalog_item.weight_g)
-            if (
-                part.get("weight_g") is not None
-                and abs(float(part["weight_g"]) - weight_g) > 1e-6
-            ):
-                print(
-                    f"Error: cots_parts entry '{part_id}' weight_g must match catalog weight {weight_g}."
-                )
-                sys.exit(1)
-            part["weight_g"] = round(weight_g, 6)
-
-            part["catalog_version"] = catalog_metadata.get("catalog_version")
-            part["bd_warehouse_commit"] = catalog_metadata.get("bd_warehouse_commit")
-            part["catalog_snapshot_id"] = catalog_metadata.get("catalog_snapshot_id")
-            part["generated_at"] = catalog_metadata.get("generated_at")
-
-            if not part.get("source"):
-                part["source"] = "catalog"
 
         # 2. Pydantic Validation
         estimation = AssemblyDefinition(**data)

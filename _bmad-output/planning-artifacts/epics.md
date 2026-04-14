@@ -86,6 +86,10 @@ FR37: The system can let users switch CAD selection mode between faces, parts/bo
 FR38: The system can preserve steering context, selection metadata, and resulting edits in traces and replay artifacts.
 FR39: The system can generate preview-ready image, video, netlist, and schematic artifacts for simulation-family runs and expose them to authorized viewers.
 FR40: The system can render advanced simulation artifacts in-browser with interactive inspection and in-scene selections for steering.
+FR41: Users can upload CAD models as input objects or benchmark environments and validate imported motion and constraint metadata from the uploaded asset set.
+FR42: Users can inspect imported CAD constraints, mates, and joints in the visualization surface and toggle their visibility.
+FR43: The system can expose continuous, smooth numerical reward signals from the environment for reinforcement learning and skill iteration.
+FR44: The system can support trainer-agnostic online GRPO rollouts against live episodes using streaming observations, actions, rewards, and terminal signals.
 
 ### NonFunctional Requirements
 
@@ -192,6 +196,8 @@ FR39: Epic 8 / Epic 14 / Epic 17 / Epic 20 / Epic 23 - Simulation-family epics e
 FR40: Epic 26 - Advanced visualization renders FEM, fluids, and electronics artifacts in-browser and supports in-scene steering selections
 FR41: Epic 29 - Users can upload CAD models as input objects or benchmark environments and validate imported motion and constraint metadata from the uploaded asset set
 FR42: Epic 26 - Users can inspect imported CAD constraints, mates, and joints in the visualization surface and toggle their visibility
+FR43: Epic 4 - The system can expose continuous, smooth numerical reward signals from the environment for reinforcement learning and skill iteration
+FR44: Epic 4 - The system can support trainer-agnostic online GRPO rollouts against live episodes using streaming observations, actions, rewards, and terminal signals
 
 ## Epic List
 
@@ -486,7 +492,7 @@ As a human engineer, I want to review a colleague's solution under runtime jitte
 
 ## Epic 4: Dataset Export & Replay
 
-Researchers and companies can export completed runs as inspectable, reproducible dataset rows with traces, artifacts, lineage, immutable run bundles, and replayable failures. Invalid or corrupted episodes are excluded at export time.
+Researchers and companies can export completed runs as inspectable, reproducible dataset rows with traces, artifacts, lineage, continuous reward traces, live rollout signals for online GRPO, immutable run bundles, and replayable failures. Invalid or corrupted episodes are excluded at export time.
 
 ### Story 4.1: Persist Immutable Run and Release Bundles
 
@@ -559,6 +565,29 @@ As a dataset operator, I want to manage coverage by seed and problem family so t
 **Given** different seeds for the same benchmark family
 **When** I inspect the export
 **Then** the dataset retains the seed lineage needed to reproduce the variation
+
+### Story 4.5: Support Live Online GRPO Rollouts and Reward Traces
+
+As a researcher, I want role-specific episodes to expose dense numerical reward traces and live rollout signals so that I can train models with online GRPO or skill iteration.
+
+**Acceptance Criteria:**
+
+**Given** a running role-specific episode
+**When** the agent advances through the environment
+**Then** the system emits numeric reward values that vary with episode state rather than only a terminal pass/fail label
+**And** the environment exposes streaming observations, actions, rewards, and terminal signals suitable for a live GRPO trainer
+
+**Given** the same benchmark revision, solution revision, and seed
+**When** the episode is replayed
+**Then** the reward trace is reproduced deterministically from persisted artifacts
+
+**Given** a completed episode
+**When** training-ready export runs
+**Then** the dataset row includes the reward trace or a durable reference to it alongside the other persisted artifacts
+
+**Given** a researcher inspecting an episode
+**When** they review reward output
+**Then** they can read the per-step reward progression needed for reinforcement learning, online GRPO, or skill iteration
 
 ## Epic 6: Gravity: Benchmarks (Fixed Engineer Parts)
 

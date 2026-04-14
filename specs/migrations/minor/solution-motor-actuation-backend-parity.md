@@ -66,7 +66,7 @@ That split creates four practical problems:
 3. runtime validation can accept a motor contract that the backend cannot
    actually execute,
 4. the simulation result can look motor-aware even when the backend never had a
-   real controllable DOF.
+   real controllable motion axis.
 
 The architecture answer is to keep the solution contract shared and backend
 specific only at the materialization layer. MuJoCo and Genesis should both
@@ -76,7 +76,7 @@ consume the same motion intent, not different solution languages.
 
 | Area | Current behavior | Why it must change |
 | -- | -- | -- |
-| `shared/models/schemas.py` | `AssemblyDefinition.moving_parts` already derives moving parts from `final_assembly`, and `MotorControl` is typed. | This is the canonical solution motor contract and should remain the source of truth. |
+| `shared/models/schemas.py` | `AssemblyDefinition.moving_parts` already derives moving parts from the explicit motion forecast, and the motion contract is typed. | This is the canonical solution motion contract and should remain the source of truth. |
 | `shared/simulation/backends.py` | Shared `apply_control`, `get_actuator_state`, and `get_all_actuator_names` seams already exist. | The backend seam is probably sufficient; do not expand it unless a specific motor capability is missing. |
 | `worker_heavy/utils/validation.py` | Converts moving parts into time-based controller inputs and sends them to simulation. | This is the correct solution-level control path, but it depends on backend materialization working everywhere. |
 | `worker_heavy/simulation/builder.py` | MuJoCo emits actuators from moving parts; Genesis serializes motor metadata and wire data into JSON. | MuJoCo is the baseline, but Genesis still needs the same solution contract to become a real actuator graph. |
@@ -94,7 +94,7 @@ consume the same motion intent, not different solution languages.
 2. `MuJoCoSimulationBuilder` remains the rigid-body baseline implementation for
    the shared motor contract.
 3. `GenesisSimulationBuilder` materializes the same moving-part contract into a
-   real controllable DOF graph, not just metadata.
+   real controllable motion graph, not just metadata.
 4. `apply_control()`, `get_actuator_state()`, and `get_all_actuator_names()`
    report motor state consistently enough for power gating and overload checks
    to behave the same way on both backends.
@@ -113,8 +113,7 @@ consume the same motion intent, not different solution languages.
 ### 1. Lock the solution motor contract
 
 - Treat `AssemblyDefinition.final_assembly`, `AssemblyDefinition.moving_parts`,
-  `AssemblyPartConfig.control`, and the matching COTS motor entry in
-  `assembly_definition.yaml.cots_parts` as the single solution motor contract.
+  and `AssemblyPartConfig.control` as the single solution motor contract.
 - Keep the contract explicit about solution-owned labels and the backend-facing
   actuator names those labels produce.
 - Do not add a second solution motor schema just for Genesis.
@@ -155,7 +154,7 @@ consume the same motion intent, not different solution languages.
 
 ### 5. Fail closed on unsupported motor configs
 
-- Reject moving parts whose DOF, joint, or actuator mapping cannot be resolved.
+- Reject moving parts whose motion-axis, joint, or actuator mapping cannot be resolved.
 - Reject control modes that the backend cannot represent faithfully.
 - Reject a scene that silently downgrades a motorized solution part to static
   geometry.
@@ -244,7 +243,7 @@ The safe order is:
 
 ### Runtime
 
-- [x] Materialize solution motors as real controllable DOFs in Genesis.
+- [x] Materialize solution motors as real controllable motion axes in Genesis.
 - [x] Normalize `apply_control()`, `get_actuator_state()`, and
   `get_all_actuator_names()` across backends.
 - [ ] Keep power gating and overload monitoring backend-agnostic.

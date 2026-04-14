@@ -238,7 +238,7 @@ benchmark_generator:
       - In `benchmark_definition.yaml`, every `benchmark_parts[*].part_id` and `benchmark_parts[*].label` must be unique.
       - In authored benchmark scripts, every top-level part label must be unique and must not be `environment`, start with `zone_`, or start with `benchmark_moved_object__` because the simulator reserves those names for the scene root and generated objective bodies.
       - `benchmark_assembly_definition.yaml` must be a full `AssemblyDefinition` shape and include numeric planner-target `constraints` and `totals` fields; benchmark caps are sourced from `benchmark_definition.yaml` and must not be treated as duplicated ownership in the assembly file.
-      - Any benchmark-side motion in `benchmark_assembly_definition.yaml` must be explicit in both `benchmark_plan.md` and `todo.md`; one moving fixture may expose at most one DOF axis, and the handoff must state reviewer-visible motion bounds/limits plus controller facts.
+      - Any benchmark-owned motion in `benchmark_assembly_definition.yaml` must be explicit in both `benchmark_plan.md` and `todo.md`; the handoff must state reviewer-visible motion bounds and controller facts.
       - Hidden, unsupported, or over-actuated benchmark motion is a rejection condition, even if the scene still looks passive at a glance.
       - If the motion contract is impossible to explain explicitly, stop and revise the handoff instead of brute-forcing `submit_benchmark_plan()`.
       - Prefer schema-safe minimal assembly for planner handoff: use empty `manufactured_parts` and `final_assembly` unless you can provide fully valid entries (e.g., `stock_bbox_mm` must be an object with `x/y/z`, and final assembly parts use `name/config`).

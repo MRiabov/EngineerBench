@@ -27,6 +27,5 @@ It is worth being a dedicated artifact because later gates need an exact, parsea
 
 ## Cross-References
 
-- `specs/architecture/application-acceptance-criteria.md`
 - `specs/architecture/evals-architecture.md`
 - `specs/architecture/agents/handover-contracts.md`

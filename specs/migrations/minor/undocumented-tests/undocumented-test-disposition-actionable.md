@@ -57,8 +57,8 @@ lineage only, even if the action text still says Promote or Merge.
 | UNDOC-054, UNDOC-056 | COTS / manufacturing fail-closed branches | Merge | P1 | Keep the fail-closed behavior, but move it into the canonical validation path or the future negative catalog. These are negative cases, not primary release gates. |
 | UNDOC-057, UNDOC-058 | Render validation seed brightness checks | Remove | P2 | The render-validation seed brightness checks were pruned from the publication bundle; archive only. |
 | UNDOC-059 | Reviewer evidence completeness | Promote | P1 | Promote directly to `INT-034`. This is the canonical reviewer evidence contract. |
-| UNDOC-060 | Canonical DOF evidence keys | Merge | P1 | Fold into the existing DOF reviewer gates (`INT-074` and `INT-075`) rather than keeping a separate evidence-only test. |
-| UNDOC-061 | Over-actuated DOF rejection after render inspection | Promote | P1 | Promote directly to `INT-075`. The render-inspection-before-rejection path is the useful regression. |
+| UNDOC-060 | Canonical motion evidence keys | Merge | P1 | Fold into the existing motion reviewer gates (`INT-074` and `INT-075`) rather than keeping a separate evidence-only test. |
+| UNDOC-061 | Over-actuated motion rejection after render inspection | Promote | P1 | Promote directly to `INT-075`. The render-inspection-before-rejection path is the useful regression. |
 | UNDOC-062, UNDOC-065 | Preview evidence path acceptance | Merge | P1 | Fold into the reviewer evidence contract (`INT-034`) or the execution-reviewer handoff contract. These are acceptance subcases, not standalone flows. |
 | UNDOC-063 | Benchmark plan rejection with latest revision evidence | Remove | P1 | This reviewer rejection branch was pruned from the publication bundle; keep it only if a negative row is explicitly added later. |
 | UNDOC-064 | Approval requires media inspection | Remove | P1 | This reviewer-quality branch was pruned from the publication bundle; keep it only if a negative row is explicitly added later. |

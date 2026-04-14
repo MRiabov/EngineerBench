@@ -38,4 +38,3 @@ When a seed is close but still failing, inspect the current failure mode and pat
 - missing or stale render bundle manifests
 - benchmark drafting scripts that drift beyond the benchmark-owned fixture
 - plan text that omits a required exact identifier mention
-- technical drawing scripts that omit `TechnicalDrawing(...)`

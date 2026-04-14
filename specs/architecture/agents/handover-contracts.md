@@ -28,11 +28,6 @@ In this case, the Engineering Coder must provide `plan_refusal.md` (with role-sp
 
 Reviewer outputs are made deterministic by persisting two YAML artifacts per review round: a routing-owned decision file and a structured comments/checklist file. The reviews and plans must be appropriate.
 
-## COTS subagent handoff contract
-
-- `invoke_cots_search_subagent(...)` hands off exactly one request string to `COTS Search`.
-- `COTS Search` does not inherit planner/coder `task`, `plan`, or `journal` state, and benchmark + engineer flows must both call the same prompt-only node contract.
-
 ## Reviewer manifest naming contract
 
 Reviewer handoff manifests are reviewer-scoped at gate boundaries.
@@ -110,11 +105,11 @@ Planner handoff packages are binding inventories, not loose geometry hints.
 Rules:
 
 1. The planner-authored evidence script must preserve the same multiset of authored labels and quantities as the associated plan/YAML inventory.
-2. Inventory equality is checked by label and COTS-identity multiplicity, not by ordering. For COTS-bearing rows, the label and COTS identity travel together as one identity-bearing pair; validators must reject pair-swaps that preserve the separate label and COTS-ID counts but assign them to different rows.
+2. Inventory equality is checked by label multiplicity, not by ordering. For identity-bearing rows, the label and identity travel together as one pair; validators must reject pair-swaps that preserve the separate label counts but assign them to different rows.
 3. Repeated references in `final_assembly` count as quantity and must survive into the planner evidence script and downstream implementation.
 4. The planner must self-validate this exactness before the role-scoped planner submission helper (`submit_benchmark_plan()` or `submit_engineering_plan()`, depending on graph); if the evidence script drifts, the handoff is invalid.
 5. The coder and reviewer must compare the implemented model against the approved inventory and reject missing, extra, or relabeled items.
-6. Every planner-declared inventory label and selected COTS `part_id` must appear at least once in the stage-specific plan file as an exact identifier mention. Backticks are preferred for the first mention, but the exact string match is what matters for validation.
+6. Every planner-declared inventory label and selected `part_id` must appear at least once in the stage-specific plan file as an exact identifier mention. Backticks are preferred for the first mention, but the exact string match is what matters for validation.
 
 ## Benchmark Planner and Benchmark Plan Reviewer
 
@@ -140,7 +135,7 @@ The plan will have the following bullet points. The plan will be validated for c
        The agents' file must correspond to roughly the structure detailed above, with automatic checks in place.
 2. A `todo.md` TODO list from the planner.
 3. A draft of `benchmark_definition.yaml` with rough values filled in.
-4. A draft of `benchmark_assembly_definition.yaml` with per-part motion metadata in `benchmark_assembly.parts` (`control` and any explicit operating limits). This is benchmark-owned read-only handoff context for downstream engineer stages and must still be a schema-valid full `AssemblyDefinition` artifact.
+4. A draft of `benchmark_assembly_definition.yaml` with benchmark-owned fixture inventory and geometry. This is read-only handoff context for downstream engineer stages and must still be a schema-valid full `AssemblyDefinition` artifact.
 5. `benchmark_plan_evidence_script.py`, the benchmark-owned build123d evidence script that makes the draft geometry legible as a sketch/previewable scene for the benchmark plan reviewers and downstream engineer intake.
 6. An explicit `submit_benchmark_plan()` handoff action which persists `.manifests/benchmark_plan_review_manifest.json`.
 
@@ -151,12 +146,12 @@ If the user provides explicit benchmark objective overrides (for example `max_un
 
 `Benchmark Plan Reviewer` gate requirements:
 
-- Source of truth contract: benchmark planner handoff artifacts are `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, benchmark-owned `benchmark_assembly_definition.yaml`, and `benchmark_plan_evidence_script.py`. That script must preserve the benchmark inventory labels, repeated quantities, and COTS identities exactly. `benchmark_script.py` is created later by `Benchmark Coder` after plan approval.
+- Source of truth contract: benchmark planner handoff artifacts are `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, benchmark-owned `benchmark_assembly_definition.yaml`, and `benchmark_plan_evidence_script.py`. That script must preserve the benchmark inventory labels, repeated quantities, and selected component identities exactly. `benchmark_script.py` is created later by `Benchmark Coder` after plan approval.
 - Reviewer-stage manifest: `.manifests/benchmark_plan_review_manifest.json`.
 - Entry guard behavior:
   - Reject when the manifest is missing, stale for the latest planner revision, or schema-invalid.
   - Reject when planner artifacts mention benchmark objects, moving parts, joints, or zones that are not declared consistently across the planner handoff package.
-  - Reject when `benchmark_plan_evidence_script.py` diverges from the declared benchmark inventory labels, quantities, or COTS identities.
+  - Reject when `benchmark_plan_evidence_script.py` diverges from the declared benchmark inventory labels, quantities, or selected component identities.
   - Reject when `moved_object.material_id` is missing, empty, or not known to `manufacturing_config.yaml`, or when `benchmark_assembly_definition.yaml` is not a schema-valid full `AssemblyDefinition` artifact.
   - Reject when moving benchmark fixtures are missing motion-visible handoff data needed by engineering intake, such as actuation mode, axis/path or equivalent reference, motion limits or operating envelope, and whether the engineer may rely on the motion.
   - Reject when benchmark-side motion is impossible, unstable, non-deterministic, or cannot be reconstructed from the handoff artifacts and evidence.
@@ -168,13 +163,13 @@ If the user provides explicit benchmark objective overrides (for example `max_un
 - Approval effect:
   - Only an approved benchmark plan reviewer handoff is allowed to pause in `PLANNED` state and unblock `Benchmark Coder`.
 
-`Benchmark Coder` owns all implementation changes to `benchmark_script.py` and helper implementation modules for the current revision. The benchmark planner's evidence script is read-only context for benchmark coder entry, and the coder must preserve the same benchmark inventory labels, repeated quantities, and COTS identities when materializing `benchmark_script.py`.
+`Benchmark Coder` owns all implementation changes to `benchmark_script.py` and helper implementation modules for the current revision. The benchmark planner's evidence script is read-only context for benchmark coder entry, and the coder must preserve the same benchmark inventory labels, repeated quantities, and selected component identities when materializing `benchmark_script.py`.
 
 ## Benchmark Generator with Engineer handover
 
 The Engineer agent(s) (for whom the first point of access is Engineering Planner) have access to meshes and a exact reconstruction of the environment as a starting point to their build123d scene, however they can not modify/move it from their build123d scene. In fact, we validate for the fact that the engineer wouldn't move it or changed it (validating for changing it via hashing) - in both MJCF and build123d.
 
-The benchmark-owned environment, benchmark input objects, benchmark objective markers, and benchmark-owned moving fixtures are read-only task fixtures. They are validation setup, not engineer-owned deliverables: they are validated for geometry correctness, placement, randomization, and valid COTS identifiers/runtime metadata as a valid problem instance for the engineering graph, but they are not validated for manufacturability or priced as manufactured outputs. They follow the benchmark motion contract when the benchmark contract explicitly says so. Manufacturability validation starts at engineer-planned manufactured parts and selected COTS components only.
+The benchmark-owned environment, benchmark input objects, benchmark objective markers, and benchmark-owned moving fixtures are read-only task fixtures. They are validation setup, not engineer-owned deliverables: they are validated for geometry correctness, placement, randomization, and valid component identifiers/runtime metadata as a valid problem instance for the engineering graph, but they are not validated for manufacturability or priced as manufactured outputs. They follow the benchmark motion contract when the benchmark contract explicitly says so. Manufacturability validation starts at engineer-planned manufactured parts and selected imported components only.
 
 Benchmark-owned authored labels are part of that read-only contract too: `moved_object.label` and any top-level build123d object label in the benchmark handoff must be non-empty and stable, and runtime must not invent fallback labels when one is missing.
 
@@ -296,7 +291,7 @@ Planner gate requirements (`Engineering Plan Reviewer` / coder entry contract):
 
 - Source of truth contract: `ENGINEER_PLANNER_HANDOFF_ARTIFACTS` in node-entry validation.
 - Required artifacts: `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, `assembly_definition.yaml`, `solution_plan_evidence_script.py`
-- Those planner-authored scripts must preserve the same labels, repeated quantities, and COTS identities as the approved inventory, and the planner must self-validate that exactness before `submit_benchmark_plan()`.
+- Those planner-authored scripts must preserve the same labels, repeated quantities, and selected component identities as the approved inventory, and the planner must self-validate that exactness before `submit_benchmark_plan()`.
 - If the approved solution includes moving engineer-owned parts, `assembly_definition.yaml` must also carry a reviewable `motion_forecast` section with ordered world-frame anchors, explicit `rot_deg` pose data, a build-zone-valid first anchor, an explicit goal-zone terminal proof, tolerance bands, and first-contact order.
 - Reviewer-stage manifest: `.manifests/engineering_plan_review_manifest.json` (planner handoff materialization for the plan-review stage)
 - Entry guard behavior:
@@ -307,7 +302,7 @@ Planner gate requirements (`Engineering Plan Reviewer` / coder entry contract):
   - Evals may trigger seeded preflight, but they must call the controller validation path instead of re-implementing schema/handoff logic inside eval modules.
 - Plan reviewer responsibilities:
   - Reject unsupported/invented system components or mechanisms.
-  - Reject inconsistent, infeasible, ambiguous, or incomplete plans, including planner evidence scripts that drift from the approved label/quantity/COTS-identity inventory.
+  - Reject inconsistent, infeasible, ambiguous, or incomplete plans, including planner evidence scripts that drift from the approved label/quantity/component-identity inventory.
   - Reject missing, contradictory, or unsupported motion forecasts; motion must be explicit and reconstructable from the handoff artifacts, not minimized for convenience.
   - Re-run `.agents/skills/manufacturing-knowledge/scripts/validate_and_price.py` (or equivalent wrapped validator tool) and reject on pricing/weight/schema mismatch.
   - Keep cost/weight target scrutiny as a mandatory realism check.
@@ -455,7 +450,7 @@ randomization:
 `benchmark_definition.yaml` ownership rules:
 
 1. It owns benchmark/task geometry, randomization, benchmark/customer caps, benchmark planner estimates, and benchmark-owned fixture metadata.
-2. `benchmark_parts[].metadata` is benchmark-side metadata only. It describes read-only benchmark fixtures such as `fixed`, `material_id`, and `cots_id`.
+2. `benchmark_parts[].metadata` is benchmark-side metadata only. It describes read-only benchmark fixtures such as `fixed`, `material_id`, and `part_id`.
    - Benchmark-owned fixtures remain read-only context for engineering intake.
    - The benchmark planner may describe fixture motion visibility and evidence needs, but not engineer-owned manufacturability details.
 3. It does not own engineer solution metadata, part costing inputs, or engineer motion/control metadata.
@@ -466,12 +461,12 @@ randomization:
 
 ### `assembly_definition.yaml`
 
-To reduce cost guessing, the Engineering Planner outputs a machine-readable estimate file that also serves as an assembly plan: it captures all pricing inputs per part plus the assembly structure used to derive quantities, reuse, and motion metadata.
+To reduce cost guessing, the Engineering Planner outputs a machine-readable estimate file that also serves as an assembly plan: it captures all pricing inputs per part plus the assembly structure used to derive quantities and reuse.
 
 Expected flow:
 
-1. Planner drafts entries for all planned manufactured parts and COTS components.
-2. Planner defines `final_assembly` (subassemblies, part membership, joints, and per-part motion metadata like `dofs`/`control`); under the hood we:
+1. Planner drafts entries for all planned manufactured parts and imported components.
+2. Planner defines `final_assembly` (subassemblies, part membership, and joints); under the hood we:
    - Calculate as much as possible to prevent the planner from needing to think (e.g.: cooling time in injection molding is autocalculated from wall thickness, 3d print time is autocalculated from volume, setup time is autocalculated etc.)
    - Estimate part reuse - if the part/subassembly is reused, unit costs go down as per manufacturing rules (making 2 equal parts is cheaper than making 1 due to economics of scale).
 3. Planner runs `.agents/skills/manufacturing-knowledge/scripts/validate_and_price.py`.
@@ -479,14 +474,9 @@ Expected flow:
    - The planner does not hand-author the final aggregate cost/weight values; those values come from the script output.
 4. If totals exceed `max_unit_cost` (or other numeric constraints), or if node-entry revalidation does not reproduce the same cent-precision totals exactly, planner must re-plan before handoff.
 5. Planner may restate the validated totals in prose, but the written YAML totals remain the source of truth and must match the script output exactly on node entry.
-6. The approved planner handoff is a binding inventory for the implemented solution. The Engineering Coder must realize the same planner-declared manufactured-part and COTS inventory as a multiset: labels and quantities must match, including repeated references in `final_assembly`.
-7. Declared COTS components are not advisory. Declared COTS `part_id`s, labels, and quantities must be instantiated in authored geometry with the same counts; missing, extra, relabeled, or pair-swapped COTS parts are handoff failures, even if the solution still solves the task.
-8. Internal construction details may change only when the approved inventory, motion contract, and drawing intent remain unchanged.
-
-Minimum motion metadata fields inside `final_assembly.parts` entries:
-
-- `dofs`
-- For motorized parts: `control.mode`, plus required control params (e.g. `speed`, `frequency`) per mode
+6. The approved planner handoff is a binding inventory for the implemented solution. The Engineering Coder must realize the same planner-declared manufactured-part and component inventory as a multiset: labels and quantities must match, including repeated references in `final_assembly`.
+7. Declared imported components are not advisory. Declared component `part_id`s, labels, and quantities must be instantiated in authored geometry with the same counts; missing, extra, relabeled, or pair-swapped components are handoff failures, even if the solution still solves the task.
+8. Internal construction details may change only when the approved inventory and drawing intent remain unchanged.
 
 Minimum per-manufactured-part fields:
 
@@ -500,7 +490,7 @@ Minimum per-manufactured-part fields:
 
 - \`pricing_notes <!-- User review - maybe. Maybe for "confidence" scores or similar. -->
 
-Minimum per-COTS-part fields:
+Minimum per-component fields:
 
 - `part_id`, `manufacturer`, `unit_cost_usd`, `source`
 
@@ -510,7 +500,6 @@ Final cost and weight totals are never LLM-authored; they are derived by script,
 Required assembly fields:
 
 - `final_assembly` containing subassemblies/parts/joints
-- each part entry in `final_assembly.parts` includes `dofs`; moving motorized entries include `control`
 - repeated part references are allowed and used by pricing logic to compute quantity effects
 
 ```yaml
@@ -547,30 +536,19 @@ manufactured_parts:
     cooling_time_s_estimate: 11.0
     estimated_unit_cost_usd: 0.82
     pricing_notes: "tooling amortized at target quantity"
-cots_parts:
-  - part_id: "M5x16-912-A2"
-    manufacturer: "ISO"
-    unit_cost_usd: 0.09 # auto-calculated.
-    source: "parts.db"
-  # user note: cots parts must be enforced to exist in the subassemblies, at least 1. Else why would it be here?
-  # user note 2: reminder: search for COTS parts is performed by a subagent
 final_assembly:
   - subassembly_id: "frame_and_ramp"
     parts:
-      - ramp_main_v1:
-          dofs: []
-      - guide_clip_v1:
-          dofs: []
-      - guide_clip_v1:
-          dofs: []
-      - feeder_motor_env_v1:
-          dofs: ["rotate_z"] # Degrees of freedom: rotate_x/y/z, slide_x/y/z
-          control:
-            mode: "sinusoidal" # Options: constant, sinusoidal, on_off
-            speed: 1.0         # rad/s (for rotate) or units/s (for slide)
-            frequency: 0.5     # Hz - for sinusoidal mode
-      - passive_slider_env_v1:
-          dofs: ["slide_y"]
+      - name: "ramp_main_v1"
+        config: {}
+      - name: "guide_clip_v1"
+        config: {}
+      - name: "guide_clip_v1"
+        config: {}
+      - name: "feeder_motor_env_v1"
+        config: {}
+      - name: "passive_slider_env_v1"
+        config: {}
     joints:
       - joint_id: "j1"
         parts: ["ramp_main_v1", "guide_clip_v1"]

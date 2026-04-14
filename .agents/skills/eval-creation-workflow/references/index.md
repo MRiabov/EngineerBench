@@ -19,9 +19,7 @@ The acceptance-criteria files linked from this index should prefer `References` 
 | `benchmark_assembly_definition.yaml` | benchmark planner/reviewer, engineer intake | Read-only benchmark fixture/motion contract, full `AssemblyDefinition` shape, and motion visibility agreement |
 | `assembly_definition.yaml` | engineering and electronics planners/coders | Costing inputs, `final_assembly`, totals, motion metadata, and solution-source agreement |
 | `benchmark_plan_evidence_script.py` | benchmark planner | Legible benchmark evidence scene that preserves inventory labels and quantities |
-| `benchmark_plan_technical_drawing_script.py` | benchmark planner/reviewer | Orthographic drawing companion grounded in the planner contract |
 | `solution_plan_evidence_script.py` | engineering planner | Draft engineering evidence scene that matches the proposed assembly |
-| `solution_plan_technical_drawing_script.py` | engineering planner/reviewer | Orthographic drawing companion for the engineering plan |
 | `benchmark_script.py` | benchmark coder, benchmark reviewer, engineer intake | Approved benchmark geometry source and read-only downstream context |
 | `solution_script.py` | engineering coder, execution reviewer | Implemented solution geometry and execution source of truth; must mirror `assembly_definition.yaml` inventory/motion contract |
 | `validation_results.json` | coder/reviewer flows | Latest-revision deterministic validation evidence |

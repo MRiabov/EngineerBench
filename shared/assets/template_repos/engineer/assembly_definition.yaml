@@ -68,68 +68,12 @@ manufactured_parts:
 final_assembly:
   - name: bridge_deck
     config:
-      dofs: []
   - name: left_support
     config:
-      dofs: []
   - name: right_support
     config:
-      dofs: []
   - name: stop_lip
     config:
-      dofs: []
-
-drafting:
-  sheet_id: sheet-1
-  title: Seeded engineer drafting
-  goal_zone_overlap_intents: []
-  views:
-    - view_id: front
-      target: bridge_deck
-      projection: front
-      scale: 1.0
-      datums: [A, B]
-      dimensions:
-        - dimension_id: width
-          kind: linear
-          target: bridge_deck
-          value: 64.0
-          binding: true
-      callouts:
-        - callout_id: 1
-          label: bridge_deck
-          target: bridge_deck
-    - view_id: top
-      target: left_support
-      projection: top
-      scale: 1.0
-      datums: [A, C]
-      dimensions:
-        - dimension_id: depth
-          kind: linear
-          target: left_support
-          value: 12.0
-          binding: true
-      callouts:
-        - callout_id: 2
-          label: left_support
-          target: left_support
-    - view_id: side
-      target: stop_lip
-      projection: side
-      scale: 1.0
-      datums: [B, C]
-      dimensions:
-        - dimension_id: height
-          kind: linear
-          target: stop_lip
-          value: 2.0
-          binding: true
-      callouts:
-        - callout_id: 3
-          label: stop_lip
-          target: stop_lip
-  notes: []
 
 totals:
   estimated_unit_cost_usd: 14.0

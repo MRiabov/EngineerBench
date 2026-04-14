@@ -1,6 +1,6 @@
 ---
 name: render-evidence
-description: Shared render-evidence workflow for Problemologist agents. Use when previewing scenes with `render_cad(...)` for live scene inspection or `render_technical_drawing()` for drafting packages, inspecting render or video media through the runtime's visual-inspection path, selecting benchmark/engineer/final render bundles, resolving a screen-space pixel to a world-space hit with bundle-local render-query helpers such as `list_render_bundles(...)`, `pick_preview_pixel(...)`, `pick_preview_pixels(...)`, and `query_render_bundle(...)`, or inspecting frame-indexed `objects.parquet` pose-history sidecars.
+description: Shared render-evidence workflow for Problemologist agents. Use when previewing scenes with `render_cad(...)` for live scene inspection, inspecting render or video media through the runtime's visual-inspection path, selecting benchmark/engineer/final render bundles, resolving a screen-space pixel to a world-space hit with bundle-local render-query helpers such as `list_render_bundles(...)`, `pick_preview_pixel(...)`, `pick_preview_pixels(...)`, and `query_render_bundle(...)`, or inspecting frame-indexed `objects.parquet` pose-history sidecars.
 ---
 
 # Render Evidence
@@ -21,12 +21,10 @@ from utils.preview import (
     pick_preview_pixel,
     pick_preview_pixels,
     render_cad,
-    render_technical_drawing,
     query_render_bundle,
 )
 ```
 
-`from utils import render_technical_drawing` still works for compatibility, but the namespaced module is the clearer surface for new code.
 The current callable signatures and request shapes live in [function_signatures.md](references/function_signatures.md); use that snapshot instead of re-running `help(...)` for every eval.
 
 ## Read This First
@@ -40,7 +38,7 @@ The current callable signatures and request shapes live in [function_signatures.
 
 1. Decide whether you need a fresh render, existing evidence inspection, or a point-pick query.
 2. Select a single bundle and revision for the judgment. Do not mix benchmark, engineer, and final bundles in one decision. Use `list_render_bundles()` when you need to resolve the exact bundle from history.
-3. If the view or modality does not exist yet, call `render_cad(...)` for scene previews or `render_technical_drawing()` for drafting packages to materialize it.
+3. If the view or modality does not exist yet, call `render_cad(...)` to materialize it.
 4. If media already exists, inspect the artifact path itself with the runtime's media-inspection tool.
 5. If the task asks what is under a pixel or how a click maps into world space, call `pick_preview_pixel(...)` with the bundle path, `pixel_x`, `pixel_y`, `image_width`, `image_height`, and the matching `view_index` for that preview. If you already have a structured request, pass `RenderBundlePointPickRequest` directly. Use `pick_preview_pixels(...)` for multiple clicks.
 6. Record the bundle identity, revision, view index, and artifact path in notes or review artifacts when evidence matters.
@@ -48,8 +46,6 @@ The current callable signatures and request shapes live in [function_signatures.
 ## Preview Contract
 
 - Use `render_cad(...)` for live scene, objective-overlay, or render-bundle render evidence.
-- Use `render_technical_drawing()` for drafting packages and technical-drawing evidence.
-- Do not treat `render_cad(...)` and `render_technical_drawing()` as interchangeable.
 
 ## Bundle Rules
 
@@ -90,6 +86,6 @@ The current callable signatures and request shapes live in [function_signatures.
 
 ## Role Notes
 
-- Use this skill from benchmark planner, benchmark coder, benchmark reviewer, engineering planner, engineering coder, engineering plan reviewer, and engineering execution reviewer when render evidence is involved, including `render_cad(...)` and `render_technical_drawing()` outputs.
+- Use this skill from benchmark planner, benchmark coder, benchmark reviewer, engineering planner, engineering coder, engineering plan reviewer, and engineering execution reviewer when render evidence is involved, including `render_cad(...)` outputs.
 - Load it before making a render-based judgment or before adding render-specific guidance to a handoff.
 - Keep backend-specific tool names out of Codex CLI-facing instructions unless the runtime actually exposes them.

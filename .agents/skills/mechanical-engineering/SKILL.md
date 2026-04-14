@@ -1,6 +1,6 @@
 ---
 name: mechanical-engineering
-description: Mechanical mechanism design, friction-aware passive transfer, and simulation guidance for Problemologist. Use this when solving or reviewing passive-transfer mechanisms, realistic constraints/DOFs, manufacturing-config material coefficients, stress or fluid tasks, or when a benchmark/solution needs concrete mechanical design patterns instead of prompt-specific hints.
+description: Mechanical mechanism design, friction-aware passive transfer, and simulation guidance for Problemologist. Use this when solving or reviewing passive-transfer mechanisms, realistic constraints/DOFs, manufacturing-config material coefficients, or when a benchmark/solution needs concrete mechanical design patterns instead of prompt-specific hints.
 ---
 
 # Mechanical Engineering
@@ -11,38 +11,31 @@ Use this skill as a router. Keep the main prompt lean and load only the referenc
 
 - `references/mechanism_patterns.md`
   Use for mechanism synthesis, passive/gravity transfer, realistic motion paths, and minimal-DOF decisions.
-- `references/fea_principles.md`
-  Use for stress-driven design, FEM interpretation, and structural failure avoidance.
-- `references/fluid_dynamics.md`
-  Use for fluid-containment or flow-rate benchmarks.
 - `references/optimization.md`
   Use when a design already works and you are refining cost, weight, or safety factor.
 - `references/friction_and_manufacturing_config.md`
   Use for material friction coefficients, incline threshold checks, and workspace manufacturing-config lookups.
-- `../cots-parts/SKILL.md`
-  Use when the mechanism includes catalog-backed components, motors, or benchmark fixtures that must preserve part identity, provenance, or ownership.
+  Use when the mechanism includes imported components, motors, or benchmark fixtures that must preserve part identity, provenance, or ownership.
 
 ## Core Rules
 
-01. Make the transport mechanism explicit.
-    If the object must move laterally, roll, slide, funnel, deflect, or stay captured, model the actual surfaces or components that do that work. Spawn pedestals and containment walls are not enough.
-02. Prefer the simplest physically credible mechanism family.
-    Start with passive gravity transfer before adding motors, joints, or extra DOFs. Add motion only when the task truly requires it.
-03. Every non-static DOF must map to a real mechanism.
-    Bearings, sliders, motors, fasteners, or another allowed physical constraint must justify the motion. Convenience DOFs are review failures.
-04. Use the current runtime helpers for stress/fluid work.
-    `get_stress_report(...)` is the current repo-level hook; do not invent alternate analysis paths in prompts.
-05. Keep manufacturing and physics aligned.
-    Benchmark-owned fixtures are not priced as manufactured parts, but engineer-authored parts still need realistic geometry, materials, and attachment logic.
-06. Never guess a size.
-    Derive every length, thickness, gap, capture width, wall height, clearance, and support offset from declared source dimensions, measured geometry, or manufacturing constants. If the required value is missing, stop and surface the missing input instead of inventing a plausible number.
-07. When the mechanism is joint-driven, place parts from joint axes, contact surfaces, and datum offsets instead of arbitrary world coordinates.
-08. Before relying on a passive slide or chute, compare the slope to the actual friction coefficient in `manufacturing_config.yaml`.
-    If `tan(theta)` does not beat the relevant `friction_coef`, treat the mechanism as stalled until geometry or family changes.
-09. If the mechanism uses COTS components, keep the concrete part contract separate from the motion contract.
-    Do not treat motors, fixtures, or other catalog-backed parts as generic geometry.
-10. Before tuning capture pockets or side rails, verify that the object actually reaches the support surface at the declared spawn height.
-    If the object never makes first contact, lower or reshape the first support surface before changing capture geometry.
+1. Make the transport mechanism explicit.
+   If the object must move laterally, roll, slide, funnel, deflect, or stay captured, model the actual surfaces or components that do that work. Spawn pedestals and containment walls are not enough.
+2. Prefer the simplest physically credible mechanism family.
+   Start with passive gravity transfer before adding motors, joints, or extra DOFs. Add motion only when the task truly requires it.
+3. Every non-static DOF must map to a real mechanism.
+   Bearings, sliders, motors, fasteners, or another allowed physical constraint must justify the motion. Convenience DOFs are review failures.
+4. Keep manufacturing and physics aligned.
+   Benchmark-owned fixtures are not priced as manufactured parts, but engineer-authored parts still need realistic geometry, materials, and attachment logic.
+5. Never guess a size.
+   Derive every length, thickness, gap, capture width, wall height, clearance, and support offset from declared source dimensions, measured geometry, or manufacturing constants. If the required value is missing, stop and surface the missing input instead of inventing a plausible number.
+6. When the mechanism is joint-driven, place parts from joint axes, contact surfaces, and datum offsets instead of arbitrary world coordinates.
+7. Before relying on a passive slide or chute, compare the slope to the actual friction coefficient in `manufacturing_config.yaml`.
+   If `tan(theta)` does not beat the relevant `friction_coef`, treat the mechanism as stalled until geometry or family changes.
+8. If the mechanism uses imported components, keep the concrete part contract separate from the motion contract.
+   Do not treat motors, fixtures, or other catalog-backed parts as generic geometry.
+9. Before tuning capture pockets or side rails, verify that the object actually reaches the support surface at the declared spawn height.
+   If the object never makes first contact, lower or reshape the first support surface before changing capture geometry.
 
 ## Passive-Transfer Debugging
 

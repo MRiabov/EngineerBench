@@ -11,7 +11,7 @@
 - If moving benchmark fixtures exist, require dynamic simulation evidence for the latest revision.
 - Do not require benchmark-side goal completion; `goal_reached` is engineer-owned and should only be referenced if the reviewer schema or manifest already exposes it as a separate field.
 - Keep the decision YAML as the routing source of truth. Keep the comments YAML factual and evidence-based.
-- Treat `benchmark_plan_evidence_script.py` and `benchmark_plan_technical_drawing_script.py` as the inspectable source of the approved benchmark contract.
+- Treat `benchmark_plan_evidence_script.py` as the inspectable source of the approved benchmark contract.
 
 ## Required reviewer package
 
@@ -25,7 +25,6 @@
 - `simulation_result.json`
 - `scene.json`
 - `benchmark_plan_evidence_script.py`
-- `benchmark_plan_technical_drawing_script.py`
 - `renders/benchmark_renders/**` when planner or coder preview assets already exist
 
 ## Review checklist
