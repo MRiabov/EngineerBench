@@ -55,25 +55,6 @@ This migration trims feature-specific branches and devops shells. It does not
 trim useful rendering, CLI-provider, physics-backend, or handoff/validation
 abstractions.
 
-## Publication Boundary
-
-The paper claims a dual-agent system with the following core surfaces:
-
-| Claim | Core surfaces that must survive |
-| -- | -- |
-| Benchmark generation and review | `controller/agent/benchmark/**`, `controller/agent/nodes/{planner.py,coder.py,plan_reviewer.py}`, `shared/assets/template_repos/benchmark_generator/**`, paper-critical benchmark seeds and handoff fixtures |
-| Engineering solution and review | `controller/agent/nodes/{engineer_planner.py,engineer_coder.py,engineer_execution_reviewer.py}`, `worker_heavy/workbenches/**`, `worker_heavy/utils/{dfm.py,verification.py,validation.py,payload_trajectory_validation.py}`, `shared/assets/template_repos/engineer/**` |
-| Simulation and render evidence | `worker_heavy/simulation/**`, `worker_heavy/utils/{preview.py,rendering.py}`, `worker_renderer/utils/{rendering.py,build123d_rendering.py}`, `shared/rendering/**`, `shared/simulation/**` |
-| Manufacturing and cost/weight checks | `worker_heavy/workbenches/**`, `config/manufacturing_config.yaml`, `worker_heavy/utils/dfm.py` |
-| Prompt and skill source | `config/{prompts.yaml,agents_config.yaml,skills_config.yaml}`, `.agents/skills/**`, `shared/skills/**`, `controller/agent/prompt_manager.py` |
-| Out-of-bundle by Epic 7 cutoff | technical-drawing contract, electronics/electromechanics, fluids/deformables/FEM, steerability, advanced UI visualization, and any helper or reviewer surface whose first real claim starts in Epic 8 or later |
-
-Anything outside that matrix is excluded by default.
-
-The publication bundle does not keep a dormant copy of later-epic features.
-If a feature is removed by this migration, its prompts, config branches, seed
-rows, validation helpers, runtime routes, and telemetry collapse with it.
-
 ## What Is Not Worth Including
 
 The conference bundle must not ship the following feature families unless the
@@ -1041,9 +1022,9 @@ The safe order is:
 
 ### Claim matrix
 
-- [ ] Freeze the final-paper claim matrix from
-  `docs/academic-submission/final-project-report.tex`.
-- [ ] Mark every major repo surface as core, retained, or out-of-bundle.
+<!-- Frozen reminder: the claim matrix above is derived from
+  `docs/academic-submission/final-project-report.tex`. -->
+- [x] Mark every major repo surface as core, retained, or out-of-bundle.
 - [x] Remove every feature family whose first meaningful claim appears in
   Epic 8 or later, including drafting, electronics, fluids/FEM, and
   steering.
@@ -1068,6 +1049,11 @@ The safe order is:
   surfaces, and late-epic simulation helpers from the default bundle,
   including the script-contract helpers, preview/render wrappers, and
   drafting handoff validators.
+- [x] Remove the remaining eval-seed technical-drawing mode plumbing from
+  `evals/logic/{models,dataset_selection,runner,workspace}.py`,
+  `scripts/internal/{eval_run_lock,eval_seed_selection,eval_seed_renders}.py`,
+  `scripts/{validate_eval_seed,update_eval_seed_renders}.py`, and the matching
+  integration-test helper and mock-response references.
 - [x] Remove the remaining motors/electronics/fluid/deformable schema and
   scene-builder/evaluator plumbing from `shared/models/schemas.py`,
   `shared/models/simulation.py`, `shared/simulation/scene_builder.py`,
@@ -1090,6 +1076,17 @@ The safe order is:
 - [x] Drop the unused steerability re-export from `shared/models/__init__.py`.
 - [x] Correct the canonical INT-131 integration-test row to match the live
   COTS inventory exactness test and keep the architecture_p1 mapping in sync.
+
+### Frontend API boundary cleanup
+
+- [ ] Remove the now-unused frontend-only FastAPI boundary from
+  `controller/api/main.py`.
+- [ ] Collapse any router includes, startup wiring, or OpenAPI generation
+  paths that existed only to serve `frontend/`.
+- [ ] Remove frontend-consumed API artifacts such as `frontend/openapi.json`
+  and `frontend/src/api/**` from the publication bundle.
+- [ ] Ensure no retained controller API surface exists solely to support the
+  operator UI.
 
 ### Training, observability, and data
 
