@@ -57,6 +57,10 @@ The engineering handoff total weight must match the deterministic assembly decla
 - The seed's deterministic declared weight is `451.91 g`.
 - The assembly definition and planner budget both use that value for validation.
 
+#### Worst-Case Check
+
+- Even with a thicker pocket wall or a slightly heavier bridge deck, the assembly stays well below the 2.2 kg benchmark cap.
+
 #### Result
 
 - The declared total weight is `451.91 g`.
@@ -64,10 +68,6 @@ The engineering handoff total weight must match the deterministic assembly decla
 #### Design Impact
 
 - The bridge remains comfortably under the 1.7 kg planner target and the 2.2 kg benchmark cap.
-
-#### Worst-Case Check
-
-- Even with a thicker pocket wall or a slightly heavier bridge deck, the assembly stays well below the 2.2 kg benchmark cap.
 
 #### Cross-References
 
@@ -88,6 +88,10 @@ The engineering handoff total cost must remain below the planner target.
 
 - The declared total cost is `57.50 USD`.
 
+#### Worst-Case Check
+
+- Even with a modest review correction to any single part, the total cost remains below the 83 USD planner target.
+
 #### Result
 
 - The declared total cost is `57.50 USD`.
@@ -95,10 +99,6 @@ The engineering handoff total cost must remain below the planner target.
 #### Design Impact
 
 - The solution retains margin for any later drafting or review adjustments.
-
-#### Worst-Case Check
-
-- Even with a modest review correction to any single part, the total cost remains below the 83 USD planner target.
 
 #### Cross-References
 

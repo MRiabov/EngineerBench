@@ -17,11 +17,11 @@
   },
   {
     "id": "bpr-003",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the freestanding no-drill transfer benchmark. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the environment stays fully freestanding with no hidden attachment assumptions, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
+    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the passive gap-bridge transfer benchmark. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the support geometry stays freestanding and coherent with the gap-crossing path, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-003-no-drill-transfer",
+    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-003-gap-bridge-transfer",
     "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid no-drill planner handoff, checks feasibility and environment-attachment assumptions, and issues a structured review decision."
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid passive gap-bridge planner handoff, checks feasibility and geometry consistency, and issues a structured review decision."
   },
   {
     "id": "bpr-004",
@@ -57,11 +57,11 @@
   },
   {
     "id": "bpr-008",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the gap-bridge cube transfer variant that adds a small self-centering correction on the bridge reference table. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the bridge really remains a passive benchmark fixture or whether the seeded motion metadata introduces unsupported benchmark-side actuation, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
+    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the gap-bridge cube transfer variant that adds a small self-centering correction on the bridge reference table. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the bridge remains a passive benchmark fixture or whether the seeded motion metadata introduces unsupported benchmark-side actuation, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-008-gap-bridge-hidden-dof",
+    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-008-gap-bridge-correction",
     "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the bridge package hides an unjustified benchmark-side alignment DOF inside an otherwise passive gap-crossing plan."
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the bridge package hides an unsupported benchmark-side alignment motion inside an otherwise passive gap-crossing plan."
   },
   {
     "id": "bpr-009",
@@ -73,11 +73,11 @@
   },
   {
     "id": "bpr-010",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the freestanding no-drill transfer variant with a farther-right goal cradle and longer chute. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the freestanding geometry still stays inside the benchmark build envelope instead of quietly overhanging it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
+    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the gap-bridge transfer variant with a farther-right goal cradle and longer chute. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the revised geometry still stays inside the benchmark build envelope instead of quietly overhanging it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-010-no-drill-overhang",
+    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-010-gap-bridge-envelope",
     "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the revised freestanding geometry quietly exceeds the allowed build envelope while claiming to remain no-drill and self-contained."
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the revised geometry quietly exceeds the allowed build envelope while claiming to remain self-contained."
   },
   {
     "id": "bpr-011",

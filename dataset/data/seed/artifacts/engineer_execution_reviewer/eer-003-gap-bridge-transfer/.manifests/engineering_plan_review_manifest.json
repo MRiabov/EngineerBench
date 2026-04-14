@@ -1,0 +1,11 @@
+{
+  "artifact_hashes": {
+    "assembly_definition.yaml": "d2de460b1b417b378923c6f13c3ce5af760d4f9f3f972da7e0865611008d278f",
+    "plan.md": "9587e54e55721b710a8c3ce9ebb0481dbbcac1a150f05442743a7e98e2b056b2",
+    "todo.md": "973cffa554363054d8ea61cd1515264c6c72681c750c1ac35fcbb90d692a9d66"
+  },
+  "planner_node_type": "engineer_planner",
+  "reviewer_stage": "engineer_plan_reviewer",
+  "session_id": "seed-eer-003-no-drill-transfer-plan",
+  "status": "ready_for_review"
+}

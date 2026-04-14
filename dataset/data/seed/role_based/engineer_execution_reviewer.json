@@ -17,9 +17,9 @@
   },
   {
     "id": "eer-003",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the freestanding no-drill transfer. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented ballast and transfer geometry preserves the approved no-drill concept without hidden supports. Return a structured engineering execution review decision grounded in the seeded evidence.",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the passive gap-bridge transfer. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether the implemented bridge geometry preserves the approved passive handoff across the gap without introducing unnecessary motion. Return a structured engineering execution review decision grounded in the seeded evidence.",
     "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-003-no-drill-transfer",
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-003-gap-bridge-transfer",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability."
   },

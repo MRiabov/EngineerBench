@@ -15,10 +15,10 @@
   },
   {
     "id": "ep-003",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a freestanding transfer from the left start area to the right goal zone. No drilling, clamping, or attachment to the surrounding environment is allowed, so the plan must stay self-supporting inside the build zone and remain stable under runtime jitter.",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a passive gap-bridge transfer from the left start area to the right goal zone. The plan must stay self-supporting inside the build zone and remain stable under runtime jitter.",
     "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-003-no-drill-transfer",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts describe a manufacturable freestanding mechanism, avoid environment attachment assumptions, and keep costs and weight under the seeded benchmark caps."
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-003-gap-bridge-transfer",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts describe a manufacturable passive mechanism, avoid unsupported external support assumptions, and keep costs and weight under the seeded benchmark caps."
   },
   {
     "id": "ep-004",

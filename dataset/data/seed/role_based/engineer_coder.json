@@ -1,10 +1,10 @@
 [
   {
     "id": "ec-001",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the freestanding no-drill transfer in `solution_script.py`. Respect the no-attachment constraint from the reviewed package, keep the planner files semantically consistent, and update `todo.md` and `journal.md` during implementation.",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the passive gap-bridge transfer in `solution_script.py`. Keep the planner files semantically consistent, and update `todo.md` and `journal.md` during implementation.",
     "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-001-no-drill-transfer",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed freestanding handoff package, implements the no-drill transfer solution in `solution_script.py`, and preserves the seeded planner contract while updating execution progress."
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-001-gap-bridge-transfer",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed passive handoff package, implements the gap-crossing solution in `solution_script.py`, and preserves the seeded planner contract while updating execution progress."
   },
   {
     "id": "ec-002",

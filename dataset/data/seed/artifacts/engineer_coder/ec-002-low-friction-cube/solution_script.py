@@ -62,7 +62,9 @@ def build() -> Compound:
     )
 
     # --- blocker_bypass_panel: tall panel keeping cube out of central forbid zone ---
-    blocker_bypass_panel = Box(200, 18, 65, align=(Align.CENTER, Align.CENTER, Align.MIN))
+    blocker_bypass_panel = Box(
+        200, 18, 65, align=(Align.CENTER, Align.CENTER, Align.MIN)
+    )
     blocker_bypass_panel = blocker_bypass_panel.move(Location((165, 0, 10)))
     blocker_bypass_panel.label = "blocker_bypass_panel"
     blocker_bypass_panel.metadata = PartMetadata(
