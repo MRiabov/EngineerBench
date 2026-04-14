@@ -6,14 +6,8 @@ from pydantic import BaseModel, StrictFloat, StrictInt, StrictStr, field_validat
 
 class COTSCategory(StrEnum):
     FASTENER = "fastener"
-    MOTOR = "motor"
     GEAR = "gear"
     BEARING = "bearing"
-    ELECTRONIC = "electronic"
-    POWER_SUPPLY = "power_supply"
-    RELAY = "relay"
-    CONNECTOR = "connector"
-    WIRE = "wire"
 
 
 class COTSItem(BaseModel):

@@ -10,14 +10,14 @@ def search_cots_catalog(
     limit: int = 5,
 ) -> str:
     """
-    Search for off-the-shelf mechanical and electronic components (fasteners, bearings, etc.).
+    Search for off-the-shelf mechanical components (fasteners, bearings, etc.).
     Returns a list of parts with their IDs, costs, weights, and Python import recipes.
 
     Args:
         query: Text description of the part (e.g. 'M6 hex nut').
         max_weight_g: Maximum allowed weight in grams.
         max_cost: Maximum allowed unit cost.
-        category: Filter by category ('fastener', 'motor', 'gear', 'bearing', 'electronic').
+        category: Filter by category ('fastener', 'gear', 'bearing').
         limit: Max number of results.
     """
     constraints = SearchConstraints(

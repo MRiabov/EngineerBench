@@ -7,14 +7,6 @@ from bd_warehouse.fastener import HexNut, PlainWasher, SocketHeadCapScrew
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from shared.cots.parts.electronics import (
-    Connector,
-    ElectronicRelay,
-    PowerSupply,
-    Switch,
-    Wire,
-)
-from shared.cots.parts.motors import ServoMotor
 from shared.models.schemas import BoundingBox, COTSMetadata
 from shared.type_checking import type_check
 
@@ -51,12 +43,6 @@ class Indexer:
             SocketHeadCapScrew,
             PlainWasher,
             SingleRowDeepGrooveBallBearing,
-            ServoMotor,
-            PowerSupply,
-            ElectronicRelay,
-            Switch,
-            Connector,
-            Wire,
         ]
 
     def extract_metadata(self, part_class: type, size: str) -> COTSMetadata | None:
@@ -76,37 +62,13 @@ class Indexer:
             bb = part.bounding_box()
             volume = part.volume
 
-            if class_name in [
-                "ServoMotor",
-                "PowerSupply",
-                "ElectronicRelay",
-                "Switch",
-                "Connector",
-                "Wire",
-            ]:
-                # Use provided properties from COTSPart
-                weight = getattr(part, "weight_g", volume * STEEL_DENSITY_G_MM3)
-                unit_cost = getattr(part, "price", 0.0)
-            else:
-                weight = volume * STEEL_DENSITY_G_MM3
-                unit_cost = DEFAULT_COSTS.get(class_name, 0.10)
+            weight = volume * STEEL_DENSITY_G_MM3
+            unit_cost = DEFAULT_COSTS.get(class_name, 0.10)
 
             # Category mapping
             category = "fastener"
             if "Bearing" in class_name:
                 category = "bearing"
-            elif "Motor" in class_name or class_name == "ServoMotor":
-                category = "motor"
-            elif class_name == "PowerSupply":
-                category = "power_supply"
-            elif class_name == "ElectronicRelay":
-                category = "relay"
-            elif class_name == "Switch":
-                category = "electronic"
-            elif class_name == "Connector":
-                category = "connector"
-            elif class_name == "Wire":
-                category = "wire"
             elif "Gear" in class_name:
                 category = "gear"
 
@@ -166,18 +128,6 @@ class Indexer:
                     sizes = list(part_class.fastener_data.keys())
                 elif hasattr(part_class, "bearing_data"):
                     sizes = list(part_class.bearing_data.keys())
-                elif hasattr(part_class, "motor_data"):
-                    sizes = list(part_class.motor_data.keys())
-                elif hasattr(part_class, "psu_data"):
-                    sizes = list(part_class.psu_data.keys())
-                elif hasattr(part_class, "relay_data"):
-                    sizes = list(part_class.relay_data.keys())
-                elif hasattr(part_class, "switch_data"):
-                    sizes = list(part_class.switch_data.keys())
-                elif hasattr(part_class, "connector_data"):
-                    sizes = list(part_class.connector_data.keys())
-                elif hasattr(part_class, "wire_data"):
-                    sizes = list(part_class.wire_data.keys())
                 else:
                     logger.warning(f"No size data found for {class_name}, skipping.")
                     continue
