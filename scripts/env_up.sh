@@ -215,19 +215,6 @@ CONTROLLER_PID=$(start_detached_service "$LOG_DIR/controller.log" .venv/bin/pyth
 echo $CONTROLLER_PID > "$STACK_PID_DIR/controller.pid"
 echo "Controller started (PID: $CONTROLLER_PID)"
 
-# Start Temporal Worker
-export PYTHONPATH=$PYTHONPATH:.
-export EXTRA_DEBUG_LOG="$LOG_DIR/temporal_worker_debug.log"
-TEMP_WORKER_PID=$(start_detached_service "$LOG_DIR/temporal_worker.log" .venv/bin/python -m controller.temporal_worker)
-echo $TEMP_WORKER_PID > "$STACK_PID_DIR/temporal_worker.pid"
-echo "Temporal Worker started (PID: $TEMP_WORKER_PID)"
-
-# Start Heavy Temporal Worker (separate from worker-heavy API process)
-export EXTRA_DEBUG_LOG="$LOG_DIR/worker_heavy_temporal_debug.log"
-HEAVY_TEMP_WORKER_PID=$(start_detached_service "$LOG_DIR/worker_heavy_temporal.log" .venv/bin/python -m worker_heavy.temporal_worker)
-echo $HEAVY_TEMP_WORKER_PID > "$STACK_PID_DIR/worker_heavy_temporal.pid"
-echo "Heavy Temporal Worker started (PID: $HEAVY_TEMP_WORKER_PID)"
-
 # Start Frontend dev server if default port is available
 FRONTEND_PORT="$FRONTEND_HOST_PORT"
 FRONTEND_STARTED=false
@@ -265,10 +252,6 @@ if [ "$STACK_CREATE_ROOT_LOG_SYMLINKS" = "1" ] && [ "${LOG_DIR#logs/}" != "$LOG_
   ln -sf "$REL_LOG_DIR/worker_renderer_debug.log" logs/worker_renderer_debug.log
   ln -sf "$REL_LOG_DIR/worker_heavy.log" logs/worker_heavy.log
   ln -sf "$REL_LOG_DIR/worker_heavy_debug.log" logs/worker_heavy_debug.log
-  ln -sf "$REL_LOG_DIR/worker_heavy_temporal.log" logs/worker_heavy_temporal.log
-  ln -sf "$REL_LOG_DIR/worker_heavy_temporal_debug.log" logs/worker_heavy_temporal_debug.log
-  ln -sf "$REL_LOG_DIR/temporal_worker.log" logs/temporal_worker.log
-  ln -sf "$REL_LOG_DIR/temporal_worker_debug.log" logs/temporal_worker_debug.log
   ln -sf "$REL_LOG_DIR/frontend.log" logs/frontend.log
 fi
 
@@ -319,8 +302,6 @@ check_runtime_alive "Worker Light" "$WORKER_LIGHT_PID" || FAIL=1
 check_runtime_alive "Worker Renderer" "$WORKER_RENDERER_CONTAINER_ID" || FAIL=1
 check_runtime_alive "Worker Heavy" "$WORKER_HEAVY_PID" || FAIL=1
 check_runtime_alive "Controller" "$CONTROLLER_PID" || FAIL=1
-check_runtime_alive "Temporal Worker" "$TEMP_WORKER_PID" || FAIL=1
-check_runtime_alive "Heavy Temporal Worker" "$HEAVY_TEMP_WORKER_PID" || FAIL=1
 
 wait_for_health "Worker Light" "http://127.0.0.1:${WORKER_LIGHT_HOST_PORT}/health" || FAIL=1
 wait_for_health "Worker Renderer" "http://127.0.0.1:${WORKER_RENDERER_HOST_PORT}/health" || FAIL=1
