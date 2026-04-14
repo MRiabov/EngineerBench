@@ -64,6 +64,8 @@ class ObservabilityEventType(StrEnum):
     NODE_ENTRY_VALIDATION_FAILED = "node_entry_validation_failed"
     MEDIA_INSPECTION = "media_inspection"
     LLM_MEDIA_ATTACHED = "llm_media_attached"
+    SKILL_SELF_REFLECTION = "skill_self_reflection"
+    SKILL_UPDATE = "skill_update"
 
 
 class BaseEvent(BaseModel):
@@ -117,6 +119,39 @@ class RenderRequestEngineerEvent(BaseEvent):
 class RenderRequestBenchmarkEvent(BaseEvent):
     event_type: ObservabilityEventType = ObservabilityEventType.RENDER_REQUEST_BENCHMARK
     num_views: int = 24
+
+
+class SkillSelfReflectionEvent(BaseEvent):
+    event_type: ObservabilityEventType = ObservabilityEventType.SKILL_SELF_REFLECTION
+
+    codex_session_id: str
+    task_id: str
+    agent_name: str
+    trigger_reason: str
+    prompt_path: str
+    output_path: str | None = None
+    journal_path: str | None = None
+    context_snapshot_path: str | None = None
+    reflection_text: str
+    simulation_success: bool | None = None
+    verification_success: bool | None = None
+
+
+class SkillUpdateEvent(BaseEvent):
+    event_type: ObservabilityEventType = ObservabilityEventType.SKILL_UPDATE
+
+    codex_session_id: str
+    task_id: str
+    agent_name: str
+    trigger_reason: str
+    prompt_path: str
+    output_path: str | None = None
+    journal_path: str | None = None
+    context_snapshot_path: str | None = None
+    skill_update_text: str
+    updated_skill_paths: list[str] = Field(default_factory=list)
+    simulation_success: bool | None = None
+    verification_success: bool | None = None
 
 
 class SimulationRequestEvent(BaseEvent):
