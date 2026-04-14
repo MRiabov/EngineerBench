@@ -4,7 +4,7 @@
   "created_at": "2026-04-08T07:39:41.348909+00:00",
   "episode_id": "24594734-9599-5301-978b-4fb9ea670801",
   "worker_session_id": "seed-renders-ec-007-low-friction-cube-62558fe6",
-  "revision": "a918d2dc1f3e879beaff16e11e2b165bb7ccf370",
+  "revision": "d722b277b14dde25f640b41027903272279ed856",
   "scene_hash": "ea03483943a26444a5eac93d417380f98d927320a7631c1852bbc6093308b605",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",

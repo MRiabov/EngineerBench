@@ -4,7 +4,7 @@
   "created_at": "2026-04-08T07:42:26.217821+00:00",
   "episode_id": "70472013-52bc-52da-9e42-988d4ff9cced",
   "worker_session_id": "seed-renders-ec-010-lower-bin-deflector-5441ec54",
-  "revision": "a918d2dc1f3e879beaff16e11e2b165bb7ccf370",
+  "revision": "d722b277b14dde25f640b41027903272279ed856",
   "scene_hash": "b57e5cd6e8ae7c9a3e8677e583ffa0f096712a88b27729515cd7e20154e67e20",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",

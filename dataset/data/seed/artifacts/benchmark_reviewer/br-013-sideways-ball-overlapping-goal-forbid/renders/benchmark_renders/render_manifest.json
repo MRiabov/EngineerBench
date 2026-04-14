@@ -4,7 +4,7 @@
   "created_at": "2026-04-08T06:32:16.098280+00:00",
   "episode_id": "36e12893-c273-5279-859f-155b4feb615a",
   "worker_session_id": "seed-renders-br-013-sideways-ball-overlapping-goal-forbid-8a98b602",
-  "revision": "a918d2dc1f3e879beaff16e11e2b165bb7ccf370",
+  "revision": "d722b277b14dde25f640b41027903272279ed856",
   "scene_hash": "d2355c2385ddef5b8f9c69097f853ef68f4e8210dba90b53c81c41aa04a3d27a",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",
