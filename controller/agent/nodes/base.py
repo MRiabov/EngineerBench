@@ -51,7 +51,7 @@ from controller.utils import EpisodeIdentity, resolve_episode_id
 from shared.agents.config import load_agents_config
 from shared.enums import AgentName, TraceType
 from shared.git_utils import repo_revision
-from shared.models.schemas import CodeReference, ReviewResult, TraceMetadata
+from shared.models.schemas import ReviewResult, TraceMetadata
 from shared.observability.schemas import LlmMediaAttachedEvent
 from shared.script_contracts import authored_script_path_for_agent
 from shared.workers.filesystem.policy import VisualInspectionPolicy
@@ -120,18 +120,21 @@ class SharedNodeContext:
             )
 
         request_config = settings.resolve_dspy_lm_request_config(settings.llm_model)
-        # T025: Initialize native tracing
-        init_tracing()
+        if settings.is_integration_test:
+            logger.info("using_mock_llms_for_integration_test", session_id=session_id)
+        else:
+            # T025: Initialize native tracing
+            init_tracing()
 
-        logger.info(
-            "lm_client_initialized",
-            provider=request_config.provider,
-            model=request_config.model,
-            api_base=request_config.api_base,
-            planner_token_cap=settings.llm_max_tokens
-            if "planner" in agent_role.value
-            else None,
-        )
+            logger.info(
+                "lm_client_initialized",
+                provider=request_config.provider,
+                model=request_config.model,
+                api_base=request_config.api_base,
+                planner_token_cap=settings.llm_max_tokens
+                if "planner" in agent_role.value
+                else None,
+            )
         dspy_lm = build_dspy_lm(
             settings.llm_model,
             session_id=session_id,

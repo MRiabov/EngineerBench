@@ -273,6 +273,11 @@ def build_dspy_lm(
     session_id: str | None = None,
     agent_role: str | None = None,
 ) -> Any:
+    if settings.is_integration_test:
+        from controller.agent.mock_llm import MockDSPyLM
+
+        return MockDSPyLM(session_id=session_id, node_type=agent_role)
+
     resolved_model = model_name or settings.llm_model
     request_config = settings.resolve_dspy_lm_request_config(resolved_model)
     api_key = request_config.api_key or "dummy"
