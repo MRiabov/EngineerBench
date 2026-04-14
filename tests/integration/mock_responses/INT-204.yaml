@@ -34,12 +34,6 @@ transcript:
     expected_observation: success
   - tool_name: write_file
     tool_args:
-      path: benchmark_plan_technical_drawing_script.py
-      overwrite: true
-      content_file: INT-204/benchmark_planner/entry_01/06__benchmark_plan_technical_drawing_script.py
-    expected_observation: success
-  - tool_name: write_file
-    tool_args:
       path: renders/cad_preview.png
       overwrite: true
       content_file: INT-040/engineer_coder/entry_01/02__renders_preview.png

@@ -63,7 +63,6 @@ async def test_int_current_role_manifest_wins_over_mixed_workspace_files():
                     "version": "1.0",
                     "constraints": {},
                     "manufactured_parts": [],
-                    "cots_parts": [],
                     "final_assembly": [],
                     "totals": {
                         "estimated_unit_cost_usd": 0.0,
@@ -83,7 +82,6 @@ async def test_int_current_role_manifest_wins_over_mixed_workspace_files():
                     "version": "1.0",
                     "constraints": {},
                     "manufactured_parts": [],
-                    "cots_parts": [],
                     "final_assembly": [],
                     "totals": {
                         "estimated_unit_cost_usd": 0.0,

@@ -1,4 +1,0 @@
-- [x] Keep the platform travel clearance aligned across the plan and `benchmark_definition.yaml`.
-- [x] Declare exactly one benchmark-side `slide_z` platform axis.
-- [x] Keep the handoff bridge and goal shelf outside the moving platform clearance.
-- [x] Keep benchmark-local cost and weight within the declared caps.

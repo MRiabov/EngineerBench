@@ -14,13 +14,10 @@ from controller.api.schemas import (
 )
 from shared.enums import EpisodeStatus
 from shared.workers.schema import (
-    ReadFileRequest,
-    ReadFileResponse,
     WriteFileRequest,
 )
 from tests.integration.agent.helpers import (
     seed_benchmark_assembly_definition,
-    seed_execution_reviewer_handover,
 )
 
 # Constants
@@ -129,66 +126,6 @@ totals:
             headers={"X-Session-ID": session_id},
         )
         pass
-
-
-@pytest.mark.integration_p0
-@pytest.mark.asyncio
-@pytest.mark.int_id("INT-014")
-async def test_int_014_cots_propagation():
-    """INT-014: Verify COTS data propagates into plan and assembly definition."""
-    async with httpx.AsyncClient(timeout=300.0) as client:
-        session_id = f"INT-014-{uuid.uuid4().hex[:8]}"
-        await seed_benchmark_assembly_definition(client, session_id)
-        await seed_execution_reviewer_handover(
-            client,
-            session_id=session_id,
-            int_id="INT-014",
-            seed_render_preview=False,
-        )
-        run_req = AgentRunRequest(
-            task="Design a passive mechanism with a catalog-backed fastener",
-            session_id=session_id,
-        )
-        run_resp = await client.post(
-            f"{CONTROLLER_URL}/agent/run",
-            json=run_req.model_dump(mode="json"),
-        )
-        assert run_resp.status_code == 202
-        run_data = AgentRunResponse.model_validate(run_resp.json())
-        episode_id = run_data.episode_id
-
-        # Wait for agent to reach COMPLETED status
-        max_attempts = 60
-        for _ in range(max_attempts):
-            await asyncio.sleep(5.0)
-            status_resp = await client.get(f"{CONTROLLER_URL}/episodes/{episode_id}")
-            ep_data = EpisodeResponse.model_validate(status_resp.json())
-            if ep_data.status == EpisodeStatus.COMPLETED:
-                break
-        else:
-            pytest.fail("Agent did not complete planning in time")
-
-        # Verify engineering_plan.md contains COTS ID
-        read_plan_req = ReadFileRequest(path="engineering_plan.md")
-        plan_resp = await client.post(
-            f"{WORKER_LIGHT_URL}/fs/read",
-            json=read_plan_req.model_dump(mode="json"),
-            headers={"X-Session-ID": session_id},
-        )
-        assert plan_resp.status_code == 200
-        plan_data = ReadFileResponse.model_validate(plan_resp.json())
-        assert "M3_BOLT" in plan_data.content
-
-        # Verify assembly_definition.yaml contains COTS data
-        read_asm_req = ReadFileRequest(path="assembly_definition.yaml")
-        asm_resp = await client.post(
-            f"{WORKER_LIGHT_URL}/fs/read",
-            json=read_asm_req.model_dump(mode="json"),
-            headers={"X-Session-ID": session_id},
-        )
-        assert asm_resp.status_code == 200
-        asm_data = ReadFileResponse.model_validate(asm_resp.json())
-        assert "M3_BOLT" in asm_data.content
 
 
 @pytest.mark.integration_p0

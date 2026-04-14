@@ -22,8 +22,6 @@ manufactured_parts:
     removed_volume_mm3: 0.0
     estimated_unit_cost_usd: 10.0
     dfm_suggestions: []
-cots_parts: []
-environment_drill_operations: []
 final_assembly:
   - name: fixture_body
     config:

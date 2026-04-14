@@ -39,4 +39,3 @@ constraints:
 randomization:
   static_variation_id: v1.2
   runtime_jitter_enabled: true
-electronics_requirements: null

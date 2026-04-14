@@ -4,7 +4,7 @@ transcript:
   - finished: true
     review:
       decision: REJECTED
-      reason: Execution evidence is incomplete for this non-DOF rejection scenario.
+      reason: Execution evidence is incomplete for this rejection scenario.
       required_fixes:
-      - Repair the non-DOF issue before resubmitting.
+      - Repair the underlying issue before resubmitting.
       checklist: {}

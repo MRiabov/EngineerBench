@@ -1,7 +1,7 @@
 transcript:
 - node: engineer_planner
   steps:
-  - thought: Probe workspace first so steering can queue during active run.
+  - thought: Probe workspace first before the active run starts.
     tool_name: list_files
     tool_args:
       path: /
@@ -38,20 +38,7 @@ transcript:
   - tool_name: submit_engineering_plan
     expected_observation: submitted
   - finished: true
-    summary: INT-183 steerability queue scenario generated.
-- node: electronics_planner
-  steps:
-  - thought: No electronics steps.
-    tool_name: write_file
-    tool_args:
-      path: todo.md
-      overwrite: true
-      content_file: INT-183/electronics_planner/entry_01/01__todo.md
-    expected_observation: success
-  - tool_name: submit_engineering_plan
-    expected_observation: submitted
-  - finished: true
-    summary: No electronics required.
+    summary: INT-183 queue scenario generated.
 - node: engineer_plan_reviewer
   steps:
   - thought: Inspect the seeded current-revision render before approving.
@@ -62,7 +49,7 @@ transcript:
   - finished: true
     review:
       decision: APPROVED
-      reason: Steerability scenario plan artifacts are valid.
+      reason: Scenario plan artifacts are valid.
       required_fixes: []
 - node: engineer_coder
   steps:
@@ -86,5 +73,5 @@ transcript:
   - finished: true
     review:
       decision: APPROVED
-      reason: Steerability scenario artifacts validated.
+      reason: Scenario artifacts validated.
       required_fixes: []

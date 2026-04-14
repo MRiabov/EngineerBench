@@ -14,13 +14,6 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins from a reviewed low-friction cube package, implements the guide geometry in `solution_script.py`, and preserves the planner contract and seeded routing assumptions."
   },
   {
-    "id": "ec-003",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the lift-platform handoff guide in `solution_script.py`. Keep the reviewed planner files coherent, preserve the passive handoff strategy around the moving benchmark platform, and update `todo.md` and `journal.md` while the implementation progresses.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-003-lift-platform-handoff",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed lift-platform handoff package, implements the passive catch-and-guide assembly in `solution_script.py`, and preserves the planner contract and platform-clearance assumptions."
-  },
-  {
     "id": "ec-004",
     "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the narrow-goal funnel solution in `solution_script.py`. Preserve the reviewed planner files, keep the precision-guidance geometry consistent with the seeded tolerance assumptions, and update `todo.md` and `journal.md` during execution.",
     "complexity_level": 1,

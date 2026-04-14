@@ -14,21 +14,18 @@ TEST_MATERIALS = {
     "aluminum_6061": {
         "color": "#C0C0C0",
         "density_g_cm3": 2.7,
-        "elongation_stress_mpa": 276.0,
         "restitution": 0.5,
         "friction_coef": 0.61,
     },
     "abs": {
         "color": "#F5F5DC",
         "density_g_cm3": 1.02,
-        "elongation_stress_mpa": 40.0,
         "restitution": 0.4,
         "friction_coef": 0.35,
     },
     "pla": {
         "color": "#FFFFFF",
         "density_g_cm3": 1.25,
-        "elongation_stress_mpa": 60.0,
         "restitution": 0.3,
         "friction_coef": 0.40,
     },
@@ -42,13 +39,6 @@ class TestGetEligibleMaterials:
         assert len(eligible) == 3
         assert set(eligible) == {"aluminum_6061", "abs", "pla"}
 
-    def test_min_strength_filters(self):
-        """Materials below min_strength_mpa are excluded."""
-        eligible = get_eligible_materials(TEST_MATERIALS, min_strength_mpa=50.0)
-        assert "abs" not in eligible  # 40 MPa < 50
-        assert "pla" in eligible  # 60 MPa >= 50
-        assert "aluminum_6061" in eligible  # 276 MPa >= 50
-
     def test_whitelist_filters(self):
         """Only whitelisted materials are included."""
         eligible = get_eligible_materials(
@@ -56,17 +46,6 @@ class TestGetEligibleMaterials:
         )
         assert len(eligible) == 2
         assert "abs" not in eligible
-
-    def test_combined_filters(self):
-        """Both constraints apply together."""
-        eligible = get_eligible_materials(
-            TEST_MATERIALS,
-            min_strength_mpa=50.0,
-            whitelist=["pla", "abs"],
-        )
-        # pla: 60 MPa >= 50, in whitelist -> included
-        # abs: 40 MPa < 50 -> excluded
-        assert eligible == ["pla"]
 
 
 class TestRandomizeMaterials:
@@ -111,12 +90,7 @@ class TestRandomizeMaterials:
     def test_raises_on_no_eligible(self):
         """Raises ValueError if no materials meet constraints."""
         with pytest.raises(ValueError, match="No eligible materials"):
-            randomize_materials(
-                ["part"],
-                TEST_MATERIALS,
-                seed=42,
-                min_strength_mpa=1000.0,  # Too high
-            )
+            randomize_materials(["part"], {}, seed=42)
 
 
 class TestApplyMaterialToMjcfGeom:

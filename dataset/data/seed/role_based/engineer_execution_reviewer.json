@@ -32,14 +32,6 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability."
   },
   {
-    "id": "eer-005",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the lift-platform handoff guide. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented handoff surfaces remain faithful to the approved moving-platform clearance strategy and avoid extra actuation. Return a structured engineering execution review decision grounded in the seeded evidence.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_execution_reviewer/eer-005-lift-platform-handoff",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_execution_reviewer` and the seeded workspace to match that role. Engineering execution reviewer starts from a contract-valid seeded implementation package with the read-only benchmark geometry source and current engineer solution, checks latest-revision evidence, and issues a structured decision about plan fidelity, robustness, and manufacturability."
-  },
-  {
     "id": "eer-006",
     "task": "Confirm `.manifests/current_role.json` names `engineer_execution_reviewer` before using the seeded artifacts. Review the seeded engineering execution package for the narrow goal funnel. Confirm the current read-only `benchmark_script.py` geometry source, `solution_script.py`, planner artifacts, validation result, and simulation result all correspond to the latest revision, inspect the seeded render evidence when present, and determine whether implemented alignment throat and goal pocket preserve the approved precision-guidance concept without introducing fragile extras. Return a structured engineering execution review decision grounded in the seeded evidence.",
     "complexity_level": 1,

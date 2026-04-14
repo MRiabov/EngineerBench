@@ -88,26 +88,19 @@ manufactured_parts:
   stock_volume_mm3: 259200.0
   removed_volume_mm3: 231200.0
   estimated_unit_cost_usd: 3.0
-cots_parts: []
 final_assembly:
 - name: freestanding_base
   config:
-    dofs: []
 - name: capture_funnel
   config:
-    dofs: []
 - name: left_wall
   config:
-    dofs: []
 - name: right_wall
   config:
-    dofs: []
 - name: exit_tray
   config:
-    dofs: []
 - name: ballast_block
   config:
-    dofs: []
 totals:
   estimated_unit_cost_usd: 42.75
   estimated_weight_g: 649.05

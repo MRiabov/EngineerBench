@@ -29,12 +29,6 @@ transcript:
     expected_observation: submitted
   - finished: true
     summary: test-trace planner submitted.
-- node: electronics_planner
-  steps:
-  - tool_name: submit_engineering_plan
-    expected_observation: submitted
-  - finished: true
-    summary: test-trace electronics planner submitted.
 - node: engineer_plan_reviewer
   steps:
   - finished: true

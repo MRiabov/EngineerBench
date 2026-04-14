@@ -159,7 +159,6 @@ def test_int_190_bug_report_mode_gates_workspace_root_bug_report_write(
     assert enabled_policy.check_permission(
         "engineer_execution_reviewer", "write", "bug_report.md"
     )
-    assert not enabled_policy.check_permission("cots_search", "write", "bug_report.md")
     assert not enabled_policy.check_permission(
         "benchmark_coder", "write", "notes/bug_report.md"
     )

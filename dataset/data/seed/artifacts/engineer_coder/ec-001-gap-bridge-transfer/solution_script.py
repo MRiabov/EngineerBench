@@ -12,9 +12,7 @@ def build() -> Compound:
     """Build the freestanding gap-bridge transfer assembly."""
 
     # --- freestanding_base: wide aluminum base, freestanding support ---
-    freestanding_base = Box(
-        620, 180, 12, align=(Align.CENTER, Align.CENTER, Align.MIN)
-    )
+    freestanding_base = Box(620, 180, 12, align=(Align.CENTER, Align.CENTER, Align.MIN))
     freestanding_base.label = "freestanding_base"
     freestanding_base.metadata = PartMetadata(
         material_id="aluminum_6061",
@@ -33,9 +31,7 @@ def build() -> Compound:
     )
 
     # --- capture_funnel: wide pocket covering the spawn jitter ---
-    capture_funnel = Box(
-        160, 140, 40, align=(Align.CENTER, Align.CENTER, Align.MIN)
-    )
+    capture_funnel = Box(160, 140, 40, align=(Align.CENTER, Align.CENTER, Align.MIN))
     capture_funnel = capture_funnel.move(Location((-250, 0, 30)))
     capture_funnel.label = "capture_funnel"
     capture_funnel.metadata = PartMetadata(

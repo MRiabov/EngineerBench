@@ -23,6 +23,6 @@ Test whether a rolling sphere can stay constrained inside a tunnel-shaped guide 
 
 - Prefer CSG-friendly boxes/cylinders.
 - Keep planner files read-only and implement through `benchmark_script.py`.
-- Preserve `benchmark_plan_evidence_script.py` and `benchmark_plan_technical_drawing_script.py` as read-only planner context.
+- Preserve `benchmark_plan_evidence_script.py` as read-only planner context.
 - Keep `benchmark_script.py` import-safe with no `__main__` block and no in-module review submission call.
 - Run validate/simulate/review submission only from external shell self-check commands.

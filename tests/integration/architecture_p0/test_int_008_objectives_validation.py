@@ -95,7 +95,6 @@ Confirm the projectile starts outside the fixed geometry envelope.
     valid_todo = "# TODO\n\n- [x] Planner handoff seeded\n"
     valid_cost = """version: "1.0"
 manufactured_parts: []
-cots_parts: []
 final_assembly: []
 constraints:
   benchmark_max_unit_cost_usd: 50.0
@@ -230,7 +229,6 @@ Move the projectile into the goal zone.
     valid_todo = "# TODO\n\n- [x] Planner handoff seeded\n"
     valid_cost = """version: "1.0"
 manufactured_parts: []
-cots_parts: []
 final_assembly: []
 totals:
   estimated_unit_cost_usd: 10.0
@@ -641,7 +639,6 @@ Move the projectile into the goal zone.
     valid_todo = "# TODO\n\n- [x] Planner handoff seeded\n"
     valid_cost = """version: "1.0"
 manufactured_parts: []
-cots_parts: []
 final_assembly: []
 totals:
   estimated_unit_cost_usd: 10.0
@@ -737,7 +734,6 @@ Move the projectile into the goal zone.
     valid_todo = "# TODO\n\n- [x] Planner handoff seeded\n"
     valid_cost = """version: "1.0"
 manufactured_parts: []
-cots_parts: []
 final_assembly: []
 totals:
   estimated_unit_cost_usd: 10.0
@@ -840,7 +836,6 @@ Move the projectile into the goal zone.
     valid_todo = "# TODO\n\n- [x] Planner handoff seeded\n"
     valid_cost = """version: "1.0"
 manufactured_parts: []
-cots_parts: []
 final_assembly: []
 totals:
   estimated_unit_cost_usd: 10.0
@@ -954,7 +949,6 @@ Move the projectile into the goal zone.
     valid_todo = "# TODO\n\n- [x] Planner handoff seeded\n"
     valid_cost = """version: "1.0"
 manufactured_parts: []
-cots_parts: []
 final_assembly: []
 totals:
   estimated_unit_cost_usd: 10.0

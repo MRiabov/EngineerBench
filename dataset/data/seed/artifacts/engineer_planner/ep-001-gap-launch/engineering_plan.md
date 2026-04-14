@@ -98,7 +98,7 @@ The engineering handoff total cost must remain below the planner target.
 
 #### Design Impact
 
-- The solution retains margin for any later drafting or review adjustments.
+- The solution retains margin for any later review adjustments.
 
 #### Cross-References
 
@@ -111,7 +111,7 @@ The engineering handoff total cost must remain below the planner target.
 | -- | -- | -- | -- |
 | LIMIT-001 | Build-zone placement | All engineer parts remain inside the seeded build zone | `benchmark_definition.yaml` |
 | LIMIT-002 | Gap keepout | No support feet or stiffeners may intrude into `floor_gap` | `benchmark_definition.yaml` |
-| LIMIT-003 | Environment contact | No engineer geometry may drill into, bolt to, or lean on the `environment_fixture` | Reviewer contract |
+| LIMIT-003 | Environment contact | No engineer geometry may contact, bolt to, or lean on the `environment_fixture` | Reviewer contract |
 | LIMIT-004 | Goal-zone overlap | `landing_pocket` may overlap the goal zone only as a passive capture surface | `benchmark_definition.yaml` |
 | LIMIT-005 | Budget envelope | Keep the assembly under the benchmark cost and weight caps | `assembly_definition.yaml` |
 

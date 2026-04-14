@@ -32,14 +32,6 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid low-friction cube planner handoff, checks geometry/objective consistency and plan clarity, and issues a structured review decision."
   },
   {
-    "id": "bpr-005",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lift-platform handoff benchmark. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the moving platform uses only the planned lift axis and that the platform travel clearance remains coherent across all seeded artifacts, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-005-lift-platform-handoff",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid lift-platform handoff planner handoff, checks benchmark-side motion limits and objective clearance, and issues a structured review decision."
-  },
-  {
     "id": "bpr-006",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the narrow-goal funnel benchmark. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the wide capture region, narrowing throat, and final goal sleeve remain coherent under the seeded runtime jitter assumptions, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
     "complexity_level": 1,
@@ -54,14 +46,6 @@
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-007-lower-bin",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid lower-bin planner handoff, checks gravity-aware feasibility and cross-artifact consistency, and issues a structured review decision."
-  },
-  {
-    "id": "bpr-008",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the gap-bridge cube transfer variant that adds a small self-centering correction on the bridge reference table. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the bridge remains a passive benchmark fixture or whether the seeded motion metadata introduces unsupported benchmark-side actuation, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-008-gap-bridge-correction",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the bridge package hides an unsupported benchmark-side alignment motion inside an otherwise passive gap-crossing plan."
   },
   {
     "id": "bpr-009",
@@ -86,14 +70,6 @@
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-011-low-friction-pocket-tolerance",
     "expected_decision": "REJECT_PLAN",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the tightened low-friction goal pocket leaves an unrealistically small tolerance margin for reliable capture."
-  },
-  {
-    "id": "bpr-012",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lift-platform handoff variant with a longer bridge into the receiving shelf. Confirm the plan package is internally consistent across `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the longer bridge still respects the moving platform sweep and declared travel-clearance envelope rather than intruding into it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-012-platform-sweep-bridge-collision",
-    "expected_decision": "REJECT_PLAN",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the extended bridge encroaches on the benchmark platform sweep envelope despite the planner claiming single-axis lift motion remains clear."
   },
   {
     "id": "bpr-013",

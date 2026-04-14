@@ -1,23 +1,23 @@
 [
   {
     "id": "epr-001",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the gap bridge transfer. Confirm the plan package is internally consistent across `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that bridge spans the seeded gap without invented actuators and still respects the landing clearances, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence.",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the gap bridge transfer. Confirm the plan package is internally consistent across `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that bridge spans the seeded gap without invented actuators and still respects the landing clearances, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` companion as read-only evidence.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-001-gap-bridge",
     "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the gap bridge transfer and issues a structured decision tied to feasibility, budgets, and justified DOFs."
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the gap bridge transfer and issues a structured decision tied to feasibility, budgets, and mechanism consistency."
   },
   {
     "id": "epr-002",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the central forbid route. Confirm the plan package is internally consistent across `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that passive routing stays clear of the central forbid zone without inventing powered subsystems, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence.",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the central forbid route. Confirm the plan package is internally consistent across `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that passive routing stays clear of the central forbid zone without inventing powered subsystems, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` companion as read-only evidence.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-002-central-forbid-route",
     "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the central forbid route and issues a structured decision tied to feasibility, budgets, and justified DOFs."
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the central forbid route and issues a structured decision tied to feasibility, budgets, and mechanism consistency."
   },
   {
     "id": "epr-003",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the passive gap-bridge transfer. Confirm the plan package is internally consistent across `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that the design remains freestanding and does not introduce unsupported external support assumptions, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence.",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the passive gap-bridge transfer. Confirm the plan package is internally consistent across `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that the design remains freestanding and does not introduce unsupported external support assumptions, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` companion as read-only evidence.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-003-gap-bridge-transfer",
     "expected_decision": "APPROVED",
@@ -25,26 +25,18 @@
   },
   {
     "id": "epr-004",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the low-friction cube guide. Confirm the plan package is internally consistent across `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that guide geometry actually manages the seeded low-friction slip assumptions instead of relying on wishful contact behavior, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence.",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the low-friction cube guide. Confirm the plan package is internally consistent across `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that guide geometry actually manages the seeded low-friction slip assumptions instead of relying on wishful contact behavior, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` companion as read-only evidence.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-004-low-friction-cube",
     "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the low-friction cube guide and issues a structured decision tied to feasibility, budgets, and justified DOFs."
-  },
-  {
-    "id": "epr-005",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the lift-platform handoff guide. Confirm the plan package is internally consistent across `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that passive catcher geometry respects the benchmark platform motion envelope rather than colliding with it, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-005-lift-platform-handoff",
-    "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the lift-platform handoff guide and issues a structured decision tied to feasibility, budgets, and justified DOFs."
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the low-friction cube guide and issues a structured decision tied to feasibility, budgets, and mechanism consistency."
   },
   {
     "id": "epr-006",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the narrow goal funnel. Confirm the plan package is internally consistent across `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that precision funnel geometry remains complete and feasible under the seeded tolerance and budget constraints, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` and `solution_plan_technical_drawing_script.py` companions as read-only evidence.",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_plan_reviewer` before using the seeded artifacts. Review the seeded planner handoff for the narrow goal funnel. Confirm the plan package is internally consistent across `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, and `assembly_definition.yaml`, verify that precision funnel geometry remains complete and feasible under the seeded tolerance and budget constraints, and return a structured engineering plan review decision grounded in the seeded artifacts. Also review the seeded `solution_plan_evidence_script.py` companion as read-only evidence.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_plan_reviewer/epr-006-narrow-goal-funnel",
     "expected_decision": "APPROVED",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the narrow goal funnel and issues a structured decision tied to feasibility, budgets, and justified DOFs."
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_plan_reviewer` and the seeded workspace to match that role. Engineering plan reviewer starts from a contract-valid seeded handoff for the narrow goal funnel and issues a structured decision tied to feasibility, budgets, and mechanism consistency."
   }
 ]

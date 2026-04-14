@@ -43,4 +43,4 @@ Test whether an engineer can guide a low-friction cube around a central blocker 
 
 - `todo.md` tracks the funnel, blocker, guide walls, and goal pocket implementation.
 - `benchmark_definition.yaml` mirrors the low-friction routing geometry and cost caps.
-- `benchmark_assembly_definition.yaml` records the static benchmark-local parts and confirms zero DOFs.
+- `benchmark_assembly_definition.yaml` records the static benchmark-local parts and confirms the benchmark is fully static.

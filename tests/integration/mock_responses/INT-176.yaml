@@ -28,17 +28,6 @@ transcript:
     expected_observation: success
   - finished: true
     summary: Plan for failure test generated.
-- node: electronics_planner
-  steps:
-  - thought: No electronics needed.
-    tool_name: write_file
-    tool_args:
-      path: todo.md
-      overwrite: true
-      content_file: INT-176/electronics_planner/entry_01/01__todo.md
-    expected_observation: success
-  - finished: true
-    summary: No electronics needed.
 - node: engineer_coder
   steps:
   - thought: I will call a command that fails, then continue.

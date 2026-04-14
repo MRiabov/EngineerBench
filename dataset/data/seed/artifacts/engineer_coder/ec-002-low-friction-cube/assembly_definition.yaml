@@ -88,11 +88,9 @@ manufactured_parts:
   stock_volume_mm3: 316800.0
   removed_volume_mm3: 297800.0
   estimated_unit_cost_usd: 4.5
-cots_parts: []
 final_assembly:
 - name: low_friction_route
   config:
-    dofs: []
 totals:
   estimated_unit_cost_usd: 39.5
   estimated_weight_g: 399.35

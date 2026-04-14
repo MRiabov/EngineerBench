@@ -44,4 +44,4 @@ Test whether an engineer can route a ball around a central blocker rather than a
 
 - `todo.md` tracks implementation of the launch pad, blocker, route walls, and goal tray.
 - `benchmark_definition.yaml` mirrors the route geometry and objective zones.
-- `benchmark_assembly_definition.yaml` records benchmark-local cost estimates and confirms zero benchmark-side DOFs.
+- `benchmark_assembly_definition.yaml` records benchmark-local cost estimates and confirms the benchmark is fully static.

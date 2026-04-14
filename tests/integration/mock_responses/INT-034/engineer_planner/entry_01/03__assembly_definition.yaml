@@ -9,15 +9,7 @@ totals:
   estimated_weight_g: 0
   estimate_confidence: high
 manufactured_parts: []
-cots_parts:
-  - part_id: M3_BOLT
-    manufacturer: Generic
-    unit_cost_usd: 0.5
-    weight_g: 1.2
-    quantity: 4
-    source: catalog
 final_assembly:
   - name: review_fixture
     config:
       dofs: []
-      cots_id: M3_BOLT

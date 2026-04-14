@@ -31,13 +31,6 @@ transcript:
     expected_observation: submitted
   - finished: true
     summary: INT-042 planner artifacts generated and submitted.
-- node: electronics_planner
-  steps:
-  - thought: No electronics changes required; submit planning handoff.
-    tool_name: submit_engineering_plan
-    expected_observation: submitted
-  - finished: true
-    summary: INT-042 electronics planner submission complete.
 - node: engineer_plan_reviewer
   steps:
   - finished: true

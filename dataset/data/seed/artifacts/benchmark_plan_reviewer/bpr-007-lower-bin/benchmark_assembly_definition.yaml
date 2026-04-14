@@ -65,16 +65,12 @@ manufactured_parts:
 final_assembly:
   - name: upper_start_ledge
     config:
-      dofs: []
   - name: deflector_ramp
     config:
-      dofs: []
   - name: direct_drop_shield
     config:
-      dofs: []
   - name: lower_bin
     config:
-      dofs: []
 totals:
   estimated_unit_cost_usd: 44.0
   estimated_weight_g: 920.0

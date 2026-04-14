@@ -2497,7 +2497,6 @@ def test_prompt_source_role_prompts_follow_runtime_order():
         "engineer_plan_reviewer",
         "engineer_coder",
         "engineer_execution_reviewer",
-        "cots_search",
         "skill_agent",
         "journalling_agent",
         "default",
@@ -3407,9 +3406,9 @@ def test_validate_eval_seed_can_filter_rows_by_complexity_level():
             "scripts/validate_eval_seed.py",
             "--skip-env-up",
             "--agent",
-            "cots_search",
+            "benchmark_planner",
             "--task-id",
-            "cs-001-m3-bolt-match",
+            "bp-001",
             "--level",
             "0",
             "--fail-fast",
@@ -3426,9 +3425,7 @@ def test_validate_eval_seed_can_filter_rows_by_complexity_level():
 
     assert completed.returncode == 0, completed.stderr
     assert "Validated 1 row(s): all passed." in completed.stdout, completed.stdout
-    assert "PASS cots_search cs-001-m3-bolt-match:" in completed.stdout, (
-        completed.stdout
-    )
+    assert "PASS benchmark_planner bp-001:" in completed.stdout, completed.stdout
 
 
 @pytest.mark.integration_p0

@@ -35,12 +35,6 @@ transcript:
     expected_observation: success
   - tool_name: write_file
     tool_args:
-      path: solution_plan_technical_drawing_script.py
-      overwrite: true
-      content_file: INT-033/engineer_planner/entry_01/06__solution_plan_technical_drawing_script.py
-    expected_observation: success
-  - tool_name: write_file
-    tool_args:
       path: renders/engineer_plan_renders/render_manifest.json
       overwrite: true
       content_file: INT-033/engineer_planner/entry_01/07__render_manifest.json
@@ -54,13 +48,6 @@ transcript:
     expected_observation: submitted
   - finished: true
     summary: INT-033 planner artifacts generated and submitted.
-- node: electronics_planner
-  steps:
-  - thought: No electronics changes required; submit planning handoff.
-    tool_name: submit_engineering_plan
-    expected_observation: submitted
-  - finished: true
-    summary: INT-033 electronics planner submission complete.
 - node: engineer_plan_reviewer
   steps:
   - thought: Inspect the benchmark render before approving the planner handoff.

@@ -4,11 +4,10 @@
   "created_at": "2026-04-14T13:49:47.947044+00:00",
   "episode_id": "88941ca1-496e-51be-a495-19e08719bb70",
   "worker_session_id": "ec-001-gap-bridge-transfer",
-  "revision": "3a189da32f29deffe444b3106d8255caa6ccfc96",
+  "revision": "1140f38311c42a04070a216806beb346bd57a6f4",
   "scene_hash": "0ac92c1796748cd070a161c3c34540ee763dc301cc962d5240942928960a86d3",
   "bundle_path": "renders/engineer_plan_renders",
   "environment_version": null,
-  "drafting": false,
   "source_script_sha256": "dee46bd93872e862f0dc1505355fea97d8cd20aece0d13a808ad5ebde1ca40d7",
   "preview_evidence_paths": [
     "renders/engineer_plan_renders/freestanding_transfer_render_e15_a0.png",

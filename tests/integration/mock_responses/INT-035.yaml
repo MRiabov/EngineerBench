@@ -30,12 +30,6 @@ transcript:
     expected_observation: submitted
   - finished: true
     summary: INT-035 planner artifacts generated and submitted.
-- node: electronics_planner
-  steps:
-  - tool_name: submit_engineering_plan
-    expected_observation: submitted
-  - finished: true
-    summary: INT-035 electronics planner submission complete.
 - node: engineer_plan_reviewer
   steps:
   - finished: true

@@ -88,11 +88,9 @@ manufactured_parts:
   stock_volume_mm3: 138600.0
   removed_volume_mm3: 123600.0
   estimated_unit_cost_usd: 8.5
-cots_parts: []
 final_assembly:
 - name: precision_funnel
   config:
-    dofs: []
 totals:
   estimated_unit_cost_usd: 46.25
   estimated_weight_g: 425.4

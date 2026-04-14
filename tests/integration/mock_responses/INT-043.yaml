@@ -34,30 +34,14 @@ transcript:
     expected_observation: success
   - tool_name: write_file
     tool_args:
-      path: solution_plan_technical_drawing_script.py
-      overwrite: true
-      content_file: INT-043/engineer_planner/entry_01/06__solution_plan_technical_drawing_script.py
-    expected_observation: success
-  - tool_name: write_file
-    tool_args:
       path: benchmark_plan_evidence_script.py
       overwrite: true
       content_file: INT-043/engineer_planner/entry_01/07__benchmark_plan_evidence_script.py
-    expected_observation: success
-  - tool_name: write_file
-    tool_args:
-      path: benchmark_plan_technical_drawing_script.py
-      overwrite: true
-      content_file: INT-043/engineer_planner/entry_01/08__benchmark_plan_technical_drawing_script.py
     expected_observation: success
   - tool_name: submit_engineering_plan
     expected_observation: submitted
   - finished: true
     summary: INT-043 planner artifacts generated and submitted.
-- node: electronics_planner
-  steps:
-  - finished: true
-    summary: Batch execution scenario requires no electronics.
 - node: skill_agent
   steps:
   - finished: true

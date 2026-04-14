@@ -8,7 +8,6 @@
   "scene_hash": "benchmark-preview",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",
-  "drafting": true,
   "source_script_sha256": "1c6d6db9d7b062b818818a45fbe562d44a8c067ac1455aedde3d127185f86f95",
   "preview_evidence_paths": [
     "renders/cad_preview.png",

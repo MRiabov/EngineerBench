@@ -38,7 +38,6 @@ BACKEND_ERROR_LOG_FILES = {
     "controller": Path("logs/integration_tests/controller_errors.log"),
     "worker_light": Path("logs/integration_tests/worker_light_errors.log"),
     "worker_heavy": Path("logs/integration_tests/worker_heavy_errors.log"),
-    "temporal_worker": Path("logs/integration_tests/temporal_worker_errors.log"),
 }
 
 INTEGRATION_WORKFLOW_HINT = (
@@ -590,7 +589,7 @@ def capture_backend_errors(request):
         pytest.fail(
             "Unexpected backend errors/exceptions detected in dedicated service error logs.\n"
             f"{sample}{suffix}\n"
-            "See logs/integration_tests/{controller,worker_light,worker_heavy,temporal_worker}_errors.log.\n"
+            "See logs/integration_tests/{controller,worker_light,worker_heavy}_errors.log.\n"
             "If this test explicitly expects this particular error by it's definition in "
             "`specs/integration_tests.md`, you can suppress the exception by "
             '@pytest.mark.allow_backend_errors("long_error_substring_or_regex") '

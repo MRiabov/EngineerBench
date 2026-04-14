@@ -40,7 +40,7 @@
   geometry redirects it into the goal zone.
 - There are no benchmark-owned moving fixtures, actuators, FEM parts, or fluid
   features in this family.
-- Any benchmark-side motion that would require a controller is out of scope and
+- Any benchmark-owned motion that would require a controller is out of scope and
   must be rejected rather than adapted.
 
 ## 6. Randomization

@@ -31,13 +31,6 @@ transcript:
     expected_observation: submitted
   - finished: true
     summary: INT-016 planner artifacts generated and submitted.
-- node: electronics_planner
-  steps:
-  - thought: No electronics changes needed for INT-016; submit planning handoff.
-    tool_name: submit_engineering_plan
-    expected_observation: submitted
-  - finished: true
-    summary: INT-016 electronics planner submission complete.
 - node: engineer_plan_reviewer
   steps:
   - thought: Inspect the benchmark render before approving the planner handoff.
@@ -60,13 +53,6 @@ transcript:
     expected_observation: success
   - finished: true
     journal: INT-016 coder produced minimal execution artifact.
-- node: electronics_reviewer
-  steps:
-  - finished: true
-    review:
-      decision: APPROVED
-      reason: Electronics review is a no-op for INT-016.
-      required_fixes: []
 - node: engineer_execution_reviewer
   steps:
   - finished: true

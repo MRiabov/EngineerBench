@@ -62,21 +62,15 @@ manufactured_parts:
   stock_volume_mm3: 1920000.0
   removed_volume_mm3: 1500000.0
   estimated_unit_cost_usd: 18.0
-cots_parts: []
-environment_drill_operations: []
 final_assembly:
 - name: left_start_deck
   config:
-    dofs: []
 - name: right_goal_deck
   config:
-    dofs: []
 - name: bridge_reference_table
   config:
-    dofs: []
 - name: gap_floor_guard
   config:
-    dofs: []
 totals:
   estimated_unit_cost_usd: 67.0
   estimated_weight_g: 1540.0

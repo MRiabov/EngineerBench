@@ -6,14 +6,14 @@ INT-033 engineering full-loop deterministic plan.
 
 - `environment_fixture`: passive geometry that keeps the benchmark rooted
   in a fixed assembly.
-- `solution_plan_evidence`: planner-authored drafted part used to satisfy the
-  engineer drafting contract.
+- `solution_plan_evidence`: planner-authored evidence part used to satisfy the
+  engineer handoff contract.
 
 ## 3. Assembly Strategy
 
 1. Place the payload `projectile_ball` directly in the goal zone.
 2. Keep `environment_fixture` fixed and leave `solution_plan_evidence` as the
-   drafted planner artifact.
+   planner-authored evidence artifact.
 
 ## 4. Assumption Register
 

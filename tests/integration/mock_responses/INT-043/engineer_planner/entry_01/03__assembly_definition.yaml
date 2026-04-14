@@ -18,26 +18,6 @@ manufactured_parts:
     stock_volume_mm3: 1000.0
     removed_volume_mm3: 0.0
     estimated_unit_cost_usd: 10.0
-cots_parts: []
-drafting:
-  sheet_id: sheet-1
-  title: Seeded benchmark drafting
-  views:
-    - view_id: view-1
-      target: environment_fixture
-      projection: front
-      datums: [A]
-      dimensions:
-        - dimension_id: dim-1
-          kind: linear
-          target: environment_fixture
-          value: 10.0
-          binding: true
-      callouts:
-        - callout_id: callout-1
-          label: environment_fixture
-          target: environment_fixture
-  notes: []
 final_assembly: []
 totals:
   estimated_unit_cost_usd: 10.0

@@ -39,4 +39,3 @@ constraints:
 randomization:
   static_variation_id: engineer_coder_low_friction_cube_v1
   runtime_jitter_enabled: true
-electronics_requirements: null

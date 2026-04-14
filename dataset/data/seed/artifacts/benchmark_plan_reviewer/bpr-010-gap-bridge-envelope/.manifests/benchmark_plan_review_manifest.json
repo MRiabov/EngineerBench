@@ -4,9 +4,9 @@
   "session_id": "seed-bpr-010-no-drill-overhang",
   "planner_node_type": "benchmark_planner",
   "artifact_hashes": {
-    "benchmark_assembly_definition.yaml": "1a23924279c4c1b0040ab02fbebfb4d1ed6a0507dd0a82cae4b51cc528b945d0",
-    "benchmark_definition.yaml": "b6c76dfe89d1443f7771be2415185ef0687d8c096b969740d8eb4483a4a3a4ab",
-    "todo.md": "abb388eeb3937aca88de82f7a0e287adbb75c89ac7d603a2f78293647aff0741",
-    "benchmark_plan.md": "7b4cc86b43e8a4fe83bbcd7362f3f1b3684e0f53c76c916e2a8fa0c805d65bee"
+    "benchmark_assembly_definition.yaml": "cce4102831b2d568144146ee134cdd0e10b61faf07e71fbba0dd446170e51d04",
+    "benchmark_definition.yaml": "285c7b1579692cd87e582645055b0b3c49a8bf4171c561723fd5a05ca318039d",
+    "todo.md": "78d5c6f768433cb50d3785edc2c499fd0cc17b315edc1874f982fb71aba1deb3",
+    "benchmark_plan.md": "8bdddcbb8525f390bdf56b229582f4b32a1a27b9427b0dfbefe8ceba5e2bef44"
   }
 }

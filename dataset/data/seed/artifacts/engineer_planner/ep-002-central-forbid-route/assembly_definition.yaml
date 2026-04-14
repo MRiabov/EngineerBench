@@ -88,11 +88,9 @@ manufactured_parts:
   stock_volume_mm3: 672000.0
   removed_volume_mm3: 651000.0
   estimated_unit_cost_usd: 9.75
-cots_parts: []
 final_assembly:
 - name: routed_transfer
   config:
-    dofs: []
 totals:
   estimated_unit_cost_usd: 48.5
   estimated_weight_g: 1120.0

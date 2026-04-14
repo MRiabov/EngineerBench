@@ -8,7 +8,6 @@
   "scene_hash": "INT-002-engineer-planner",
   "bundle_path": "renders/engineer_plan_renders",
   "environment_version": "integration-test",
-  "drafting": true,
   "source_script_sha256": "375d26452d6c1060ae807cac81fa3d1cfc275ff2eff7c0e842cee783d5c1fe57",
   "preview_evidence_paths": [
     "renders/render_e45_a45.png",

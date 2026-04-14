@@ -16,9 +16,3 @@ class HealthResponse(BaseModel):
         if isinstance(value, str):
             return value.upper()
         return value
-
-
-class BackupWorkflowResponse(BaseModel):
-    """Response payload for backup workflow start endpoint."""
-
-    workflow_id: str

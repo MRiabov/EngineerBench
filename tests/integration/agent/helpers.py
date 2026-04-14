@@ -134,7 +134,6 @@ def _benchmark_assembly_definition_content(
                 "estimated_unit_cost_usd": 10.0,
             }
         ],
-        cots_parts=[],
         final_assembly=[],
         totals=CostTotals(
             estimated_unit_cost_usd=10.0,

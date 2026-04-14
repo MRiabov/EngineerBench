@@ -36,13 +36,6 @@ transcript:
     expected_observation: submitted
   - finished: true
     summary: INT-184 engineer planner submission complete.
-- node: electronics_planner
-  steps:
-  - thought: Re-submit planner artifacts from electronics planner.
-    tool_name: submit_engineering_plan
-    expected_observation: submitted
-  - finished: true
-    summary: INT-184 electronics planner submission complete.
 - node: engineer_plan_reviewer
   steps:
   - finished: true
@@ -69,11 +62,3 @@ transcript:
     expected_observation: success
   - finished: true
     journal: INT-184 coder produced baseline script.
-- node: electronics_reviewer
-  steps:
-  - finished: true
-    review:
-      decision: APPROVED
-      reason: Electronics review passes for entry-guard test.
-      required_fixes: []
-    summary: INT-184 electronics review approved.

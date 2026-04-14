@@ -75,23 +75,17 @@ manufactured_parts:
   stock_volume_mm3: 429000.0
   removed_volume_mm3: 404000.0
   estimated_unit_cost_usd: 13.0
-cots_parts: []
 final_assembly:
 - name: base_frame
   config:
-    dofs: []
 - name: bridge_deck
   config:
-    dofs: []
 - name: left_fence
   config:
-    dofs: []
 - name: right_fence
   config:
-    dofs: []
 - name: landing_pocket
   config:
-    dofs: []
 totals:
   estimated_unit_cost_usd: 57.5
   estimated_weight_g: 1320.0

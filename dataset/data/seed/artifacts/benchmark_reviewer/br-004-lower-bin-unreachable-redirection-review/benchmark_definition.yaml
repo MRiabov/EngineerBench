@@ -56,4 +56,3 @@ constraints:
 randomization:
   static_variation_id: benchmark_reviewer_lower_bin_unreachable_v1
   runtime_jitter_enabled: true
-electronics_requirements: null

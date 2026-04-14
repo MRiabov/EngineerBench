@@ -23,58 +23,6 @@ manufactured_parts:
     stock_volume_mm3: 1000.0
     removed_volume_mm3: 0.0
     estimated_unit_cost_usd: 10.0
-cots_parts: []
-environment_drill_operations: []
-drafting:
-  sheet_id: sheet-1
-  title: Seeded engineer drafting
-  views:
-    - view_id: front
-      target: solution_plan_evidence
-      projection: front
-      scale: 1.0
-      datums: [A, B]
-      dimensions:
-        - dimension_id: width
-          kind: linear
-          target: solution_plan_evidence
-          value: 10.0
-          binding: true
-      callouts:
-        - callout_id: 1
-          label: solution_plan_evidence
-          target: solution_plan_evidence
-    - view_id: top
-      target: solution_plan_evidence
-      projection: top
-      scale: 1.0
-      datums: [A, C]
-      dimensions:
-        - dimension_id: depth
-          kind: linear
-          target: solution_plan_evidence
-          value: 10.0
-          binding: true
-      callouts:
-        - callout_id: 2
-          label: solution_plan_evidence
-          target: solution_plan_evidence
-    - view_id: side
-      target: solution_plan_evidence
-      projection: side
-      scale: 1.0
-      datums: [B, C]
-      dimensions:
-        - dimension_id: height
-          kind: linear
-          target: solution_plan_evidence
-          value: 10.0
-          binding: true
-      callouts:
-        - callout_id: 3
-          label: solution_plan_evidence
-          target: solution_plan_evidence
-  notes: []
 final_assembly: []
 totals:
   estimated_unit_cost_usd: 10.0

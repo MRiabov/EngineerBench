@@ -30,12 +30,6 @@ transcript:
     expected_observation: submitted
   - finished: true
     summary: INT-017 planner artifacts generated and submitted.
-- node: electronics_planner
-  steps:
-  - tool_name: submit_engineering_plan
-    expected_observation: submitted
-  - finished: true
-    summary: INT-017 electronics planner submission complete.
 - node: engineer_plan_reviewer
   steps:
   - finished: true
@@ -53,13 +47,6 @@ transcript:
     expected_observation: success
   - finished: true
     journal: INT-017 coder produced minimal execution artifact.
-- node: electronics_reviewer
-  steps:
-  - finished: true
-    review:
-      decision: APPROVED
-      reason: Electronics review is a no-op for this refusal-loop fixture.
-      required_fixes: []
 - node: engineer_execution_reviewer
   steps:
   - finished: true

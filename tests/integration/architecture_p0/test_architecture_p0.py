@@ -270,7 +270,6 @@ def build():
                     "  estimated_weight_g: 100\n"
                     "  estimate_confidence: high\n"
                     "manufactured_parts: []\n"
-                    "cots_parts: []\n"
                     "final_assembly: []\n"
                 ),
                 overwrite=True,
@@ -436,8 +435,8 @@ async def test_int_211_genesis_simulation_video_delegates_to_renderer_worker():
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
 @pytest.mark.int_id("INT-002")
-async def test_int_002_controller_temporal_worker_execution_boundary():
-    """INT-002: Verify controller-temporal-worker handoff and execution status."""
+async def test_int_002_controller_execution_boundary():
+    """INT-002: Verify controller execution stays on worker-side boundaries."""
     session_id = f"INT-002-{uuid.uuid4().hex[:8]}"
     task = "Build a simple box of 10x10x10mm."
 

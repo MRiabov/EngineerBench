@@ -42,4 +42,4 @@ Test whether an engineer can bridge or hand off a low-friction cube across a flo
 
 - `todo.md` captures the implementation checklist for the decks, gap visualization, and passive bridge reference.
 - `benchmark_definition.yaml` mirrors the declared zones, decks, and cost caps.
-- `benchmark_assembly_definition.yaml` records the benchmark-local manufactured parts and confirms zero benchmark-side DOFs.
+- `benchmark_assembly_definition.yaml` records the benchmark-local manufactured parts and confirms the benchmark is fully static.

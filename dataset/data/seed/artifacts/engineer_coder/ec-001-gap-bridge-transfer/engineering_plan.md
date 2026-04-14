@@ -21,7 +21,7 @@ Use a completely freestanding twin-wall chute that receives the projectile ball 
 ## 3. Assembly Strategy
 
 1. Keep `freestanding_base` centered in the build zone and mount `ballast_block` low on the base to stabilize the mechanism.
-2. Mount `capture_funnel`, `left_wall`, and `right_wall` on the base only, with no fasteners or contact into the environment_fixture.
+2. Mount `capture_funnel`, `left_wall`, and `right_wall` on the base only, with no contact into the environment_fixture.
 3. Terminate the transfer in `exit_tray` overlapping the seeded goal zone so the ball settles without rebounding out.
 
 ## 4. Assumption Register
@@ -120,7 +120,7 @@ The plan must stay under the benchmark cost cap.
 | Limit ID | Limit | Bound | Basis |
 | -- | -- | -- | -- |
 | LIMIT-001 | Build-zone placement | All engineer parts remain inside the seeded build zone | `benchmark_definition.yaml` |
-| LIMIT-002 | No-drill rule | No geometry drills into or leans on the environment_fixture | Reviewer contract |
+| LIMIT-002 | No-external-contact rule | No geometry contacts or leans on the environment_fixture | Reviewer contract |
 | LIMIT-003 | Goal-zone overlap | `exit_tray` must overlap the goal zone | `benchmark_definition.yaml` |
 | LIMIT-004 | Stability envelope | `ballast_block` stays low on the base and does not overhang the footprint | Assembly strategy |
 | LIMIT-005 | Spawn jitter absorption | `capture_funnel` pocket covers ±10 mm X, ±8 mm Y, ±4 mm Z jitter | `benchmark_definition.yaml` payload.runtime_jitter |

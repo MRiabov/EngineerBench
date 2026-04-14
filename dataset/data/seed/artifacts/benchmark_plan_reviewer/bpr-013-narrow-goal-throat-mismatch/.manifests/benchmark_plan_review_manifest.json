@@ -4,9 +4,9 @@
   "session_id": "seed-bpr-013-narrow-goal-throat-mismatch",
   "planner_node_type": "benchmark_planner",
   "artifact_hashes": {
-    "benchmark_assembly_definition.yaml": "ed830d46395cee39a84e683880463db201965fa35787e56ae70f88fd68b0e54b",
-    "benchmark_definition.yaml": "425e859fae9f017cf10b2393fee2eee929e7d27fd186590b0096b1d1cfe6eada",
-    "todo.md": "5d66c54c1c10f2085885d17e3800e7c278bf32eac01759867bec31cafbdfdb97",
-    "benchmark_plan.md": "5b98b94b7ff5f8dd75b38a230005aead22bca25dd68a47fb41e1d1812adac971"
+    "benchmark_assembly_definition.yaml": "d7e15ffc2d8f7d22ec298336805ca6af782203177d3011c6769468ee57ffd69f",
+    "benchmark_definition.yaml": "c2453f82e79761d8408811db8a31bd33e2cf7f916804b27870a7cf14411dffb6",
+    "todo.md": "28e8f5062bdf1f80c0caa5e66ef2a71b1a8739f5b6505d6a40d6277077e4c9ff",
+    "benchmark_plan.md": "63aae6dc43a7c90446cb09ff4bfe72f8eab4c4ad6d629d378b32254bedbb1dbb"
   }
 }

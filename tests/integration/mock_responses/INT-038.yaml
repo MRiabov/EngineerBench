@@ -30,13 +30,6 @@ transcript:
     expected_observation: submitted
   - finished: true
     summary: INT-038 planner artifacts generated and submitted.
-- node: electronics_planner
-  steps:
-  - thought: No electronics changes are needed for INT-038; submit the handoff.
-    tool_name: submit_engineering_plan
-    expected_observation: submitted
-  - finished: true
-    summary: INT-038 electronics planner submission complete.
 - node: engineer_plan_reviewer
   steps:
   - finished: true
@@ -56,13 +49,6 @@ transcript:
   - finished: true
     journal: Simulation stable for oscillatory controller scenario.
     thought: Implementation complete.
-- node: electronics_reviewer
-  steps:
-  - finished: true
-    review:
-      decision: APPROVED
-      reason: Electronics review is a no-op for INT-038.
-      required_fixes: []
 - node: engineer_execution_reviewer
   steps:
   - finished: true

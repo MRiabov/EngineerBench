@@ -62,60 +62,15 @@ manufactured_parts:
     stock_volume_mm3: 858000.0
     removed_volume_mm3: 678000.0
     estimated_unit_cost_usd: 6.0
-drafting:
-  sheet_id: "sheet_1"
-  title: "Lower-bin redirection technical drawing"
-  units: "mm"
-  projection_standard: "orthographic"
-  views:
-    - view_id: "redirection_overview"
-      target: "deflector_ramp"
-      projection: "side"
-      scale: 1.0
-      datums: ["A", "B"]
-      dimensions:
-        - dimension_id: "d_deflector_ramp_angle"
-          kind: "angular"
-          target: "deflector_ramp"
-          value: 38.0
-          tolerance: "nominal"
-          note: "Steeper ramp angle keeps the redirection path explicit."
-          plan_ref: "benchmark_plan.md"
-        - dimension_id: "d_lower_bin_clearance"
-          kind: "clearance"
-          target: "lower_bin"
-          value: 10.0
-          tolerance: "nominal"
-          note: "Clearance keeps the capture path credible."
-          plan_ref: "benchmark_plan.md"
-      callouts:
-        - callout_id: 1
-          label: "direct drop shield"
-          target: "direct_drop_shield"
-          note: "Dead-zone shield keeps the drop path blocked."
-        - callout_id: 2
-          label: "lower bin"
-          target: "lower_bin"
-          note: "Final capture bin."
-      notes:
-        - note_id: "n_redirection_overview"
-          text: "The redirection path must remain physically plausible and avoid the dead zone."
-          critical: true
-          plan_ref: "benchmark_plan.md"
-environment_drill_operations: []
 final_assembly:
   - name: upper_start_ledge
     config:
-      dofs: []
   - name: deflector_ramp
     config:
-      dofs: []
   - name: direct_drop_shield
     config:
-      dofs: []
   - name: lower_bin
     config:
-      dofs: []
 totals:
   estimated_unit_cost_usd: 35.0
   estimated_weight_g: 920.0

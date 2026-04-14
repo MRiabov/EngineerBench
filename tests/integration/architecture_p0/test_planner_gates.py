@@ -133,7 +133,6 @@ The cube must slide reliably under the declared surface/friction assumptions.
 #### Cross-References
 
 - `benchmark_plan.md#3-assembly-strategy`
-- `assembly_definition.yaml.drafting.views[front]`
 
 ## 6. Critical Constraints / Operating Envelope
 - Constraint: The mechanism must remain inside the derived operating limits.
@@ -700,7 +699,6 @@ async def test_int_114_benchmark_planner_flow_emits_submit_benchmark_plan_trace(
             yaml.safe_load(assembly_resp.text)
         )
         assert benchmark_assembly_definition.manufactured_parts == []
-        assert benchmark_assembly_definition.cots_parts == []
         assert benchmark_assembly_definition.final_assembly == []
 
         post_submit_status = await _wait_for_planned_after_submit_plan_benchmark(
@@ -958,7 +956,6 @@ The cube must slide reliably under the declared surface/friction assumptions.
 - The ramp angle must be updated or the assumptions must change.
 #### Cross-References
         - `benchmark_plan.md#3-assembly-strategy`
-- `assembly_definition.yaml.drafting.views[front]`
 
 ## 6. Critical Constraints / Operating Envelope
 - Constraint: The mechanism must remain inside the derived operating limits.
@@ -1571,7 +1568,6 @@ async def test_int_010_handoff_rejects_low_quantity_that_only_passes_at_volume(
                     "estimated_unit_cost_usd": 35.0,
                 }
             ],
-            "cots_parts": [],
             "final_assembly": [
                 {
                     "name": "qty_probe",

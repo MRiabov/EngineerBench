@@ -29,7 +29,7 @@ def build() -> Compound:
     part_4_part.metadata = PartMetadata(material_id="hdpe", fixed=True)
 
     assembly = Compound(
-        label="no_drill_transfer_review_seed",
+        label="gap_bridge_transfer_review_seed",
         children=[part_1_part, part_2_part, part_3_part, part_4_part],
     )
     assembly.metadata = CompoundMetadata(fixed=False)

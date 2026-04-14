@@ -200,7 +200,6 @@ async def test_benchmark_planner_cad_reviewer_path():
             yaml.safe_load(assembly_resp.text)
         )
         assert benchmark_assembly_definition.manufactured_parts == []
-        assert benchmark_assembly_definition.cots_parts == []
         assert benchmark_assembly_definition.final_assembly == []
         assert submit_plan_traces, (
             "Expected planner to call submit_benchmark_plan before workflow completion."

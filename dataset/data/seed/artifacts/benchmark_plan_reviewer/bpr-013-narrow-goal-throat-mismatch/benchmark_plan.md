@@ -41,4 +41,4 @@ Test whether an engineer can widen capture upstream and then funnel a ball into 
 
 - `todo.md` tracks the bowl, narrowing throat walls, and goal sleeve implementation.
 - `benchmark_definition.yaml` mirrors the narrow goal geometry and caps.
-- `benchmark_assembly_definition.yaml` records the static benchmark-local parts and confirms zero DOFs.
+- `benchmark_assembly_definition.yaml` records the static benchmark-local parts and confirms the benchmark is fully static.

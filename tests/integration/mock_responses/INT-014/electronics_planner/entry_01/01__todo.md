@@ -1,2 +1,0 @@
-- [x] Initial plan
-- [x] Check electronics

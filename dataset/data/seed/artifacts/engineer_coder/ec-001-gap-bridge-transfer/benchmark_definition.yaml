@@ -31,5 +31,5 @@ constraints:
   max_unit_cost: 54.0
   max_weight_g: 900.0
 randomization:
-  static_variation_id: engineer_coder_no_drill_v1
+  static_variation_id: engineer_coder_gap_bridge_transfer_v1
   runtime_jitter_enabled: true

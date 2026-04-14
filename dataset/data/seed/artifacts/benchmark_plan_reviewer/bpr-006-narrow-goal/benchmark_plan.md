@@ -30,7 +30,7 @@ Test whether an engineer can widen capture upstream and then funnel a ball into 
 ## 6. Constraints Handed To Engineering
 
 - Benchmark/customer caps: `max_unit_cost <= 75 USD`, `max_weight <= 1300 g`
-- The benchmark stays fully static; precision comes from funnel geometry and jitter tolerance, not benchmark-side motion.
+- The benchmark stays fully static; precision comes from funnel geometry and jitter tolerance, not from extra moving fixtures.
 
 ## 7. Success Criteria
 
@@ -41,4 +41,4 @@ Test whether an engineer can widen capture upstream and then funnel a ball into 
 
 - `todo.md` tracks the bowl, narrowing throat walls, and goal sleeve implementation.
 - `benchmark_definition.yaml` mirrors the narrow goal geometry and caps.
-- `benchmark_assembly_definition.yaml` records the static benchmark-local parts and confirms zero DOFs.
+- `benchmark_assembly_definition.yaml` records the static benchmark-local parts and confirms the benchmark is fully static.

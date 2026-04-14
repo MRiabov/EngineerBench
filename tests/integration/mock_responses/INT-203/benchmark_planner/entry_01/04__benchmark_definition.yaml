@@ -25,7 +25,6 @@ benchmark_parts:
     label: barrier_wall
     metadata:
       fixed: true
-      allows_engineer_interaction: false
       material_id: aluminum_6061
 constraints:
   estimated_solution_cost_usd: 12.0

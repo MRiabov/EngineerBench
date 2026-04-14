@@ -42,7 +42,6 @@ constraints:
 randomization:
   static_variation_id: tunnel-v1
   runtime_jitter_enabled: true
-electronics_requirements:
 assembly_totals:
   estimated_unit_cost_usd: 42.0
   estimated_weight_g: 1800.0

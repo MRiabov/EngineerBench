@@ -29,12 +29,6 @@ transcript:
     expected_observation: submitted
   - finished: true
     summary: INT-027 planner submitted.
-- node: electronics_planner
-  steps:
-  - tool_name: submit_engineering_plan
-    expected_observation: submitted
-  - finished: true
-    summary: INT-027 electronics planner submitted.
 - node: engineer_plan_reviewer
   steps:
   - finished: true

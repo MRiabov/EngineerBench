@@ -41,7 +41,7 @@
 - The benchmark stays passive: the sphere falls under gravity from an elevated spawn position and the engineer must create a routing path that guides it around the central blocker into the far goal zone.
 - The central blocker is intentionally large enough to block direct paths, forcing the engineer to design an offset route (either around the positive-Y or negative-Y side).
 - There are no benchmark-owned moving fixtures, actuators, FEM parts, or fluid features in this family.
-- Any benchmark-side motion that would require a controller is out of scope and must be rejected rather than adapted.
+- Any benchmark-owned motion that would require a controller is out of scope and must be rejected rather than adapted.
 
 ## 6. Randomization
 
@@ -55,7 +55,7 @@
 - Keep the geometry readable and aligned to world axes so the gravity path and blocker geometry are obvious to the reviewer.
 - The payload is materialized from `benchmark_definition.yaml` using the declared shape (sphere), radius range, and start position.
 - Objective overlays (goal zone, forbid zones, build zone) are reconstructed through `objectives_geometry()` for preview rendering.
-- Materialize a compact drafting package for the passive fixture and inspect it with `preview_drawing()` before submission.
+- Materialize a compact drawing package for the passive fixture and inspect it with `preview_drawing()` before submission.
 
 ## 8. Cost & Weight Envelope
 

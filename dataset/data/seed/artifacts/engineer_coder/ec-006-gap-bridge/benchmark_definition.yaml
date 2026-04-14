@@ -56,4 +56,3 @@ constraints:
 randomization:
   static_variation_id: engineer_coder_gap_bridge_v2
   runtime_jitter_enabled: true
-electronics_requirements: null

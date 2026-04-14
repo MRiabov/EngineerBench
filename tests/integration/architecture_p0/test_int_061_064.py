@@ -4,7 +4,6 @@ import time
 import httpx
 import pytest
 
-from controller.api.schemas import OpenAPISchema
 from shared.workers.schema import (
     DeleteFileRequest,
     WriteFileRequest,
@@ -91,30 +90,6 @@ async def test_int_061_asset_serving_security():
         )
         assert resp.status_code == 200
         assert resp.headers["content-type"] == "image/png"
-
-
-@pytest.mark.integration_p0
-@pytest.mark.asyncio
-@pytest.mark.int_id("INT-062")
-async def test_int_062_worker_openapi_contract():
-    """INT-062: Split-worker OpenAPI artifact contract."""
-    async with httpx.AsyncClient(timeout=300.0) as client:
-        # Check Worker Light OpenAPI
-        resp = await client.get(f"{WORKER_LIGHT_URL}/openapi.json")
-        assert resp.status_code == 200
-        light_schema = OpenAPISchema.model_validate(resp.json())
-        paths = light_schema.paths
-        assert "/fs/ls" in paths
-        assert "/assets/{path}" in paths
-
-        # Check Worker Heavy OpenAPI
-        resp = await client.get(f"{WORKER_HEAVY_URL}/openapi.json")
-        assert resp.status_code == 200
-        heavy_schema = OpenAPISchema.model_validate(resp.json())
-        paths = heavy_schema.paths
-        assert "/benchmark/simulate" in paths
-        assert "/engineering/simulate" in paths
-        assert "/benchmark/verify" in paths
 
 
 @pytest.mark.integration_p0

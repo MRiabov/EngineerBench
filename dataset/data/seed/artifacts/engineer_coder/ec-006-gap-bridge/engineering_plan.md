@@ -24,7 +24,7 @@ Use a freestanding bridge deck with shallow side fences to move `transfer_cube` 
 3. Mount `left_fence` and `right_fence` along the deck edges with enough clearance for the jittered cube to pass without climbing the rails.
 4. Position `landing_pocket` so its mouth overlaps the `goal_zone` and captures the cube before it can rebound off the right deck.
 5. Keep every part label grounded in `engineering_plan.md`, `todo.md`, and `assembly_definition.yaml`, and keep the benchmark fixtures unchanged.
-6. The drafting sheet callouts `1`-`5` track the base frame, bridge deck, left fence, right fence, and landing pocket, respectively.
+6. The callouts `1`-`5` track the base frame, bridge deck, left fence, right fence, and landing pocket, respectively.
 
 ## 4. Assumption Register
 
@@ -44,7 +44,7 @@ Use a freestanding bridge deck with shallow side fences to move `transfer_cube` 
 
 - Build zone: keep the frame feet and deck footprint inside the benchmark build bounds.
 - Gap keepout: no support feet or stiffeners may intrude into `floor_gap`.
-- Motion contract: passive only, no added DOFs or powered components.
+- Motion contract: passive only, no added motion or powered components.
 - Goal zone: the landing pocket must overlap the goal volume and contain the cube after crossing.
 - Budget envelope: maintain the current weight/cost headroom so the planner target remains feasible.
 

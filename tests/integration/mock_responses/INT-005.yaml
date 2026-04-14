@@ -34,12 +34,6 @@ transcript:
     expected_observation: success
   - tool_name: write_file
     tool_args:
-      path: benchmark_plan_technical_drawing_script.py
-      overwrite: true
-      content_file: INT-005/benchmark_planner/entry_01/06__benchmark_plan_technical_drawing_script.py
-    expected_observation: success
-  - tool_name: write_file
-    tool_args:
       path: renders/benchmark_renders/render_manifest.json
       overwrite: true
       content_file: INT-005/benchmark_planner/entry_01/07__render_manifest.json
@@ -166,18 +160,6 @@ transcript:
     expected_observation: submitted
   - finished: true
     summary: INT-005 engineer planner artifacts generated and submitted.
-- node: electronics_planner
-  steps:
-  - thought: No electronics changes are needed for INT-005; inspect the render and
-      submit the handoff.
-    tool_name: inspect_media
-    tool_args:
-      path: renders/render_e45_a45.png
-    expected_observation: attached_to_model
-  - tool_name: submit_engineering_plan
-    expected_observation: submitted
-  - finished: true
-    summary: INT-005 electronics planner submission complete.
 - node: engineer_plan_reviewer
   steps:
   - thought: Inspect the benchmark render before approving the planner handoff.
@@ -205,18 +187,6 @@ transcript:
     expected_observation: attached_to_model
   - finished: true
     journal: INT-005 coder produced minimal execution artifact.
-- node: electronics_reviewer
-  steps:
-  - thought: Inspect the benchmark render before approving the no-op electronics stage.
-    tool_name: inspect_media
-    tool_args:
-      path: renders/render_e45_a45.png
-    expected_observation: attached_to_model
-  - finished: true
-    review:
-      decision: APPROVED
-      reason: Electronics stage is a no-op for INT-005.
-      required_fixes: []
 - node: engineer_execution_reviewer
   steps:
   - thought: Inspect the benchmark render before approving execution.

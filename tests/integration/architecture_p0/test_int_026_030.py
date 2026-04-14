@@ -13,7 +13,6 @@ from controller.api.schemas import (
     BenchmarkGenerateRequest,
     BenchmarkGenerateResponse,
     EpisodeResponse,
-    OpenAPISchema,
     StandardResponse,
 )
 from shared.current_role import current_role_manifest_json
@@ -310,52 +309,6 @@ async def test_int_027_seed_variant_tracking():
         assert data.metadata_vars is not None
         assert data.metadata_vars.variant_id == variant_id
         assert data.metadata_vars.seed == seed
-
-
-@pytest.mark.integration_p0
-@pytest.mark.asyncio
-@pytest.mark.int_id("INT-028")
-async def test_int_028_strict_api_schema_contract():
-    """INT-028: Verify OpenAPI schema validity and live responses."""
-    async with httpx.AsyncClient(timeout=300.0) as client:
-        # 1. Controller OpenAPI
-        resp = await client.get(f"{CONTROLLER_URL}/openapi.json")
-        assert resp.status_code == 200
-        schema_data = resp.json()
-        OpenAPISchema.model_validate(schema_data)
-        assert "openapi" in schema_data
-
-        # 2. Worker OpenAPI
-        resp = await client.get(f"{WORKER_LIGHT_URL}/openapi.json")
-        assert resp.status_code == 200
-        worker_schema = resp.json()
-        OpenAPISchema.model_validate(worker_schema)
-
-        # 3. Validate a live response against the schema
-        health_resp = await client.get(f"{WORKER_LIGHT_URL}/health")
-        assert health_resp.status_code == 200
-        health_data = health_resp.json()
-
-        try:
-            health_schema = worker_schema["paths"]["/health"]["get"]["responses"][
-                "200"
-            ]["content"]["application/json"]["schema"]
-            if "$ref" in health_schema:
-                ref_name = health_schema["$ref"].split("/")[-1]
-                health_schema = worker_schema["components"]["schemas"][ref_name]
-
-            if "required" in health_schema:
-                for req in health_schema["required"]:
-                    assert req in health_data, (
-                        f"Missing required field {req} in /health response"
-                    )
-
-            properties = health_schema.get("properties", {})
-            if "status" in properties:
-                assert "status" in health_data
-
-        except KeyError as e:
-            pytest.fail(f"Could not locate schema for /health validation: {e}")
 
 
 @pytest.mark.integration_p0

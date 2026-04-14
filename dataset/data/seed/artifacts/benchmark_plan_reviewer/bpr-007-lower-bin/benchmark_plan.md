@@ -43,4 +43,4 @@ Test whether an engineer can redirect a falling ball into a lower bin while avoi
 
 - `todo.md` tracks the start ledge, deflector, dead-zone shield, and lower bin implementation.
 - `benchmark_definition.yaml` mirrors the gravity-driven geometry and customer caps.
-- `benchmark_assembly_definition.yaml` records the static benchmark-local parts and confirms zero DOFs.
+- `benchmark_assembly_definition.yaml` records the static benchmark-local parts and confirms the benchmark is fully static.

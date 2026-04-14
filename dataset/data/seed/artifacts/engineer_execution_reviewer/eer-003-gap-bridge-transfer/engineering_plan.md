@@ -21,7 +21,7 @@ Use a completely freestanding twin-wall chute that receives the projectile ball 
 ## 3. Assembly Strategy
 
 1. Keep `freestanding_base` centered in the build zone and mount `ballast_block` low on the base to stabilize the mechanism.
-2. Mount `capture_funnel`, `left_wall`, and `right_wall` on the base only, with no fasteners or contact into the environment.
+2. Mount `capture_funnel`, `left_wall`, and `right_wall` on the base only, with no contact into the environment.
 3. Terminate the transfer in `exit_tray` overlapping the seeded goal zone so the ball settles without rebounding out.
 
 ## 4. Cost & Weight Budget

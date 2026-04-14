@@ -62,63 +62,15 @@ manufactured_parts:
     stock_volume_mm3: 84000.0
     removed_volume_mm3: 42000.0
     estimated_unit_cost_usd: 3.0
-cots_parts: []
 final_assembly:
   - name: base_plate
     config:
-      dofs: []
   - name: deflector_ramp
     config:
-      dofs: []
   - name: side_goal_wall
     config:
-      dofs: []
   - name: catch_bin
     config:
-      dofs: []
-drafting:
-  sheet_id: "sheet-1"
-  title: "Side-Deflect Ramp Drawing"
-  units: "mm"
-  projection_standard: "orthographic"
-  goal_zone_overlap_intents:
-    - zone_name: goal_zone
-      target: side_goal_wall
-    - zone_name: goal_zone
-      target: catch_bin
-  views:
-    - view_id: "front"
-      target: "deflector_ramp"
-      projection: "front"
-      scale: 1.0
-      datums: ["A", "B"]
-      dimensions:
-        - dimension_id: "ramp_thickness"
-          kind: "linear"
-          target: "deflector_ramp"
-          value: 15.0
-          tolerance: "+/- 0.5"
-          binding: true
-          note: "Keep the ramp plate thick enough to resist ball impact deformation."
-          plan_ref: "benchmark_plan.md"
-        - dimension_id: "ramp_angle"
-          kind: "angular"
-          target: "deflector_ramp"
-          value: 30.0
-          tolerance: "+/- 1.0"
-          binding: true
-          note: "Deflector angle must remain 30° ±1° for reliable ball redirection."
-          plan_ref: "benchmark_plan.md"
-      callouts:
-        - callout_id: 1
-          label: "deflector ramp"
-          target: "deflector_ramp"
-          plan_ref: "benchmark_plan.md"
-      notes:
-        - note_id: "n1"
-          text: "All benchmark fixtures are fixed. Only the projectile ball moves."
-          critical: true
-          plan_ref: "benchmark_plan.md"
 totals:
   estimated_unit_cost_usd: 29.0
   estimated_weight_g: 720.0

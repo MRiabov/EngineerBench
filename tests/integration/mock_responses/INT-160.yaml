@@ -156,18 +156,6 @@ transcript:
     expected_observation: submitted
   - finished: true
     summary: INT-160 engineer planner artifacts generated and submitted.
-- node: electronics_planner
-  steps:
-  - thought: No electronics changes are needed for INT-160; inspect the render and
-      submit the handoff.
-    tool_name: inspect_media
-    tool_args:
-      path: renders/render_e45_a45.png
-    expected_observation: attached_to_model
-  - tool_name: submit_engineering_plan
-    expected_observation: submitted
-  - finished: true
-    summary: INT-160 electronics planner submission complete.
 - node: engineer_plan_reviewer
   steps:
   - thought: Inspect the benchmark render before approving the planner handoff.
@@ -201,18 +189,6 @@ transcript:
     expected_observation: attached_to_model
   - finished: true
     journal: INT-160 coder produced minimal execution artifact.
-- node: electronics_reviewer
-  steps:
-  - thought: Inspect the benchmark render before approving the no-op electronics stage.
-    tool_name: inspect_media
-    tool_args:
-      path: renders/render_e45_a45.png
-    expected_observation: attached_to_model
-  - finished: true
-    review:
-      decision: APPROVED
-      reason: Electronics stage is a no-op for INT-160.
-      required_fixes: []
 - node: engineer_execution_reviewer
   steps:
   - thought: Inspect the benchmark render before approving execution.

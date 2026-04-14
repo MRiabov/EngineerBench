@@ -4,11 +4,10 @@
   "created_at": "2026-04-09T16:26:40.003840+00:00",
   "episode_id": "cac0e4b3-a91c-540d-98b2-a2238ad0066e",
   "worker_session_id": "bc-002-tunnel",
-  "revision": "3a189da32f29deffe444b3106d8255caa6ccfc96",
+  "revision": "1140f38311c42a04070a216806beb346bd57a6f4",
   "scene_hash": "8c34995df06db23d6e5604f4d393bfc03f5ca1e02bb31d20d9d7075fef73820f",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": null,
-  "drafting": true,
   "source_script_sha256": "6dc6bde13dcb3f34c4a42a0c10ae3dce0fdee6ecf566bcdebcd548e3f26046ed",
   "preview_evidence_paths": [
     "renders/benchmark_renders/00_front.png",

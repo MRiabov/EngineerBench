@@ -8,10 +8,10 @@
   },
   {
     "id": "ep-002",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a route that gets the projectile ball around the central forbid zone and into the goal zone. The design must absorb the listed spawn jitter instead of depending on lucky bounces, and the final assembly should avoid unnecessary moving DOFs.",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a route that gets the projectile ball around the central forbid zone and into the goal zone. The design must absorb the listed spawn jitter instead of depending on lucky bounces, and the final assembly should avoid unnecessary moving elements.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-002-central-forbid-route",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts describe a robust around-obstacle transport mechanism, include explicit risk mitigation for the forbid zone and jitter, and keep `assembly_definition.yaml` minimal in DOFs and within budget."
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts describe a robust around-obstacle transport mechanism, include explicit risk mitigation for the forbid zone and jitter, and keep `assembly_definition.yaml` minimal in moving complexity and within budget."
   },
   {
     "id": "ep-003",
@@ -26,13 +26,6 @@
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-004-low-friction-cube",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts select geometry appropriate for a low-friction cube, account for the forbid zone, and produce consistent costed parts plus implementation-ready TODO items."
-  },
-  {
-    "id": "ep-005",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a mechanism that receives the payload from an external lift platform and guides it into the elevated goal zone. The plan should describe the handoff strategy clearly, stay inside the build zone, and avoid adding unnecessary actuation on top of the moving benchmark fixture.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-005-lift-platform-handoff",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts explain the platform handoff, keep the mechanism mostly passive unless motion is justified, and produce valid budgets and assembly data under the benchmark caps."
   },
   {
     "id": "ep-006",
