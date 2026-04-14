@@ -1,6 +1,6 @@
 ---
 title: Publication Shape Repository Pruning Migration
-status: investigation
+status: work in progress
 agents_affected:
   - benchmark_planner
   - benchmark_plan_reviewer
@@ -19,7 +19,7 @@ added_at: '2026-04-11T00:00:00Z'
 
 # Publication Shape Repository Pruning Migration
 
-<!-- Investigation doc. No behavior change yet. -->
+<!-- Migration in progress. -->
 
 ## Purpose
 
@@ -1042,7 +1042,7 @@ The safe order is:
 - [ ] Freeze the final-paper claim matrix from
   `docs/academic-submission/final-project-report.tex`.
 - [ ] Mark every major repo surface as core, retained, or out-of-bundle.
-- [ ] Remove every feature family whose first meaningful claim appears in
+- [x] Remove every feature family whose first meaningful claim appears in
   Epic 8 or later, including drafting, electronics, fluids/FEM, and
   steering.
 
@@ -1066,8 +1066,28 @@ The safe order is:
   surfaces, and late-epic simulation helpers from the default bundle,
   including the script-contract helpers, preview/render wrappers, and
   drafting handoff validators.
+- [x] Remove the remaining motors/electronics/fluid/deformable schema and
+  scene-builder/evaluator plumbing from `shared/models/schemas.py`,
+  `shared/models/simulation.py`, `shared/simulation/scene_builder.py`,
+  `shared/observability/schemas.py`, `worker_heavy/simulation/{builder,genesis_backend,loop}.py`,
+  and the supporting validation helpers.
+- [x] Remove the standalone objective-evaluator and electronics-metric stub
+  surfaces from `worker_heavy/simulation/objectives.py` and
+  `shared/utils/evaluation.py`.
 - [x] Collapse the drawing-mode matrix to the retained full geometric-plan
   path and delete the off/minimal technical-drawing variants.
+- [x] Remove the drafting gate and `preview_stress` helper path from
+  `worker_heavy/utils/validation.py`, and drop the `preview_stress` export
+  from `worker_heavy.utils`.
+- [x] Remove the FEM manufacturability gate and its internal callsites from
+  `worker_heavy/utils/validation.py`.
+- [x] Remove the mechanical-engineering skill prose that still taught the
+  removed stress-preview and fluid helper hooks.
+- [x] Remove the dead technical-drawing-mode helper/import from
+  `tests/integration/architecture_p0/test_node_entry_validation.py`.
+- [x] Drop the unused steerability re-export from `shared/models/__init__.py`.
+- [x] Correct the canonical INT-131 integration-test row to match the live
+  COTS inventory exactness test and keep the architecture_p1 mapping in sync.
 
 ### Training, observability, and data
 
@@ -1097,67 +1117,67 @@ The safe order is:
 
 #### Integration test prune manifest
 
-- [ ] `tests/integration/frontend/**`: remove `INT-157`..`INT-179`, `INT-189`,
+- [x] `tests/integration/frontend/**`: remove `INT-157`..`INT-179`, `INT-189`,
   and `INT-205`; delete the matching
   `tests/integration/mock_responses/INT-xxx.yaml` fixtures and scenario trees
   for those IDs.
-- [ ] `tests/integration/agent/p1/test_int_181_to_183.py`: remove
+- [x] `tests/integration/agent/p1/test_int_181_to_183.py`: remove
   `INT-181`..`INT-186`; delete the matching
   `tests/integration/mock_responses/INT-181.yaml`..`INT-186.yaml` fixtures and
   scenario trees.
-- [ ] `tests/integration/architecture_p0/test_int_102_111.py`: remove
+- [x] `tests/integration/architecture_p0/test_int_102_111.py`: remove
   `INT-102`..`INT-111`; delete the matching mock-response fixtures and
   scenario trees.
-- [ ] `tests/integration/architecture_p0/test_int_120_electronics.py`: remove
+- [x] `tests/integration/architecture_p0/test_int_120_electronics.py`: remove
   `INT-120`..`INT-128`; delete the matching mock-response fixtures and
   scenario trees.
-- [ ] `tests/integration/architecture_p0/test_int_188_validation_preview.py`
+- [x] `tests/integration/architecture_p0/test_int_188_validation_preview.py`
   and `tests/integration/architecture_p0/test_architecture_p0.py`: remove
   `INT-188`, `INT-208`, and `INT-209`; delete the matching mock-response
   fixtures and scenario trees.
-- [ ] `tests/integration/architecture_p0/test_codex_runner_mode.py`: remove
+- [x] `tests/integration/architecture_p0/test_codex_runner_mode.py`: remove
   `INT-207`; delete the matching mock-response fixture and scenario tree.
-- [ ] `tests/integration/architecture_p0/test_planner_gates.py` and
+- [x] `tests/integration/architecture_p0/test_planner_gates.py` and
   `tests/integration/architecture_p1/test_reviewer_evidence.py`: remove
   `INT-204`; delete the matching mock-response fixture and scenario tree.
-- [ ] `tests/integration/architecture_p0/test_node_entry_validation.py`:
+- [x] `tests/integration/architecture_p0/test_node_entry_validation.py`:
   remove `INT-184` and `INT-190`; delete the matching mock-response fixtures
   and scenario trees.
-- [ ] `tests/integration/architecture_p1/test_render_validation.py`: remove
+- [x] `tests/integration/architecture_p1/test_render_validation.py`: remove
   `INT-190`..`INT-195`; delete the matching mock-response fixtures and
   scenario trees.
-- [ ] `tests/integration/architecture_p1/test_script_tools_proxy.py`: remove
+- [x] `tests/integration/architecture_p1/test_script_tools_proxy.py`: remove
   `INT-192` and `INT-212`..`INT-217`; delete the matching mock-response
   fixtures and scenario trees.
-- [ ] `tests/integration/architecture_p1/test_int_064_to_069.py`: remove
+- [x] `tests/integration/architecture_p1/test_int_064_to_069.py`: remove
   `INT-065`..`INT-069`; delete the matching mock-response fixtures and
   scenario trees.
-- [ ] `tests/integration/architecture_p1/test_physics_fluids_full.py`: remove
+- [x] `tests/integration/architecture_p1/test_physics_fluids_full.py`: remove
   `INT-131`..`INT-135`; delete the matching mock-response fixtures and
   scenario trees.
-- [ ] `tests/integration/architecture_p1/test_physics_fluids_extended.py`:
+- [x] `tests/integration/architecture_p1/test_physics_fluids_extended.py`:
   remove `INT-138` and `INT-139`; delete the matching mock-response fixtures
   and scenario trees.
-- [ ] `tests/integration/architecture_p1/test_electronics_full.py`: remove
+- [x] `tests/integration/architecture_p1/test_electronics_full.py`: remove
   `INT-132`, `INT-136`, `INT-137`, `INT-140`, `INT-141`, and `INT-217`;
   delete the matching mock-response fixtures and scenario trees.
-- [ ] `tests/integration/architecture_p1/test_benchmark_workflow.py`: remove
+- [x] `tests/integration/architecture_p1/test_benchmark_workflow.py`: remove
   `INT-200`, `INT-201`, `INT-202`, and `INT-203`; delete the matching
   mock-response fixtures and scenario trees.
-- [ ] `tests/integration/architecture_p1/test_engineering_loop.py`: remove
+- [x] `tests/integration/architecture_p1/test_engineering_loop.py`: remove
   `INT-205`; delete the matching mock-response fixture and scenario tree.
-- [ ] `tests/integration/architecture_p1/test_batch_execution.py`: remove
+- [x] `tests/integration/architecture_p1/test_batch_execution.py`: remove
   `INT-043`; delete the matching mock-response fixture and scenario tree.
-- [ ] `tests/integration/architecture_p1/test_api_fuzzing.py`: remove
+- [x] `tests/integration/architecture_p1/test_api_fuzzing.py`: remove
   `INT-044`; delete the matching mock-response fixture and scenario tree.
-- [ ] `tests/integration/architecture_p1/test_skills_sync.py`: remove
+- [x] `tests/integration/architecture_p1/test_skills_sync.py`: remove
   `INT-045`; delete the matching mock-response fixture and scenario tree.
-- [ ] `tests/integration/architecture_p1/test_episode_replay.py`: remove
+- [x] `tests/integration/architecture_p1/test_episode_replay.py`: remove
   `INT-206`; delete the matching mock-response fixture and scenario tree.
-- [ ] `tests/integration/architecture_p1/test_skill_overlay_promotion.py`:
+- [x] `tests/integration/architecture_p1/test_skill_overlay_promotion.py`:
   remove `INT-218`..`INT-223`; delete the matching mock-response fixtures and
   scenario trees.
-- [ ] `tests/integration/architecture_p1/test_infrastructure.py`: remove
+- [x] `tests/integration/architecture_p1/test_infrastructure.py`: remove
   `INT-041` and `INT-042`; delete the matching mock-response fixtures and
   scenario trees.
 
