@@ -50,7 +50,6 @@ This section is the smallest must-pass set. Keep it narrowly scoped, determinist
 | INT-019 | Cost/weight/build-zone hard failure | Validation/simulation/review-submission are blocked when price, weight, or build-zone constraints fail, or when required handover artifacts are missing/invalid for the latest revision. Fail closed with explicit reason codes. |
 | INT-020 | Simulation success/failure taxonomy | Goal-hit, forbid-hit, out-of-bounds, timeout, and instability are correctly classified in response payloads/events; benchmark-payload out-of-bounds before the configured observation window is a failure, while late payload drift after the window is recorded as evidence rather than a benchmark-simulation failure. |
 | INT-021 | Runtime randomization robustness check | One admitted heavy-worker job executes one backend run with batched parallel jittered scenes (`num_scenes`) and aggregates pass/fail statistics correctly. |
-| INT-022 | Motor overload + forcerange behavior | Force clamping behaves correctly; sustained overload produces `motor_overload` failure reason. |
 | INT-023 | Fastener validity rules | Required fastener/joint constraints are enforced (e.g., rigid connection constraints and invalid mating rejection). |
 | INT-024 | Worker benchmark validation toolchain | Benchmark `validate` catches intersecting/invalid objective setups across randomization ranges, plus duplicate top-level labels and reserved `environment` / `zone_` namespace collisions before MJCF generation. |
 | INT-025 | Events collection end-to-end | Worker emits `events.jsonl`, controller ingests/bulk-persists, event loss does not occur in normal path. |
@@ -73,10 +72,7 @@ This section is the smallest must-pass set. Keep it narrowly scoped, determinist
 | INT-074 | Engineering plan-reviewer DOF minimization gate | Engineering plan reviewer rejects excessive/unjustified `final_assembly.parts[*].dofs` assignments with deterministic suspicion threshold (`len(dofs) > 3` must reject unless explicit accepted mechanism-level justification exists) and re-runs reviewer-side `validate_and_price` (or equivalent wrapped validator), rejecting on mismatch/failure. |
 | INT-075 | Engineering execution-reviewer over-actuation deviation gate | Engineering execution reviewer flags over-actuated plan deviations (including unjustified DOF expansion) even when a single simulation run passes, and persists reviewer evidence/events for the deviation decision. |
 | INT-101 | Physics backend selection contract | Setting `physics.backend: "mujoco"` in config selects the MuJoCo backend; `"genesis"` selects Genesis. Default (`genesis`) is used when not specified. `simulation_backend_selected` event emitted. |
-| INT-112 | Genesis rigid-body mode: backend ignores FEM/fluid config | Running with default backend (`genesis`) ignores `fluids`, `fluid_objectives`, `stress_objectives`, and `fem_enabled` if not specified; existing benchmarks pass unchanged. |
-| INT-113 | Electronics planner explicit submission gate | Electronics planner must emit explicit `submit_engineering_plan` (`TOOL_START`) with `node_type=electronics_planner`; after submission, episode must reach `PLANNED` (and must not transition to `FAILED`). Missing submission fails closed. |
 | INT-114 | Benchmark planner explicit submission gate | Benchmark planner must emit explicit `submit_benchmark_plan` (`TOOL_START`) with `node_type=benchmark_planner`; successful submission must materialize `.manifests/benchmark_plan_review_manifest.json`, canonicalize planner-authored benchmark estimate fields into runtime-derived caps (`max_unit_cost`, `max_weight_g`), require schema-valid `benchmark_assembly_definition.yaml`, unblock `Benchmark Plan Reviewer`, and only after benchmark plan-review approval may the episode reach `PLANNED` (and must not transition to `FAILED`). Missing submission fails closed. |
-| INT-129 | COTS geometry import runtime and motor MVP | A known motor `part_id` resolves through `ServoMotor.from_catalog_id`; the returned proxy preserves the catalog `cots_id`, explicit label, and origin-at-mounting-datum / `+Z` shaft-axis frame; invalid motor IDs fail closed; a declared COTS motor in `assembly_definition.yaml.cots_parts` must be instantiated in authored geometry or validation fails. |
 
 ### P0 negative integration tests (`INT-NEG-###`)
 
@@ -103,7 +99,6 @@ This section is the smallest must-pass set. Keep it narrowly scoped, determinist
 | INT-060 | Langfuse feedback forwarding contract | `POST /episodes/{episode_id}/traces/{trace_id}/feedback` forwards score/comment to Langfuse and persists local feedback fields; missing Langfuse client returns `503`, missing `langfuse_trace_id` returns `400`. |
 | INT-064 | COTS reproducibility metadata persistence | COTS queries/selection persist reproducibility metadata (`catalog_version`, `bd_warehouse_commit`, `generated_at`, `catalog_snapshot_id`) plus normalized query snapshot, ordered candidates, and final selected `part_id`s; all are exposed in downstream artifacts/events used for replayable evaluation, and handoff is invalid when selected parts exist without this metadata. |
 | INT-131 | COTS inventory exactness under pair-swapped rows | Pair-swapped COTS rows fail inventory exactness and surface the mismatch through the live integration boundary. |
-| INT-221 | Frame-indexed object pose capture history | Published simulation bundles persist `objects.parquet` as frame-indexed pose history with multiple sampled capture points for a moving object, and the public render-bundle query route returns those rows in frame order with changing positions across frames. |
 | INT-217 | Solution motor backend parity | A solution-authored moving part declared once in `assembly_definition.yaml` materializes as a validated controllable actuator on both MuJoCo and Genesis; unresolved or unsupported motor mappings fail closed before simulation can report success; `get_all_actuator_names()` and `get_actuator_state()` expose the same solution motor identity and force limits used by power gating and overload monitoring. |
 
 ### P1 negative integration tests (`INT-NEG-###`)
@@ -113,26 +108,7 @@ This section is the smallest must-pass set. Keep it narrowly scoped, determinist
 
 ### P2: Multi-episode and evaluation architecture tests
 
-| ID | Test | Required assertions |
-| -- | -- | -- |
-| INT-046 | Plan-to-CAD fidelity regression | Reconstruct-from-plan cycles preserve geometry fidelity within configured tolerance. |
-| INT-047 | Cross-seed transfer improvement eval | Solving one seed in a batch improves success over related seeds relative to baseline. |
-| INT-048 | Reviewer optimality regression | Cases where reviewer marked "optimal" are later checked against materially cheaper alternatives. |
-| INT-049 | Evaluation metric materialization | Architecture metrics are computable from persisted events/artifacts without missing fields. |
-| INT-050 | Dataset readiness completeness | A completed episode has all mandatory artifacts/traces/validation markers for training readiness. |
-| INT-051 | Journal quality integration checks | Journal entries are linked to observation IDs and satisfy required structure at ingestion time. |
-| INT-052 | Skill effectiveness tracking | Performance delta before/after skill version updates is measurable from stored metadata. |
-| INT-151 | Breakage prevention eval | Engineer solutions do not cause `PART_BREAKAGE` failure in 90% of cases across runtime-randomization batches of jittered scenes. |
-| INT-152 | Safety factor range eval | Average safety factor across all parts is between 1.5 and 5.0 in 80% of solutions (no overdesign, no under-design). |
-| INT-153 | End-to-end fluid benchmark eval | Planner designs fluid challenge → engineer solves → passes containment metric — 50% success rate target. |
-| INT-154 | Electromechanical electrical-design success rate | Given a mechanism with motors, the combined engineering planning plus unified implementation flow produces a valid circuit in 80% on the first attempt and 95% after one retry. |
-| INT-155 | Wire routing survival under jitter | Wire routing survives runtime jitter (no tears across 5 seeds) in 70% of successful solutions. |
-| INT-156 | Circuit-gates-motor correctness | Circuit state correctly gates motor behaviour in 95% of simulations — motors don't spin without power. |
-
-### P2 negative integration tests (`INT-NEG-###`)
-
-| ID | Test | Required assertions |
-| -- | -- | -- |
+No P2 rows are retained after publication pruning.
 
 ### Negative integration tests (`INT-NEG-###`)
 
@@ -172,7 +148,6 @@ benchmark geometry is exposed via `benchmark_script.py`, engineer code lives in
 | INT-019 | Submit overweight/overbudget/out-of-zone or missing-artifact latest revision via API and assert fail-closed reason codes at validation/simulation/review-submission boundaries. | Testing only local numeric comparison helpers. |
 | INT-020 | Execute scenarios over HTTP and assert taxonomy in response + events, and assert reviewer handoff remains blocked for invalid geometry, forbid-hit, early benchmark-payload out-of-bounds, timeout, and instability outcomes while late payload drift after the configured observation window is not itself a benchmark-simulation failure. Build scripts must include `PartMetadata` for all parts. | Mocking simulation result enums. |
 | INT-021 | Run runtime-randomization verification via API and assert one admitted heavy job produces one backend run with batched jittered scenes plus aggregated robustness output. | Single mocked seed result assertion. |
-| INT-022 | Run overload scenario in real simulation path and assert `motor_overload` behavior. | Synthetic return object with overload flag. |
 | INT-023 | Submit invalid fastener/joint setup via run flow and assert validation failure. Verify `PartMetadata` is used for joint definitions. | Unit-test of fastener rule function only. |
 | INT-024 | Run benchmark validation endpoint on conflicting geometry/objectives and assert failure. | Calling validation module directly in process. |
 | INT-025 | Execute real episode; verify worker events ingestion/persistence end-to-end. | Reading only local mock event list. |
@@ -191,13 +166,6 @@ benchmark geometry is exposed via `benchmark_script.py`, engineer code lives in
 | INT-038 | Execute controller function modes via runtime config in real simulation runs. | Direct function math unit tests only. |
 | INT-039 | Trigger render/video via APIs and assert artifact policy behavior in storage. | Mocking renderer outputs. |
 | INT-040 | Verify assets stored in S3 + DB links after real episode completion. | Fake storage client + call-count assertions. |
-| INT-046 | Run multi-episode plan->CAD reconstruction cycle and compare resulting fidelity metrics. | Single-run geometry unit check. |
-| INT-047 | Execute seed-batch episodes and compute transfer uplift from persisted outcomes. | Metric formula unit tests only. |
-| INT-048 | Replay reviewer-optimal cases against follow-up cheaper candidates in real pipeline. | Offline CSV analysis-only tests. |
-| INT-049 | Compute metrics from persisted integration artifacts/events, not synthetic fixtures. | Mocked metric input tables. |
-| INT-050 | Validate dataset readiness from complete real episode artifacts and trace persistence. | Checking static checklist file only. |
-| INT-051 | Ingest real journals from runs and assert link/structure constraints at persistence boundary. | Markdown parser unit tests only. |
-| INT-052 | Compare pre/post skill versions using real run history and measured deltas. | Mocked before/after metric values. |
 | INT-053 | Start real episode and assert workflow IDs/status transitions persisted from Temporal-integrated path. | Fake workflow objects in unit tests. |
 | INT-054 | Disable Temporal service (or break connectivity) in compose and assert failure logging path. | Mocking Temporal client exceptions only. |
 | INT-055 | Complete real upload and assert object metadata persisted with episode linkage. | Storage adapter unit test with fake client only. |
@@ -210,7 +178,6 @@ benchmark geometry is exposed via `benchmark_script.py`, engineer code lives in
 | INT-062 | Generate/fetch worker OpenAPI artifact(s) in CI/integration environment and assert light+heavy endpoint coverage is present. | Linting a stale committed schema file without runtime generation. |
 | INT-063 | Attempt writes to mounted paths and writes to workspace root via live file APIs; assert read-only mounts and writable workspace behavior across worker surfaces. | Asserting config constants for mount paths without exercising container mounts. |
 | INT-064 | Execute COTS lookup and artifact handoff via APIs; assert persisted `catalog_version`, `bd_warehouse_commit`, `generated_at`, `catalog_snapshot_id`, normalized query snapshot, ordered candidates, and selected `part_id`s in events/records/artifacts. | Unit-testing metadata dataclass construction only. |
-| INT-129 | Exercise `ServoMotor.from_catalog_id("ServoMotor_DS3218")` through the live worker runtime, assert the proxy keeps the catalog identity/label/frame contract, assert unknown motor IDs fail closed, and run the real validation path to prove declared-but-unused COTS parts are rejected. | Importing the geometry class and testing the constructor in-process without worker HTTP, or asserting only the catalog row without the authored-geometry validation gate. |
 | INT-070 | Attempt mounted-path traversal via live file APIs (e.g., `/utils/../...`); assert deterministic `403` and no cross-boundary access. | Path-normalization unit checks without exercising worker HTTP/file boundary. |
 | INT-071 | Execute per-agent file operations via live file APIs and assert `agents_config.yaml` precedence (`deny` > `allow`, unmatched deny, agent override), strict deny of `.manifests/**` to all agent roles, and reviewer-only stage-specific write scopes for the review decision/comments YAML pairs. | In-process path policy matcher and precedence helpers only. |
 | INT-072 | Submit refusal artifacts through real planner/reviewer flow; assert invalid/missing `plan_refusal.md`, invalid role reasons, or empty evidence are rejected; assert `confirm_plan_refusal`/`reject_plan_refusal` transitions. | Frontmatter parser-only tests without exercising orchestration route/state transitions. |
@@ -218,24 +185,16 @@ benchmark geometry is exposed via `benchmark_script.py`, engineer code lives in
 | INT-074 | Run planner->plan-reviewer flow over HTTP with seeded over-actuated plans; assert plan reviewer rejects unjustified DOFs, enforces deterministic threshold (`len(dofs) > 3` reject unless explicitly accepted justification), and re-runs reviewer-side `validate_and_price` (or equivalent) with fail-closed rejection on mismatch/failure. | Unit tests that only compare parsed DOF lists or helper outputs without real orchestration/handover boundaries. |
 | INT-075 | Run coder->execution-reviewer flow over HTTP with seeded plan-deviation over-actuation; assert execution reviewer flags deviation with persisted review evidence/event even when a single simulation run passes. | Unit tests that only compare parsed DOF lists or helper outputs without real orchestration/handover boundaries. |
 | INT-101 | Set `physics.backend` in config and hit simulation endpoint; assert backend-selected event and correct engine used. | Importing backend factory and calling it directly. |
-| INT-112 | Run existing rigid-body benchmark with default configuration; assert Genesis is used and success is unchanged despite fluids/FEM config being present in system but not active for the benchmark. | Importing backend and toggling flags in unit test. |
-| INT-113 | Run electronics-planner flow over controller APIs and assert traces include `TOOL_START submit_engineering_plan` with `node_type=electronics_planner`; after submission, episode must reach `PLANNED` and not `FAILED`; missing submission must not reach success-like status. | Mocking planner node returns or checking only status without trace-level `submit_engineering_plan` evidence. |
 | INT-114 | Run benchmark-planner flow over controller APIs and assert traces include `TOOL_START submit_benchmark_plan` with `node_type=benchmark_planner`; assert `.manifests/benchmark_plan_review_manifest.json` is created and benchmark plan reviewer entry is unblocked only for the latest planner revision; after plan-review approval, episode must reach `PLANNED` and not `FAILED`; benchmark planner must not receive `benchmark_script.py` before approval, because that file is introduced later by `Benchmark Coder`; missing submission must not reach success-like status. | Mocking benchmark planner internals or asserting only terminal status without planner submission trace evidence. |
 | INT-210 | Run a MuJoCo simulation that captures video frames, assert `VideoRenderer.save()` delegates encoding to `worker-renderer`, and verify the final MP4 is materialized in the session workspace. | Keeping MP4 encoding in-process or asserting only a synthetic video stub. |
 | INT-211 | Run a Genesis-backed simulation that captures render frames and assert the same renderer-worker video path and storage contract are used for the final MP4. | Testing Genesis frame capture without verifying the render handoff or artifact persistence. |
-| INT-151 | Run engineer episodes via API with runtime-randomization batches; assert \<10% of jittered scenes produce `PART_BREAKAGE`. | Single mock seed assertion. |
-| INT-152 | Collect safety factors from multi-episode runs via API; assert average 1.5–5.0 in ≥80%. | Manual safety factor calculation. |
-| INT-153 | Execute planner→engineer fluid benchmark end-to-end via APIs; assert ≥50% pass containment metric. | Offline metric analysis only. |
-| INT-154 | Execute the combined engineering planning plus unified implementation flow on a motor-mechanism benchmark via APIs; assert ≥80% valid circuit first attempt. | Mocking circuit validation result. |
-| INT-155 | Execute wire-routed assemblies across 5 seeds via API; assert ≥70% survive without `FAILED_WIRE_TORN`. | Single-seed unit test only. |
-| INT-156 | Run electromechanical simulations via API; assert ≥95% correctly gate motor on/off based on circuit state. | Asserting `is_powered` return values only. |
 
 ## Recommended suite organization
 
 - `tests/integration/smoke/`: INT-001..INT-004 (fast baseline).
-- `tests/integration/architecture_p0/`: INT-005..INT-030, INT-053..INT-056, INT-061..INT-063, INT-070..INT-075, INT-101, INT-112..INT-114, INT-129.
-- `tests/integration/architecture_p1/`: INT-031..INT-040, INT-046..INT-052, INT-057..INT-060, INT-064, INT-131, INT-151..INT-156, INT-210, INT-211, INT-217, INT-221.
-- `tests/integration/architecture_p2/`: (TODO: find tests here)
+- `tests/integration/architecture_p0/`: INT-005..INT-021, INT-023..INT-030, INT-053..INT-056, INT-061..INT-063, INT-070..INT-075, INT-101, INT-114, INT-187.
+- `tests/integration/architecture_p1/`: INT-031..INT-040, INT-057..INT-060, INT-064, INT-131, INT-210, INT-211, INT-217.
+- `tests/integration/architecture_p2/`: none retained after publication pruning.
 
 ## Notes
 

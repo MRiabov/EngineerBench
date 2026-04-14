@@ -1188,6 +1188,18 @@ The safe order is:
   `INT-005`, `INT-014`, `INT-034`, `INT-114`, `INT-129`, and `INT-142`
   mock-response entries.
 
+#### Integration test catalog removal pack
+
+- [x] Drop the publication-bulk rows from `specs/integration-test-list.md`
+  that do not stay in the trimmed publication bundle:
+  - `INT-022`
+  - `INT-046`..`INT-052`
+  - `INT-112`
+  - `INT-113`
+  - `INT-129`
+  - `INT-151`..`INT-156`
+  - `INT-221`
+
 ### Final publication bundle
 
 The publication bundle keeps the backend core that supports the paper claims:
