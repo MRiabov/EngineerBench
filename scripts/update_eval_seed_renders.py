@@ -13,7 +13,7 @@ if str(ROOT) not in sys.path:
 
 from evals.logic.dataset_selection import (  # noqa: E402
     parse_level_filters,
-    resolve_agents,
+    resolve_agents_for,
 )
 from evals.logic.stack_profiles import apply_stack_profile_env  # noqa: E402
 from scripts.internal.eval_run_lock import (  # noqa: E402
@@ -24,6 +24,7 @@ from scripts.internal.eval_run_lock import (  # noqa: E402
 from scripts.internal.eval_seed_selection import (  # noqa: E402
     infer_seed_agent_for_task_id,
     load_seed_dataset,
+    seed_dataset_agents,
 )
 from shared.enums import AgentName  # noqa: E402
 from shared.workers.schema import RenderManifest  # noqa: E402
@@ -190,7 +191,7 @@ def _parse_args() -> argparse.Namespace:
         help=(
             "Agent dataset(s) to update. Supports a single agent, repeated "
             "flags, comma-separated values, list syntax like [a,b], or 'or' "
-            "separators. Use 'all' to run every configured agent. Omit when "
+            "separators. Use 'all' to run every seed-backed agent. Omit when "
             "--task-id is set to infer the matching agent automatically."
         ),
     )
@@ -267,7 +268,10 @@ def _update_item(
 
 async def _async_main(args: argparse.Namespace) -> int:
     if args.agent:
-        agents = resolve_agents(args.agent)
+        agents = resolve_agents_for(
+            args.agent,
+            available_agents=seed_dataset_agents(root=ROOT),
+        )
     elif args.task_id:
         agents = [infer_seed_agent_for_task_id(args.task_id, root=ROOT)]
     else:

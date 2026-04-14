@@ -414,13 +414,28 @@ def _refresh_engineer_plan_bundle(
         AgentName.ENGINEER_PLANNER
     )
     source_script_sha256 = hashlib.sha256(source_script_path.read_bytes()).hexdigest()
+
+    # For engineer_coder and later stages, the current_role.json will be set to
+    # the later stage role, but we still want to render the solution_script.py.
+    # Read the actual current role and use it for the render call.
+    from shared.script_contracts import CURRENT_ROLE_MANIFEST_PATH
+
+    manifest_path = artifact_dir / CURRENT_ROLE_MANIFEST_PATH
+    if manifest_path.exists():
+        import json
+
+        current_role_data = json.loads(manifest_path.read_text())
+        agent_role = current_role_data.get("agent_name", "engineer_planner")
+    else:
+        agent_role = "engineer_planner"
+
     response = render_static_preview(
         bundle_base64=bundle_workspace_base64(staging_root),
         script_path=Path(
             authored_script_path_for_agent(AgentName.ENGINEER_PLANNER)
         ).name,
         session_id=session_id,
-        agent_role="engineer_planner",
+        agent_role=agent_role,
     )
     if not response.success:
         raise RuntimeError(

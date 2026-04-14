@@ -9,12 +9,27 @@ from shared.enums import AgentName
 
 
 def resolve_agents(agent_args: Iterable[str]) -> list[AgentName]:
+    return resolve_agents_for(
+        agent_args,
+        available_agents=AGENT_SPECS.keys(),
+    )
+
+
+def resolve_agents_for(
+    agent_args: Iterable[str],
+    *,
+    available_agents: Iterable[AgentName],
+) -> list[AgentName]:
     parsed = parse_cli_list_values(agent_args)
     if not parsed:
         raise SystemExit("No valid --agent values were parsed.")
 
+    available_agents = tuple(available_agents)
+    allowed_agents = set(available_agents)
+    available = ", ".join(sorted(agent.value for agent in available_agents))
+
     if any(agent_arg.lower() == "all" for agent_arg in parsed):
-        return list(AGENT_SPECS.keys())
+        return list(available_agents)
 
     agents: list[AgentName] = []
     seen: set[AgentName] = set()
@@ -22,13 +37,15 @@ def resolve_agents(agent_args: Iterable[str]) -> list[AgentName]:
         try:
             agent = AgentName(agent_arg)
         except ValueError as exc:
-            available = ", ".join(sorted(agent.value for agent in AGENT_SPECS))
             raise SystemExit(
                 f"Unknown agent '{agent_arg}'. Available: {available}"
             ) from exc
 
-        if agent not in AGENT_SPECS:
-            raise SystemExit(f"Agent '{agent.value}' is not configured in AGENT_SPECS.")
+        if agent not in allowed_agents:
+            raise SystemExit(
+                f"Agent '{agent.value}' is not available for this command. "
+                f"Available: {available}"
+            )
         if agent in seen:
             continue
         seen.add(agent)

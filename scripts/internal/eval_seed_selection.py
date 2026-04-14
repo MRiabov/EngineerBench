@@ -9,6 +9,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from evals.logic.models import EvalDatasetItem  # noqa: E402
+from evals.logic.specs import AGENT_SPECS  # noqa: E402
 from shared.enums import AgentName  # noqa: E402
 
 
@@ -17,6 +18,28 @@ def _seed_dataset_roots(root: Path) -> tuple[Path, Path]:
         root / "dataset" / "evals" / "datasets",
         root / "dataset" / "data" / "seed" / "role_based",
     )
+
+
+def _seed_dataset_path_for_agent(
+    agent: AgentName, dataset_roots: tuple[Path, Path]
+) -> Path | None:
+    return next(
+        (
+            dataset_root / f"{agent.value}.json"
+            for dataset_root in dataset_roots
+            if (dataset_root / f"{agent.value}.json").exists()
+        ),
+        None,
+    )
+
+
+def seed_dataset_agents(*, root: Path = ROOT) -> list[AgentName]:
+    dataset_roots = _seed_dataset_roots(root)
+    return [
+        agent
+        for agent in AGENT_SPECS
+        if _seed_dataset_path_for_agent(agent, dataset_roots) is not None
+    ]
 
 
 def infer_seed_agent_for_task_id(task_id: str, *, root: Path = ROOT) -> AgentName:
@@ -62,14 +85,7 @@ def load_seed_dataset(
     root: Path = ROOT,
 ) -> list[EvalDatasetItem]:
     dataset_roots = _seed_dataset_roots(root)
-    json_path = next(
-        (
-            dataset_root / f"{agent.value}.json"
-            for dataset_root in dataset_roots
-            if (dataset_root / f"{agent.value}.json").exists()
-        ),
-        None,
-    )
+    json_path = _seed_dataset_path_for_agent(agent, dataset_roots)
     if json_path is None:
         searched = ", ".join(str(path) for path in dataset_roots)
         raise FileNotFoundError(

@@ -227,17 +227,20 @@ def select_static_preview_render_subdir(
             "select_static_preview_render_subdir received a role that does not "
             f"match .manifests/current_role.json: {agent_role} != {active_role.value}"
         )
-    return (
-        "benchmark_renders"
-        if active_role
-        in {
-            AgentName.BENCHMARK_PLANNER,
-            AgentName.BENCHMARK_PLAN_REVIEWER,
-            AgentName.BENCHMARK_CODER,
-            AgentName.BENCHMARK_REVIEWER,
-        }
-        else "final_solution_submission_renders"
-    )
+    if active_role in {
+        AgentName.BENCHMARK_PLANNER,
+        AgentName.BENCHMARK_PLAN_REVIEWER,
+        AgentName.BENCHMARK_CODER,
+        AgentName.BENCHMARK_REVIEWER,
+    }:
+        return "benchmark_renders"
+    if active_role in {
+        AgentName.ENGINEER_PLANNER,
+        AgentName.ENGINEER_PLAN_REVIEWER,
+        AgentName.ENGINEER_CODER,
+    }:
+        return "engineer_plan_renders"
+    return "final_solution_submission_renders"
 
 
 def _build_preview_artifacts(

@@ -2937,7 +2937,7 @@ async def test_codex_role_scoped_planner_wrapper_rejects_mismatched_role(
     [
         (
             "dataset/data/seed/role_based/benchmark_plan_reviewer.json",
-            "bpr-012-gap-bridge-hidden-dof",
+            "bpr-012",
             AgentName.BENCHMARK_PLAN_REVIEWER,
             (
                 "You are the Plan Reviewer.",
@@ -3275,6 +3275,34 @@ def test_validate_eval_seed_accepts_curated_rows_and_preserves_redundancy_metada
         assert "Validated 1 row(s): all passed." in completed.stdout, completed.stdout
         assert f"PASS {agent_name} {row_id}:" in completed.stdout, completed.stdout
 
+    all_agents = subprocess.run(
+        [
+            sys.executable,
+            "scripts/validate_eval_seed.py",
+            "--skip-env-up",
+            "--agent",
+            "all",
+            "--limit",
+            "1",
+            "--concurrency",
+            "1",
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=300,
+        env=_validate_eval_seed_env(),
+    )
+    all_agents_output = "\n".join(
+        part for part in (all_agents.stdout, all_agents.stderr) if part
+    )
+    assert "benchmark_coder" in all_agents_output, all_agents_output
+    assert "engineer_execution_reviewer" in all_agents_output, all_agents_output
+    assert "skill_agent" not in all_agents_output, all_agents_output
+    assert "git_agent" not in all_agents_output, all_agents_output
+    assert "journalling_agent" not in all_agents_output, all_agents_output
+
     for manifest_path in (
         ROOT / "dataset/data/generated/component_seeded/v0.0.1/manifest.json",
         ROOT / "dataset/data/generated/workflow/v0.0.1/manifest.json",
@@ -3329,7 +3357,7 @@ def test_validate_eval_seed_removes_preview_bundles_from_all_seed_artifacts():
             "--agent",
             "benchmark_planner",
             "--task-id",
-            "bp-001-forbid-zone",
+            "bp-001",
             "--fail-fast",
             "--concurrency",
             "1",
@@ -3347,7 +3375,7 @@ def test_validate_eval_seed_removes_preview_bundles_from_all_seed_artifacts():
     )
 
     assert completed.returncode == 0, combined_output
-    assert "PASS benchmark_planner bp-001-forbid-zone:" in completed.stdout, (
+    assert "PASS benchmark_planner bp-001:" in completed.stdout, (
         completed.stdout
     )
     assert "black/empty" not in combined_output, combined_output
@@ -3416,7 +3444,7 @@ def test_validate_eval_seed_errors_only_suppresses_pass_output():
             "--agent",
             "benchmark_planner",
             "--task-id",
-            "bp-001-forbid-zone",
+            "bp-001",
             "--fail-fast",
             "--concurrency",
             "1",
@@ -3431,7 +3459,7 @@ def test_validate_eval_seed_errors_only_suppresses_pass_output():
     )
 
     assert completed.returncode == 0, completed.stderr
-    assert "PASS benchmark_planner bp-001-forbid-zone:" not in completed.stdout
+    assert "PASS benchmark_planner bp-001:" not in completed.stdout
     assert "Validated 1 row(s): all passed." not in completed.stdout
 
 
@@ -3450,7 +3478,7 @@ def test_validate_eval_seed_skip_env_up_can_join_shared_eval_lock(tmp_path: Path
                 "--agent",
                 "benchmark_planner",
                 "--task-id",
-                "bp-001-forbid-zone",
+                "bp-001",
                 "--fail-fast",
                 "--concurrency",
                 "1",
@@ -3471,7 +3499,7 @@ def test_validate_eval_seed_skip_env_up_can_join_shared_eval_lock(tmp_path: Path
     )
 
     assert completed.returncode == 0, combined_output
-    assert "PASS benchmark_planner bp-001-forbid-zone:" in completed.stdout, (
+    assert "PASS benchmark_planner bp-001:" in completed.stdout, (
         completed.stdout
     )
     assert not state_path.exists(), state_path
@@ -3494,7 +3522,7 @@ def test_validate_eval_seed_skip_env_up_fails_while_exclusive_eval_lock_is_held(
                 "--agent",
                 "benchmark_planner",
                 "--task-id",
-                "bp-001-forbid-zone",
+                "bp-001",
                 "--fail-fast",
                 "--concurrency",
                 "1",
