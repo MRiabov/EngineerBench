@@ -328,12 +328,6 @@ class UpdateObjectivesRequest(BaseModel):
     target_quantity: int | None = Field(default=None, ge=1)
 
 
-class RunSimulationRequest(BaseModel):
-    session_id: str
-    compound_json: str = "{}"
-    backend: SimulatorBackendType = Field(default_factory=get_default_simulator_backend)
-
-
 class FeedbackRequest(BaseModel):
     score: Literal[0, 1]
     comment: str | None = None

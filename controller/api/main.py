@@ -85,10 +85,6 @@ app.include_router(datasets.router)
 app.include_router(script_tools.router)
 app.include_router(skills.router)
 app.include_router(cots.router)
-from controller.api.routes import simulation
-
-app.include_router(simulation.router, prefix="/api")
-app.include_router(simulation.router)
 
 
 from controller.api.schemas import (

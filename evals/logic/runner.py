@@ -118,8 +118,6 @@ from scripts.internal.eval_run_lock import (
     downgrade_eval_run_lock_to_shared,
     release_eval_run_lock,
 )
-from shared.agents.config import (
-)
 from shared.enums import (
     AgentName,
     EvalMode,
@@ -897,11 +895,6 @@ async def main():
                             for item in data
                             if item.get("complexity_level") in selected_levels
                         ]
-                    data = [
-                        item
-                        for item in data
-                        if not item.get("technical_drawing_mode")
-                    ]
                     if args.limit > 0:
                         if args.random:
                             data = random.sample(data, k=min(args.limit, len(data)))

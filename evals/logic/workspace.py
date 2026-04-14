@@ -468,68 +468,6 @@ async def _write_missing_template_files(
     return copied
 
 
-async def _ensure_engineer_drafting_contract(worker: WorkerClient) -> list[str]:
-    assembly_path = "assembly_definition.yaml"
-    if not await worker.exists(assembly_path):
-        return []
-
-    raw_content = await worker.read_file(assembly_path)
-    try:
-        parsed = yaml.safe_load(raw_content) or {}
-        assembly = AssemblyDefinition.model_validate(parsed)
-    except Exception:
-        (
-            benchmark_max_unit_cost_usd,
-            benchmark_max_weight_g,
-        ) = await _load_benchmark_caps(worker)
-        starter = _starter_engineer_assembly(
-            benchmark_max_unit_cost_usd, benchmark_max_weight_g
-        )
-        await worker.write_file(
-            assembly_path,
-            yaml.safe_dump(
-                starter.model_dump(mode="json", by_alias=True, exclude_none=True),
-                sort_keys=False,
-            ),
-            overwrite=True,
-            bypass_agent_permissions=True,
-        )
-        return [assembly_path]
-
-    return [assembly_path]
-
-
-async def _ensure_benchmark_drafting_contract(worker: WorkerClient) -> list[str]:
-    assembly_path = "benchmark_assembly_definition.yaml"
-    if not await worker.exists(assembly_path):
-        return []
-
-    raw_content = await worker.read_file(assembly_path)
-    try:
-        parsed = yaml.safe_load(raw_content) or {}
-        assembly = AssemblyDefinition.model_validate(parsed)
-    except Exception:
-        (
-            benchmark_max_unit_cost_usd,
-            benchmark_max_weight_g,
-        ) = await _load_benchmark_caps(worker)
-        starter = _starter_benchmark_assembly(
-            benchmark_max_unit_cost_usd, benchmark_max_weight_g
-        )
-        await worker.write_file(
-            assembly_path,
-            yaml.safe_dump(
-                starter.model_dump(mode="json", by_alias=True, exclude_none=True),
-                sort_keys=False,
-            ),
-            overwrite=True,
-            bypass_agent_permissions=True,
-        )
-        return [assembly_path]
-
-    return [assembly_path]
-
-
 async def seed_eval_workspace(
     *,
     item: EvalDatasetItem,
@@ -602,45 +540,6 @@ async def seed_eval_workspace(
             )
             seeded_paths.append(rel_path)
 
-        if (
-            agent_name in _ENGINEER_DRAFTING_TARGETS
-            and _engineering_technical_drawing_mode_active()
-        ):
-            seeded_paths.extend(
-                await _write_missing_template_files(
-                    worker, load_template_repo_files("engineer/drafting")
-                )
-            )
-            seeded_paths.extend(await _ensure_engineer_drafting_contract(worker))
-        if (
-            agent_name in _ENGINEER_BENCHMARK_CONTEXT_TARGETS
-            and _benchmark_technical_drawing_mode_active()
-        ):
-            seeded_paths.extend(
-                await _write_missing_template_files(
-                    worker, load_template_repo_files("benchmark_generator/drafting")
-                )
-            )
-        if (
-            agent_name in _BENCHMARK_DRAFTING_TARGETS
-            and _benchmark_technical_drawing_mode_active()
-        ):
-            seeded_paths.extend(
-                await _write_missing_template_files(
-                    worker, load_template_repo_files("benchmark_generator/drafting")
-                )
-            )
-            seeded_paths.extend(await _ensure_benchmark_drafting_contract(worker))
-        if (
-            agent_name in _ENGINEER_DRAFTING_TARGETS
-            and _engineering_technical_drawing_mode_active()
-        ) or (
-            agent_name in _BENCHMARK_DRAFTING_TARGETS
-            and _benchmark_technical_drawing_mode_active()
-        ):
-            seeded_paths.extend(
-                await _ensure_drafting_prompt(worker, agent_name=agent_name)
-            )
     finally:
         await worker.aclose()
 

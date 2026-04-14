@@ -1,14 +1,9 @@
-import re
 from pathlib import Path
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from shared.enums import AgentName, EvalMode, ReviewDecision
-
-_DRAWING_SPLIT_TASK_ID_RE = re.compile(
-    r"^[a-z]{1,12}-\d{3}-drawing-(?:off|minimal|full)$", re.IGNORECASE
-)
 
 
 class AgentEvalSpec(BaseModel):

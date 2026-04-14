@@ -8,8 +8,6 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from evals.logic.dataset_selection import (
-)
 from evals.logic.models import EvalDatasetItem  # noqa: E402
 from shared.enums import AgentName  # noqa: E402
 
@@ -85,7 +83,6 @@ def load_seed_dataset(
         data = [item for item in data if item["id"] == task_id]
     if levels:
         data = [item for item in data if item.get("complexity_level") in levels]
-    data = [item for item in data if not item.get("technical_drawing_mode")]
     if limit > 0:
         data = data[:limit]
 

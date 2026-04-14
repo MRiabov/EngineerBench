@@ -877,10 +877,11 @@ async def execute_agent_task(
                     _extract_result_field(result, "entry_validation_trace_emitted")
                 ):
                     entry_context = _extract_entry_validation_context(result)
+                    entry_context_data = entry_context.model_dump(mode="json")
                     trace_metadata = {
                         "source": "node_entry_validation",
                         "status": _result_status_lower(result),
-                        **entry_context,
+                        **entry_context_data,
                     }
                     db.add(
                         Trace(
@@ -1557,10 +1558,11 @@ async def continue_agent_task(
                     _extract_result_field(result, "entry_validation_trace_emitted")
                 ):
                     entry_context = _extract_entry_validation_context(result)
+                    entry_context_data = entry_context.model_dump(mode="json")
                     trace_metadata = {
                         "source": "node_entry_validation",
                         "status": _result_status_lower(result),
-                        **entry_context,
+                        **entry_context_data,
                     }
                     db.add(
                         Trace(

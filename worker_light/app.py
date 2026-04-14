@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import os
 
 import structlog
 from fastapi import FastAPI, Request
