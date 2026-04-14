@@ -990,6 +990,7 @@ async def continue_episode(
 
     return {"status": ResponseStatus.ACCEPTED, "message": "Message sent to agent"}
 
+
 class TraceResponse(BaseModel):
     id: int
     user_session_id: uuid.UUID | None = None

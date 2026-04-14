@@ -221,8 +221,7 @@ class SimulationLoop:
             self.body_names = [
                 b
                 for b in self.backend.get_all_body_names()
-                if b not in ["world", "0"]
-                and not b.startswith("zone_")
+                if b not in ["world", "0"] and not b.startswith("zone_")
             ]
 
             # Cache actuator limits for monitoring

@@ -1474,9 +1474,7 @@ def _prepare_parts_db(repo_root: Path) -> None:
     if not needs_population:
         return
 
-    _runner_status(
-        "parts.db missing catalog entries. Populating COTS database..."
-    )
+    _runner_status("parts.db missing catalog entries. Populating COTS database...")
     env = os.environ.copy()
     env["PYTHONPATH"] = "."
     _run(["uv", "run", "python", "-m", "shared.cots.indexer"], env=env)

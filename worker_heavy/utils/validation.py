@@ -10,7 +10,7 @@ import tempfile
 import textwrap
 import uuid
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any
 
 import structlog
 import yaml
@@ -35,7 +35,6 @@ from shared.models.simulation import (
     SimulationMetrics,
     SimulationResult,
 )
-from shared.observability.events import emit_event
 from shared.observability.storage import S3Client, S3Config
 from shared.rendering import (
     append_render_bundle_index,
@@ -1581,9 +1580,7 @@ def validate(
         for i in range(len(solids)):
             for j in range(i + 1, len(solids)):
                 label_i = getattr(solids[i], "label", None) or f"unlabeled_solid_{i}"
-                label_j = (
-                    getattr(solids[j], "label", None) or f"unlabeled_solid_{j}"
-                )
+                label_j = getattr(solids[j], "label", None) or f"unlabeled_solid_{j}"
                 intersection = solids[i].intersect(solids[j])
                 intersection_volume = _shape_volume(intersection)
                 if intersection_volume > 0.1:

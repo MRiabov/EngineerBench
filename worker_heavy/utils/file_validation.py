@@ -40,7 +40,6 @@ from shared.script_contracts import (
     SOLUTION_SCRIPT_PATH,
     plan_path_for_agent,
 )
-from shared.simulation.schemas import SimulatorBackendType
 from shared.workers.workbench_models import ManufacturingConfig
 from worker_heavy.utils.dfm import (
     validate_declared_assembly_cost,

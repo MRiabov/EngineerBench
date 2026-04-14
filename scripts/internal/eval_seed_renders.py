@@ -416,7 +416,9 @@ def _refresh_engineer_plan_bundle(
     source_script_sha256 = hashlib.sha256(source_script_path.read_bytes()).hexdigest()
     response = render_static_preview(
         bundle_base64=bundle_workspace_base64(staging_root),
-        script_path=Path(authored_script_path_for_agent(AgentName.ENGINEER_PLANNER)).name,
+        script_path=Path(
+            authored_script_path_for_agent(AgentName.ENGINEER_PLANNER)
+        ).name,
         session_id=session_id,
         agent_role="engineer_planner",
     )
@@ -439,14 +441,14 @@ def _refresh_engineer_plan_bundle(
             )
 
         manifest = normalize_render_manifest(
-                render_paths=saved_paths,
-                workspace_root=tmp_root,
-                episode_id=artifact_dir.name,
-                worker_session_id=artifact_dir.name,
-                bundle_path="renders/engineer_plan_renders",
-                drafting=False,
-                source_script_sha256=source_script_sha256,
-            )
+            render_paths=saved_paths,
+            workspace_root=tmp_root,
+            episode_id=artifact_dir.name,
+            worker_session_id=artifact_dir.name,
+            bundle_path="renders/engineer_plan_renders",
+            drafting=False,
+            source_script_sha256=source_script_sha256,
+        )
         manifest_path = (
             tmp_root / "renders" / "engineer_plan_renders" / "render_manifest.json"
         )

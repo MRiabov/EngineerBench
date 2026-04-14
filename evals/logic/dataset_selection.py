@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import Any
 
 from evals.logic.cli_args import parse_cli_int_set, parse_cli_list_values
 from evals.logic.models import EvalDatasetItem

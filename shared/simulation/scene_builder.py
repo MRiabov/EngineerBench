@@ -388,6 +388,7 @@ class CommonAssemblyTraverser:
             zone_size = [bb.size.X / 2, bb.size.Y / 2, bb.size.Z / 2]
         return {"is_zone": is_zone, "type": zone_type, "size": zone_size}
 
+
 class MeshProcessor:
     """Converts build123d geometry into preview-ready mesh files."""
 

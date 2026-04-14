@@ -8,7 +8,7 @@ import numpy as np
 import structlog
 
 from shared.agents import get_video_render_resolution
-from shared.enums import FailureReason, ZoneType
+from shared.enums import ZoneType
 from shared.runtime.headless import configure_headless_rendering
 
 if TYPE_CHECKING:
@@ -28,7 +28,6 @@ except Exception:
 from shared.models.simulation import (
     RendererCapabilities,
     RenderMode,
-    SimulationFailure,
 )
 from shared.simulation.backends import (
     ActuatorState,

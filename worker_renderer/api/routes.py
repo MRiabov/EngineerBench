@@ -13,7 +13,6 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
 
-import numpy as np
 import structlog
 from fastapi import APIRouter, Header, HTTPException
 from PIL import Image
@@ -1381,6 +1380,7 @@ async def api_static_preview(
             "renderer_static_preview_failed", error=str(exc), session_id=x_session_id
         )
         return BenchmarkToolResponse(success=False, message=str(exc))
+
 
 @renderer_router.post(
     "/benchmark/simulation-video", response_model=BenchmarkToolResponse

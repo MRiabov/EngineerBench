@@ -30,7 +30,6 @@ from controller.clients.worker import WorkerClient
 from evals.logic.models import AgentEvalSpec, EvalDatasetItem
 from evals.logic.seed_maintenance import refresh_seed_artifact_manifests
 from shared.agent_templates import load_common_template_files
-from shared.agents.config import load_agents_config
 from shared.current_role import current_role_manifest_json
 from shared.enums import AgentName, EvalMode
 from shared.models.schemas import (

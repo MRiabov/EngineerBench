@@ -261,6 +261,8 @@ class SimulationBackendSelectedEvent(BaseEvent):
     )
     backend: str
     compute_target: str
+
+
 class PhysicsInstabilityEvent(BaseEvent):
     event_type: ObservabilityEventType = ObservabilityEventType.PHYSICS_INSTABILITY
     kinetic_energy: float

@@ -1618,12 +1618,12 @@ class AssemblyDefinition(StrictContractModel):
                 for p_config in item.parts:
                     if p_config.config.dofs:
                         parts.append(
-                            MovingPart(part_name=p_config.name, dofs=p_config.config.dofs)
+                            MovingPart(
+                                part_name=p_config.name, dofs=p_config.config.dofs
+                            )
                         )
             elif isinstance(item, PartConfig) and item.config.dofs:
-                parts.append(
-                    MovingPart(part_name=item.name, dofs=item.config.dofs)
-                )
+                parts.append(MovingPart(part_name=item.name, dofs=item.config.dofs))
 
         for item in self.final_assembly:
             process_item(item)

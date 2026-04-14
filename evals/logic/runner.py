@@ -73,7 +73,6 @@ from evals.logic.runner_judging import (
     _wait_for_worker_ready,
 )
 from evals.logic.runner_metrics import (
-    METRIC_HANDLERS,
     _load_agent_reward_configs,
     _record_hard_check_outcomes,
     _record_judge_outcomes,
@@ -1020,7 +1019,6 @@ async def main():
                     6,
                 ),
             )
-
 
     overall = (total_pass / total_count * 100) if total_count else 0.0
     logger.info(

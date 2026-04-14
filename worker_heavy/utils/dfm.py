@@ -592,13 +592,9 @@ def validate_and_price(
     # Combine all violations
     all_violations = [
         _prefix_part_violation(label, violation)
-        for violation in (
-            list(result.violations) + build_zone_violations
-        )
+        for violation in (list(result.violations) + build_zone_violations)
     ]
-    is_manufacturable = (
-        result.is_manufacturable and not build_zone_violations
-    )
+    is_manufacturable = result.is_manufacturable and not build_zone_violations
 
     return WorkbenchResult(
         is_manufacturable=is_manufacturable,
