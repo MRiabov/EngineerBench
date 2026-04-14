@@ -147,7 +147,6 @@ class AgentName(StrEnum):
     ENGINEER_EXECUTION_REVIEWER = "engineer_execution_reviewer"
     SKILL_AGENT = "skill_agent"
     GIT_AGENT = "git_agent"
-    COTS_SEARCH = "cots_search"
     JOURNALLING_AGENT = "journalling_agent"
 
 
@@ -174,7 +173,6 @@ class GenerationKind(StrEnum):
     DERIVED = "derived"
     SEEDED_EVAL = "seeded_eval"
     INTEGRATION_TEST = "integration_test"
-    COTS_SEARCH = "cots_search"
     SKILL_AGENT = "skill_agent"
 
 

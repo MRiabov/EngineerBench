@@ -35,23 +35,20 @@ class ObservabilityEventType(StrEnum):
     SIMULATION_REQUEST = "simulation_request"
     # 8. Simulation result (engineer)
     SIMULATION_RESULT = "simulation_result"
-    # 9. COTS search (engineer/planner?)
-    COTS_SEARCH = "cots_search"
-    COTS_SELECTION = "cots_selection"
-    # 10. Plan submission (benchmark)
+    # 9. Plan submission (benchmark)
     PLAN_SUBMISSION_BENCHMARK = "plan_submission_benchmark"
-    # 11. Plan submission (Engineer)
+    # 10. Plan submission (Engineer)
     PLAN_SUBMISSION_ENGINEER = "plan_submission_engineer"
-    # 12. Price/weight failure escalation request (CAD engineer)
+    # 11. Price/weight failure escalation request (CAD engineer)
     ESCALATION_REQUEST = "escalation_request"
-    # 13. Price/weight failure escalation decision (reviewer)
+    # 12. Price/weight failure escalation decision (reviewer)
     ESCALATION_DECISION = "escalation_decision"
     TOOL_INSPECT_MEDIA = "inspect_media_tool"
-    # 14. Submission validation
+    # 13. Submission validation
     SUBMISSION_VALIDATION = "submission_validation"
-    # 15. Cost/weight delta heuristic
+    # 14. Cost/weight delta heuristic
     COST_WEIGHT_DELTA = "cost_weight_delta"
-    # 16. Review decision (full details)
+    # 15. Review decision (full details)
     REVIEW_DECISION = "review_decision"
 
     # 25. Simulation and physics events
@@ -175,27 +172,6 @@ class SimulationResultEvent(BaseEvent):
     compute_time_ms: float
     simulation_run_id: str | None = None
     metadata: SimulationMetadata = Field(default_factory=SimulationMetadata)
-
-
-class COTSSearchEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.COTS_SEARCH
-    query: str
-    results_count: int
-    catalog_version: str | None = None
-    bd_warehouse_commit: str | None = None
-    generated_at: str | None = None
-    cots_query_id: str | None = None
-    catalog_snapshot_id: str | None = None
-    candidates: list[str] = Field(default_factory=list)  # Ordered part_ids
-    selected_part_ids: list[str] = Field(default_factory=list)
-
-
-class COTSSelectionEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.COTS_SELECTION
-    selected_part_ids: list[str]
-    query_ids: list[str] = Field(default_factory=list)
-
-
 class PlanSubmissionBenchmarkEvent(BaseEvent):
     event_type: ObservabilityEventType = (
         ObservabilityEventType.PLAN_SUBMISSION_BENCHMARK
