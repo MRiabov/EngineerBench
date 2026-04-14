@@ -10,9 +10,7 @@ __all__ = [
     "ManufacturingConfig",
     "ManufacturingMethod",
     "cad",
-    "controllers",
     "fastener_hole",
-    "get_stress_report",
     "preview",
     "render_cad",
     "renderer_client",
@@ -24,13 +22,11 @@ __all__ = [
 
 _LAZY_ATTRS: dict[str, tuple[str, str | None]] = {
     "cad": ("worker_heavy.utils.cad", None),
-    "controllers": ("worker_heavy.utils.controllers", None),
     "renderer_client": ("worker_heavy.utils.renderer_client", None),
     "validate_and_price": ("worker_heavy.utils.dfm", "validate_and_price"),
     "submit_for_review": ("worker_heavy.utils.handover", "submit_for_review"),
     "HoleType": ("worker_heavy.utils.cad", "HoleType"),
     "fastener_hole": ("worker_heavy.utils.cad", "fastener_hole"),
-    "get_stress_report": ("worker_heavy.utils.validation", "get_stress_report"),
     "simulate": ("worker_heavy.utils.validation", "simulate"),
     "validate": ("worker_heavy.utils.validation", "validate"),
     "render_cad": ("worker_heavy.utils.preview", "render_cad"),
