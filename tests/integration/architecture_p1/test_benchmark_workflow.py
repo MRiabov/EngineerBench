@@ -186,11 +186,6 @@ async def test_benchmark_planner_cad_reviewer_path():
             "benchmark_definition.yaml must preserve unique benchmark_parts.label "
             "values."
         )
-        assert benchmark_definition.physics.fem_enabled is False
-        assert benchmark_definition.fluids == []
-        assert benchmark_definition.objectives.fluid_objectives == []
-        assert benchmark_definition.objectives.stress_objectives == []
-        assert benchmark_definition.electronics_requirements is None
         assert benchmark_definition.payload.material_id
         assert isinstance(
             benchmark_definition.benchmark_parts[

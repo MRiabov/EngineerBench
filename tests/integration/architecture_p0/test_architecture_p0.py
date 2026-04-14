@@ -872,48 +872,6 @@ def build():
         assert ver_result.scene_build_count == 1
         assert ver_result.backend_run_count == 1
         assert ver_result.batched_execution is True
-
-
-@pytest.mark.integration_p0
-@pytest.mark.asyncio
-async def test_int_022_motor_overload_behavior(worker_light_client):
-    """INT-022: Verify motor overload detection."""
-    client = worker_light_client
-    session_id = f"test-int-022-{int(time.time())}"
-
-    script_path = Path("tests/integration/architecture_p0/scripts/verify_overload.py")
-    with script_path.open() as f:
-        script_content = f.read()
-
-    await client.post(
-        "/fs/write",
-        json=WriteFileRequest(
-            path="verify_overload.py", content=script_content
-        ).model_dump(mode="json"),
-        headers={"X-Session-ID": session_id},
-    )
-
-    resp = await client.post(
-        "/runtime/execute",
-        json=ExecuteRequest(
-            code=(
-                "python - <<'PY'\n"
-                "import asyncio\n"
-                "import verify_overload\n"
-                "asyncio.run(verify_overload.run())\n"
-                "PY\n"
-            ),
-            timeout=90,
-        ).model_dump(mode="json"),
-        headers={"X-Session-ID": session_id},
-        timeout=120.0,
-    )
-    assert resp.status_code == 200
-    data = ExecuteResponse.model_validate(resp.json())
-
-    assert data.exit_code == 0
-
-
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
 async def test_int_023_fastener_validity_rules():

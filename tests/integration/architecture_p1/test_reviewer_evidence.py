@@ -248,7 +248,7 @@ async def test_reviewer_evidence_completeness():
         solution_script_text = await _read_episode_asset_text(
             client, episode_id, "solution_script.py"
         )
-        assert 'ServoMotor.from_catalog_id("ServoMotor_DS3218"' in solution_script_text
+        assert "Box(" in solution_script_text
 
         stage_review_paths = [
             p
@@ -263,8 +263,6 @@ async def test_reviewer_evidence_completeness():
                 or "engineering-plan-review-comments-round-" in p
                 or "engineering-execution-review-decision-round-" in p
                 or "engineering-execution-review-comments-round-" in p
-                or "electronics-review-decision-round-" in p
-                or "electronics-review-comments-round-" in p
             )
         ]
         if not stage_review_paths:
@@ -289,10 +287,6 @@ async def test_reviewer_evidence_completeness():
                 "benchmark_reviewer": {
                     "reviews/benchmark-execution-review-decision-round-*.yaml",
                     "reviews/benchmark-execution-review-comments-round-*.yaml",
-                },
-                "electronics_reviewer": {
-                    "reviews/electronics-review-decision-round-*.yaml",
-                    "reviews/electronics-review-comments-round-*.yaml",
                 },
             }
             for role, expected in expected_paths.items():

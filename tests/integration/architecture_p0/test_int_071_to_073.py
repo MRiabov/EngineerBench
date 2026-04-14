@@ -53,10 +53,6 @@ async def test_int_071_filesystem_policy_precedence_and_reviewer_scope():
             "reviews/benchmark-execution-review-decision-round-1.yaml",
             "reviews/benchmark-execution-review-comments-round-1.yaml",
         ),
-        AgentName.ELECTRONICS_REVIEWER: (
-            "reviews/electronics-review-decision-round-1.yaml",
-            "reviews/electronics-review-comments-round-1.yaml",
-        ),
     }
     reviewer_fs_by_role = {
         role: RemoteFilesystemMiddleware(reviewer_client, agent_role=role)

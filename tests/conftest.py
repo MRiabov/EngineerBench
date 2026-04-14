@@ -24,7 +24,6 @@ WORKER_HEAVY_URL = os.getenv("WORKER_HEAVY_URL", "http://127.0.0.1:18002")
 # Temporary baseline allowlist for known frontend noise.
 # Goal: keep strict mode actionable while we iteratively eliminate existing issues.
 DEFAULT_BROWSER_ERROR_ALLOWLIST = [
-    r"Failed to parse assembly definition for electronics kb",
     r"Failed to fetch episodes",
     r"TypeError: Failed to fetch",
     r"Failed to hydrate episode after status update TypeError: Failed to fetch",

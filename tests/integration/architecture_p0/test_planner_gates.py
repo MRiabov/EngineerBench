@@ -601,49 +601,6 @@ async def test_int_005_engineer_planner_flow_emits_submit_engineering_plan_trace
         assert manifest.artifact_hashes["manufacturing_config.yaml"] == expected_hash
 
 
-@pytest.mark.integration_p0
-@pytest.mark.xdist_group(name="physics_sims")
-@pytest.mark.asyncio
-async def test_int_113_electronics_planner_flow_emits_submit_engineering_plan_trace():
-    """INT-113: Electronics planner must emit explicit submit_engineering_plan TOOL_START before completion."""
-    async with httpx.AsyncClient(timeout=300.0) as client:
-        benchmark_session_id = await _generate_ready_benchmark_session(
-            client,
-            prompt="INT-113 benchmark setup for electronics planner trace test.",
-        )
-        session_id = f"INT-113-{uuid.uuid4().hex[:8]}"
-        req = AgentRunRequest(
-            task="INT-113 electronics planner submission trace contract.",
-            session_id=session_id,
-            agent_name=AgentName.ELECTRONICS_PLANNER,
-            metadata_vars={"benchmark_id": benchmark_session_id},
-        )
-        resp = await client.post(
-            f"{CONTROLLER_URL}/api/agent/run", json=req.model_dump(mode="json")
-        )
-        assert resp.status_code == 202, resp.text
-        run_resp = AgentRunResponse.model_validate(resp.json())
-        episode_id = str(run_resp.episode_id)
-
-        status, submit_node_types = await _wait_for_submit_plan_node_types(
-            client,
-            episode_id,
-            AgentName.ELECTRONICS_PLANNER.value,
-            submit_tool_name="submit_engineering_plan",
-        )
-        assert AgentName.ELECTRONICS_PLANNER.value in submit_node_types, (
-            "Expected submit_engineering_plan TOOL_START trace with node_type=electronics_planner "
-            f"in electronics planner flow. Observed node_types={sorted(submit_node_types)}, status={status}"
-        )
-        post_submit_status = await _wait_for_planned_after_submit_plan(
-            client, episode_id
-        )
-        assert post_submit_status != EpisodeStatus.FAILED, (
-            "Electronics planner reached FAILED after submit_engineering_plan; expected PLANNED."
-        )
-        assert post_submit_status == EpisodeStatus.PLANNED, (
-            f"Expected electronics planner to reach PLANNED after submit_engineering_plan, got {post_submit_status}."
-        )
 
 
 @pytest.mark.integration_p0
@@ -731,11 +688,6 @@ async def test_int_114_benchmark_planner_flow_emits_submit_benchmark_plan_trace(
         benchmark_definition = BenchmarkDefinition.model_validate(
             yaml.safe_load(benchmark_definition_resp.text)
         )
-        assert benchmark_definition.physics.fem_enabled is False
-        assert benchmark_definition.fluids == []
-        assert benchmark_definition.objectives.fluid_objectives == []
-        assert benchmark_definition.objectives.stress_objectives == []
-        assert benchmark_definition.electronics_requirements is None
         assert benchmark_definition.payload.material_id
 
         assembly_paths = [

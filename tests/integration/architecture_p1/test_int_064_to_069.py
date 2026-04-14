@@ -78,7 +78,7 @@ async def test_int_064_session_workspace_copies_parts_db_catalog():
                     "conn = sqlite3.connect('parts.db')\n"
                     "row = conn.execute(\n"
                     "    'SELECT part_id FROM parts WHERE part_id = ?',\n"
-                    "    ('ServoMotor_SG90',),\n"
+                    "    ('M3_BOLT',),\n"
                     ").fetchone()\n"
                     "print(row[0] if row else '')\n"
                     "PY"
@@ -90,7 +90,7 @@ async def test_int_064_session_workspace_copies_parts_db_catalog():
         assert exec_resp.status_code == 200, exec_resp.text
         data = ExecuteResponse.model_validate(exec_resp.json())
         assert data.exit_code == 0, data
-        assert data.stdout.strip() == "ServoMotor_SG90", data.stdout
+        assert data.stdout.strip() == "M3_BOLT", data.stdout
 
 
         # First write a dummy image

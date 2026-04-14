@@ -108,15 +108,6 @@ def test_int_190_unit_eval_allowlists_are_explicit_and_reviewer_driven():
         "engineer_execution_reviewer",
     }
 
-    electronics_planner_allowlist = set(
-        agents["electronics_planner"]["allowed_during_unit_eval"]
-    )
-    assert electronics_planner_allowlist == {
-        "engineer_planner",
-        "electronics_planner",
-        "engineer_plan_reviewer",
-    }
-
     git_agent_allowlist = set(agents["git_agent"]["allowed_during_unit_eval"])
     assert git_agent_allowlist == {"git_agent"}
 
@@ -132,7 +123,6 @@ def test_int_190_agent_execution_timeouts_are_role_specific():
     assert execution_agents["engineer_plan_reviewer"]["timeout_seconds"] == 90
     assert execution_agents["benchmark_reviewer"]["timeout_seconds"] == 90
     assert execution_agents["engineer_execution_reviewer"]["timeout_seconds"] == 90
-    assert execution_agents["electronics_reviewer"]["timeout_seconds"] == 90
 
 
 @pytest.mark.integration

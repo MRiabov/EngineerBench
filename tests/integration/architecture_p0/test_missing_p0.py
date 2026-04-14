@@ -142,7 +142,7 @@ async def test_int_014_cots_propagation():
             seed_render_preview=False,
         )
         run_req = AgentRunRequest(
-            task="Design a mechanism with a catalog-backed servo motor",
+            task="Design a passive mechanism with a catalog-backed fastener",
             session_id=session_id,
         )
         run_resp = await client.post(
@@ -173,7 +173,7 @@ async def test_int_014_cots_propagation():
         )
         assert plan_resp.status_code == 200
         plan_data = ReadFileResponse.model_validate(plan_resp.json())
-        assert "ServoMotor_DS3218" in plan_data.content
+        assert "M3_BOLT" in plan_data.content
 
         # Verify assembly_definition.yaml contains COTS data
         read_asm_req = ReadFileRequest(path="assembly_definition.yaml")
@@ -184,7 +184,7 @@ async def test_int_014_cots_propagation():
         )
         assert asm_resp.status_code == 200
         asm_data = ReadFileResponse.model_validate(asm_resp.json())
-        assert "ServoMotor_DS3218" in asm_data.content
+        assert "M3_BOLT" in asm_data.content
 
 
 @pytest.mark.integration_p0
