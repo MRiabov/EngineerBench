@@ -486,7 +486,7 @@ async def seed_execution_reviewer_handover(
     )
     review_manifest = ReviewManifest(
         status="ready_for_review",
-        reviewer_stage="engineering_execution_reviewer",
+        reviewer_stage=AgentName.ENGINEER_EXECUTION_REVIEWER,
         session_id=session_id,
         script_path="solution_script.py",
         script_sha256=script_sha256,

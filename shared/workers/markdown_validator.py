@@ -290,10 +290,41 @@ def _validate_plan_md_with_spec(
                     violations.append(
                         "Detailed Calculations must include matching `### CALC-001: <short title>` subsections for every summary-table row."
                     )
-                elif table_ids and heading_ids != table_ids:
-                    violations.append(
-                        "Detailed Calculations summary-table rows and `CALC-*` subsections must match one-to-one in the same order."
-                    )
+                elif table_ids != heading_ids:
+                    if sorted(table_ids) != sorted(heading_ids):
+                        table_id_set = set(table_ids)
+                        heading_id_set = set(heading_ids)
+                        missing_ids = sorted(table_id_set - heading_id_set)
+                        extra_ids = sorted(heading_id_set - table_id_set)
+                        details: list[str] = []
+                        if missing_ids:
+                            details.append(
+                                "missing CALC subsections for table IDs: "
+                                + ", ".join(missing_ids)
+                            )
+                        if extra_ids:
+                            details.append(
+                                "extra CALC subsections without table rows: "
+                                + ", ".join(extra_ids)
+                            )
+                        suffix = f": {'; '.join(details)}" if details else ""
+                        violations.append(
+                            "Detailed Calculations summary-table rows and `CALC-*` subsections must match one-to-one by CALC ID"
+                            + suffix
+                        )
+                    else:
+                        first_mismatch_idx = next(
+                            idx
+                            for idx, (table_id, heading_id) in enumerate(
+                                zip(table_ids, heading_ids, strict=True)
+                            )
+                            if table_id != heading_id
+                        )
+                        violations.append(
+                            "Detailed Calculations summary-table rows and `CALC-*` subsections must appear in the same order; "
+                            f"row {first_mismatch_idx + 1} is `{table_ids[first_mismatch_idx]}` "
+                            f"but subsection {first_mismatch_idx + 1} is `{heading_ids[first_mismatch_idx]}`."
+                        )
 
                 for idx, (line_idx, calc_id) in enumerate(calc_heading_entries):
                     end_idx = (
@@ -391,25 +422,23 @@ def _find_calc_index_table(
     return None
 
 
-def _ordered_heading_positions(
+def _find_heading_positions(
     lines: list[str], headings: list[str]
 ) -> tuple[list[int], list[str]]:
     positions: list[int] = []
     missing: list[str] = []
-    cursor = 0
 
     for heading in headings:
         pattern = re.compile(rf"^\s*{re.escape(heading)}\s*$", re.IGNORECASE)
         found_idx: int | None = None
-        for idx in range(cursor, len(lines)):
-            if pattern.match(lines[idx]):
+        for idx, line in enumerate(lines):
+            if pattern.match(line):
                 found_idx = idx
                 break
         if found_idx is None:
             missing.append(heading)
             continue
         positions.append(found_idx)
-        cursor = found_idx + 1
 
     return positions, missing
 
@@ -425,15 +454,19 @@ def _validate_calc_block(lines: list[str], calc_id: str) -> list[str]:
                     f"{calc_id}: Detailed Calculations subsection contains unsupported heading: {line.strip()}"
                 )
 
-    positions, missing = _ordered_heading_positions(lines, CALC_REQUIRED_SUBHEADINGS)
+    positions, missing = _find_heading_positions(lines, CALC_REQUIRED_SUBHEADINGS)
     if missing:
         violations.append(
             f"{calc_id}: Detailed Calculations subsection is missing required headings: {', '.join(missing)}"
         )
-    if positions != sorted(positions):
-        violations.append(
-            f"{calc_id}: Detailed Calculations subsection headings must appear in the required order."
-        )
+    elif positions != sorted(positions):
+        for idx in range(1, len(positions)):
+            if positions[idx] < positions[idx - 1]:
+                violations.append(
+                    f"{calc_id}: Detailed Calculations subsection headings must appear in the required order; "
+                    f"{CALC_REQUIRED_SUBHEADINGS[idx]} appears before {CALC_REQUIRED_SUBHEADINGS[idx - 1]}."
+                )
+                break
 
     return violations
 

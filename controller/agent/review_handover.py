@@ -215,6 +215,12 @@ def _planner_role_for_reviewer_stage(reviewer_stage: AgentName) -> AgentName:
     return AgentName.ENGINEER_PLANNER
 
 
+def _normalize_reviewer_stage(stage: AgentName | str) -> AgentName:
+    if isinstance(stage, AgentName):
+        return stage
+    return AgentName(str(stage))
+
+
 def _planner_submission_helper_name_for_stage(stage: PlanReviewerStage) -> str:
     if stage == AgentName.BENCHMARK_PLAN_REVIEWER:
         return "submit_benchmark_plan"
@@ -234,7 +240,10 @@ async def _load_review_manifest(
     submission_helper_name: str,
     require_git_revision: bool = True,
 ) -> tuple[ReviewManifest | None, str | None]:
-    manifest_raw = await worker_client.read_file_optional(manifest_path)
+    manifest_raw = await worker_client.read_file_optional(
+        manifest_path,
+        bypass_agent_permissions=True,
+    )
     if manifest_raw is None:
         return (
             None,
@@ -303,7 +312,10 @@ async def collect_plan_reviewer_handover_evidence(
     require_git_revision: bool = True,
 ) -> tuple[BenchmarkPlanReviewerEvidence | None, str | None]:
     """Collect latest-revision evidence for the benchmark plan reviewer."""
-    plan_manifest_raw = await worker_client.read_file_optional(manifest_path)
+    plan_manifest_raw = await worker_client.read_file_optional(
+        manifest_path,
+        bypass_agent_permissions=True,
+    )
     if plan_manifest_raw is None:
         submission_helper_name = _planner_submission_helper_name_for_stage(
             expected_stage
@@ -420,7 +432,7 @@ async def validate_reviewer_handover(
     worker_client: WorkerClient,
     *,
     manifest_path: str,
-    expected_stage: AgentName,
+    expected_stage: AgentName | str,
     require_git_revision: bool = True,
     require_verification_result: bool | None = None,
 ) -> str | None:
@@ -428,10 +440,13 @@ async def validate_reviewer_handover(
     Validate that reviewer handoff artifacts are present and correspond to the
     latest script revision.
     """
+    normalized_expected_stage = _normalize_reviewer_stage(expected_stage)
     review_manifest, manifest_error = await _load_review_manifest(
         worker_client,
         manifest_path=manifest_path,
-        submission_helper_name=_review_submission_helper_name_for_stage(expected_stage),
+        submission_helper_name=_review_submission_helper_name_for_stage(
+            normalized_expected_stage
+        ),
         require_git_revision=require_git_revision,
     )
     if manifest_error is not None:
@@ -444,7 +459,7 @@ async def validate_reviewer_handover(
         return (
             "review manifest does not match latest script revision; "
             f"re-run validate, simulate, and "
-            f"{_review_submission_helper_name_for_stage(expected_stage)}(compound)."
+            f"{_review_submission_helper_name_for_stage(normalized_expected_stage)}(compound)."
         )
 
     try:
@@ -465,7 +480,7 @@ async def validate_reviewer_handover(
 
     if require_verification_result is None:
         require_verification_result = (
-            expected_stage == AgentName.ENGINEER_EXECUTION_REVIEWER
+            normalized_expected_stage == AgentName.ENGINEER_EXECUTION_REVIEWER
         )
 
     if require_verification_result:
@@ -664,15 +679,19 @@ async def validate_plan_reviewer_handover(
     worker_client: WorkerClient,
     *,
     manifest_path: str = ".manifests/engineering_plan_review_manifest.json",
-    expected_stage: PlanReviewerStage = AgentName.ENGINEER_PLAN_REVIEWER,
+    expected_stage: PlanReviewerStage | str = AgentName.ENGINEER_PLAN_REVIEWER,
 ) -> str | None:
     """Validate planner-to-plan-reviewer handoff using stage-specific manifest."""
+    normalized_expected_stage = _normalize_reviewer_stage(expected_stage)
     try:
-        manifest_raw = await worker_client.read_file_optional(manifest_path)
+        manifest_raw = await worker_client.read_file_optional(
+            manifest_path,
+            bypass_agent_permissions=True,
+        )
         if manifest_raw is None:
             return (
                 f"{manifest_path} missing; call "
-                f"{_planner_submission_helper_name_for_stage(expected_stage)}() first."
+                f"{_planner_submission_helper_name_for_stage(normalized_expected_stage)}() first."
             )
         manifest = PlanReviewManifest.model_validate_json(manifest_raw)
     except Exception as e:
@@ -680,9 +699,9 @@ async def validate_plan_reviewer_handover(
 
     if manifest.status != "ready_for_review":
         return "plan review manifest status is not ready_for_review."
-    if manifest.reviewer_stage != expected_stage:
+    if manifest.reviewer_stage != normalized_expected_stage:
         return (
-            f"plan review manifest stage mismatch: expected {expected_stage}, "
+            f"plan review manifest stage mismatch: expected {normalized_expected_stage}, "
             f"got {manifest.reviewer_stage}."
         )
 
@@ -697,13 +716,13 @@ async def validate_plan_reviewer_handover(
         if actual_hash != expected_hash:
             return (
                 f"planner artifact hash mismatch for {rel_path}; "
-                f"re-run {_planner_submission_helper_name_for_stage(expected_stage)}() "
+                f"re-run {_planner_submission_helper_name_for_stage(normalized_expected_stage)}() "
                 "for latest planner revision."
             )
 
     return await validate_planner_artifacts_cross_contract(
         worker_client,
-        expected_stage=expected_stage,
+        expected_stage=normalized_expected_stage,
     )
 
 

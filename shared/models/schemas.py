@@ -1262,11 +1262,18 @@ class CotsPartEstimate(StrictContractModel):
         return self
 
 
+class MotorControl(StrictContractModel):
+    """Motor control metadata for actuated parts."""
+
+    speed: float
+
+
 class AssemblyPartConfig(StrictContractModel):
     """Configuration for a part in an assembly, including motion metadata."""
 
     dofs: list[str] = []
     cots_id: str | None = None
+    control: MotorControl | None = None
 
     @field_validator("cots_id")
     @classmethod

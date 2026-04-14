@@ -390,9 +390,6 @@ def submit_for_review(
             session_id=session_id,
         )
         raise ValueError(f"{plan_artifact_name} invalid: {errors}")
-    else:
-        logger.warning("plan_md_missing", session_id=session_id)
-        raise ValueError(f"{plan_artifact_name} is missing (required for submission)")
 
     # todo.md
     todo_path = cwd / "todo.md"

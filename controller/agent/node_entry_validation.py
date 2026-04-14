@@ -758,6 +758,7 @@ async def engineer_planner_evidence_layout_custom_check(
 async def plan_reviewer_handover_custom_check_from_session_id(
     *,
     session_id: str | None,
+    worker_client: Any | None = None,
 ) -> list[NodeEntryValidationError]:
     normalized_session_id = (session_id or "").strip()
     if not normalized_session_id:
@@ -769,7 +770,8 @@ async def plan_reviewer_handover_custom_check_from_session_id(
             )
         ]
 
-    client = WorkerClient(
+    owns_client = worker_client is None
+    client = worker_client or WorkerClient(
         base_url=controller_settings.worker_light_url,
         heavy_url=controller_settings.worker_heavy_url,
         session_id=normalized_session_id,
@@ -783,7 +785,8 @@ async def plan_reviewer_handover_custom_check_from_session_id(
     except Exception as exc:
         handover_error = f"plan reviewer handover validation exception: {exc}"
     finally:
-        await client.aclose()
+        if owns_client:
+            await client.aclose()
 
     if handover_error is None:
         return []

@@ -12,6 +12,7 @@ from controller.api.schemas import (
     EpisodeCreateResponse,
     EpisodeResponse,
 )
+from shared.current_role import current_role_manifest_json
 from shared.enums import (
     AgentName,
     EpisodeStatus,
@@ -24,6 +25,8 @@ from shared.models.schemas import BenchmarkDefinition
 from shared.models.simulation import SimulationResult
 from shared.simulation.scene_builder import PreviewScene, moved_object_scene_name
 from shared.workers.schema import (
+    BenchmarkToolRequest,
+    BenchmarkToolResponse,
     PlanReviewManifest,
     RenderManifest,
     ReviewManifest,
@@ -38,6 +41,7 @@ from tests.integration.agent.helpers import (
 
 # Adjust URL to your controller if different
 CONTROLLER_URL = "http://127.0.0.1:18000"
+WORKER_HEAVY_URL = "http://127.0.0.1:18002"
 
 pytestmark = pytest.mark.xdist_group(name="physics_sims")
 
@@ -52,6 +56,22 @@ async def _read_episode_asset_text(
     resp = await client.get(f"/episodes/{episode_id}/assets/{asset_path}")
     assert resp.status_code == 200, resp.text
     return resp.text
+
+
+async def _write_workspace_file(
+    client: AsyncClient, session_id: str, path: str, content: str
+) -> None:
+    resp = await client.post(
+        "http://127.0.0.1:18001/fs/write",
+        json={
+            "path": path,
+            "content": content,
+            "overwrite": True,
+            "bypass_agent_permissions": True,
+        },
+        headers={"X-Session-ID": session_id},
+    )
+    assert resp.status_code == 200, resp.text
 
 
 @pytest.mark.integration_p1
@@ -608,6 +628,122 @@ async def test_engineering_full_loop():
             )
         )
         assert execution_decision["decision"] == ReviewDecision.APPROVED.value
+
+
+@pytest.mark.integration_p1
+@pytest.mark.allow_backend_errors(
+    regexes=["plan_md_invalid", "plan_md_missing_sections"]
+)
+@pytest.mark.int_id("INT-033")
+@pytest.mark.asyncio
+async def test_engineering_submit_rejects_shuffled_calc_headings():
+    """
+    INT-033: Engineering submit must reject a shuffled-but-complete Detailed
+    Calculations block with a descriptive order error.
+    """
+    async with AsyncClient(base_url=CONTROLLER_URL, timeout=300.0) as client:
+        session_id = f"INT-033-order-{uuid.uuid4().hex[:8]}"
+        await _write_workspace_file(
+            client,
+            session_id,
+            "solution_script.py",
+            """
+from build123d import Box, Location
+from shared.models.schemas import PartMetadata
+from shared.workers.workbench_models import ManufacturingMethod
+
+
+def build():
+    part = Box(1, 1, 1)
+    part = part.move(Location((0, 0, 0.5)))
+    part.label = "test_part"
+    part.metadata = PartMetadata(
+        manufacturing_method=ManufacturingMethod.CNC,
+        material_id="aluminum-6061",
+    )
+    return part
+""".strip()
+            + "\n",
+        )
+        await _write_workspace_file(
+            client,
+            session_id,
+            ".manifests/current_role.json",
+            current_role_manifest_json(AgentName.ENGINEER_CODER),
+        )
+        shuffled_plan = """## 1. Solution Overview
+A concise engineering overview.
+
+## 2. Parts List
+- `support_frame`
+
+## 3. Assembly Strategy
+1. Mount the support frame.
+
+## 4. Assumption Register
+- Assumption: The frame geometry is sourced from the approved handoff.
+
+## 5. Detailed Calculations
+| ID | Problem / Decision | Result | Impact |
+| -- | -- | -- | -- |
+| CALC-001 | Support-frame clearance check | Pass | Confirms the frame stays within the operating envelope. |
+
+### CALC-001: Support-frame clearance check
+
+#### Result
+
+- Pass
+
+#### Problem Statement
+
+The support frame must remain clear of the moved object.
+
+#### Assumptions
+
+- `ASSUMP-001`: The frame geometry is fixed by the engineering handoff.
+
+#### Derivation
+
+- The clearance is computed from the declared frame envelope.
+
+#### Worst-Case Check
+
+- The minimum clearance remains positive at the worst-case pose.
+
+#### Design Impact
+
+- Keep the frame geometry unchanged.
+
+#### Cross-References
+
+- `engineering_plan.md#3-assembly-strategy`
+
+## 6. Critical Constraints / Operating Envelope
+- Constraint: The frame must remain within the derived limits.
+
+## 7. Cost & Weight Budget
+- Cost: 0
+
+## 8. Risk Assessment
+- Risk: Heading order drift.
+"""
+        await _write_workspace_file(
+            client, session_id, "engineering_plan.md", shuffled_plan
+        )
+        submit_req = BenchmarkToolRequest(
+            script_path="solution_script.py",
+            reviewer_stage=AgentName.ENGINEER_EXECUTION_REVIEWER,
+        )
+        submit_resp = await client.post(
+            f"{WORKER_HEAVY_URL}/engineering/submit",
+            json=submit_req.model_dump(mode="json"),
+            headers={"X-Session-ID": session_id},
+        )
+        assert submit_resp.status_code == 200, submit_resp.text
+        submit_data = BenchmarkToolResponse.model_validate(submit_resp.json())
+        assert not submit_data.success, submit_data.message
+        assert "appear in the required order" in submit_data.message
+        assert "CALC-001" in submit_data.message
 
 
 async def _wait_for_episode_terminal(
