@@ -76,4 +76,3 @@
 - [Agent skills](./agent-skill.md)
 - [Simulation and rendering](../simulation-and-rendering.md)
 - [Observability](../observability.md)
-- [Unexpected functionality list](../auxillary/unexpected_functinality_list.md)

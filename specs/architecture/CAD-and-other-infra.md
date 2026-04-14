@@ -202,12 +202,6 @@ That cost is part of planner/execution costing whenever `assembly_definition.yam
 
 We will run `schemathesis` checks against the OpenAPI. Strictly type all schema to avoid ANY issues.
 
-We use Pydantic and Beartype for this.
-
-#### Beartype
-
-To further avoid any issues, we will use Beartype for type checking.
-
 ### Schema autogeneration
 
 We autogenerate python schemas, keeping in sync to the workers. We keep schemas defined in the Controller app; worker-light, worker-heavy, and frontend inherit them (for now). We have git hooks that implement the model.

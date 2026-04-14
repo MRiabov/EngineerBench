@@ -51,7 +51,6 @@
 | -- | -- | -- |
 | POST | `/api/test/episodes` | Create a deterministic test episode for integration runs only |
 | POST | `/api/agent/run` | Launch an agent run directly |
-| POST | `/api/simulation/run` | Historical benchmark-generation alias used by the UI |
 | GET | `/api/cots/search` | Search the COTS catalog |
 | GET | `/api/cots/metadata` | Return catalog provenance metadata |
 | GET | `/api/skills` | List mounted skills |

@@ -1,4 +1,4 @@
-## Reward config structure
+# Reward config structure
 
 `config/reward_config.yaml` is split into three metric classes per agent when reward shaping is used:
 

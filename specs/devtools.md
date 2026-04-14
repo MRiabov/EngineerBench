@@ -4,7 +4,7 @@
 
 - This file documents the developer-facing bootstrap, orchestration, validation, and artifact-regeneration surface that supports local development and eval/debug workflows.
 - It is adjacent to, not a replacement for, `specs/architecture/**`.
-- Use `specs/integration-test-rules.md` for integration-test boundary rules, `specs/dataset-generation.md` and `specs/architecture/evals-architecture.md` for eval semantics, and `specs/architecture/agents/agent-harness.md` for the workspace contract.
+- Use `specs/integration-test-rules.md` for integration-test boundary rules, `specs/architecture/evals-architecture.md` for eval semantics, and `specs/architecture/agents/agent-harness.md` for the workspace contract.
 - The contract here is operational: how developers reproduce the stack, inspect seeded workspaces, run integration slices, and regenerate derived artifacts.
 
 ## Tooling principles

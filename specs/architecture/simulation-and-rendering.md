@@ -43,7 +43,7 @@ The practical consequence is that the renderer image must contain the required M
 
 While this platform has notable downsides for future use, we pick Genesis because it provides the simulation backend we need and is fast enough to work.
 
-Operational benchmarking notes, runtime optimization attempts, and dated performance measurements for the simulation stack are tracked in [auxillary/simulation-optimization-attempts.md](./auxillary/simulation-optimization-attempts.md).
+Operational benchmarking notes, runtime optimization attempts, and dated performance measurements for the simulation stack are tracked in the relevant migration docs under `specs/migrations/`.
 
 ### Runtime cost model
 
@@ -112,7 +112,7 @@ The persistent-child refactor therefore has to preserve the existing behavior co
 4. The next request recreates a fresh child.
 5. Child cleanup is explicit and observable rather than being an accidental side effect of process exit.
 
-The detailed dated plan for this refactor is recorded in `auxillary/simulation-optimization-attempts.md`.
+The detailed dated plan for this refactor is recorded in the relevant migration docs under `specs/migrations/major/`.
 
 ### Warm-child backend cache split
 
