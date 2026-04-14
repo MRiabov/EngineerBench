@@ -3375,9 +3375,7 @@ def test_validate_eval_seed_removes_preview_bundles_from_all_seed_artifacts():
     )
 
     assert completed.returncode == 0, combined_output
-    assert "PASS benchmark_planner bp-001:" in completed.stdout, (
-        completed.stdout
-    )
+    assert "PASS benchmark_planner bp-001:" in completed.stdout, completed.stdout
     assert "black/empty" not in combined_output, combined_output
 
     seed_root = ROOT / "dataset" / "data" / "seed" / "role_based"
@@ -3393,12 +3391,11 @@ def test_validate_eval_seed_removes_preview_bundles_from_all_seed_artifacts():
     assert seed_artifact_dirs, "Expected seeded artifact directories to exist."
     for artifact_dir in seed_artifact_dirs:
         assert not any(
-            path.is_dir() and path.name == "renders"
-            for path in artifact_dir.rglob("renders")
+            path.is_dir() and path.name == "current-episode"
+            for path in artifact_dir.rglob("current-episode")
         ), artifact_dir
         assert not any(
-            path.name == "render_manifest.json"
-            for path in artifact_dir.rglob("render_manifest.json")
+            path.is_dir() and path.name == "tmp" for path in artifact_dir.rglob("tmp")
         ), artifact_dir
 
 
@@ -3499,9 +3496,7 @@ def test_validate_eval_seed_skip_env_up_can_join_shared_eval_lock(tmp_path: Path
     )
 
     assert completed.returncode == 0, combined_output
-    assert "PASS benchmark_planner bp-001:" in completed.stdout, (
-        completed.stdout
-    )
+    assert "PASS benchmark_planner bp-001:" in completed.stdout, completed.stdout
     assert not state_path.exists(), state_path
 
 

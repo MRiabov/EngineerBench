@@ -8,7 +8,7 @@ Mechanism with M3_BOLT.
 
 ## 3. Assembly Strategy
 
-1. Attach the fastener.
+1. Mount the catalog-backed part.
 
 ## 4. Assumption Register
 

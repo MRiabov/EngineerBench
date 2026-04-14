@@ -36,20 +36,13 @@ async def test_benchmark_to_engineer_handoff():
     """
     INT-032: Benchmark-to-engineer handoff package
 
-    Verifies that the Engineer receives (or has access to) the expected bundle:
-    - benchmark_definition.yaml
-    - environment geometry metadata
-    - 24-view renders
-    - moving-parts DOFs
-    - runtime jitter metadata
-
-    This test triggers a benchmark generation and then inspects the produced artifacts
-    to ensure the "package" is complete for the Engineer.
+    Verifies that the engineer receives the expected artifact bundle for a
+    generated benchmark.
     """
     async with AsyncClient(base_url=CONTROLLER_URL, timeout=300.0) as client:
         # 1. Trigger Benchmark Generation
         request = BenchmarkGenerateRequest(
-            prompt="Create a benchmark with a moving platform.",  # implies moving parts
+            prompt="Create a benchmark with a moving platform.",
             backend=SimulatorBackendType.GENESIS,
         )
         resp = await client.post("/benchmark/generate", json=request.model_dump())

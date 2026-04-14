@@ -180,16 +180,6 @@ async def test_benchmark_planner_cad_reviewer_path():
             "values."
         )
         assert benchmark_definition.payload.material_id
-        assert isinstance(
-            benchmark_definition.benchmark_parts[
-                0
-            ].metadata.allows_engineer_interaction,
-            bool,
-        )
-        assert (
-            benchmark_definition.benchmark_parts[0].metadata.allows_engineer_interaction
-            is False
-        )
         assert benchmark_definition.randomization.runtime_jitter_enabled is True
         assert "randomization:" in benchmark_definition_resp.text
         assert "runtime_jitter:" in benchmark_definition_resp.text

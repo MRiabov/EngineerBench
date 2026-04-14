@@ -1,2 +1,0 @@
-- [x] Baseline planning
-- [x] Prepare review handoff

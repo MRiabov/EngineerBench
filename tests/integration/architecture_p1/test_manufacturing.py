@@ -609,7 +609,6 @@ constraints:
   planner_target_max_weight_g: 900.0
 manufactured_parts: []
 cots_parts: []
-environment_drill_operations: []
 final_assembly: []
 totals:
   estimated_unit_cost_usd: 0.0

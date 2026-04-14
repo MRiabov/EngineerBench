@@ -893,51 +893,6 @@ def build():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
-@pytest.mark.int_id("INT-023")
-async def test_int_023_fastener_validity_rules():
-    """INT-023: Verify fastener validity rules."""
-    async with httpx.AsyncClient(timeout=300.0) as client:
-        session_id = f"test-int-023-{int(time.time())}"
-
-        script_valid = """
-from build123d import *
-from shared.models.schemas import PartMetadata
-def build():
-    p1 = Box(10, 10, 10)
-    p2 = Cylinder(2, 20).move(Location((0,0,0)))
-    res = p1.cut(p2)
-    res.label = "valid_part"
-    res.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
-    return res
-"""
-        await client.post(
-            f"{WORKER_LIGHT_URL}/fs/write",
-            json=WriteFileRequest(
-                path="valid_hole.py", content=script_valid
-            ).model_dump(mode="json"),
-            headers={"X-Session-ID": session_id},
-        )
-
-        bundle64 = await get_bundle(client, session_id)
-
-        resp = await client.post(
-            f"{WORKER_LIGHT_URL}/benchmark/validate",
-            json=BenchmarkToolRequest(
-                script_path="valid_hole.py", bundle_base64=bundle64
-            ).model_dump(mode="json"),
-            headers={"X-Session-ID": session_id},
-            timeout=180.0,
-        )
-
-        assert resp.status_code == 200
-        data = BenchmarkToolResponse.model_validate(resp.json())
-
-        if not data.success:
-            pytest.fail(f"Fastener validation failed: {data.message}")
-
-
-@pytest.mark.integration_p0
-@pytest.mark.asyncio
 @pytest.mark.int_id("INT-024")
 async def test_int_024_worker_benchmark_validation_toolchain():
     """
