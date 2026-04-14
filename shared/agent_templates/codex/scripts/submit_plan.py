@@ -153,13 +153,6 @@ def _submit_plan(workspace: Path | None = None) -> PlannerSubmissionResult:
     workspace = Path.cwd() if workspace is None else Path(workspace)
     agent_name = _planner_agent(workspace)
     session_id = _session_id()
-    plan_path = plan_path_for_agent(agent_name)
-    legacy_plan_path = workspace / "plan.md"
-    plan_required_path = (
-        plan_path
-        if (workspace / plan_path).exists() or not legacy_plan_path.exists()
-        else legacy_plan_path
-    )
 
     if agent_name is None:
         return PlannerSubmissionResult(
@@ -169,7 +162,8 @@ def _submit_plan(workspace: Path | None = None) -> PlannerSubmissionResult:
             node_type=AgentName.ENGINEER_PLANNER,
         )
 
-    required_files = [plan_required_path.name, *_required_files(agent_name)]
+    plan_path = plan_path_for_agent(agent_name)
+    required_files = [plan_path.name, *_required_files(agent_name)]
     try:
         artifacts = _read_workspace_files(workspace, tuple(required_files))
     except Exception as exc:
@@ -196,14 +190,6 @@ def _submit_plan(workspace: Path | None = None) -> PlannerSubmissionResult:
         workspace.joinpath("benchmark_definition.yaml").write_text(
             canonical_benchmark_definition,
             encoding="utf-8",
-        )
-
-    if not (workspace / plan_path).exists() and not legacy_plan_path.exists():
-        return PlannerSubmissionResult(
-            ok=False,
-            status="rejected",
-            errors=[f"Missing required file: {plan_path.as_posix()}"],
-            node_type=agent_name,
         )
 
     try:

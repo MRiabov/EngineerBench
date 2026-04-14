@@ -413,12 +413,7 @@ def map_events_to_prediction(
     required_planner_files = (
         set(plan_artifacts_for_agent(agent_name))
         if agent_name is not None
-        else {
-            "plan.md",
-            "todo.md",
-            "assembly_definition.yaml",
-            "benchmark_assembly_definition.yaml",
-        }
+        else set()
     )
 
     for event in events:
@@ -453,7 +448,7 @@ def map_events_to_prediction(
                     metrics.review_artifacts_complete = True
 
         # 2. Planning & Logic
-        if etype in [
+        if required_planner_files and etype in [
             ObservabilityEventType.PLAN_SUBMISSION_ENGINEER,
             ObservabilityEventType.PLAN_SUBMISSION_BENCHMARK,
         ] and required_planner_files.issubset(planned_files):

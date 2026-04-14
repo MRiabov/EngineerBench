@@ -535,7 +535,10 @@ def validate_markdown_file(path: str, content: str) -> ValidationResult:
     if path.endswith("engineering_plan.md"):
         return validate_plan_md(content, plan_type="engineering")
     if path.endswith("plan.md"):
-        return validate_plan_md(content)
+        raise ValueError(
+            "plan.md is no longer supported; use benchmark_plan.md or "
+            "engineering_plan.md"
+        )
     if path.endswith("todo.md"):
         return validate_todo_md(content)
     # No validation for other markdown files

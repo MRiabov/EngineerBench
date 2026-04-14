@@ -487,18 +487,7 @@ def get_engineer_planner_tools(
             validate_node_output,
         )
 
-        # Planner roles share the same planner artifacts.
         plan_path = plan_path_for_agent(planner_node_type).as_posix()
-        legacy_plan_path = "plan.md"
-        if (
-            await fs.client.read_file_optional(plan_path, bypass_agent_permissions=True)
-            is None
-            and await fs.client.read_file_optional(
-                legacy_plan_path, bypass_agent_permissions=True
-            )
-            is not None
-        ):
-            plan_path = legacy_plan_path
         required_files = [
             plan_path,
             "todo.md",

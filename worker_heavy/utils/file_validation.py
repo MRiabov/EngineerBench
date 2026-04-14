@@ -4,7 +4,7 @@ File validation utilities for agent handover files.
 Validates the structure and content of:
 - benchmark_definition.yaml: Central data exchange object
 - assembly_definition.yaml: Cost risk management
-- plan.md: Structured planning documents
+- benchmark_plan.md / engineering_plan.md: Structured planning documents
 - Review files: YAML frontmatter with decision field
 """
 
@@ -57,7 +57,7 @@ from worker_heavy.workbenches.config import load_config, load_merged_config
 
 logger = structlog.get_logger(__name__)
 
-# Required sections for plan.md validation
+# Required sections for plan validation
 BENCHMARK_PLAN_REQUIRED_SECTIONS = [
     "Learning Objective",
     "Geometry",
@@ -1565,7 +1565,10 @@ def validate_planner_handoff_cross_contract(
 ) -> list[str]:
     """Validate planner targets against benchmark caps and reject stale copies."""
     errors: list[str] = []
-    plan_artifact_name = plan_path_for_agent(planner_node_type).as_posix()
+    try:
+        plan_artifact_name = plan_path_for_agent(planner_node_type).as_posix()
+    except ValueError as exc:
+        return [str(exc)]
     planner_node_value = (
         planner_node_type.value
         if isinstance(planner_node_type, AgentName)
@@ -1893,20 +1896,14 @@ def validate_node_output(
         )
     except Exception:
         node_enum = None
-    plan_artifact_name = plan_path_for_agent(
-        node_enum if node_enum is not None else node_type
-    ).as_posix()
-    legacy_plan_artifact_name = "plan.md"
-    resolved_plan_artifact_name = (
-        plan_artifact_name
-        if plan_artifact_name in files_content_map
-        else legacy_plan_artifact_name
-        if legacy_plan_artifact_name in files_content_map
-        else plan_artifact_name
-    )
-    plan_content = files_content_map.get(resolved_plan_artifact_name)
-    if plan_content is None:
-        plan_content = files_content_map.get(legacy_plan_artifact_name)
+    node_key = node_enum if node_enum is not None else node_type
+    try:
+        plan_artifact_name = plan_path_for_agent(
+            node_key
+        ).as_posix()
+    except ValueError as exc:
+        return False, [str(exc)]
+    plan_content = files_content_map.get(plan_artifact_name)
 
     def _missing_file(path: str) -> bool:
         content = files_content_map.get(path)
@@ -1925,59 +1922,59 @@ def validate_node_output(
             required_files = ["plan_refusal.md"]
         else:
             # If refusal is invalid, we still want regular files or a better refusal
-            required_files = {
-                AgentName.ENGINEER_PLANNER: [
-                    resolved_plan_artifact_name,
-                    "todo.md",
-                    "benchmark_definition.yaml",
-                    "assembly_definition.yaml",
-                ],
-                AgentName.BENCHMARK_PLANNER: [
-                    resolved_plan_artifact_name,
-                    "todo.md",
-                    "benchmark_definition.yaml",
-                    "benchmark_assembly_definition.yaml",
-                ],
-                AgentName.ENGINEER_CODER: [
-                    resolved_plan_artifact_name,
-                    "todo.md",
-                    "benchmark_definition.yaml",
-                    SOLUTION_SCRIPT_PATH,
-                ],
-                AgentName.BENCHMARK_CODER: [
-                    resolved_plan_artifact_name,
-                    "todo.md",
-                    "benchmark_definition.yaml",
-                    BENCHMARK_SCRIPT_PATH,
-                ],
-            }.get(node_type, [])
+                required_files = {
+                    AgentName.ENGINEER_PLANNER: [
+                        plan_artifact_name,
+                        "todo.md",
+                        "benchmark_definition.yaml",
+                        "assembly_definition.yaml",
+                    ],
+                    AgentName.BENCHMARK_PLANNER: [
+                        plan_artifact_name,
+                        "todo.md",
+                        "benchmark_definition.yaml",
+                        "benchmark_assembly_definition.yaml",
+                    ],
+                    AgentName.ENGINEER_CODER: [
+                        plan_artifact_name,
+                        "todo.md",
+                        "benchmark_definition.yaml",
+                        SOLUTION_SCRIPT_PATH,
+                    ],
+                    AgentName.BENCHMARK_CODER: [
+                        plan_artifact_name,
+                        "todo.md",
+                        "benchmark_definition.yaml",
+                        BENCHMARK_SCRIPT_PATH,
+                    ],
+                }.get(node_key, [])
     else:
         required_files = {
             AgentName.ENGINEER_PLANNER: [
-                resolved_plan_artifact_name,
+                plan_artifact_name,
                 "todo.md",
                 "benchmark_definition.yaml",
                 "assembly_definition.yaml",
             ],
             AgentName.BENCHMARK_PLANNER: [
-                resolved_plan_artifact_name,
+                plan_artifact_name,
                 "todo.md",
                 "benchmark_definition.yaml",
                 "benchmark_assembly_definition.yaml",
             ],
             AgentName.ENGINEER_CODER: [
-                resolved_plan_artifact_name,
+                plan_artifact_name,
                 "todo.md",
                 "benchmark_definition.yaml",
                 SOLUTION_SCRIPT_PATH,
             ],
             AgentName.BENCHMARK_CODER: [
-                resolved_plan_artifact_name,
+                plan_artifact_name,
                 "todo.md",
                 "benchmark_definition.yaml",
                 BENCHMARK_SCRIPT_PATH,
             ],
-        }.get(node_type, [])
+        }.get(node_key, [])
 
     for req_file in required_files:
         if _missing_file(req_file):
@@ -1998,9 +1995,9 @@ def validate_node_output(
     for filename, content in files_content_map.items():
         if _is_missing_file_error(content, expected_path=filename):
             continue
-        if filename in {plan_artifact_name, legacy_plan_artifact_name}:
+        if filename == plan_artifact_name:
             plan_type = "engineering"  # Default to engineering for most nodes
-            if "benchmark" in node_type or "# Learning Objective" in content:
+            if "benchmark" in str(node_key) or "# Learning Objective" in content:
                 plan_type = "benchmark"
 
             is_valid, plan_errors = validate_plan_md_structure(
@@ -2146,10 +2143,10 @@ def validate_plan_md_structure(
     content: str,
     plan_type: str = "benchmark",
     session_id: str | None = None,
-    artifact_path: str = "plan.md",
+    artifact_path: str | None = None,
 ) -> tuple[bool, list[str]]:
     """
-    Validate plan.md has required sections.
+    Validate a split plan file has required sections.
 
     Args:
         content: Raw markdown content
@@ -2160,6 +2157,12 @@ def validate_plan_md_structure(
         (True, []) if valid
         (False, list[str]) with missing section names if invalid
     """
+    if artifact_path is None:
+        artifact_path = (
+            "engineering_plan.md"
+            if plan_type == "engineering"
+            else "benchmark_plan.md"
+        )
     if plan_type == "engineering":
         from shared.workers.markdown_validator import validate_plan_md
 

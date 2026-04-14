@@ -274,21 +274,13 @@ async def validate_benchmark_planner_handoff_artifacts(
     errors: list[str] = []
     artifacts: dict[str, str] = {}
 
-    plan_candidates = plan_artifact_candidates_for_agent(AgentName.BENCHMARK_PLANNER)
-    plan_artifact_name = plan_candidates[0]
-    plan_artifact_content = None
-    for candidate in plan_candidates:
-        if await client.exists(candidate):
-            plan_artifact_name = candidate
-            plan_artifact_content = await client.read_file(candidate)
-            break
-    if plan_artifact_content is None:
-        errors.append(
-            "Missing planner artifact: "
-            f"{plan_candidates[0]} (or legacy {plan_candidates[1]})"
-        )
+    plan_artifact_name = plan_artifact_candidates_for_agent(
+        AgentName.BENCHMARK_PLANNER
+    )[0]
+    if not await client.exists(plan_artifact_name):
+        errors.append(f"Missing planner artifact: {plan_artifact_name}")
     else:
-        artifacts[plan_artifact_name] = plan_artifact_content
+        artifacts[plan_artifact_name] = await client.read_file(plan_artifact_name)
 
     for rel_path in (
         "todo.md",

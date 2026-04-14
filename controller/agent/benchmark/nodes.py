@@ -429,9 +429,7 @@ class BenchmarkPlannerNode(BaseNode):
             if isinstance(parsed, dict):
                 objectives_data = parsed
 
-        plan_markdown = str(
-            artifacts.get(PLAN_FILE, "") or artifacts.get("plan.md", "") or ""
-        )
+        plan_markdown = str(artifacts.get(PLAN_FILE, "") or "")
         learning_objective = _extract_markdown_section(
             plan_markdown, "## 1. Learning Objective"
         )
@@ -1249,12 +1247,6 @@ class BenchmarkPlanReviewerNode(BaseNode):
             plan_md = (
                 await self.ctx.worker_client.read_file_optional(PLAN_FILE) or plan_md
             )
-        if plan_md == f"# No {PLAN_FILE} found.":
-            with suppress(Exception):
-                plan_md = (
-                    await self.ctx.worker_client.read_file_optional("plan.md")
-                    or plan_md
-                )
         with suppress(Exception):
             todo_md = (
                 await self.ctx.worker_client.read_file_optional("todo.md") or todo_md
@@ -1533,12 +1525,6 @@ class BenchmarkCoderNode(BaseNode):
             with suppress(Exception):
                 plan_input = (
                     await self.ctx.worker_client.read_file_optional(PLAN_FILE)
-                    or plan_input
-                )
-        if plan_input == f"# No {PLAN_FILE} found.":
-            with suppress(Exception):
-                plan_input = (
-                    await self.ctx.worker_client.read_file_optional("plan.md")
                     or plan_input
                 )
 
@@ -1896,12 +1882,6 @@ class BenchmarkReviewerNode(BaseNode):
             plan_md = (
                 await self.ctx.worker_client.read_file_optional(PLAN_FILE) or plan_md
             )
-        if plan_md == f"# No {PLAN_FILE} found.":
-            with suppress(Exception):
-                plan_md = (
-                    await self.ctx.worker_client.read_file_optional("plan.md")
-                    or plan_md
-                )
 
         objectives = "# No benchmark_definition.yaml found."
         with suppress(Exception):

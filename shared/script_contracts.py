@@ -85,23 +85,14 @@ def plan_path_for_agent(agent_name: AgentName | str | None) -> Path:
         return _as_path(BENCHMARK_PLAN_PATH)
     if normalized in _ENGINEERING_ROLE_NAMES:
         return _as_path(ENGINEERING_PLAN_PATH)
-    return _as_path("plan.md")
+    raise ValueError(f"Unsupported agent for plan path lookup: {agent_name}")
 
 
 def plan_artifact_candidates_for_agent(
     agent_name: AgentName | str | None,
 ) -> tuple[str, ...]:
-    """Return accepted plan-file names for the requested role.
-
-    Historical benchmark and engineer bundles may still carry the legacy
-    ``plan.md`` filename, while newly materialized workspaces use the role-
-    specific plan filename. Validation should accept either spelling for the
-    same role, but not cross-role plan files.
-    """
-    canonical = plan_path_for_agent(agent_name).as_posix()
-    if canonical == "plan.md":
-        return (canonical,)
-    return (canonical, "plan.md")
+    """Return the canonical plan-file name for the requested role."""
+    return (plan_path_for_agent(agent_name).as_posix(),)
 
 
 def authored_script_path_for_reviewer_stage(
@@ -121,4 +112,6 @@ def plan_path_for_reviewer_stage(reviewer_stage: AgentName | str | None) -> Path
         return _as_path(BENCHMARK_PLAN_PATH)
     if stage == AgentName.ENGINEER_EXECUTION_REVIEWER:
         return _as_path(ENGINEERING_PLAN_PATH)
-    return _as_path("plan.md")
+    raise ValueError(
+        f"Unsupported reviewer stage for plan path lookup: {reviewer_stage}"
+    )

@@ -365,33 +365,31 @@ def submit_for_review(
     # 1. Validate mandatory base files (INT-005)
 
     plan_artifact_name = plan_path_for_reviewer_stage(normalized_stage).as_posix()
-    legacy_plan_artifact_name = "plan.md"
 
     # benchmark_plan.md / engineering_plan.md
     plan_path = cwd / plan_artifact_name
-    plan_content: str | None = None
     if not plan_path.exists():
-        plan_path = cwd / legacy_plan_artifact_name
-    if plan_path.exists():
-        from .file_validation import validate_plan_md_structure
+        raise FileNotFoundError(f"Missing required plan file: {plan_artifact_name}")
 
-        plan_content = plan_path.read_text(encoding="utf-8")
-        plan_type = (
-            "benchmark"
-            if normalized_stage == AgentName.BENCHMARK_REVIEWER
-            else "engineering"
+    from .file_validation import validate_plan_md_structure
+
+    plan_content = plan_path.read_text(encoding="utf-8")
+    plan_type = (
+        "benchmark"
+        if normalized_stage == AgentName.BENCHMARK_REVIEWER
+        else "engineering"
+    )
+    is_valid, errors = validate_plan_md_structure(
+        plan_content, plan_type=plan_type, session_id=session_id
+    )
+    if not is_valid:
+        logger.warning(
+            "plan_md_invalid",
+            plan_type=plan_type,
+            violations=errors,
+            session_id=session_id,
         )
-        is_valid, errors = validate_plan_md_structure(
-            plan_content, plan_type=plan_type, session_id=session_id
-        )
-        if not is_valid:
-            logger.warning(
-                "plan_md_invalid",
-                plan_type=plan_type,
-                violations=errors,
-                session_id=session_id,
-            )
-            raise ValueError(f"{plan_artifact_name} invalid: {errors}")
+        raise ValueError(f"{plan_artifact_name} invalid: {errors}")
     else:
         logger.warning("plan_md_missing", session_id=session_id)
         raise ValueError(f"{plan_artifact_name} is missing (required for submission)")

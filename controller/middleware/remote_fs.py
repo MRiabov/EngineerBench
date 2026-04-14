@@ -129,29 +129,15 @@ class RemoteFilesystemMiddleware:
             raise PermissionError(msg)
 
     def _canonical_path(self, path: str | Path) -> Path:
-        """Map legacy shared plan paths to the canonical split filenames."""
+        """Reject legacy shared plan paths and keep canonical split filenames only."""
         path_obj = Path(str(path))
         normalized = path_obj.as_posix().lstrip("/")
         if normalized != "plan.md":
             return path_obj
-
-        benchmark_roles = {
-            AgentName.BENCHMARK_PLANNER,
-            AgentName.BENCHMARK_PLAN_REVIEWER,
-            AgentName.BENCHMARK_CODER,
-            AgentName.BENCHMARK_REVIEWER,
-        }
-        engineer_roles = {
-            AgentName.ENGINEER_PLANNER,
-            AgentName.ENGINEER_PLAN_REVIEWER,
-            AgentName.ENGINEER_CODER,
-            AgentName.ENGINEER_EXECUTION_REVIEWER,
-        }
-        if self.agent_role in benchmark_roles:
-            return Path("benchmark_plan.md")
-        if self.agent_role in engineer_roles:
-            return Path("engineering_plan.md")
-        return path_obj
+        raise FileNotFoundError(
+            "plan.md is no longer supported; use benchmark_plan.md or "
+            "engineering_plan.md instead"
+        )
 
     @staticmethod
     def _entry_path(entry: object) -> str | None:

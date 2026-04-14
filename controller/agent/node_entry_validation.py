@@ -1082,13 +1082,10 @@ async def validate_seeded_workspace_handoff_artifacts(
             contents[rel_path] = content
 
     plan_artifact_name = plan_path_for_agent(target_node).as_posix()
-    legacy_plan_artifact_name = "plan.md"
-    plan_content = contents.get(plan_artifact_name) or contents.get(
-        legacy_plan_artifact_name
-    )
+    plan_content = contents.get(plan_artifact_name)
 
     for rel_path, content in contents.items():
-        if rel_path in {plan_artifact_name, legacy_plan_artifact_name}:
+        if rel_path == plan_artifact_name:
             plan_type = _plan_type_for_target(target_node, content)
             is_valid, plan_errors = validate_plan_md_structure(
                 content,

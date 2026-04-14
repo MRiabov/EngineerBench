@@ -37,7 +37,6 @@ ENGINEERING_EXECUTION_REVIEWER_HANDOFF_ARTIFACTS: tuple[str, ...] = (
 
 ENGINEER_PLANNER_HANDOFF_ARTIFACTS: tuple[str, ...] = (
     ENGINEERING_PLAN_PATH,
-    "plan.md",
     "todo.md",
     "benchmark_definition.yaml",
     "assembly_definition.yaml",
