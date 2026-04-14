@@ -258,8 +258,7 @@ agents:
           - .
           - .agents/skills/**
           - utils/**
-          - engineering_plan.md
-          - engineering_plan.md
+          - benchmark_plan.md
           - todo.md
           - journal.md
           - benchmark_definition.yaml
