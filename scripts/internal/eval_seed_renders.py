@@ -113,7 +113,6 @@ def camera_position_from_orbit(
 _RENDER_ROLE_WITH_SCRIPT = {
     "benchmark_reviewer",
     "engineer_execution_reviewer",
-    "electronics_reviewer",
 }
 
 _RENDER_ROLE_WITH_DEFINITION_PREVIEW = {
@@ -129,8 +128,6 @@ _ROLE_RENDER_STAGE_INDEX: dict[str, int] = {
     "engineer_planner": 1,
     "engineer_plan_reviewer": 2,
     "engineer_coder": 2,
-    "electronics_planner": 2,
-    "electronics_reviewer": 3,
     "engineer_execution_reviewer": 3,
 }
 

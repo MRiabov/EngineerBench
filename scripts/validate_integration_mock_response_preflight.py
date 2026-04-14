@@ -6,7 +6,7 @@ This script is stricter than the fixture normalizer:
 - it loads `tests/integration/mock_responses/*.yaml` and validates transcript
   schema plus all referenced `content_file` / `template_file` payloads
 - it seeds a temporary worker session with the baseline benchmark context used
-  by engineer/electronics intake
+  by the engineering intake
 - it replays each scenario's `entry_*` fixture directories cumulatively and
   validates them with the real node-entry contract helper
 - it then runs seeded workspace handoff validation so schema mismatches and
@@ -60,7 +60,6 @@ from controller.agent.node_entry_validation import (
     BENCHMARK_CODER_HANDOVER_CHECK,
     BENCHMARK_PLAN_REVIEWER_HANDOVER_CHECK,
     BENCHMARK_REVIEWER_HANDOVER_CHECK,
-    ELECTRONICS_REVIEWER_HANDOVER_CHECK,
     ENGINEER_BENCHMARK_HANDOVER_CHECK,
     ENGINEER_EXECUTION_REVIEWER_HANDOVER_CHECK,
     ENGINEER_PLAN_REVIEWER_HANDOVER_CHECK,
@@ -285,7 +284,6 @@ def _custom_checks() -> dict[str, object]:
         ENGINEER_BENCHMARK_HANDOVER_CHECK: _no_op_custom_check,
         ENGINEER_PLAN_REVIEWER_HANDOVER_CHECK: _no_op_custom_check,
         ENGINEER_EXECUTION_REVIEWER_HANDOVER_CHECK: _no_op_custom_check,
-        ELECTRONICS_REVIEWER_HANDOVER_CHECK: _no_op_custom_check,
     }
 
 

@@ -103,7 +103,7 @@ mkdir -p "$STACK_PID_DIR"
 # DO NOT REMOVE: This is required for agent execution environments where overlay2 fails.
 bash scripts/ensure_docker_vfs.sh
 
-# Ensure ngspice is installed for electronics validation
+# Ensure ngspice is installed for legacy environment checks
 bash scripts/ensure_ngspice.sh
 
 echo "Spinning up infrastructure (Postgres, Temporal, Minio)..."

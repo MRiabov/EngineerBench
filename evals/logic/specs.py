@@ -20,12 +20,6 @@ PLANNER_REQUIRED_FILES: dict[AgentName, tuple[str, ...]] = {
         "benchmark_definition.yaml",
         "assembly_definition.yaml",
     ),
-    AgentName.ELECTRONICS_PLANNER: (
-        "engineering_plan.md",
-        "todo.md",
-        "benchmark_definition.yaml",
-        "assembly_definition.yaml",
-    ),
 }
 
 
@@ -92,19 +86,6 @@ AGENT_SPECS: dict[AgentName, AgentEvalSpec] = {
         start_node=AgentName.ENGINEER_EXECUTION_REVIEWER,
         review_filename_prefix="engineering-execution-review",
     ),
-    AgentName.ELECTRONICS_PLANNER: AgentEvalSpec(
-        mode=EvalMode.AGENT,
-        request_agent_name=AgentName.ENGINEER_PLANNER,
-        required_trace_names=(AgentName.ELECTRONICS_PLANNER,),
-        start_node=AgentName.ELECTRONICS_PLANNER,
-    ),
-    AgentName.ELECTRONICS_REVIEWER: AgentEvalSpec(
-        mode=EvalMode.AGENT,
-        request_agent_name=AgentName.ENGINEER_CODER,
-        required_trace_names=(AgentName.ELECTRONICS_REVIEWER,),
-        start_node=AgentName.ELECTRONICS_REVIEWER,
-        review_filename_prefix="electronics-review",
-    ),
     AgentName.COTS_SEARCH: AgentEvalSpec(
         mode=EvalMode.AGENT,
         request_agent_name=AgentName.COTS_SEARCH,
@@ -127,5 +108,4 @@ JUDGE_REVIEWER_CHAIN: dict[AgentName, tuple[AgentName, ...]] = {
     AgentName.BENCHMARK_CODER: (AgentName.BENCHMARK_REVIEWER,),
     AgentName.ENGINEER_PLANNER: (AgentName.ENGINEER_PLAN_REVIEWER,),
     AgentName.ENGINEER_CODER: (AgentName.ENGINEER_EXECUTION_REVIEWER,),
-    AgentName.ELECTRONICS_PLANNER: (AgentName.ENGINEER_PLAN_REVIEWER,),
 }

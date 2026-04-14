@@ -269,7 +269,6 @@ def is_planner_agent(agent_name: AgentName) -> bool:
     return agent_name in {
         AgentName.BENCHMARK_PLANNER,
         AgentName.ENGINEER_PLANNER,
-        AgentName.ELECTRONICS_PLANNER,
     }
 
 
@@ -291,7 +290,6 @@ def is_execution_reviewer_agent(agent_name: AgentName) -> bool:
     return agent_name in {
         AgentName.BENCHMARK_REVIEWER,
         AgentName.ENGINEER_EXECUTION_REVIEWER,
-        AgentName.ELECTRONICS_REVIEWER,
     }
 
 
@@ -414,11 +412,6 @@ def _collect_assembly_targets(assembly_definition: AssemblyDefinition) -> list[s
         _add(item.subassembly_id)
         for part in item.parts:
             _add(part.name)
-    if assembly_definition.electronics:
-        for component in assembly_definition.electronics.components:
-            if component.assembly_part_ref:
-                _add(component.assembly_part_ref)
-
     return targets
 
 
@@ -819,7 +812,6 @@ def _review_prefix(agent_name: AgentName) -> str | None:
         AgentName.BENCHMARK_REVIEWER: "benchmark-execution-review",
         AgentName.ENGINEER_PLAN_REVIEWER: "engineering-plan-review",
         AgentName.ENGINEER_EXECUTION_REVIEWER: "engineering-execution-review",
-        AgentName.ELECTRONICS_REVIEWER: "electronics-review",
     }.get(agent_name)
 
 
@@ -1774,20 +1766,12 @@ async def verify_reviewer_workspace(
                 errors=[manifest_error],
             )
     else:
-        manifest_path = (
-            ".manifests/benchmark_review_manifest.json"
-            if agent_name == AgentName.BENCHMARK_REVIEWER
-            else ".manifests/engineering_execution_handoff_manifest.json"
-            if agent_name == AgentName.ENGINEER_EXECUTION_REVIEWER
-            else ".manifests/electronics_review_manifest.json"
-        )
-        expected_stage = (
-            AgentName.BENCHMARK_REVIEWER
-            if agent_name == AgentName.BENCHMARK_REVIEWER
-            else AgentName.ENGINEER_EXECUTION_REVIEWER
-            if agent_name == AgentName.ENGINEER_EXECUTION_REVIEWER
-            else AgentName.ELECTRONICS_REVIEWER
-        )
+        if agent_name == AgentName.BENCHMARK_REVIEWER:
+            manifest_path = ".manifests/benchmark_review_manifest.json"
+            expected_stage = AgentName.BENCHMARK_REVIEWER
+        else:
+            manifest_path = ".manifests/engineering_execution_handoff_manifest.json"
+            expected_stage = AgentName.ENGINEER_EXECUTION_REVIEWER
         local_client = LocalWorkspaceClient(root=workspace_dir, session_id=session_id)
         try:
             manifest_error = await validate_reviewer_handover(

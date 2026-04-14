@@ -1065,19 +1065,6 @@ async def main():
                 ),
             )
 
-        if agent in METRIC_HANDLERS and s["success"] > 0:
-            log_report.info(
-                "agent_electronics_metrics",
-                electrical_validity_rate_pct=round(
-                    (s["electrical_validity_rate"] / s["success"]) * 100, 1
-                ),
-                wire_integrity_rate_pct=round(
-                    (s["wire_integrity_rate"] / s["success"]) * 100, 1
-                ),
-                avg_power_efficiency_score=round(
-                    s["power_efficiency_score"] / s["success"], 2
-                ),
-            )
 
     overall = (total_pass / total_count * 100) if total_count else 0.0
     logger.info(

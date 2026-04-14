@@ -8,7 +8,6 @@ from controller.agent.node_entry_validation import (
     BENCHMARK_CODER_HANDOVER_CHECK,
     BENCHMARK_PLAN_REVIEWER_HANDOVER_CHECK,
     BENCHMARK_REVIEWER_HANDOVER_CHECK,
-    ELECTRONICS_REVIEWER_HANDOVER_CHECK,
     ENGINEER_BENCHMARK_HANDOVER_CHECK,
     ENGINEER_EXECUTION_REVIEWER_HANDOVER_CHECK,
     ENGINEER_PLAN_REVIEWER_HANDOVER_CHECK,
@@ -235,11 +234,6 @@ def _collect_assembly_targets(assembly_definition: AssemblyDefinition) -> list[s
         _add(item.subassembly_id)
         for part in item.parts:
             _add(part.name)
-    if assembly_definition.electronics:
-        for component in assembly_definition.electronics.components:
-            if component.assembly_part_ref:
-                _add(component.assembly_part_ref)
-
     return targets
 
 
@@ -996,10 +990,7 @@ async def preflight_seeded_entry_contract(
     contract = contracts.get(target_node)
     if contract is None:
         return
-    if target_node in {
-        AgentName.ENGINEER_PLANNER,
-        AgentName.ELECTRONICS_PLANNER,
-    }:
+    if target_node == AgentName.ENGINEER_PLANNER:
         contract = contract.model_copy(update={"custom_check": None})
 
     custom_checks = {
@@ -1054,14 +1045,6 @@ async def preflight_seeded_entry_contract(
                 reviewer_label="Execution",
                 manifest_path=".manifests/engineering_execution_handoff_manifest.json",
                 expected_stage="engineering_execution_reviewer",
-            )
-        ),
-        ELECTRONICS_REVIEWER_HANDOVER_CHECK: (
-            lambda *, contract, state: reviewer_handover_custom_check_from_session_id(  # noqa: ARG005
-                session_id=session_id,
-                reviewer_label="Electronics",
-                manifest_path=".manifests/electronics_review_manifest.json",
-                expected_stage="electronics_reviewer",
             )
         ),
     }

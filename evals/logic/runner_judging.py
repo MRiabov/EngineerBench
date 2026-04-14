@@ -64,7 +64,6 @@ def _planned_counts_as_success(agent_name: AgentName, spec: AgentEvalSpec) -> bo
         return True
     return agent_name in {
         AgentName.ENGINEER_PLANNER,
-        AgentName.ELECTRONICS_PLANNER,
         AgentName.BENCHMARK_PLANNER,
     }
 

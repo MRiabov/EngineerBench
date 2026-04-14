@@ -12,7 +12,6 @@ from controller.agent.reward import (
     MilestoneConfig,
     load_reward_config,
 )
-from controller.clients.worker import WorkerClient
 from evals.logic.codex_workspace import LocalWorkspaceClient as _LocalWorkspaceClient
 from evals.logic.models import HardCheckAggregate
 from evals.logic.review_checks import (
@@ -30,19 +29,9 @@ from evals.logic.specs import AGENT_SPECS, required_plan_artifacts_for_agent
 from shared.enums import AgentName
 from shared.models.schemas import EpisodeMetadata
 from shared.models.simulation import SimulationResult
-from shared.utils.evaluation import analyze_electronics_metrics
 from shared.workers.schema import ValidationResultRecord
 
 METRIC_HANDLERS = {}
-
-
-async def _handle_electronics_metrics(
-    worker: WorkerClient, session_id: str, agent_stats: dict
-):
-    v, i, e = await analyze_electronics_metrics(worker, session_id)
-    agent_stats["electrical_validity_rate"] += v
-    agent_stats["wire_integrity_rate"] += i
-    agent_stats["power_efficiency_score"] += e
 
 
 def _load_agent_reward_configs() -> dict[AgentName, AgentRewardConfig]:
