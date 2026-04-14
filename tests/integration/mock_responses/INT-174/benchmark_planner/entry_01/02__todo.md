@@ -1,0 +1,3 @@
+- [x] Write benchmark assembly definition
+- [x] Write benchmark definition
+- [x] Submit the planner output

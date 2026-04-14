@@ -1,0 +1,1 @@
+- [x] Author the solvable benchmark handoff

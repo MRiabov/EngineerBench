@@ -1,0 +1,51 @@
+objectives:
+  goal_zone:
+    min:
+    - 0
+    - 0
+    - 0
+    max:
+    - 5
+    - 5
+    - 5
+  build_zone:
+    min:
+    - -20
+    - -20
+    - 0
+    max:
+    - 20
+    - 20
+    - 20
+simulation_bounds:
+  min:
+  - -50
+  - -50
+  - 0
+  max:
+  - 50
+  - 50
+  - 50
+payload:
+  label: projectile_ball
+  shape: sphere
+  material_id: abs
+  start_position:
+  - 0
+  - 0
+  - 2
+  runtime_jitter:
+  - 0
+  - 0
+  - 0
+benchmark_parts:
+- part_id: environment_fixture
+  label: environment_fixture
+  metadata:
+    fixed: true
+    material_id: aluminum_6061
+constraints:
+  estimated_solution_cost_usd: 33.333333333333336
+  estimated_solution_weight_g: 666.6666666666666
+  max_unit_cost: 50.0
+  max_weight_g: 1000.0

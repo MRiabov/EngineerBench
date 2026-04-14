@@ -1,0 +1,44 @@
+transcript:
+- node: engineer_planner
+  steps:
+  - thought: Seed an over-actuated plan with unjustified DOFs.
+    tool_name: write_file
+    tool_args:
+      path: engineering_plan.md
+      overwrite: true
+      content_file: INT-074/engineer_planner/entry_01/01__plan.md
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: todo.md
+      overwrite: true
+      content_file: INT-074/engineer_planner/entry_01/02__todo.md
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: assembly_definition.yaml
+      overwrite: true
+      content_file: INT-074/engineer_planner/entry_01/03__assembly_definition.yaml
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: benchmark_definition.yaml
+      overwrite: true
+      content_file: INT-074/engineer_planner/entry_01/04__benchmark_definition.yaml
+    expected_observation: success
+  - thought: Inspect the current revision render before submitting the handoff.
+    tool_name: inspect_media
+    tool_args:
+      path: renders/render_e45_a45.png
+    expected_observation: attached_to_model
+  - tool_name: submit_engineering_plan
+    expected_observation: submitted
+  - finished: true
+    summary: 'INT-074 plan scenario: planner submitted unjustified over-actuated plan.'
+- node: electronics_planner
+  steps:
+  - thought: No electronics changes; submit handoff.
+    tool_name: submit_engineering_plan
+    expected_observation: submitted
+  - finished: true
+    summary: 'INT-074 plan scenario: electronics planner submitted.'

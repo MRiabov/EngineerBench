@@ -1,0 +1,4 @@
+- [x] Keep both landing decks and the gap guard consistent across planner artifacts.
+- [x] Keep the bridge_reference_table `slide_y` trim explicit in the planner artifacts.
+- [x] Keep the trim travel window and controller facts explicit in the planner artifacts.
+- [x] Stay under the declared benchmark caps.

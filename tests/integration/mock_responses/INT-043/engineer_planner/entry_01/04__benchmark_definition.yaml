@@ -1,0 +1,12 @@
+objectives:
+  goal_zone: {min: [5,5,5], max: [10,10,10]}
+  build_zone: {min: [-20,-20,-20], max: [20,20,20]}
+simulation_bounds: {min: [-30,-30,-30], max: [30,30,30]}
+payload: {label: projectile_ball, shape: sphere, material_id: abs, start_position: [0,0,0], runtime_jitter: [0,0,0]}
+benchmark_parts:
+  - part_id: environment_fixture
+    label: environment_fixture
+    metadata:
+      fixed: true
+      material_id: aluminum_6061
+constraints: {max_unit_cost: 250, max_weight_g: 1000.0}

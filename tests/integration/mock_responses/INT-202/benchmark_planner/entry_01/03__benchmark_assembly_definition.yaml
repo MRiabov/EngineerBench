@@ -1,0 +1,35 @@
+version: "1.0"
+units:
+  length: "mm"
+  volume: "mm3"
+  mass: "g"
+  currency: "USD"
+constraints:
+  benchmark_max_unit_cost_usd: 100.5
+  benchmark_max_weight_g: 2700.0
+  planner_target_max_unit_cost_usd: 67.0
+  planner_target_max_weight_g: 1800.0
+manufactured_parts: []
+cots_parts: []
+environment_drill_operations: []
+final_assembly:
+  - name: left_start_deck
+    config:
+      dofs: []
+  - name: right_goal_deck
+    config:
+      dofs: []
+  - name: bridge_reference_table
+    config:
+      dofs:
+        - slide_y
+      control:
+        mode: ON_OFF
+        speed: 0.15
+  - name: gap_floor_guard
+    config:
+      dofs: []
+totals:
+  estimated_unit_cost_usd: 0.0
+  estimated_weight_g: 0.0
+  estimate_confidence: high

@@ -1,0 +1,4 @@
+- [x] Keep both landing decks and the gap guard consistent across planner artifacts.
+- [x] Keep the bridge_reference_table `slide_y` trim explicit in the planner artifacts.
+- [x] Keep the `ON_OFF` / `0.15` controller facts explicit in the planner artifacts.
+- [x] Leave the reviewer-visible span unspecified until the next pass.

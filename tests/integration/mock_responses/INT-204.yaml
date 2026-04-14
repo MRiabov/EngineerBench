@@ -1,0 +1,91 @@
+transcript:
+- node: benchmark_planner
+  steps:
+  - thought: Drafting a schema-valid and solvable benchmark.
+    tool_name: write_file
+    tool_args:
+      path: benchmark_plan.md
+      overwrite: true
+      content_file: INT-204/benchmark_planner/entry_01/01__plan.md
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: todo.md
+      overwrite: true
+      content_file: INT-204/benchmark_planner/entry_01/02__todo.md
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: benchmark_assembly_definition.yaml
+      overwrite: true
+      content_file: INT-204/benchmark_planner/entry_01/03__benchmark_assembly_definition.yaml
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: benchmark_definition.yaml
+      overwrite: true
+      content_file: INT-204/benchmark_planner/entry_01/04__benchmark_definition.yaml
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: benchmark_plan_evidence_script.py
+      overwrite: true
+      content_file: INT-204/benchmark_planner/entry_01/05__benchmark_plan_evidence_script.py
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: benchmark_plan_technical_drawing_script.py
+      overwrite: true
+      content_file: INT-204/benchmark_planner/entry_01/06__benchmark_plan_technical_drawing_script.py
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: renders/cad_preview.png
+      overwrite: true
+      content_file: INT-040/engineer_coder/entry_01/02__renders_preview.png
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: renders/simulation_preview.png
+      overwrite: true
+      content_file: INT-040/engineer_coder/entry_01/02__renders_preview.png
+    expected_observation: success
+  - tool_name: submit_benchmark_plan
+    expected_observation: submitted
+  - finished: true
+    summary: INT-204 benchmark planner submitted a solvable benchmark handoff.
+    plan:
+      theme: open_corridor
+      reasoning: The geometry leaves a direct path to the goal zone.
+- node: benchmark_plan_reviewer
+  steps:
+  - thought: Inspect the latest revision renders before approval.
+    tool_name: list_files
+    tool_args:
+      path: renders
+    expected_observation: success
+  - tool_name: inspect_media
+    tool_args:
+      path: renders/cad_preview.png
+    expected_observation: attached_to_model
+  - tool_name: inspect_media
+    tool_args:
+      path: renders/simulation_preview.png
+    expected_observation: attached_to_model
+  - finished: true
+    review:
+      decision: APPROVED
+      reason: >-
+        APPROVED: the latest revision renders show a clear path to the goal, and
+        inspect_media(path) was used on the current revision bundle.
+      required_fixes: []
+      checklist:
+        latest_revision_verified: true
+        review_manifest_revision: "latest"
+        render_count: 2
+        render_paths: "renders/cad_preview.png, renders/simulation_preview.png"
+        inspected_render_count: 2
+        visual_inspection_min_images: 1
+        visual_inspection_satisfied: true
+        deterministic_error_count: 0
+        deterministic_refusal_reason: "none"

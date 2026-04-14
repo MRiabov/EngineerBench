@@ -1,0 +1,81 @@
+transcript:
+- node: benchmark_planner
+  steps:
+  - thought: Drafting the benchmark handoff.
+    tool_name: write_file
+    tool_args:
+      path: benchmark_plan.md
+      overwrite: true
+      content_file: INT-201/benchmark_planner/entry_01/01__plan.md
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: todo.md
+      overwrite: true
+      content_file: INT-201/benchmark_planner/entry_01/02__todo.md
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: benchmark_assembly_definition.yaml
+      overwrite: true
+      content_file: INT-201/benchmark_planner/entry_01/03__benchmark_assembly_definition.yaml
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: benchmark_definition.yaml
+      overwrite: true
+      content_file: INT-201/benchmark_planner/entry_01/04__benchmark_definition.yaml
+    expected_observation: success
+  - tool_name: submit_benchmark_plan
+    expected_observation: rejected
+  - finished: true
+    summary: INT-201 benchmark planner was rejected because the motion was visible but underbounded.
+    plan:
+      theme: bridge_trim_underbounded
+      target_object_properties:
+        label: transfer_cube
+        shape: cube
+      environment_perturbations:
+        static_geometry: Passive bridge with an explicit slide_y trim and no reviewer-visible bounds.
+      difficulty_score: 0.45
+      reasoning: Keep the trim visible, but omit explicit travel limits so the handoff remains ambiguous.
+- node: benchmark_planner
+  steps:
+  - thought: Repeating the benchmark handoff without changing the motion bounds.
+    tool_name: write_file
+    tool_args:
+      path: benchmark_plan.md
+      overwrite: true
+      content_file: INT-201/benchmark_planner/entry_01/01__plan.md
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: todo.md
+      overwrite: true
+      content_file: INT-201/benchmark_planner/entry_01/02__todo.md
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: benchmark_assembly_definition.yaml
+      overwrite: true
+      content_file: INT-201/benchmark_planner/entry_01/03__benchmark_assembly_definition.yaml
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: benchmark_definition.yaml
+      overwrite: true
+      content_file: INT-201/benchmark_planner/entry_01/04__benchmark_definition.yaml
+    expected_observation: success
+  - tool_name: submit_benchmark_plan
+    expected_observation: rejected
+  - finished: true
+    summary: INT-201 benchmark planner repeated the underbounded motion handoff and will fail closed.
+    plan:
+      theme: bridge_trim_underbounded
+      target_object_properties:
+        label: transfer_cube
+        shape: cube
+      environment_perturbations:
+        static_geometry: Passive bridge with an explicit slide_y trim and no reviewer-visible bounds.
+      difficulty_score: 0.45
+      reasoning: Repeat the same ambiguous handoff so the fail-fast gate can close the episode.

@@ -1,0 +1,91 @@
+transcript:
+- node: engineer_planner
+  steps:
+  - thought: Write valid planner artifacts.
+    tool_name: write_file
+    tool_args:
+      path: engineering_plan.md
+      overwrite: true
+      content_file: INT-185/engineer_planner/entry_01/01__plan.md
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: todo.md
+      overwrite: true
+      content_file: INT-185/engineer_planner/entry_01/02__todo.md
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: assembly_definition.yaml
+      overwrite: true
+      content_file: INT-185/engineer_planner/entry_01/03__assembly_definition.yaml
+    expected_observation: success
+  - tool_name: write_file
+    tool_args:
+      path: benchmark_definition.yaml
+      overwrite: true
+      content_file: INT-185/engineer_planner/entry_01/04__benchmark_definition.yaml
+    expected_observation: success
+  - thought: Inspect the seeded current-revision render before submitting.
+    tool_name: inspect_media
+    tool_args:
+      path: renders/render_e45_a45.png
+    expected_observation: attached_to_model
+  - tool_name: submit_engineering_plan
+    expected_observation: submitted
+  - finished: true
+    summary: INT-185 planner artifacts generated.
+- node: electronics_planner
+  steps:
+  - thought: No electronics steps.
+    tool_name: write_file
+    tool_args:
+      path: todo.md
+      overwrite: true
+      content_file: INT-185/electronics_planner/entry_01/01__todo.md
+    expected_observation: success
+  - tool_name: submit_engineering_plan
+    expected_observation: submitted
+  - finished: true
+    summary: No electronics required.
+- node: engineer_plan_reviewer
+  steps:
+  - thought: Inspect the seeded current-revision render before approving.
+    tool_name: inspect_media
+    tool_args:
+      path: renders/render_e45_a45.png
+    expected_observation: attached_to_model
+  - finished: true
+    review:
+      decision: APPROVED
+      reason: Recovery scenario plan artifacts are valid.
+      required_fixes: []
+- node: engineer_coder
+  steps:
+  - thought: Intentionally trigger a deterministic agent-caused command failure once.
+    tool_name: execute_command
+    tool_args:
+      command: ls /non_existent_path_to_fail
+    expected_observation: 'ls: cannot access'
+  - thought: Emit simple script after observing the failed command.
+    tool_name: write_file
+    tool_args:
+      path: solution_script.py
+      overwrite: true
+      content_file: INT-185/engineer_coder/entry_01/02__solution_script.py
+    expected_observation: success
+  - finished: true
+    journal: INT-185 coder output generated.
+    thought: Implementation complete.
+- node: engineer_execution_reviewer
+  steps:
+  - thought: Inspect the seeded current-revision render before approving execution.
+    tool_name: inspect_media
+    tool_args:
+      path: renders/render_e45_a45.png
+    expected_observation: attached_to_model
+  - finished: true
+    review:
+      decision: APPROVED
+      reason: Agent-failed tool recovery scenario validated.
+      required_fixes: []
