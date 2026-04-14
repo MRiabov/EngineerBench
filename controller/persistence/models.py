@@ -224,15 +224,3 @@ class Asset(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     episode: Mapped["Episode"] = relationship(back_populates="assets")
-
-
-class UserSteeringPreference(Base):
-    __tablename__ = "user_steering_preferences"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    user_id: Mapped[str] = mapped_column(String, index=True)
-    preference_key: Mapped[str] = mapped_column(String, index=True)
-    preference_value: Mapped[dict] = mapped_column(JSON)
-    last_updated: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
-    )

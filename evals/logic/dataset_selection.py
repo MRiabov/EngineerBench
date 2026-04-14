@@ -6,7 +6,6 @@ from typing import Any
 from evals.logic.cli_args import parse_cli_int_set, parse_cli_list_values
 from evals.logic.models import EvalDatasetItem
 from evals.logic.specs import AGENT_SPECS
-from shared.agents.config import DraftingMode
 from shared.enums import AgentName
 
 
@@ -54,23 +53,6 @@ def parse_level_filters(raw_level_filters: Iterable[str] | None) -> set[int]:
         maximum=5,
         label="complexity level",
     )
-
-
-def filter_rows_by_technical_drawing_mode(
-    rows: list[dict[str, Any]],
-    *,
-    technical_drawing_mode: DraftingMode,
-) -> list[dict[str, Any]]:
-    filtered_rows: list[dict[str, Any]] = []
-    for row in rows:
-        raw_mode = row.get("technical_drawing_mode")
-        if raw_mode is None or str(raw_mode).strip() == "":
-            filtered_rows.append(row)
-            continue
-        if DraftingMode(raw_mode) != technical_drawing_mode:
-            continue
-        filtered_rows.append(row)
-    return filtered_rows
 
 
 def filter_eval_rows(

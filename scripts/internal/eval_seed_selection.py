@@ -9,10 +9,8 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from evals.logic.dataset_selection import (
-    filter_rows_by_technical_drawing_mode,  # noqa: E402
 )
 from evals.logic.models import EvalDatasetItem  # noqa: E402
-from shared.agents.config import DraftingMode  # noqa: E402
 from shared.enums import AgentName  # noqa: E402
 
 
@@ -63,7 +61,6 @@ def load_seed_dataset(
     task_id: str | None,
     limit: int,
     levels: set[int] | None,
-    technical_drawing_mode: DraftingMode,
     root: Path = ROOT,
 ) -> list[EvalDatasetItem]:
     dataset_roots = _seed_dataset_roots(root)
@@ -88,9 +85,7 @@ def load_seed_dataset(
         data = [item for item in data if item["id"] == task_id]
     if levels:
         data = [item for item in data if item.get("complexity_level") in levels]
-    data = filter_rows_by_technical_drawing_mode(
-        data, technical_drawing_mode=technical_drawing_mode
-    )
+    data = [item for item in data if not item.get("technical_drawing_mode")]
     if limit > 0:
         data = data[:limit]
 

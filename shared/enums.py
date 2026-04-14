@@ -149,7 +149,6 @@ class AgentName(StrEnum):
     GIT_AGENT = "git_agent"
     COTS_SEARCH = "cots_search"
     JOURNALLING_AGENT = "journalling_agent"
-    STEER = "steer"
 
 
 class EpisodeType(StrEnum):

@@ -1497,10 +1497,8 @@ async def continue_agent_task(
                     "agent_name": agent_name,
                 }
 
-                # Support steerability metadata in additional_kwargs
                 human_message = HumanMessage(
                     content=message,
-                    additional_kwargs={"steerability": metadata} if metadata else {},
                 )
                 input_update = {
                     "messages": [human_message],

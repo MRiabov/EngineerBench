@@ -24,7 +24,6 @@ from shared.models.schemas import (
     TraceMetadata,
 )
 from shared.models.simulation import SimulationResult
-from shared.models.steerability import CodeReference, GeometricSelection
 from shared.observability.schemas import ReviewDecisionEvent
 from shared.simulation.schemas import (
     SimulatorBackendType,
@@ -213,22 +212,6 @@ class ReviewResponse(BaseModel):
 
     status: ResponseStatus
     decision: ReviewDecision
-
-
-class SteeringQueueEntry(BaseModel):
-    """A single entry in the steering prompt queue."""
-
-    text: str
-    selections: list[GeometricSelection] = Field(default_factory=list)
-    mentions: list[str] = Field(default_factory=list)
-    code_references: list[CodeReference] = Field(default_factory=list)
-
-
-class SteerabilityResponse(BaseModel):
-    """Response from enqueuing or starting a steerability prompt."""
-
-    status: Literal["queued", "started"]
-    queue_position: int = Field(ge=0)
 
 
 class CotsSearchItem(BaseModel):

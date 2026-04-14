@@ -312,7 +312,6 @@ async def validate_benchmark_planner_handoff_artifacts(
     )
     ignored_missing_files = {
         "benchmark_plan_evidence_script.py",
-        "benchmark_plan_technical_drawing_script.py",
         "renders/benchmark_renders/render_manifest.json",
     }
     validation_messages = [

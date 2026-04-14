@@ -32,7 +32,6 @@ class CoderSignature(dspy.Signature):
     assembly_definition = dspy.InputField()
     objectives = dspy.InputField()
     benchmark_assembly_definition = dspy.InputField()
-    steer_context = dspy.InputField(default="")
     feedback = dspy.InputField(desc="Feedback from previous review steps", default="")
     journal = dspy.OutputField(
         desc="A summary of the implementation done for this step"
@@ -57,9 +56,6 @@ class CoderNode(BaseNode):
         no_step_mode = current_step is None
         if no_step_mode:
             current_step = "Finalize implementation and hand off for review."
-
-        # WP04: Extract steerability context
-        steer_context = await self._get_steer_context(state.messages)
 
         # Read objectives and assembly_definition for context
         objectives = "# No benchmark_definition.yaml found."
@@ -89,7 +85,6 @@ class CoderNode(BaseNode):
             "benchmark_assembly_definition": self._prepare_yaml_context(
                 benchmark_assembly_definition, max_chars=3500
             ),
-            "steer_context": self._prepare_text_context(steer_context, max_chars=2000),
             "feedback": self._prepare_text_context(state.feedback, max_chars=2000),
         }
         validate_files = [

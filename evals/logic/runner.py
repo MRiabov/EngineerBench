@@ -43,9 +43,6 @@ from evals.logic.codex_workspace import (
     verify_workspace_for_agent as _verify_workspace_for_agent,
 )
 from evals.logic.dataset_selection import (
-    filter_rows_by_technical_drawing_mode as _filter_dataset_rows_by_technical_drawing_mode_impl,
-)
-from evals.logic.dataset_selection import (
     parse_level_filters as _parse_level_filters,
 )
 from evals.logic.dataset_selection import (
@@ -122,8 +119,6 @@ from scripts.internal.eval_run_lock import (
     release_eval_run_lock,
 )
 from shared.agents.config import (
-    TECHNICAL_DRAWING_MODE_ENV,
-    DraftingMode,
 )
 from shared.enums import (
     AgentName,
@@ -180,22 +175,6 @@ def _resolve_runner_backend(
         return EvalRunnerBackend(env_runner_backend)
 
     return EvalRunnerBackend.CODEX
-
-
-def _filter_dataset_rows_by_technical_drawing_mode(
-    rows: list[dict[str, Any]],
-    *,
-    technical_drawing_mode: DraftingMode,
-) -> list[dict[str, Any]]:
-    filtered = _filter_dataset_rows_by_technical_drawing_mode_impl(
-        rows, technical_drawing_mode=technical_drawing_mode
-    )
-    return [
-        row
-        for row in filtered
-        if row.get("technical_drawing_mode") is not None
-        and str(row.get("technical_drawing_mode")).strip() != ""
-    ]
 
 
 def _mirror_session_trace_to_readable_logs(
@@ -509,20 +488,6 @@ def _build_parser() -> argparse.ArgumentParser:
         ),
     )
     parser.add_argument(
-        "--technical-drawing-mode",
-        type=str,
-        default=DraftingMode.FULL.value,
-        choices=[
-            DraftingMode.OFF.value,
-            DraftingMode.MINIMAL.value,
-            DraftingMode.FULL.value,
-        ],
-        help=(
-            "Select the drawing-mode corpus to evaluate (default: full). "
-            "Rows without technical_drawing_mode are skipped."
-        ),
-    )
-    parser.add_argument(
         "--verbose", action="store_true", help="Print backend traces during polling"
     )
     parser.add_argument(
@@ -643,8 +608,6 @@ def _build_parser() -> argparse.ArgumentParser:
 async def main():
     parser = _build_parser()
     args = parser.parse_args()
-    technical_drawing_mode = DraftingMode(args.technical_drawing_mode)
-    os.environ[TECHNICAL_DRAWING_MODE_ENV] = technical_drawing_mode.value
     selected_task_ids = _parse_task_id_filters(args.task_id)
     try:
         selected_levels = _parse_level_filters(args.level)
@@ -675,7 +638,6 @@ async def main():
         agent=None if args.agent == "all" else args.agent,
         task_ids=selected_task_ids,
         levels=sorted(selected_levels),
-        technical_drawing_mode=technical_drawing_mode.value,
     )
     if runner_backend == EvalRunnerBackend.CONTROLLER and not args.skip_env_up:
         lock_lease = acquire_eval_run_lock(
@@ -935,10 +897,11 @@ async def main():
                             for item in data
                             if item.get("complexity_level") in selected_levels
                         ]
-                    data = _filter_dataset_rows_by_technical_drawing_mode(
-                        data,
-                        technical_drawing_mode=technical_drawing_mode,
-                    )
+                    data = [
+                        item
+                        for item in data
+                        if not item.get("technical_drawing_mode")
+                    ]
                     if args.limit > 0:
                         if args.random:
                             data = random.sample(data, k=min(args.limit, len(data)))

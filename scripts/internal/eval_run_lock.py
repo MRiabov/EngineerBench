@@ -26,7 +26,6 @@ class EvalRunSelection:
     agent: str | None = None
     task_ids: list[str] = field(default_factory=list)
     levels: list[int] = field(default_factory=list)
-    technical_drawing_mode: str | None = None
 
 
 @dataclass
@@ -38,7 +37,6 @@ class EvalRunState:
     requested_agent: str | None = None
     requested_task_ids: list[str] = field(default_factory=list)
     requested_levels: list[int] = field(default_factory=list)
-    requested_technical_drawing_mode: str | None = None
     current_log_dir: str | None = None
     current_phase: str | None = None
 
@@ -111,11 +109,6 @@ def _format_eval_run_block_message(
         requested = state.get("requested_command")
         if isinstance(requested, list) and requested:
             active_command = _join_command([str(item) for item in requested])
-        active_mode = state.get("requested_technical_drawing_mode")
-        if isinstance(active_mode, str) and active_mode.strip():
-            active_command = (
-                f"{active_command} [technical_drawing_mode={active_mode.strip()}]"
-            )
         phase = state.get("current_phase")
         if isinstance(phase, str) and phase.strip():
             active_phase = phase.strip()
@@ -210,11 +203,6 @@ def _acquire_eval_run_flock(
                     list(requested_selection.levels)
                     if requested_selection is not None
                     else []
-                ),
-                requested_technical_drawing_mode=(
-                    requested_selection.technical_drawing_mode
-                    if requested_selection is not None
-                    else None
                 ),
             ),
         )
