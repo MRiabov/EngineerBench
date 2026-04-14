@@ -92,7 +92,6 @@ async def test_int_064_session_workspace_copies_parts_db_catalog():
         assert data.exit_code == 0, data
         assert data.stdout.strip() == "M3_BOLT", data.stdout
 
-
         # First write a dummy image
         await client.post(
             f"{WORKER_LIGHT_URL}/fs/write",

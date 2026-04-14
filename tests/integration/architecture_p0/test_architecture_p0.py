@@ -1,6 +1,5 @@
 import asyncio
 import base64
-import io
 import os
 import tempfile
 import time
@@ -13,7 +12,6 @@ import httpx
 import numpy as np
 import pytest
 import yaml
-from PIL import Image
 
 from controller.api.schemas import AgentRunRequest, AgentRunResponse, EpisodeResponse
 from shared.enums import EpisodeStatus
@@ -31,10 +29,6 @@ from shared.workers.schema import (
     BenchmarkToolResponse,
     ExecuteRequest,
     ExecuteResponse,
-    ListFilesRequest,
-    PreviewDesignRequest,
-    PreviewDesignResponse,
-    PreviewRenderingType,
     ReadFileRequest,
     VerificationRequest,
     WriteFileRequest,
@@ -872,6 +866,8 @@ def build():
         assert ver_result.scene_build_count == 1
         assert ver_result.backend_run_count == 1
         assert ver_result.batched_execution is True
+
+
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
 async def test_int_023_fastener_validity_rules():

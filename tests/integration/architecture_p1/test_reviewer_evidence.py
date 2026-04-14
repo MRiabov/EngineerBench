@@ -12,21 +12,17 @@ from controller.agent.review_handover import validate_reviewer_handover
 from controller.api.schemas import (
     AgentRunRequest,
     AgentRunResponse,
-    BenchmarkGenerateRequest,
-    BenchmarkGenerateResponse,
     EpisodeResponse,
 )
 from controller.clients.worker import WorkerClient
 from shared.enums import AgentName, EpisodeStatus, ReviewDecision
-from shared.simulation.schemas import SimulatorBackendType
-from shared.workers.schema import PlanReviewManifest, RenderManifest, ReviewManifest
+from shared.workers.schema import ReviewManifest
 from tests.integration.agent.helpers import (
     WORKER_LIGHT_URL,
     repo_git_revision,
     seed_benchmark_assembly_definition,
     seed_current_revision_render_preview,
     seed_execution_reviewer_handover,
-    wait_for_benchmark_state,
     wait_for_episode_state,
 )
 

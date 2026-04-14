@@ -1,23 +1,16 @@
-import hashlib
 import os
 import uuid
-from pathlib import Path
 
 import httpx
 import pytest
 import yaml
 
 from shared.enums import AgentName
-from shared.git_utils import repo_revision
 from shared.workers.schema import (
     BenchmarkToolRequest,
     BenchmarkToolResponse,
-    ListFilesRequest,
     ReadFileRequest,
     ReadFileResponse,
-    RenderArtifactMetadata,
-    RenderManifest,
-    RenderSiblingPaths,
     WriteFileRequest,
 )
 

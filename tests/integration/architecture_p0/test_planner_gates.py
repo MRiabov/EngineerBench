@@ -20,7 +20,7 @@ from controller.api.schemas import (
     EpisodeResponse,
 )
 from shared.current_role import current_role_manifest_json
-from shared.enums import AgentName, EpisodeStatus, ReviewDecision, TraceType
+from shared.enums import AgentName, EpisodeStatus, TraceType
 from shared.models.schemas import (
     AssemblyConstraints,
     AssemblyDefinition,
@@ -599,8 +599,6 @@ async def test_int_005_engineer_planner_flow_emits_submit_engineering_plan_trace
         assert config_resp.status_code == 200, config_resp.text
         expected_hash = hashlib.sha256(config_resp.text.encode("utf-8")).hexdigest()
         assert manifest.artifact_hashes["manufacturing_config.yaml"] == expected_hash
-
-
 
 
 @pytest.mark.integration_p0

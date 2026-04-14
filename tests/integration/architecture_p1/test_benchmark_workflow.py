@@ -7,26 +7,19 @@ import yaml
 from httpx import AsyncClient
 
 from controller.api.schemas import (
-    AgentRunRequest,
-    AgentRunResponse,
     BenchmarkGenerateRequest,
     BenchmarkGenerateResponse,
     ConfirmRequest,
     EpisodeResponse,
 )
 from shared.enums import (
-    AgentName,
     EpisodePhase,
     EpisodeStatus,
-    ReviewDecision,
     TerminalReason,
-    TraceType,
 )
 from shared.models.schemas import AssemblyDefinition, BenchmarkDefinition
 from shared.simulation.schemas import SimulatorBackendType
 from shared.workers.schema import (
-    PlanReviewManifest,
-    RenderManifest,
     ReviewManifest,
 )
 from tests.integration.agent.helpers import (

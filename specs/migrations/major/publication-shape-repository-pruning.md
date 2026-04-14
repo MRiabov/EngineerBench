@@ -194,11 +194,13 @@ The probe entrypoints are not publication-worthy:
 The publication bundle should not ship compatibility mirrors that exist only
 to paper over earlier layouts.
 
+The deterministic integration-test fixture (`MockDSPyLM` plus
+`mock_scenarios.py`) is retained separately; do not trim it in this
+mirror-layer cleanup.
+
 Remove or collapse the following surfaces:
 
 - `worker_light/agent_files/**`
-- `controller/agent/mock_llm.py`
-- `controller/agent/mock_scenarios.py`
 - `controller/agent/provider_tool_call_adapters/minimax_adapter.py`
 - `controller/agent/benchmark/render_seed.py`
 - `controller/graph/steerability_node.py`
@@ -267,10 +269,11 @@ CLI-provider harness already define the command surface. Keep the runtime
 harness and the script-backed submission helpers; trim the old-style tool
 wrappers and provider-specific adapter clones.
 
+Keep the deterministic `MockDSPyLM` fixture surface out of this sweep; it is
+the integration harness, not an old SDK clone.
+
 Remove or collapse:
 
-- `controller/agent/mock_llm.py`
-- `controller/agent/mock_scenarios.py`
 - `controller/agent/provider_tool_call_adapters/minimax_adapter.py`
 - `controller/agent/tools.py`
   - any direct ReAct-only tool that merely forwards to an existing shell
@@ -465,6 +468,9 @@ Remove:
 - the non-paper subset of `tests/integration/architecture_p1/**`
 - the non-paper subset of `tests/integration/mock_responses/**`
 - `tests/README.md`
+
+The canonical `MockDSPyLM` corpus in `tests/integration/mock_responses/` is
+retained; only the non-paper subset is pruned.
 
 The `drawing-*` benchmark and engineer fixture families are also out of
 bundle, because they only exist to exercise the technical-drawing contract that
@@ -691,10 +697,13 @@ material:
 The following modules need symbol-level cleanup even if the module itself is
 kept for the publication bundle:
 
+The `MockDSPyLM` fixture rows below are explicit retention exceptions and
+should be restored as a unit rather than trimmed away.
+
 | Module | Symbols to trim or collapse |
 | -- | -- |
-| `controller/agent/mock_llm.py` | `MockDSPyLM`, `_cached_integration_mock_scenarios` |
-| `controller/agent/mock_scenarios.py` | `TranscriptStepSpec`, `TranscriptNodeSpec`, `TranscriptScenarioSpec`, `_expand_content_file_refs`, `_validate_scenarios`, `_load_from_directory`, `load_integration_mock_scenarios` |
+| `controller/agent/mock_llm.py` | `MockDSPyLM`, `_cached_integration_mock_scenarios` are retained; restore them as one fixture unit. |
+| `controller/agent/mock_scenarios.py` | `TranscriptStepSpec`, `TranscriptNodeSpec`, `TranscriptScenarioSpec`, `_expand_content_file_refs`, `_validate_scenarios`, `_load_from_directory`, `load_integration_mock_scenarios` are retained; restore them as one fixture unit. |
 | `controller/agent/provider_tool_call_adapters/minimax_adapter.py` | `_coerce_minimax_parameter_value`, `MiniMaxToolCallAdapter` |
 | `controller/temporal_worker.py` | `main()`, Temporal worker registration, connect/retry loop |
 | `worker_heavy/temporal_worker.py` | `main()`, heavy-task queue worker registration, connect/retry loop |
@@ -754,6 +763,32 @@ kept for the publication bundle:
 | `worker_heavy/simulation/frame_stream.py` | `_http_to_ws_url`, `_encode_png_base64`, `SimulationFrameStreamPublisher` |
 | `worker_heavy/utils/validation.py` | the fluid and deformable helpers listed above, `preview_stress()`, `_drafting_preview_role()`, `_validate_drafting_preview_gate()`, and any debug-only stress preview path that is not part of the paper claim matrix |
 | `shared/observability/schemas.py` | the long-tail event classes listed above, including drafting-preview, electronics, fluid/stress, and steerability events; the file should keep only the event families needed to prove the paper claims |
+
+#### MockDSPyLM restoration checklist
+
+The fixture stays in the publication bundle as if it had never been removed.
+Use this checklist to restore the implementation and then cancel out the older
+prune language without deleting the canonical scenario corpus.
+
+- [ ] Restore `controller/agent/mock_llm.py` with `MockDSPyLM`,
+  `_cached_integration_mock_scenarios`, strict scenario lookup,
+  transcript/native-tool handling, and loop protection.
+- [ ] Restore `controller/agent/mock_scenarios.py` with the typed transcript
+  schema, file-ref expansion, strict scenario validation, and directory
+  loader.
+- [ ] Restore `controller/agent/config.py::build_dspy_lm()` so integration
+  mode returns `MockDSPyLM(session_id=session_id, node_type=agent_role)`.
+- [ ] Keep `tests/integration/mock_responses/**` as the canonical
+  deterministic scenario corpus for the integration fixture, including
+  `README.md`, `_render_manifest.py`, and all per-entry payload trees, and
+  revert any delete/rename operations against that tree so the file set
+  matches `main` again.
+- [ ] Keep the `MockDSPyLM` references in `specs/integration-test-rules.md`
+  and `specs/integration-test-list.md` aligned with the restored fixture
+  contract.
+- [ ] Cancel out the prune-list entries in this migration that would otherwise
+  remove the fixture, but leave the non-paper scenario deletions and the rest
+  of the publication-pruning plan intact.
 
 ## Proposed Target State
 
@@ -1274,8 +1309,6 @@ listed above stay in the publication bundle and are not part of the prune list:
 - `worker_light/agent_files/`
 - `worker_heavy/workbenches/manufacturing_config.yaml`
 - `worker_renderer/utils/manufacturing_config.yaml`
-- `controller/agent/mock_llm.py`
-- `controller/agent/mock_scenarios.py`
 - `controller/agent/provider_tool_call_adapters/minimax_adapter.py`
 - `controller/temporal_worker.py`
 - `worker_heavy/temporal_worker.py`
@@ -1382,7 +1415,6 @@ listed above stay in the publication bundle and are not part of the prune list:
 - `tests/electronics/test_integration_electronics.py`
 - `tests/integration/evals_p2/`
 - `tests/integration/architecture_p1/`
-- `tests/integration/mock_responses/`
 - `tests/README.md`
 - `config/lint_config.yaml`
 - `config/clickhouse/zookeeper.xml`

@@ -12,7 +12,6 @@ import sys
 import textwrap
 from pathlib import Path
 from types import SimpleNamespace
-from uuid import uuid4
 
 import pytest
 import yaml
@@ -39,22 +38,15 @@ from evals.logic.codex_workspace import (
 )
 from evals.logic.models import EvalDatasetItem
 from evals.logic.seed_maintenance import refresh_plan_review_manifest_hashes
-from shared.current_role import current_role_manifest_json, parse_current_role_manifest
 from shared.agents.config import AgentsConfig
+from shared.current_role import current_role_manifest_json, parse_current_role_manifest
 from shared.enums import AgentName, ManufacturingMethod, ReviewDecision
-from shared.eval_artifacts import plan_artifacts_for_agent
 from shared.models.schemas import (
-    BenchmarkDefinition,
-    BoundingBox,
-    Constraints,
     DatasetCurationManifest,
-    MovedObject,
-    ObjectivesSection,
     PartMetadata,
     PlannerSubmissionResult,
 )
 from shared.workers.bundling import extract_bundle_base64
-from shared.workers.schema import ValidationResultRecord
 from worker_renderer.utils.build123d_rendering import (
     export_preview_scene_bundle,
     render_preview_view,
@@ -3314,9 +3306,7 @@ def test_validate_eval_seed_removes_preview_bundles_from_all_seed_artifacts():
     )
 
     assert completed.returncode == 0, combined_output
-    assert "PASS engineer_coder ec-001:" in completed.stdout, (
-        completed.stdout
-    )
+    assert "PASS engineer_coder ec-001:" in completed.stdout, completed.stdout
     assert "black/empty" not in combined_output, combined_output
 
     seed_root = ROOT / "dataset" / "data" / "seed" / "role_based"

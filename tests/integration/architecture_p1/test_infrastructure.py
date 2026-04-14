@@ -32,7 +32,6 @@ from shared.workers.schema import (
     WriteFileRequest,
 )
 from tests.integration.agent.helpers import seed_benchmark_assembly_definition
-from tests.integration.contracts import BackupWorkflowResponse
 
 # Adjust URL to your controller if different
 CONTROLLER_URL = "http://127.0.0.1:18000"
@@ -151,6 +150,8 @@ def _sample_video_bytes() -> bytes:
         return tmp_path.read_bytes()
     finally:
         tmp_path.unlink(missing_ok=True)
+
+
 @pytest.mark.asyncio
 async def test_render_artifact_generation_int_039():
     """
@@ -206,6 +207,8 @@ async def test_render_artifact_generation_int_039():
             pytest.skip(
                 f"No discoverable visualization artifacts in this run. Assets: {assets}"
             )
+
+
 @pytest.mark.asyncio
 async def test_render_artifact_generation_int_039_simulation_video_shows_objective_boxes():
     """INT-039: simulation video artifacts retain goal/forbid/build box visuals."""
@@ -293,6 +296,7 @@ async def test_render_artifact_generation_int_039_simulation_video_shows_objecti
         assert _count_zone_pixels(frame_rgb, "goal") > 50
         assert _count_zone_pixels(frame_rgb, "forbid") > 50
         assert _count_zone_pixels(frame_rgb, "build") > 50
+
 
 @pytest.mark.asyncio
 async def test_inspect_media_splits_mp4_into_frames_when_enabled():
@@ -384,6 +388,7 @@ async def test_asset_persistence_linkage_int_040():
             pytest.skip(
                 f"No visualization assets linked in this run. Assets: {asset_paths}"
             )
+
 
 @pytest.mark.asyncio
 async def test_mjcf_joint_mapping_int_037():
