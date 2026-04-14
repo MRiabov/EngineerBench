@@ -812,6 +812,8 @@ kept for the publication bundle:
 - [x] Remove `controller/agent/nodes/{electronics_planner.py,electronics_reviewer.py,skills.py,summarizer.py}` and prune the corresponding engineer, benchmark, and top-level graph resolver routes that reached those sidecars.
 - [x] Remove the benchmark-side skill and journalling node implementations from `controller/agent/benchmark/nodes.py` so the deleted loop is no longer present as dead code.
 - [x] Audit `specs/architecture/` for out-of-bundle references and stage the remaining prune work as a checklist because the affected doc surface is too broad for a safe one-pass edit.
+- [x] Remove the steerability runtime plumbing from the controller API, agent node inputs, persistence model, and generated OpenAPI snapshots.
+- [x] Remove the Genesis particle-system / deformable rendering branches so the backend no longer carries soft-body-specific code paths.
 
 ## Retained Roots
 
