@@ -10,9 +10,10 @@ totals:
   estimate_confidence: high
 manufactured_parts: []
 cots_parts:
-- part_id: ServoMotor_DS3218
-  manufacturer: pololu
-  unit_cost_usd: 18.0
-  quantity: 1
+- part_id: M3_BOLT
+  manufacturer: Generic
+  unit_cost_usd: 0.5
+  weight_g: 1.2
+  quantity: 4
   source: catalog
 final_assembly: []

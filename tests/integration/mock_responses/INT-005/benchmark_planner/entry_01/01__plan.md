@@ -11,7 +11,7 @@
   origin with a floor, side walls, and a center redirecting surface.
 - The static geometry should leave a clear gravity path that is still
   obstructed enough to require deliberate routing.
-- No benchmark-owned moving fixtures, motors, or fluids are needed.
+- No benchmark-owned moving fixtures are needed.
 
 ## 3. Objectives
 
@@ -39,4 +39,4 @@
 - Keep the drafted benchmark grounded in a single passive environment fixture.
 - The benchmark_definition file will carry the copied customer caps and the
   exact payload contract.
-- No moving benchmark-owned fixtures, motors, or fluids are needed.
+- No moving benchmark-owned fixtures are needed.

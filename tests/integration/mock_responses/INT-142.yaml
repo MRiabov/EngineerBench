@@ -1,7 +1,7 @@
 transcript:
 - node: benchmark_planner
   steps:
-  - thought: Preparing a task that requires electronics implementation.
+  - thought: Preparing a passive benchmark task.
     tool_name: write_file
     tool_args:
       path: benchmark_plan.md
@@ -29,7 +29,7 @@ transcript:
   - tool_name: submit_benchmark_plan
     expected_observation: submitted
   - finished: true
-    summary: Electronics-eval plan generated.
+    summary: Passive benchmark plan generated.
 - node: benchmark_plan_reviewer
   steps:
   - finished: true

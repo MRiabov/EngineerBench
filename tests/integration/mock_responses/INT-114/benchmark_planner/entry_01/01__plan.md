@@ -2,8 +2,7 @@
 
 - Train gravity-first rigid-body reasoning with a passive benchmark that moves
   a sphere into a goal zone using only gravity and static geometry.
-- Keep the family simple, reproducible, and fully rigid-body: no actuators,
-  FEM, or fluids.
+- Keep the family simple, reproducible, and fully rigid-body.
 
 ## 2. Static Geometry
 
@@ -38,8 +37,8 @@
 
 - The benchmark stays passive: the sphere falls under gravity and the static
   geometry redirects it into the goal zone.
-- There are no benchmark-owned moving fixtures, actuators, FEM parts, or fluid
-  features in this family.
+- There are no benchmark-owned moving fixtures or powered features in this
+  family.
 - Any benchmark-side motion that would require a controller is out of scope and
   must be rejected rather than adapted.
 
@@ -72,4 +71,4 @@
 - `environment_fixture` must be static (`fixed: true`) and carry a known
   `material_id`.
 - The payload uses `material_id: abs`.
-- No part in this family should introduce powered or deformable behavior.
+- No part in this family should introduce powered behavior.

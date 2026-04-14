@@ -27,7 +27,7 @@
 
 - The sphere falls under gravity and is redirected by static geometry into the
   goal zone.
-- There are no benchmark-owned moving fixtures, motors, FEM parts, or fluids.
+- There are no benchmark-owned moving fixtures or powered features.
 
 ## 6. Randomization
 

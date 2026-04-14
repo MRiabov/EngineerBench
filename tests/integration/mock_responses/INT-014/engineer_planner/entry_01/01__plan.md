@@ -1,14 +1,14 @@
 ## 1. Solution Overview
 
-Mechanism with ServoMotor_DS3218.
+Mechanism with M3_BOLT.
 
 ## 2. Parts List
 
-- ServoMotor_DS3218 (Servo Motor)
+- M3_BOLT (Fastener)
 
 ## 3. Assembly Strategy
 
-1. Attach motor.
+1. Attach the fastener.
 
 ## 4. Assumption Register
 

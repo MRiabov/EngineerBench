@@ -10,14 +10,14 @@ totals:
   estimate_confidence: high
 manufactured_parts: []
 cots_parts:
-  - part_id: ServoMotor_DS3218
+  - part_id: M3_BOLT
     manufacturer: Generic
-    unit_cost_usd: 18.0
-    weight_g: 60.0
-    quantity: 1
+    unit_cost_usd: 0.5
+    weight_g: 1.2
+    quantity: 4
     source: catalog
 final_assembly:
-  - name: drive_motor
+  - name: review_fixture
     config:
       dofs: []
-      cots_id: ServoMotor_DS3218
+      cots_id: M3_BOLT

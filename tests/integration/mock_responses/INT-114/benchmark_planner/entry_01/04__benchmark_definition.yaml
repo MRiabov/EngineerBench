@@ -27,8 +27,6 @@ objectives:
     - 36.0
     - 28.0
     - 60.0
-  fluid_objectives: []
-  stress_objectives: []
 benchmark_parts:
 - part_id: environment_fixture
   label: environment_fixture
@@ -38,8 +36,6 @@ benchmark_parts:
     material_id: aluminum_6061
 physics:
   backend: GENESIS
-  fem_enabled: false
-fluids: []
 simulation_bounds:
   min:
   - -48.0
