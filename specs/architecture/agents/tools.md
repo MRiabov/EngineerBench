@@ -166,7 +166,6 @@ I propose the following set of tools (their usage is below). Notably, the tools 
 #### Engineering tools
 
 - `validate_and_price(component: Part|Compound) -> float|dict[str, float]`: validates a part by for manufacturability, then prices it if valid using its workbench's cost calculation interface, or returns an error with a description and a location
-  - If validating a compound, it will also check for unusual DOFs, e.g. a part has >=4 DOFs, which is unusual in engineering. It won't raise immediately, but it will throw a "warning". The reviewer will also get notified that DOFs are excessive in this part in particular, and will be more strict in review.
 - `simulate_engineering(Compound) -> SimulationResult` - Submits a model for a simulation. Robustness checking uses runtime randomization by executing one heavy-worker job with one backend scene build/load and `num_scenes` parallel jittered scene instances inside that one backend run. `num_scenes` is batch width, not permission for serialized whole-scene reruns or multiple heavy jobs on one worker; nor multithreaded implementation - only batch width.
 
 <!-- dev note: assert against submitting a BuildPart builders, or other types. -->
@@ -228,7 +227,7 @@ I propose the following set of tools (their usage is below). Notably, the tools 
   - Input objective with goal or forbid objectives.
   - Top-level authored part labels must be non-empty, unique, and must not be `environment` or start with `zone_`, because the runtime reserves those names for the scene root and generated objective bodies.
   - `validate_benchmark()` fails closed on missing or blank authored labels and does not invent fallback names for unlabeled parts.
-  - Benchmark-owned moving fixtures must declare their motion contract explicitly; `validate_benchmark()` rejects missing, contradictory, or unsupported motion metadata, but it does not apply the engineering minimum-DOF rule to benchmark fixtures.
+  - Benchmark-owned moving fixtures must declare their motion contract explicitly; `validate_benchmark()` rejects missing, contradictory, or unsupported motion metadata.
 
   Validated under all environment randomization.
 
@@ -250,7 +249,6 @@ I propose the following set of tools (their usage is below). Notably, the tools 
 #### Engineering tools
 
 - `validate_and_price(component: Part|Compound) -> float|dict[str, float]`: validates a part by for manufacturability, then prices it if valid using its workbench's cost calculation interface, or returns an error with a description and a location
-  - If validating a compound, it will also check for unusual DOFs, e.g. a part has >=4 DOFs, which is unusual in engineering. It won't raise immediately, but it will throw a "warning". The reviewer will also get notified that DOFs are excessive in this part in particular, and will be more strict in review.
 - `validate_engineering(Compound) -> tuple[bool, str | None]` - the engineering geometry gate. It validates the approved solution assembly against the current revision, uses `validate_and_price(...)` for manufacturability and pricing prechecks, and fails closed if the assembly cannot be reproduced from the persisted workspace snapshot or does not satisfy the engineering constraints.
 - `simulate_engineering(Compound) -> BenchmarkToolResponse` - Submits a model for a simulation. Robustness checking uses runtime randomization by executing one heavy-worker job with one backend scene build/load and `num_scenes` parallel jittered scene instances inside that one backend run. `num_scenes` is batch width, not permission for serialized whole-scene reruns or multiple heavy jobs on one worker; nor multithreaded implementation - only batch width.
 - `submit_solution_for_review(Compound)` - submits the whole assembly for a review to `Reviewer` agent node, which can later approve it and submit return the final design to the user.

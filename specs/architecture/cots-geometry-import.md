@@ -240,7 +240,7 @@ If a benchmark uses an imported motor as fixture geometry, the part still remain
 That means:
 
 1. the geometry may be imported with the same helper,
-2. the part may be fixed or partially constrained according to the benchmark definition,
+2. the part follows the benchmark fixture contract and remains read-only benchmark context,
 3. the part is excluded from engineer manufacturability validation and engineer pricing,
 4. the benchmark handoff still needs visible geometry and stable provenance.
 
@@ -432,7 +432,7 @@ That may include:
 2. relay,
 3. connector,
 4. wire,
-5. bearing or fastener providers where their geometry is already reliable in `bd_warehouse`.
+5. bearing or mechanical connector providers where their geometry is already reliable in `bd_warehouse`.
 
 ### Phase 3
 

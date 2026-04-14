@@ -140,7 +140,7 @@ The plan will have the following bullet points. The plan will be validated for c
        The agents' file must correspond to roughly the structure detailed above, with automatic checks in place.
 2. A `todo.md` TODO list from the planner.
 3. A draft of `benchmark_definition.yaml` with rough values filled in.
-4. A draft of `benchmark_assembly_definition.yaml` with per-part motion contracts in `benchmark_assembly.parts` (`dofs`, `control`, and any explicit operating limits). This is benchmark-owned read-only handoff context for downstream engineer stages and must still be a schema-valid full `AssemblyDefinition` artifact, even when the benchmark planner uses a fully free or fully constrained fixture declaration.
+4. A draft of `benchmark_assembly_definition.yaml` with per-part motion metadata in `benchmark_assembly.parts` (`control` and any explicit operating limits). This is benchmark-owned read-only handoff context for downstream engineer stages and must still be a schema-valid full `AssemblyDefinition` artifact.
 5. `benchmark_plan_evidence_script.py`, the benchmark-owned build123d evidence script that makes the draft geometry legible as a sketch/previewable scene for the benchmark plan reviewers and downstream engineer intake.
 6. An explicit `submit_benchmark_plan()` handoff action which persists `.manifests/benchmark_plan_review_manifest.json`.
 
@@ -158,7 +158,6 @@ If the user provides explicit benchmark objective overrides (for example `max_un
   - Reject when planner artifacts mention benchmark objects, moving parts, joints, or zones that are not declared consistently across the planner handoff package.
   - Reject when `benchmark_plan_evidence_script.py` diverges from the declared benchmark inventory labels, quantities, or COTS identities.
   - Reject when `moved_object.material_id` is missing, empty, or not known to `manufacturing_config.yaml`, or when `benchmark_assembly_definition.yaml` is not a schema-valid full `AssemblyDefinition` artifact.
-  - Reject when benchmark-owned DOF/control metadata is missing, contradictory, or unsupported by the declared fixture motion.
   - Reject when moving benchmark fixtures are missing motion-visible handoff data needed by engineering intake, such as actuation mode, axis/path or equivalent reference, motion limits or operating envelope, and whether the engineer may rely on the motion.
   - Reject when benchmark-side motion is impossible, unstable, non-deterministic, or cannot be reconstructed from the handoff artifacts and evidence.
 
@@ -175,7 +174,7 @@ If the user provides explicit benchmark objective overrides (for example `max_un
 
 The Engineer agent(s) (for whom the first point of access is Engineering Planner) have access to meshes and a exact reconstruction of the environment as a starting point to their build123d scene, however they can not modify/move it from their build123d scene. In fact, we validate for the fact that the engineer wouldn't move it or changed it (validating for changing it via hashing) - in both MJCF and build123d.
 
-The benchmark-owned environment, benchmark input objects, benchmark objective markers, and benchmark-owned moving fixtures are read-only task fixtures. They are validation setup, not engineer-owned deliverables: they are validated for geometry correctness, placement, randomization, and valid COTS identifiers/runtime metadata as a valid problem instance for the engineering graph, but they are not validated for manufacturability or priced as manufactured outputs. They may be fixed, partially constrained, motorized, or fully free when the benchmark contract explicitly says so. Manufacturability validation starts at engineer-planned manufactured parts and selected COTS components only.
+The benchmark-owned environment, benchmark input objects, benchmark objective markers, and benchmark-owned moving fixtures are read-only task fixtures. They are validation setup, not engineer-owned deliverables: they are validated for geometry correctness, placement, randomization, and valid COTS identifiers/runtime metadata as a valid problem instance for the engineering graph, but they are not validated for manufacturability or priced as manufactured outputs. They follow the benchmark motion contract when the benchmark contract explicitly says so. Manufacturability validation starts at engineer-planned manufactured parts and selected COTS components only.
 
 Benchmark-owned authored labels are part of that read-only contract too: `moved_object.label` and any top-level build123d object label in the benchmark handoff must be non-empty and stable, and runtime must not invent fallback labels when one is missing.
 
@@ -219,7 +218,7 @@ Engineering may read `benchmark_assembly_definition.yaml`, reason about it, and 
 If the benchmark includes moving benchmark-owned fixtures, the engineer intake still needs motion-visible facts. Those facts may live in `benchmark_definition.yaml` and `benchmark_assembly_definition.yaml`. The minimum contract for each moving benchmark fixture is:
 
 1. stable fixture identity,
-2. motion topology / DOF profile (`fixed`, partially constrained, motorized, free-body, or other explicitly supported type),
+2. motion profile,
 3. motion kind (`fixed`, `passive`, `motorized_revolute`, `motorized_prismatic`, or other explicitly supported type),
 4. motion axis or path reference, when applicable,
 5. motion bounds, period, or controller-visible operating range,
@@ -335,8 +334,8 @@ For each part:
 - **Material**: e.g., `aluminum-6061`, `abs-plastic`
 - **Estimated dimensions**: Rough sizing
 ## 3. Assembly Strategy
-- How parts connect (fasteners, etc.) <!--e.g. bearings in the future -->
-- Mounting points to environment (if any drilling/attachment is allowed)
+- How parts connect
+- Mounting points to environment
 <!-- - Order of assembly --> 
 <!-- Order of assembly is partially unnecessary because we kind of work in CAD. However, it's a good thing to think of. -->
 ## 4. Assumption Register
@@ -416,15 +415,6 @@ benchmark_parts:
     metadata:
       fixed: true
       material_id: "aluminum_6061"
-      attachment_policy:
-        attachment_methods: ["fastener"]
-        drill_policy:
-          allowed: true
-          max_hole_count: 2
-          diameter_range_mm: [3.0, 5.5]
-          max_depth_mm: 12.0
-        notes: "Only fastener-based mounting with the declared drilling limits is allowed."
-
 # Hard simulation boundaries - objects leaving this volume = failure
 simulation_bounds:
   min: [-50, -50, 0]
@@ -465,17 +455,9 @@ randomization:
 `benchmark_definition.yaml` ownership rules:
 
 1. It owns benchmark/task geometry, randomization, benchmark/customer caps, benchmark planner estimates, and benchmark-owned fixture metadata.
-2. `benchmark_parts[].metadata` is benchmark-side metadata only. It describes read-only benchmark fixtures such as `fixed`, `material_id`, and attachment policy.
-   - The Benchmark Planner defines which benchmark-owned parts are drillable or non-drillable through `attachment_policy`.
-   - `attachment_policy.attachment_methods` is the allowlist of permitted engineer-to-fixture attachment methods.
-   - Use `attachment_methods: ["none"]` to mark a fixture as explicitly non-attachable.
-   - If `attachment_policy` is absent, the fixture is treated as non-attachable by default.
-   - `attachment_policy` is permissive, not mandatory. The engineer may use the allowed attachment path from `benchmark_definition.yaml`, but does not need to use it if the benchmark can be satisfied another way.
-   - Engineer-owned parts in `assembly_definition.yaml` may only attach to benchmark-owned parts that are declared in `benchmark_definition.yaml`.
-   - `attachment_policy.drill_policy` controls whether the engineer may create new fastener holes in that benchmark fixture, and under what numeric limits.
-   - Drillability is whole-part in MVP. The Benchmark Planner and Benchmark Coder declare whether the part is drillable and the allowed numeric limits, but do not narrow drilling down to a sub-zone or exact coordinates on the part.
-   - The engineer decides where to place the drilled holes on an allowed benchmark part, subject to the declared min/max hole size, max depth, and max hole-count limits.
-   - `attachment_policy.notes` is reviewer-facing guidance only and must not be treated as a machine-enforced fallback.
+2. `benchmark_parts[].metadata` is benchmark-side metadata only. It describes read-only benchmark fixtures such as `fixed`, `material_id`, and `cots_id`.
+   - Benchmark-owned fixtures remain read-only context for engineering intake.
+   - The benchmark planner may describe fixture motion visibility and evidence needs, but not engineer-owned manufacturability details.
 3. It does not own engineer solution metadata, part costing inputs, or engineer motion/control metadata.
 4. Engineer solution metadata stays in `assembly_definition.yaml` and runtime CAD `.metadata`.
 5. `moved_object.material_id` is mandatory and must be a known material ID from `manufacturing_config.yaml`, and for benchmark-planner handoff `constraints.estimated_solution_cost_usd` and `constraints.estimated_solution_weight_g` are planner-authored while runtime derives `max_unit_cost` and `max_weight_g` from those estimates during `submit_benchmark_plan()`.
@@ -488,30 +470,23 @@ To reduce cost guessing, the Engineering Planner outputs a machine-readable esti
 
 Expected flow:
 
-01. Planner drafts entries for all planned manufactured parts and COTS components.
-02. Planner defines `final_assembly` (subassemblies, part membership, joints, and per-part motion metadata like `dofs`/`control`); under the hood we:
-    - Calculate as much as possible to prevent the planner from needing to think (e.g.: cooling time in injection molding is autocalculated from wall thickness, 3d print time is autocalculated from volume, setup time is autocalculated etc.)
-    - Estimate part reuse - if the part/subassembly is reused, unit costs go down as per manufacturing rules (making 2 equal parts is cheaper than making 1 due to economics of scale).
-03. Planner runs `.agents/skills/manufacturing-knowledge/scripts/validate_and_price.py`.
-    - The script is the canonical calculator for `assembly_definition.yaml`: it validates schema consistency, computes assembly totals to cent precision, and writes normalized numeric totals back into the workspace file.
-    - The planner does not hand-author the final aggregate cost/weight values; those values come from the script output.
-04. If totals exceed `max_unit_cost` (or other numeric constraints), or if node-entry revalidation does not reproduce the same cent-precision totals exactly, planner must re-plan before handoff.
-05. Planner may restate the validated totals in prose, but the written YAML totals remain the source of truth and must match the script output exactly on node entry.
-06. If the solution requires drilling into benchmark-owned fixtures, planner must declare each intended drilled fastener hole under `environment_drill_operations`; undeclared drilling is invalid handoff.
-07. Each declared benchmark drilling operation contributes non-zero static drilling cost. For now that cost is defined centrally in `manufacturing_config.yaml` and must be included in planner pricing totals.
-08. The approved planner handoff is a binding inventory for the implemented solution. The Engineering Coder must realize the same planner-declared manufactured-part and COTS inventory as a multiset: labels and quantities must match, including repeated references in `final_assembly`.
-09. Declared COTS components are not advisory. Declared COTS `part_id`s, labels, and quantities must be instantiated in authored geometry with the same counts; missing, extra, relabeled, or pair-swapped COTS parts are handoff failures, even if the solution still solves the task.
-10. Internal construction details may change only when the approved inventory, motion contract, and drawing intent remain unchanged.
+1. Planner drafts entries for all planned manufactured parts and COTS components.
+2. Planner defines `final_assembly` (subassemblies, part membership, joints, and per-part motion metadata like `dofs`/`control`); under the hood we:
+   - Calculate as much as possible to prevent the planner from needing to think (e.g.: cooling time in injection molding is autocalculated from wall thickness, 3d print time is autocalculated from volume, setup time is autocalculated etc.)
+   - Estimate part reuse - if the part/subassembly is reused, unit costs go down as per manufacturing rules (making 2 equal parts is cheaper than making 1 due to economics of scale).
+3. Planner runs `.agents/skills/manufacturing-knowledge/scripts/validate_and_price.py`.
+   - The script is the canonical calculator for `assembly_definition.yaml`: it validates schema consistency, computes assembly totals to cent precision, and writes normalized numeric totals back into the workspace file.
+   - The planner does not hand-author the final aggregate cost/weight values; those values come from the script output.
+4. If totals exceed `max_unit_cost` (or other numeric constraints), or if node-entry revalidation does not reproduce the same cent-precision totals exactly, planner must re-plan before handoff.
+5. Planner may restate the validated totals in prose, but the written YAML totals remain the source of truth and must match the script output exactly on node entry.
+6. The approved planner handoff is a binding inventory for the implemented solution. The Engineering Coder must realize the same planner-declared manufactured-part and COTS inventory as a multiset: labels and quantities must match, including repeated references in `final_assembly`.
+7. Declared COTS components are not advisory. Declared COTS `part_id`s, labels, and quantities must be instantiated in authored geometry with the same counts; missing, extra, relabeled, or pair-swapped COTS parts are handoff failures, even if the solution still solves the task.
+8. Internal construction details may change only when the approved inventory, motion contract, and drawing intent remain unchanged.
 
 Minimum motion metadata fields inside `final_assembly.parts` entries:
 
 - `dofs`
 - For motorized parts: `control.mode`, plus required control params (e.g. `speed`, `frequency`) per mode
-- DOF minimization contract:
-  - `dofs: []` is the default for non-moving parts.
-  - Non-empty `dofs` must be explicitly justified in `engineering_plan.md` (`## 3. Assembly Strategy`, `## 5. Detailed Calculations`, `## 6. Critical Constraints / Operating Envelope`, or `## 8. Risk Assessment`) with objective-linked rationale.
-  - Deterministic suspicion threshold: `len(dofs) > 3` is suspicious over-actuation and is rejected unless reviewer receives explicit mechanism-level justification and accepts it.
-  - Unjustified or excessive DOF assignments are plan-review rejection criteria.
 
 Minimum per-manufactured-part fields:
 
@@ -537,7 +512,6 @@ Required assembly fields:
 - `final_assembly` containing subassemblies/parts/joints
 - each part entry in `final_assembly.parts` includes `dofs`; moving motorized entries include `control`
 - repeated part references are allowed and used by pricing logic to compute quantity effects
-- if drilling into benchmark-owned fixtures is planned: `environment_drill_operations`
 
 ```yaml
 version: "1.0"
@@ -580,13 +554,6 @@ cots_parts:
     source: "parts.db"
   # user note: cots parts must be enforced to exist in the subassemblies, at least 1. Else why would it be here?
   # user note 2: reminder: search for COTS parts is performed by a subagent
-environment_drill_operations:
-  - target_part_id: "environment_fixture"
-    hole_id: "mount_left"
-    diameter_mm: 5.0
-    depth_mm: 10.0
-    quantity: 1
-    notes: "Fastener clearance hole into permitted floor fixture"
 final_assembly:
   - subassembly_id: "frame_and_ramp"
     parts:
@@ -607,7 +574,7 @@ final_assembly:
     joints:
       - joint_id: "j1"
         parts: ["ramp_main_v1", "guide_clip_v1"]
-        type: "fastener_joint"
+        type: "rigid_joint"
 totals:
   estimated_unit_cost_usd: 31.46
   estimated_weight_g: 742.0
@@ -617,7 +584,6 @@ totals:
 Validation requirement:
 
 - Submission is blocked if `assembly_definition.yaml` is missing, malformed, still template-like, fails `validate_costing_and_price.py`, or contains non-numeric values for required numeric fields (doesn't match schema in general)
-- Submission is blocked if `environment_drill_operations` requests drilling into a benchmark fixture whose `benchmark_definition.yaml benchmark_parts[].metadata.attachment_policy.drill_policy` forbids it or whose declared hole dimensions/count exceed that policy.
 
 ## Coder and Execution Reviewer interaction
 
@@ -627,7 +593,7 @@ The Execution Reviewer (`Engineering Execution Reviewer`) is a post-validation/p
    - Source of truth contracts: `REVIEWER_HANDOFF_ARTIFACTS` + execution-review custom handover check in node-entry validation (using reviewer-scoped manifest filenames from this document).
 2. The Execution Reviewer has read-only access to implementation and evidence files, plus write/edit only to its stage-specific YAML review pair in `reviews/`.
 3. Primary review is robustness and realism: this node runs only after validation + simulation success paths have completed (including minor runtime-randomization pass criteria), then verifies the result is not flaky and is likely repeatable.
-4. Verify execution follows the approved plan or clearly justified deltas, including planned DOF limits.
+4. Verify execution follows the approved plan or clearly justified deltas, including planned motion details.
 5. Optional code-quality review is secondary and should only block for concrete correctness/safety risks.
 
 The goal is to persist reviews into stage-specific YAML artifacts that agents can reference in later rounds, without routing free-form review text through in-memory-only state.
@@ -647,7 +613,6 @@ reviewed_revision_id: rev_0021
 decision: REJECT_CODE # [APPROVED, REJECTED, REJECT_PLAN, REJECT_CODE, CONFIRM_PLAN_REFUSAL, REJECT_PLAN_REFUSAL]
 reason_codes:
   - robustness
-  - dof_deviation_justified
 confidence: high
 ```
 
@@ -666,20 +631,19 @@ checklist:
   robustness: fail
   cost_weight_compliance: pass
   manufacturability_compliance: pass
-  dof_deviation_justified: fail
 comments:
   - "Fails robustness requirement under jitter."
-  - "Introduces extra moving axes beyond the approved plan."
+  - "Introduces motion not present in the approved plan."
 required_fixes:
   - "Increase robustness under runtime jitter."
-  - "Remove unjustified extra DOFs or request replanning."
+  - "Resolve the motion mismatch or request replanning."
 ```
 
 Checklist values are typed as `pass | fail | not_applicable`.
 
 Checklist keys are reviewer-stage-specific:
 
-1. Plan reviewers use planning keys such as `cross_artifact_consistency`, `feasible_mechanism`, `budget_realism`, and `dof_minimality`.
+1. Plan reviewers use planning keys such as `cross_artifact_consistency`, `feasible_mechanism`, and `budget_realism`.
 2. Execution reviewers use implementation keys such as `latest_revision_verified`, `simulation_success`, `plan_fidelity`, `robustness`, and `dynamic_evidence_checked`.
 3. The checklist keys are canonical and schema-owned. They replace ad hoc issue identifiers for current reviewer evals.
 

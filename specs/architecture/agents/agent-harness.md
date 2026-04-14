@@ -229,7 +229,7 @@ The promotion contract is:
 1. Every promoted event must carry `episode_id`, `user_session_id` when available, and a backend/source marker that distinguishes controller-backed runs from CLI-provider-backed runs.
 2. The backend/source marker may live in existing JSON metadata for the first pass; a dedicated column is only required if query performance or indexing later justify a migration.
 3. Validation and failure families are emitted as individual event rows, not collapsed into a single summary blob, so queries can count validation failures directly.
-4. The primary CLI-provider-side structured event families for this path are `submission_validation`, `node_entry_validation_failed`, `logic_failure`, `lint_failure_code`, `lint_failure_docs`, `simulation_instability`, `review_decision`, `excessive_dof_detected`, `skill_self_reflection`, and `skill_update`.
+4. The primary CLI-provider-side structured event families for this path are `submission_validation`, `node_entry_validation_failed`, `logic_failure`, `lint_failure_code`, `lint_failure_docs`, `simulation_instability`, `review_decision`, `skill_self_reflection`, and `skill_update`.
 5. The raw session stream under the configured provider home sessions directory remains the replay/debug source; the DB trace stream is the queryable index.
 
 ## Validation contract

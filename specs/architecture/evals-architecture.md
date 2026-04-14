@@ -53,7 +53,7 @@ We should be able to test evaluations on multiple tiers, specifically:
 
 1. Given a plan, the engineer will pass manufacturability checks in 70% during validation and pricing tool call. (note: lower than during submission because this is explicitly not submitting but validating the tool call).
 2. Given a plan, the engineer will pass manufacturability checks in 90% of tool calls when expected during simulation or submission (when they *expect* that it will definitely pass). On second and third attempts this will improve to 95% and 97% respectively.
-3. The engineer adheres to benchmark-defined environment attachment policy: benchmark-owned parts may be drillable or non-drillable, attachment is optional rather than mandatory, and any declared drilling in `assembly_definition.yaml.environment_drill_operations` must remain within the benchmark-side hole-count, size, and depth limits.
+3. The engineer preserves benchmark-owned fixtures as read-only context and does not mutate them.
 4. The engineer, after simulation, would interpret the simulation results correctly [...] (how to enforce it? they wouldn't always need to view the results, they can use final positions table that should be output or text too.)
 5. The engineer will prefer CSG over sketches in 70% of the cases (soft requirement, but it makes it actually easier to build with code).
 6. If render images exist for the current revision, the Engineering Coder inspects at least the config-driven minimum number of images through `inspect_media(...)` before finishing. Current production policy is `min_images=1`.
@@ -66,7 +66,7 @@ We should be able to test evaluations on multiple tiers, specifically:
    - Correctness: given a valid plan with an issue introduced by another LLM, a reviewer would spot the issue and the issue matches independent validation.
 2. Given a viewed plan package, the Plan Reviewer rejects unsupported/invented components or mechanisms in at least 97% of cases.
 3. Given a viewed plan package, the Plan Reviewer rejects inconsistent, infeasible, ambiguous, or incomplete plans in at least 90% of cases.
-4. Given a viewed plan package, the Plan Reviewer rejects excessive/unjustified DOFs in at least 90% of seeded over-actuation cases.
+4. Given a viewed plan package, the Plan Reviewer rejects unsupported or inconsistent motion claims in at least 90% of seeded bad-motion cases.
 5. Price/weight realism gate: if target budgets are set unrealistically, the Plan Reviewer rejects and requests concrete planner fixes.
 6. Reviewer efficacy: plan-review feedback should lead to a corrected plan in at least 60% of failed first submissions.
 7. If render images exist for the current revision, the Plan Reviewer inspects at least the config-driven minimum number of images through `inspect_media(...)` before approval. Current production policy is `min_images=1`.
@@ -80,13 +80,7 @@ We should be able to test evaluations on multiple tiers, specifically:
 04. Given a successful simulation result, the Execution Reviewer flags over-actuated solutions (excessive moving axes/parts) in at least 80% of seeded over-actuation cases.
 05. Manufacturability awareness: the Execution Reviewer reports only changes appropriate to the manufacturing method in 97% of cases.
 06. Given a viewed model, the Execution Reviewer requests cheaper/lighter improvements where feasible in at least 15% of cases.
-07. Toolkit usage and diversity; the model will use:
-    - fasteners in at least in 70% of builds
-    - Motors in at least 20% of the builds
-    - bearings in at least 10% of the builds
-    - COTS search will be executed in at least 50% of builds (you need to look for specific version of fasteners, motors, etc.)
-    - Other tools will be used at least reasonably often, or at least sometimes (3%?)
-      (this requirement is more so for prompt debugging - that we don't miss including something into the prompt/skill sections.)
+07. Toolkit usage and diversity; the model will use the mechanically relevant tools needed for the benchmark family, including COTS search when catalog-backed hardware is required.
 08. The model would be able to execute a search (or use a subagent) in COTS
 09. If render evidence exists, approval is valid only when the reviewer used the dedicated media-inspection tool rather than text-only file inspection.
 10. The Execution Reviewer writes a stage-canonical checklist in the reviewer comments YAML, and the checklist keys/values match the seeded ground truth in at least 95% of cases.
@@ -110,7 +104,7 @@ Proposal: normalize the simulation to the center bottom of the build zone. So th
      - Max cost
      - And other numerical parameters specified in benchmark_definition.yaml.
 5. The benchmark generator would be able to predict the price and weight the engineer will solve the solution in the range of 80-120% (with 20% error) of the final price in 80% of the cases, within 50-150% in 97% of cases (this is the standard price, not the "safe" price)
-6. Benchmark-side motion is judged on explicit contract and evidence, not on DOF minimization; fully free benchmark fixtures are valid when the handoff declares them and the evidence matches.
+6. Benchmark-side motion is judged on explicit contract and evidence.
 
 ##### Medium evals - Benchmark Plan Reviewer
 

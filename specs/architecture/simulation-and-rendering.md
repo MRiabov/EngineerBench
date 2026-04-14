@@ -200,137 +200,35 @@ The low-frequency simulation-time frame sync path is now supported as an opt-in 
 
 We operate in a real-world-like scenario, with rigid bodies, gravity, real-world materials, and standard properties like friction and restitution (bounciness).
 
-Benchmark-owned fixtures may be fixed, partially constrained, motorized, or fully free when they are part of the benchmark contract. That benchmark-side contract can be weaker than the engineer-solution contract, but it still must stay deterministic, reviewable, and compatible with the simulation evidence path. Benchmark-side simulation validates the declared fixture motion and stability; it does not ask the benchmark generator to solve the benchmark. The benchmark payload observation window is policy-driven through `config/agents_config.yaml`, and the late-drift exception applies only to the payload, not to benchmark-owned fixtures or simulation bounds. Engineer-authored objects remain physically realistic and must satisfy the normal constraint rules.
+Benchmark-owned fixtures are validated against their explicit motion contract and evidence. That benchmark-side contract can be weaker than the engineer-solution contract, but it still must stay deterministic, reviewable, and compatible with the simulation evidence path. Benchmark-side simulation validates the declared fixture motion and stability; it does not ask the benchmark generator to solve the benchmark. The benchmark payload observation window is policy-driven through `config/agents_config.yaml`, and the late-drift exception applies only to the payload, not to benchmark-owned fixtures or simulation bounds. Engineer-authored objects remain physically realistic and must satisfy the normal constraint rules.
 
 ### Physically-realistic constraints
 
 In the end, our systems should be transferrable to the real world.
 
-For engineers, constraints must be physically realistic. Meaning: if an engineer agent tries to constrain two parts together, they need to use fasteners or make a mechanism which would fit two parts together. However, the engineer can't constrain two parts by just assigning them a CAD constraint.
-This is because it fits how physics works in the real world, transferring to which is ultimately the goal of this project.
-
-We can perhaps verify it by simply adding realistic fastener logic.
-
-Similarly, while you can constrain a ball to a plane in CAD, you can't do so in real life. In real life, a ball needs to have a special holder. Two flat planes can't be constrained to each other, you need to either add them, make a real constraint that would hold them together.
+For engineers, constraints must be physically realizable. A CAD-only relationship is not sufficient unless it corresponds to a real-world mechanism or support geometry.
 
 #### Creating realistic constraints
 
 Constraints done by the engineer should be enforced for validity. E.g.: two parts should be actually close together.
 
-##### Fixed parts for the simulation definition
-
-Some parts will need to be "fixed" despite physics *during benchmark generation, not agents*, specifically for the implementation. We can pass `fixed=True` to the models as a custom parameter (or metadata).
-
-- Engineer fixed=True is allowed only when explicitly constrained by fasteners; otherwise reject.
-
-Note: this is a known implementation bug in the current runtime path, where engineer-authored `fixed=True` can still act as a static skip signal outside the explicit fastener case. We are documenting the mismatch here and deferring the fix for now because the current agent capability set is not sufficient to solve the benchmark class that would exercise it.
-
-##### Fasteners
-
-We use **build123d's native `RigidJoint` system** for mating parts. This avoids custom positioning math — build123d handles transforms automatically via `connect_to()`. Fastener geometry (bolts, screws, nuts) comes from the [`bd-warehouse`](https://bd-warehouse.readthedocs.io/en/latest/fastener.html) package.
-
-**Helper function**: `fastener_hole(part, location, hole_id: str, size="M3", length=10.0, hole_type=HoleType.CounterBoreHole, add_fastener=False, fit="Normal")`
-
-1. Cuts a fastener hole at the specified `location`
-2. Creates a `RigidJoint` at the hole location with a parameter `rigid_joint.hole_id=hole_id`
-3. If `add_fastener=True`, inserts appropriate fastener from bd-warehouse catalog
-4. Returns the modified part
-
-The type of Hole is determined by an enum - HoleType: `FlatHeadHole`, `CounterBoreHole`, `CounterSinkHole` for according types of holes.
-
-##### Agent workflow for fasteners
-
-```python
-from utils.fasteners import fastener_hole
-from build123d import Location
-
-# Create bracket (anchor part) - explicitly positioned
-bracket = Box(100, 50, 10)
-bracket = fastener_hole(bracket, location=Location((20, 25)), size="M5", length=10.0, hole_id="mount_1")
-bracket = fastener_hole(bracket, location=Location((80, 25)), size="M5", length=10.0, hole_id="mount_2")
-bracket.position = (0, 0, 100)  # world position
-
-# Create arm - will be positioned via joint mating
-arm = Box(200, 30, 8)
-arm = fastener_hole(arm, location=Location((10, 15)), size="M5", length=8.0, hole_id="arm_1", add_fastener=True)
-arm = fastener_hole(arm, location=Location((50, 15)), size="M5", length=8.0, hole_id="arm_2", add_fastener=True)
-
-# Mate parts - build123d computes transform automatically
-arm.joints["arm_1"].connect_to(bracket.joints["mount_1"])
-arm.joints["arm_2"].connect_to(bracket.joints["mount_2"])
-```
-
-After `connect_to()`, the arm is automatically positioned so holes align. **No manual rotation/translation math needed.**
-
-Note: hole names are given readable names, e.g. explicit names like "front_mount" or "pivot_hole" for easier identification. In fact, the hole name serves as a local label for the joint. So that we can reference the build123d joint with its hole name.
-
-"""
-Without hole_id:
-
-```python
-# How would you reference the joint?
-arm.joints[???].connect_to(bracket.joints[???])
-```
-
-With hole_id:
-
-```python
-arm.joints["arm_1"].connect_to(bracket.joints["mount_1"])
-```
-
-"""
-**Validation rules**:
-
-- Single-fastener connections are **rejected** (underconstrained — allows rotation around bolt axis)
-- Minimum 2 fasteners required for rigid connection between parts \<!-- Note: this is not true, actually. You can design such inserts that only 1 will be sufficient. But, let it be.>
-- Hole diameters must match between mated pairs
-- Can't connect holes with both `add_fastener=True`. <!--Note: not a hard constraint - if it's difficult to do, skip.-->
-
-**MJCF translation**:
-
-1. Walk assembly, find all `RigidJoint` pairs that are connected
-2. For each connected pair: emit `<weld body1="..." body2="..."/>` constraint
-3. Fastener geometry is included in physics only as a visual (cosmetic in CAD renders only) <!-- (I don't care about making that collision with head. Actually, it's rather simple - just put the fastener at its last position in CAD. But still.) -->
-
-##### Edge case: multiple holes
-
-The `hole_id` is **local to each Part**, not a global identifier. When one central part connects to multiple identical parts, each child part can have the same `hole_id` (e.g., `"attach"`) — the matching happens via explicit `connect_to()` calls:
-
-```python
-# 4 identical legs with same local hole_id
-for i, leg in enumerate(legs):
-    leg.joints["attach"].connect_to(bracket.joints[f"mount_{i+1}"])
-```
-
-This avoids the need for global ID management or dict-based hole matching.
+To support moving parts (hinges, sliders, motors), we use the joints that correspond to real mechanical interfaces and then validate the resulting assembly against the plan and simulation evidence.
 
 ##### Mechanisms and Moving Parts
 
-Genesis (which has parity with MuJoCo) constraints will only ever be spawned from predefined components. Meaning, a "revolute constraint" will only ever be spawned if there is either a:
-
-1. Bearing (ideally),
-2. Motor,
-3. Through hole intentionally created for two parts.
-
-For each, the internal/external diameters must match, and there will be special commands on how to define these. In addition, the critic will be prompted to specifically scrutinize if the constraint is valid. In addition, parts will have to be close to each other physically - distance between both must be nearing \<1 mm or so.
-
-This is to prevent Engineering Coder and Benchmark Coder from creating impossible constraints.
-
-To support moving parts (hinges, sliders, motors), we force build123d Joints from *to be created from predefined CAD components* almost always - e.g., again, revolute joints from bearings, rigid joints/weld constraints via fasteners.
+Genesis (which has parity with MuJoCo) constraints will only ever be spawned from predefined components. A moving constraint must be backed by a real mechanism such as a bearing, motor, or other supported connector, and the connected parts must be physically consistent with the declared plan.
 
 ##### Benchmark fixture motion exception
 
-Benchmark-owned moving fixtures are reviewed under an explicit-motion contract, not the engineering minimum-DOF rule.
+Benchmark-owned moving fixtures are reviewed under an explicit-motion contract.
 
 The rule is:
 
-1. benchmark fixtures may be fixed, partially constrained, motorized, or fully free when the benchmark contract explicitly requires that behavior,
-2. benchmark fixtures may be implicitly powered in MVP and do not require full wiring realism,
-3. benchmark fixtures may use motors, bearings, and other COTS parts as read-only environment components when their identity is explicit, and they are not treated as manufacturable engineer outputs,
-4. benchmark handoff artifacts must explicitly document the fixture motion contract, including stable identity, motion kind/topology, axis/path or equivalent reference, bounds or operating envelope, trigger mode, and whether the engineer may rely on that motion,
-5. reviewers validate the declared motion against simulation evidence and reject missing, contradictory, unsupported, or non-deterministic motion; they do not apply the engineering minimum-DOF rule to benchmark fixtures,
-6. benchmark-side motion must stay deterministic enough that engineering can reason about the environment from the declared handoff artifacts and simulation evidence,
-7. benchmark fixtures are validation setup, not engineer-owned solution parts, so manufacturability checks do not apply to them.
+1. benchmark fixtures may be moving only when the benchmark contract explicitly requires that behavior,
+2. benchmark fixtures may use motors, bearings, and other COTS parts as read-only environment components when their identity is explicit, and they are not treated as manufacturable engineer outputs,
+3. benchmark handoff artifacts must explicitly document the fixture motion contract, including stable identity, motion kind/topology, axis/path or equivalent reference, bounds or operating envelope, trigger mode, and whether the engineer may rely on that motion,
+4. reviewers validate the declared motion against simulation evidence and reject missing, contradictory, unsupported, or non-deterministic motion,
+5. benchmark fixtures are validation setup, not engineer-owned solution parts, so manufacturability checks do not apply to them.
 
 <!-- Future work: if benchmark input arrives as STEP, infer candidate constraint/motion metadata from the source geometry before materializing the explicit benchmark motion contract. -->
 
@@ -391,27 +289,14 @@ motion_forecast:
 
 The reviewer evaluates the forecast against the plan, the assembly contract, the objective zones, and the runtime jitter envelope. The forecast is invalid if it leaves the contact order implicit, uses a non-world frame without justification, or claims a tolerance wider than the declared uncertainty without an explicit derivation.
 
-##### Engineering DOF minimality rule
+##### Engineering motion metadata
 
-For engineering solutions, DOFs are constrained by intent, not by convenience.
-
-1. Default state is static (`dofs: []`) for all parts.
-2. A part may receive non-empty `dofs` only when the mechanism requires real motion to satisfy the objective.
-3. Each non-empty DOF assignment must map to a physical mechanism (bearing/motor/slider or equivalent allowed component) and a reviewer-visible rationale in planning artifacts.
-4. Excessive or unjustified DOFs are treated as a review failure (plan stage and/or execution stage), even if a single simulation run passes.
-
-For benchmark-owned fixtures, the rule is explicit-motion validation:
-
-1. benchmark-side DOFs are not minimized for their own sake,
-2. a fully constrained rigid part has 0 DOF,
-3. a fully free rigid part has 6 DOF,
-4. reviewers validate the declared motion against the handoff artifacts and dynamic evidence,
-5. reviewers reject benchmark fixtures whose motion cannot be reconstructed from the declared contract or whose evidence contradicts the declaration.
+Engineering solutions may include moving parts when the mechanism requires them, and the motion metadata must map to a real mechanism and remain reviewable in the planning artifacts.
 
 Map of joints to Genesis (which has parity with MuJoCo) constraints and their uses:
 
 1. RigidJoint to `<weld>` constraint:
-   - Used for fasteners and fixed connections.
+   - Used for fixed connections.
    - Connects two bodies rigidly at the joint location.
 2. **RevoluteJoint** to `<joint type="hinge">`:
    - Used for axles, pivots, and motors.
@@ -430,43 +315,22 @@ Map of joints to Genesis (which has parity with MuJoCo) constraints and their us
 - Generate the appropriate Genesis/MuJoCo XML element connecting the two bodies.
 - Assign stable names to identifying joints so controllers can reference them (e.g. "motor_joint").
 
-#### Constraining to the environment
+#### Read-only benchmark fixtures
 
-Oftentimes engineers will need to constrain machinery to the environment, e.g. to the floor. However, not all things can be constrained to, e.g. you don't want to drill a motor some other machine.
-
-The Benchmark Planner creates explicit drillable or non-drillable constraints on benchmark-owned environment parts in `benchmark_definition.yaml benchmark_parts[].metadata.attachment_policy`.
-
-The Engineering Planner will get a visual confirmation of drillable/non-drillable objects via a texture or a separate set of renders, and the machine-readable handoff path is:
-
-1. benchmark-side attachment and drill permissions live in `benchmark_definition.yaml`,
-2. the engineer may use that attachment policy, but does not need to use it if the benchmark can be satisfied another way,
-3. if a benchmark-owned part is declared in `benchmark_definition.yaml`, engineer-owned parts in `assembly_definition.yaml` may attach to it only through the permitted attachment policy,
-4. planner-declared intended drilled fastener holes live in `assembly_definition.yaml.environment_drill_operations`,
-5. planner handoff submission and reviewer entry both fail closed if those planned drill operations violate the benchmark-side drill policy.
-
-##### Specifics
-
-If the benchmark fixture exposes no `drill_policy`, drilling is forbidden by default.
-
-The Benchmark Planner and Benchmark Coder declare whole-part drillability, not drilling zones. The engineer decides where on the allowed benchmark part to place holes.
-
-The benchmark-owned drill policy specifies realistic numeric limits such as minimum and maximum hole diameter, maximum drill depth, and maximum hole count for that part.
-
-Drilling benchmark-owned fixtures has non-zero cost. For MVP that cost is static and comes from `manufacturing_config.yaml`.
+Benchmark-owned fixtures are read-only context. Engineer-owned parts must respect the declared geometry and collision constraints, but this document no longer treats benchmark-side attachment policy as a published contract surface.
 
 #### Allowed components in simulation
 
 The simulation would have only a set number of components that both the benchmark planner and engineer can use. The following list is acceptable:
 
 1. 3d CAD parts:
-   - Environment (unmodifiable, or modifiable with minor changes, e.g. drilling);
+   - Environment (read-only benchmark context);
      - Objectives (goal, forbid zones)
      - Parts (any obstacle/standard CAD object) <!-- probably needs for a better name-->
      - Input objects (e.g. - a ball that needs to be delivered somewhere.)
    - Engineer parts:
      - 3d CAD parts representing real-life objects that engineers would normally create; bound by all physics.
 2. Motors (and simple scripts/functions that run the motors, e.g. in sinusoidal wave, or start/stop every few seconds). Accessible by both engineer and benchmark generator.
-3. Fasteners - Accessible by both engineer and benchmark generator, however likely environment doesn't really need them.
 
 <!-- Future:
 Bearings.

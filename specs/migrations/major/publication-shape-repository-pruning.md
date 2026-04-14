@@ -52,6 +52,11 @@ environment attachment/drilling logic. Those motion capabilities begin at Epic
 9 and later, so they stay out of the publication bundle until a later
 publication pass.
 
+The release bundle also drops the COTS branch entirely. Catalog-backed parts,
+COTS search, COTS geometry import, and the supporting pricing, validation,
+and agent plumbing do not belong in the publication bundle. The release keeps
+only pure rigid-body behavior.
+
 The only retained drawing behavior is the ordinary full geometric-plan path
 already needed to reproduce Epic 7. Off/minimal drafting variants and
 preview-only companions are not publication surfaces.
@@ -80,7 +85,9 @@ final paper explicitly uses them as evaluated claims:
     INT-001 through INT-180 cases.
 11. Later-epic physics and product branches, including electronics,
     fluids/FEM, technical drawing, advanced visualization, and benchmark-side
-    DOF and environment attachment/drilling plumbing.
+    DOF and environment attachment/drilling plumbing, plus the COTS-backed
+    parts and search stack. Pure rigid-body is the only retained mechanics
+    family.
 12. Internal documentation that explains the development tree rather than the
     conference artifact.
 13. The technical-drawing contract, drafting-mode gates, and display-only
@@ -483,8 +490,9 @@ bundle, because they only exist to exercise the technical-drawing contract that
 this migration removes.
 
 Retain only the paper-critical integration coverage, such as the benchmark
-workflow, engineering loop, handover validation, render validation, COTS
-geometry import, observability, infrastructure, and manufacturing slices.
+workflow, engineering loop, handover validation, render validation,
+observability, infrastructure, and the pure rigid-body benchmark,
+engineering, and manufacturing slices.
 
 ### Late-epic branches to cut
 
@@ -494,7 +502,41 @@ branches, dormant config flags, or compatibility aliases for those families.
 
 The technical-drawing contract is already trimmed in the section above. The
 remaining late-epic families that must disappear are electromechanics, fluids
-and FEM, steerability, and advanced visualization.
+and FEM, steerability, and advanced visualization. The COTS branch also
+disappears entirely, leaving only pure rigid-body behavior.
+
+#### COTS catalog-backed parts and search
+
+Remove the entire catalog-backed COTS stack rather than preserving a
+rigid-body-compatible subset. The release keeps only pure rigid-body
+mechanics; COTS search, geometry import, proxy parts, selection/review
+helpers, and the supporting pricing, validation, observability, and seed
+plumbing all move out of bundle.
+
+- `shared/cots/**`
+- `controller/api/routes/cots.py`
+- `controller/api/main.py`
+- `controller/agent/nodes/cots_search.py`
+- `controller/agent/benchmark/nodes.py`
+- `controller/agent/graph.py`
+- `controller/agent/benchmark/graph.py`
+- `controller/agent/node_entry_validation.py`
+- `controller/agent/tools.py`
+- `controller/agent/benchmark/tools.py`
+- `controller/agent/prompt_manager.py`
+- `controller/agent/dspy_utils.py`
+- `controller/middleware/remote_fs.py`
+- `config/prompts.yaml`
+- `config/reward_config.yaml`
+- `config/manufacturing_config.yaml`
+- `shared/models/schemas.py`
+- `shared/observability/schemas.py`
+- `shared/enums.py`
+- `shared/assets/cots_descriptions.json`
+- `dataset/data/seed/role_based/cots_search.json`
+- `tests/integration/architecture_p0/test_cots_reviewer.py`
+- `tests/integration/architecture_p1/test_cots_geometry_import.py`
+- `tests/worker_heavy/simulation/test_builder_cots.py`
 
 #### Electronics and electromechanics
 
@@ -828,9 +870,10 @@ prune language without deleting the canonical scenario corpus.
    artifact.
 6. The only retained drawing behavior is the default full geometric-plan path;
    the off/minimal drafting matrix and technical-drawing companion are gone.
-7. Technical drawing, electromechanical, fluids/FEM, steerability, and
+7. Technical drawing, COTS, electromechanical, fluids/FEM, steerability, and
    non-local devops branches are removed completely because they only become
-   justified after Epic 7.
+   justified after Epic 7. The release bundle keeps only pure rigid-body
+   mechanics.
 8. The release manifest is fail-closed: anything not explicitly included is
    excluded, and no dormant late-epic compatibility paths remain.
 
@@ -993,8 +1036,8 @@ whenever they still mention one of these families.
   late-epic electromechanical telemetry, and skill-loop telemetry that only
   exists for internal debugging or training.
 - Remove any event family whose only real claim is outside Epic 7, including
-  the drafting-preview events, electronics events, fluid/stress events, and
-  steerability events.
+  the drafting-preview events, electronics events, COTS search/selection
+  events, fluid/stress events, and steerability events.
 
 ### 7. Curate the data and tests
 
@@ -1003,7 +1046,7 @@ whenever they still mention one of these families.
 - Remove generated corpora and helper-role seed families that are not part of
   the paper.
 - Remove seed rows that only exist to toggle `technical_drawing_mode`,
-  electronics, steerability, or late-epic multiphysics fixtures.
+  electronics, COTS search, steerability, or late-epic multiphysics fixtures.
 - Reduce integration coverage to the paper-critical slice and drop the rest.
 
 ### 8. Collapse late-epic branches

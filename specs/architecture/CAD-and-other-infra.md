@@ -26,18 +26,10 @@ Benchmark definitions also carry a declarative benchmark-side fixture metadata l
 
 The rule is:
 
-1. `benchmark_definition.yaml` may declare benchmark-owned fixture metadata such as `fixed`, `material_id`, `cots_id`, and attachment policy under `benchmark_parts`.
-   - Attachment policy is an allowlist contract for benchmark fixtures, expressed as typed `attachment_methods` (`fastener` or `none`) plus optional reviewer-facing `notes`.
-   - When a benchmark fixture may be drilled for fastener mounting, that same policy carries a typed `drill_policy` with numeric limits such as hole count, diameter range, and depth.
-   - The Benchmark Planner defines drillable versus non-drillable benchmark parts. This is a permission contract for engineering, not a requirement that engineering must use those attachment paths.
-   - The contract is whole-part in MVP. The Benchmark Planner and Benchmark Coder do not define benchmark-side drilling zones or exact allowed coordinates on the part.
-   - If a benchmark-owned part is declared in `benchmark_definition.yaml` and its attachment policy allows fastener attachment, engineer-owned parts declared in `assembly_definition.yaml` may attach to it.
-   - It is benchmark-owned permission metadata, not engineer implementation metadata.
+1. `benchmark_definition.yaml` may declare benchmark-owned fixture metadata such as `fixed`, `material_id`, and `cots_id` under `benchmark_parts`.
 2. That YAML metadata is the benchmark contract for planning/handover, not the runtime CAD instance metadata used by simulation/export.
 3. The actual built geometry still needs runtime `.metadata` on CAD parts/assemblies for exporter, validation, and rendering behavior.
 4. Engineer-owned solution metadata remains outside `benchmark_definition.yaml`; it belongs in `assembly_definition.yaml` and the authored CAD result.
-   - Planner-declared intended drilling into benchmark fixtures is captured in `assembly_definition.yaml.environment_drill_operations` and must validate against the benchmark-side `drill_policy`.
-   - The engineer decides where to place those drilled holes on the allowed benchmark part; benchmark-side metadata constrains whether drilling is allowed and the numeric limits only.
 
 ### Assigning a part to workbenches
 
@@ -186,17 +178,7 @@ The only CAD rule that stays here is metadata ownership: imported COTS geometry 
 
 <!-- Future work: commented class-instantiation hints may later be generated into starter benchmark and solution scripts, but that is a template concern, not a runtime concern. -->
 
-### Drillability and fasteners
-
 ## Other infra
-
-### Benchmark drilling pricing
-
-Drilling into benchmark-owned fixtures has non-zero cost.
-
-For MVP, benchmark drilling cost is static and comes from `manufacturing_config.yaml`.
-
-That cost is part of planner/execution costing whenever `assembly_definition.yaml.environment_drill_operations` is non-empty. It is not optional reviewer commentary.
 
 ### Strict schema
 

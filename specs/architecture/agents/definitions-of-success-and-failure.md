@@ -121,8 +121,6 @@ We have a set of materials defined in `manufacturing_config.yaml`, which defines
 
 `manufacturing_config.yaml` can be read-only for the agents to gauge the pricing ahead of time. It is also used during programmatic validation of manufacturability.
 
-It also defines static benchmark drilling cost for `environment_drill_operations` against benchmark-owned fixtures.
-
 `manufacturing_config.yaml` sample schema:
 
 ```yaml

@@ -25,7 +25,7 @@ We use LangFuse for LLM observability. We will use a Railway template for deploy
 
 Langfuse is deployed locally/on Railway.
 
-For deeper observability, e.g. requirements like "fasteners were used in at least 70% of cases", store fastener usage in the application database.
+For deeper observability, store domain-specific usage signals in the application database when aggregate metrics need them.
 Per-call LM usage is forwarded to Langfuse observations (`input_tokens`, `output_tokens`, `total_tokens`, model, and cost when available) for deterministic attribution.
 
 ### ID model and linkage
@@ -76,7 +76,7 @@ We track the following structured domain events to compute the evaluation metric
 
 05. Benchmark motion contract validation (Benchmark Planner / Benchmark Reviewer)
 
-    - store declared fixture motion topology, DOF profile, actuation mode, evidence linkage, and validation result
+    - store declared fixture motion topology, actuation mode, evidence linkage, and validation result
 
 06. Render request (engineer)
 
@@ -128,27 +128,25 @@ We track the following structured domain events to compute the evaluation metric
 
 24. Forbidden joint creation/adding logic.
 
-25. Excessive/unjustified engineering DOF detection event from reviewer stages (`excessive_dof_detected`) with evidence payload (`part_id`, proposed `dofs`, `dof_count`, expected-minimal engineering `dofs`, `reviewer_stage`, `dof_count_gt_3`).
+25. `conversation_length_exceeded` event with compaction metadata (threshold and before/after conversation size).
 
-26. `conversation_length_exceeded` event with compaction metadata (threshold and before/after conversation size).
+26. Plan-reviewer deterministic validator execution (`plan_review_validation_run`) with reviewer stage, input artifact revision, validator status, and mismatch reasons when rejected.
 
-27. Plan-reviewer deterministic validator execution (`plan_review_validation_run`) with reviewer stage, input artifact revision, validator status, and mismatch reasons when rejected.
+27. Reviewer manifest gate failures (`reviewer_manifest_gate_failed`) with reviewer stage, manifest filename, failure class (`missing`, `stale`, `invalid_schema`, `revision_mismatch`), and blocked node id.
 
-28. Reviewer manifest gate failures (`reviewer_manifest_gate_failed`) with reviewer stage, manifest filename, failure class (`missing`, `stale`, `invalid_schema`, `revision_mismatch`), and blocked node id.
+28. Preview render request (`preview_render_requested`) with requested modalities, normalized orbit angles, requested view count, selected preview backend, and render purpose (`benchmark_preview`, `engineer_preview`, or `final_preview`). If the job is queued, include queue position or estimated wait where available.
 
-29. Preview render request (`preview_render_requested`) with requested modalities, normalized orbit angles, requested view count, selected preview backend, and render purpose (`benchmark_preview`, `engineer_preview`, or `final_preview`). If the job is queued, include queue position or estimated wait where available.
+29. Preview render completion (`preview_render_complete`) with preview backend, modalities, view count, image count, elapsed render time, and artifact paths. Streaming view-ready updates remain trace-visible through the same episode/session trace even when they are not promoted to a separate event family.
 
-30. Preview render completion (`preview_render_complete`) with preview backend, modalities, view count, image count, elapsed render time, and artifact paths. Streaming view-ready updates remain trace-visible through the same episode/session trace even when they are not promoted to a separate event family.
+30. Media inspection event (`media_inspection`) for every agent media-view action, with node/reviewer stage, requested path, resolved artifact path, media kind (`image`, `video_frames`), attached image/frame count, and attach result (`attached`, `missing`, `unsupported_format`, `failed`).
 
-31. Media inspection event (`media_inspection`) for every agent media-view action, with node/reviewer stage, requested path, resolved artifact path, media kind (`image`, `video_frames`), attached image/frame count, and attach result (`attached`, `missing`, `unsupported_format`, `failed`).
+31. LLM media attachment event (`llm_media_attached`) whenever a model request includes media parts, with node name, provider/model, attachment count, media kinds, and source artifact paths.
 
-32. LLM media attachment event (`llm_media_attached`) whenever a model request includes media parts, with node name, provider/model, attachment count, media kinds, and source artifact paths.
+32. CLI-provider skill-loop self-reflection event (`skill_self_reflection`) with the follow-up prompt path, output path, trigger reason, simulation/verification outcome, and the captured reflection text.
 
-33. CLI-provider skill-loop self-reflection event (`skill_self_reflection`) with the follow-up prompt path, output path, trigger reason, simulation/verification outcome, and the captured reflection text.
+33. CLI-provider skill-loop skill-update event (`skill_update`) with the follow-up prompt path, output path, trigger reason, updated skill paths, simulation/verification outcome, and the captured skill-update text.
 
-34. CLI-provider skill-loop skill-update event (`skill_update`) with the follow-up prompt path, output path, trigger reason, updated skill paths, simulation/verification outcome, and the captured skill-update text.
-
-35. CLI-provider skill-loop skill-promotion event (`skill_promotion`) with the active overlay path, approved base commit, target repo or branch, merge strategy, outcome (`published`, `conflict`, `escalated`, `rejected`), PR or commit metadata, and any conflicting skill paths.
+34. CLI-provider skill-loop skill-promotion event (`skill_promotion`) with the active overlay path, approved base commit, target repo or branch, merge strategy, outcome (`published`, `conflict`, `escalated`, `rejected`), PR or commit metadata, and any conflicting skill paths.
 
 Submission helpers also snapshot the workspace in git on submission attempts that changed substantive workspace files, including rejected attempts that mutated the workspace. Runtime scratch files such as submission logs or local cache directories do not force a commit by themselves. This history is part of the reproducibility record and is intentionally separate from the stage manifests, which remain the routing source of truth.
 
@@ -191,7 +189,7 @@ We define (a growing list of) (aggregate) metrics:
 <!-- All below are LLM suggested, but are good. -->
 
 01. Benchmark solvability rate: % of generated benchmarks solvable within constraints by the engineer (or baseline solver).
-02. Benchmark diversity coverage: distribution across physics principles (gravity, friction, motors), object types, DOF counts, moving parts, and environment templates.
+02. Benchmark diversity coverage: distribution across physics principles (gravity, friction, motors), object types, moving parts, and environment templates.
 03. Robustness across seeds: success rate across runtime jitter seeds and static variants.
 04. Plan adherence rate: how often CAD output matches plan (geometry, constraints, objectives).
 05. Price/weight estimation error: planner estimated vs actual validated cost/weight, by agent and benchmark type.
