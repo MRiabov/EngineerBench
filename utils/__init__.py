@@ -9,10 +9,8 @@ from .preview import (
     pick_preview_pixel,
     pick_preview_pixels,
     preview,
-    preview_drawing,
     query_render_bundle,
     render_cad,
-    render_technical_drawing,
 )
 from .submission import (
     simulate_benchmark,
@@ -34,9 +32,7 @@ __all__ = [
     "pick_preview_pixel",
     "pick_preview_pixels",
     "render_cad",
-    "render_technical_drawing",
     "preview",
-    "preview_drawing",
     "query_render_bundle",
     "simulate_benchmark",
     "simulate_engineering",
