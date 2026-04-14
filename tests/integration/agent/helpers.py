@@ -135,81 +135,6 @@ def _benchmark_assembly_definition_content(
             }
         ],
         cots_parts=[],
-        drafting={
-            "sheet_id": "sheet-1",
-            "title": "Seeded benchmark drafting",
-            "views": [
-                {
-                    "view_id": "front",
-                    "target": "environment_fixture",
-                    "projection": "front",
-                    "scale": 1.0,
-                    "datums": ["A", "B"],
-                    "dimensions": [
-                        {
-                            "dimension_id": "width",
-                            "kind": "linear",
-                            "target": "environment_fixture",
-                            "value": 10.0,
-                            "binding": True,
-                        }
-                    ],
-                    "callouts": [
-                        {
-                            "callout_id": 1,
-                            "label": "environment_fixture",
-                            "target": "environment_fixture",
-                        }
-                    ],
-                },
-                {
-                    "view_id": "top",
-                    "target": "environment_fixture",
-                    "projection": "top",
-                    "scale": 1.0,
-                    "datums": ["A", "C"],
-                    "dimensions": [
-                        {
-                            "dimension_id": "depth",
-                            "kind": "linear",
-                            "target": "environment_fixture",
-                            "value": 10.0,
-                            "binding": True,
-                        }
-                    ],
-                    "callouts": [
-                        {
-                            "callout_id": 2,
-                            "label": "environment_fixture",
-                            "target": "environment_fixture",
-                        }
-                    ],
-                },
-                {
-                    "view_id": "side",
-                    "target": "environment_fixture",
-                    "projection": "side",
-                    "scale": 1.0,
-                    "datums": ["B", "C"],
-                    "dimensions": [
-                        {
-                            "dimension_id": "height",
-                            "kind": "linear",
-                            "target": "environment_fixture",
-                            "value": 10.0,
-                            "binding": True,
-                        }
-                    ],
-                    "callouts": [
-                        {
-                            "callout_id": 3,
-                            "label": "environment_fixture",
-                            "target": "environment_fixture",
-                        }
-                    ],
-                },
-            ],
-        },
         final_assembly=[],
         totals=CostTotals(
             estimated_unit_cost_usd=10.0,
@@ -402,31 +327,10 @@ async def seed_engineer_planner_handover(
     await _seed_workspace_file(
         client,
         session_id=session_id,
-        path="solution_plan_technical_drawing_script.py",
-        content=_fixture_entry_file_content(
-            "INT-033",
-            filename_suffix="solution_plan_technical_drawing_script.py",
-        ),
-        bypass_agent_permissions=True,
-    )
-    await _seed_workspace_file(
-        client,
-        session_id=session_id,
         path="benchmark_plan_evidence_script.py",
         content=_fixture_entry_file_content(
             "INT-204",
             filename_suffix="benchmark_plan_evidence_script.py",
-            node="benchmark_planner",
-        ),
-        bypass_agent_permissions=True,
-    )
-    await _seed_workspace_file(
-        client,
-        session_id=session_id,
-        path="benchmark_plan_technical_drawing_script.py",
-        content=_fixture_entry_file_content(
-            "INT-204",
-            filename_suffix="benchmark_plan_technical_drawing_script.py",
             node="benchmark_planner",
         ),
         bypass_agent_permissions=True,

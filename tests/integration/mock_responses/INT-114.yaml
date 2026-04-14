@@ -34,18 +34,14 @@ transcript:
     expected_observation: success
   - tool_name: write_file
     tool_args:
-      path: benchmark_plan_technical_drawing_script.py
+      path: benchmark_plan_evidence_script.py
       overwrite: true
-      content_file: INT-114/benchmark_planner/entry_01/06__benchmark_plan_technical_drawing_script.py
-    expected_observation: success
-  - thought: Materialize the drafting preview before submitting the planner handoff.
-    tool_name: render_technical_drawing
-    tool_args: {}
+      content_file: INT-114/benchmark_planner/entry_01/05__benchmark_plan_evidence_script.py
     expected_observation: success
   - tool_name: submit_benchmark_plan
     expected_observation: submitted
   - finished: true
-    summary: INT-114 benchmark planner artifacts submitted after drafting preview materialization.
+    summary: INT-114 benchmark planner artifacts submitted after passive geometry validation.
     plan:
       theme: gravity_passive_drop_v1
       target_object_properties:
