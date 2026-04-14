@@ -21,7 +21,7 @@ Use a completely freestanding twin-wall chute that receives the projectile ball 
 ## 3. Assembly Strategy
 
 1. Keep `freestanding_base` centered in the build zone and mount `ballast_block` low on the base to stabilize the mechanism.
-2. Mount `capture_funnel`, `left_wall`, and `right_wall` on the base only, with no fasteners or contact into the environment.
+2. Mount `capture_funnel`, `left_wall`, and `right_wall` on the base only, with no fasteners or contact into the environment_fixture.
 3. Terminate the transfer in `exit_tray` overlapping the seeded goal zone so the ball settles without rebounding out.
 
 ## 4. Assumption Register
@@ -29,7 +29,7 @@ Use a completely freestanding twin-wall chute that receives the projectile ball 
 | ID | Assumption | Source | Used By |
 | -- | -- | -- | -- |
 | ASSUMP-001 | `steel_structural` uses the repository density of 7.85 g/cm^3 for deterministic weight rollup. | `worker_heavy/workbenches/manufacturing_config.yaml` | CALC-001 |
-| ASSUMP-002 | The freestanding base stays centered and no engineer part touches the environment. | `benchmark_definition.yaml` | CALC-001 |
+| ASSUMP-002 | The freestanding base stays centered and no engineer part touches the environment_fixture. | `benchmark_definition.yaml` | CALC-001 |
 | ASSUMP-003 | The exit tray overlaps the goal zone so the ball can settle without relying on rebound behavior. | `benchmark_definition.yaml` | CALC-002 |
 
 ## 5. Detailed Calculations
@@ -53,13 +53,17 @@ The engineer-owned assembly weight must match the deterministic catalog and dens
 
 #### Derivation
 
-- `freestanding_base`: `620 x 180 x 12 mm` stock, `134000 mm3` part volume, `361.80 g`
+- `freestanding_base`: `620 x 180 x 12 mm` stock, `133920 mm3` volume, `361.80 g`
 - `capture_funnel`: `22000 mm3` part volume, `20.90 g`
 - `left_wall`: `15000 mm3` part volume, `14.25 g`
 - `right_wall`: `15000 mm3` part volume, `14.25 g`
 - `exit_tray`: `19000 mm3` part volume, `18.05 g`
 - `ballast_block`: `28000 mm3` part volume, `219.80 g`
-- Total: `649.05 g`
+- Total: `361.80 + 20.90 + 14.25 + 14.25 + 18.05 + 219.80 = 649.05 g`
+
+#### Worst-Case Check
+
+- Even with the declared steel ballast, the total weight remains below the 900 g cap and the geometry stays freestanding.
 
 #### Result
 
@@ -68,10 +72,6 @@ The engineer-owned assembly weight must match the deterministic catalog and dens
 #### Design Impact
 
 - The freestanding layout remains comfortably under the benchmark cap.
-
-#### Worst-Case Check
-
-- Even with the declared steel ballast, the total weight remains below the 900 g cap and the geometry stays freestanding.
 
 #### Cross-References
 
@@ -84,6 +84,10 @@ The engineer-owned assembly weight must match the deterministic catalog and dens
 
 The plan must stay under the benchmark cost cap.
 
+#### Assumptions
+
+- The listed unit costs are the deterministic manufacturing estimates for each part.
+
 #### Derivation
 
 - `freestanding_base`: `$15.50`
@@ -92,7 +96,11 @@ The plan must stay under the benchmark cost cap.
 - `right_wall`: `$5.50`
 - `exit_tray`: `$8.25`
 - `ballast_block`: `$3.00`
-- Total: `$42.75`
+- Total: `$15.50 + $5.00 + $5.50 + $5.50 + $8.25 + $3.00 = $42.75`
+
+#### Worst-Case Check
+
+- The declared cost remains at `$42.75`, which is below the `$54.00` cap.
 
 #### Result
 
@@ -101,14 +109,6 @@ The plan must stay under the benchmark cost cap.
 #### Design Impact
 
 - The base can stay thick enough to resist tipping without violating cost.
-
-#### Assumptions
-
-- The listed unit costs are the deterministic manufacturing estimates for each part.
-
-#### Worst-Case Check
-
-- The declared cost remains at `$42.75`, which is below the `$54.00` cap.
 
 #### Cross-References
 
@@ -120,9 +120,10 @@ The plan must stay under the benchmark cost cap.
 | Limit ID | Limit | Bound | Basis |
 | -- | -- | -- | -- |
 | LIMIT-001 | Build-zone placement | All engineer parts remain inside the seeded build zone | `benchmark_definition.yaml` |
-| LIMIT-002 | No-drill rule | No geometry drills into or leans on the environment | Reviewer contract |
+| LIMIT-002 | No-drill rule | No geometry drills into or leans on the environment_fixture | Reviewer contract |
 | LIMIT-003 | Goal-zone overlap | `exit_tray` must overlap the goal zone | `benchmark_definition.yaml` |
 | LIMIT-004 | Stability envelope | `ballast_block` stays low on the base and does not overhang the footprint | Assembly strategy |
+| LIMIT-005 | Spawn jitter absorption | `capture_funnel` pocket covers ±10 mm X, ±8 mm Y, ±4 mm Z jitter | `benchmark_definition.yaml` payload.runtime_jitter |
 
 ## 7. Cost & Weight Budget
 
@@ -136,7 +137,7 @@ The plan must stay under the benchmark cost cap.
 | ballast_block | 219.80 | 3.00 |
 | **TOTAL** | **649.05** | **42.75** |
 
-**Budget Margin**: 21% cost headroom and 28% weight headroom versus the planner target.
+**Budget Margin**: 21% cost headroom and 28% weight headroom versus the benchmark caps.
 
 ## 8. Risk Assessment
 
@@ -144,4 +145,4 @@ The plan must stay under the benchmark cost cap.
 | -- | -- | -- | -- |
 | Freestanding assembly tips under impact | Medium | High | Keep a wide base and add low-mounted ballast |
 | Ball escapes due to spawn jitter | Medium | Medium | Use an oversized capture funnel before the chute narrows |
-| Hidden environment contact violates the no-drill rule | Low | High | Keep all geometry referenced from the freestanding base and leave explicit clearance to nearby fixtures |
+| Hidden environment contact violates the no-drill rule | Low | High | Keep all geometry referenced from the freestanding base and leave explicit clearance to the environment_fixture |

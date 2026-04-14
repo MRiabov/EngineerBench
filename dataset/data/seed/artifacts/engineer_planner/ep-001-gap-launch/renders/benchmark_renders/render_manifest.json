@@ -4,7 +4,7 @@
   "created_at": "2026-04-08T06:34:06.283474+00:00",
   "episode_id": "ef917df7-5890-5637-b8c8-bcee18b2c7f2",
   "worker_session_id": "seed-renders-ep-001-gap-launch-4f75881b",
-  "revision": "ff8f1fdd96d3dca9a7055d814f92a4635a790544",
+  "revision": "53c9cfdddeffe75277a071f447c703df34bcbc79",
   "scene_hash": "b02de6087fe941f9e873df588057bb97d1ddcc87250e181a6e542e97bcd156b7",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",

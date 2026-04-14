@@ -6,8 +6,6 @@ objectives:
   build_zone:
     min: [-320.0, -180.0, 0.0]
     max: [340.0, 180.0, 220.0]
-  fluid_objectives: []
-  stress_objectives: []
 benchmark_parts:
   - part_id: environment_fixture
     label: environment_fixture
@@ -17,9 +15,7 @@ benchmark_parts:
 
 physics:
   backend: GENESIS
-  fem_enabled: false
   compute_target: auto
-fluids: []
 simulation_bounds:
   min: [-380.0, -220.0, -10.0]
   max: [400.0, 220.0, 280.0]
@@ -37,4 +33,3 @@ constraints:
 randomization:
   static_variation_id: engineer_planner_no_drill_v1
   runtime_jitter_enabled: true
-electronics_requirements: null

@@ -94,7 +94,7 @@ final_assembly:
     dofs: []
 totals:
   estimated_unit_cost_usd: 57.5
-  estimated_weight_g: 1320.0
+  estimated_weight_g: 451.91
   estimate_confidence: high
 dfm_suggestions:
 - Keep the bridge deck flat and pocket-free so it can be machined from one side.

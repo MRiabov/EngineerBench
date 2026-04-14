@@ -12,7 +12,10 @@ constraints:
 manufactured_parts: []
 cots_parts: []
 environment_drill_operations: []
-final_assembly: []
+final_assembly:
+- name: environment_fixture
+  config:
+    dofs: []
 totals:
   estimated_unit_cost_usd: 0.0
   estimated_weight_g: 0.0

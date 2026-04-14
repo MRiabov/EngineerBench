@@ -1,0 +1,15 @@
+{
+  "status": "ready_for_review",
+  "reviewer_stage": "engineering_execution_reviewer",
+  "session_id": "seed-ec-002-low-friction-cube",
+  "script_path": "solution_script.py",
+  "script_sha256": "b4c1a7dc17964a7dc8eba0e53b18ea0a7384d41a1daf64f31136fc3168ffa7de",
+  "validation_success": true,
+  "validation_timestamp": 1713000000.0,
+  "simulation_success": true,
+  "simulation_summary": "Low-friction cube routed around forbid block and settled in goal zone.",
+  "simulation_timestamp": 1713000000.0,
+  "goal_reached": true,
+  "revision": "53c9cfdddeffe75277a071f447c703df34bcbc79",
+  "renders": []
+}

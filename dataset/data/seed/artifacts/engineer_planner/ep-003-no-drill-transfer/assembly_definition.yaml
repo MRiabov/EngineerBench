@@ -8,7 +8,7 @@ constraints:
   benchmark_max_unit_cost_usd: 120.0
   benchmark_max_weight_g: 2200.0
   planner_target_max_unit_cost_usd: 54.0
-  planner_target_max_weight_g: 980.0
+  planner_target_max_weight_g: 900.0
 manufactured_parts:
 - part_name: freestanding_base
   part_id: freestanding_base
@@ -78,7 +78,7 @@ manufactured_parts:
 - part_name: ballast_block
   part_id: ballast_block
   manufacturing_method: CNC
-  material_id: steel_cold_rolled
+  material_id: steel_structural
   quantity: 1
   part_volume_mm3: 28000.0
   stock_bbox_mm:
@@ -90,10 +90,25 @@ manufactured_parts:
   estimated_unit_cost_usd: 3.0
 cots_parts: []
 final_assembly:
-- name: freestanding_transfer
+- name: freestanding_base
+  config:
+    dofs: []
+- name: capture_funnel
+  config:
+    dofs: []
+- name: left_wall
+  config:
+    dofs: []
+- name: right_wall
+  config:
+    dofs: []
+- name: exit_tray
+  config:
+    dofs: []
+- name: ballast_block
   config:
     dofs: []
 totals:
   estimated_unit_cost_usd: 42.75
-  estimated_weight_g: 980.0
+  estimated_weight_g: 649.05
   estimate_confidence: high

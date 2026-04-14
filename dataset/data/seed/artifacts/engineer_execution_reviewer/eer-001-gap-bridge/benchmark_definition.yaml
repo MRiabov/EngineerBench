@@ -9,8 +9,6 @@ objectives:
   build_zone:
     min: [-330.0, -180.0, 0.0]
     max: [360.0, 180.0, 230.0]
-  fluid_objectives: []
-  stress_objectives: []
 benchmark_parts:
   - part_id: environment_fixture
     label: environment_fixture
@@ -20,9 +18,7 @@ benchmark_parts:
 
 physics:
   backend: GENESIS
-  fem_enabled: false
   compute_target: auto
-fluids: []
 simulation_bounds:
   min: [-380.0, -220.0, -20.0]
   max: [420.0, 220.0, 280.0]
@@ -34,9 +30,10 @@ payload:
   start_position: [-250.0, 0.0, 70.0]
   runtime_jitter: [8.0, 8.0, 4.0]
 constraints:
+  estimated_solution_cost_usd: 57.5
+  estimated_solution_weight_g: 451.91
   max_unit_cost: 110.0
   max_weight_g: 2200.0
 randomization:
   static_variation_id: engineer_coder_gap_bridge_v1
   runtime_jitter_enabled: true
-electronics_requirements: null
