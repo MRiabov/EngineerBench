@@ -7,8 +7,12 @@ added_at: '2026-03-31T07:10:09Z'
 
 # Integration Test Negative-Path Migration Matrix
 
-This document maps current integration coverage to the negative-path split that
-`specs/integration-test-list.md` is converging toward.
+This document maps the fail-closed cases that should leave the positive
+catalog after the publication-shape prune. The positive
+`specs/integration-test-list.md` rows have already shed their support/eval
+tail, so the negative-path split below is the authoritative home for
+deterministic rejection, refusal, fail-closed, and crash-containment
+coverage.
 
 Heuristic used here:
 
@@ -102,26 +106,27 @@ HTTP-only black-box integration.
 
 | Proposed ID | Current test | Why it moves |
 | -- | -- | -- |
-| `INT-NEG-040` | `test_int_200_benchmark_workflow_rejects_hidden_motion_handoff` | Hidden benchmark motion is a fail-closed refusal. |
-| `INT-NEG-041` | `test_int_202_benchmark_workflow_rejects_unsupported_motion_handoff` | Unsupported motion tokens are rejection coverage. |
+| `INT-NEG-040` | `test_benchmark_workflow_rejects_hidden_motion_handoff` | Hidden benchmark motion is a fail-closed refusal. |
+| `INT-NEG-041` | `test_benchmark_workflow_rejects_unsupported_motion_handoff` | Unsupported motion tokens are rejection coverage. |
 | `INT-NEG-042` | `test_benchmark_request_validation_rejects_invalid_objectives` | Invalid request objectives belong in the negative suite. |
-
-### `tests/integration/frontend/p0/test_int_205.py`
-
-| Proposed ID | Current test | Why it moves |
-| -- | -- | -- |
-| `INT-NEG-043` | `test_int_205_failed_engineer_retry_revises_same_benchmark` | Failed-run retry lineage is a negative-path UX contract. |
+| `INT-NEG-043` | `retry lineage / benchmark reuse` | Failed-run retry lineage is a negative-path UX contract. |
 
 ## Keep in `INT-xxx`
 
 These are the main success-path or special-boundary exceptions that should stay
 out of the negative bucket for now:
 
-- `tests/integration/frontend/p0/test_solution_evidence.py::test_int_189_engineer_run_defaults_to_solution_evidence`
-- `tests/integration/architecture_p0/test_planner_gates.py::test_int_005_engineer_planner_flow_emits_submit_plan_trace`
-- `tests/integration/architecture_p0/test_planner_gates.py::test_int_113_electronics_planner_flow_emits_submit_plan_trace`
-- `tests/integration/architecture_p0/test_planner_gates.py::test_int_114_benchmark_planner_flow_emits_submit_plan_trace`
-- `tests/integration/architecture_p0/test_planner_gates.py::test_int_204_benchmark_plan_reviewer_inspects_latest_revision_renders_before_approval`
+- `tests/integration/architecture_p1/test_benchmark_workflow.py::test_benchmark_planner_cad_reviewer_path`
+- `tests/integration/architecture_p1/test_handover.py::test_benchmark_to_engineer_handoff`
+- `tests/integration/architecture_p1/test_engineering_loop.py::test_engineering_full_loop`
+- `tests/integration/architecture_p1/test_infrastructure.py::test_render_artifact_generation_int_039`
+- `tests/integration/architecture_p1/test_infrastructure.py::test_render_artifact_generation_int_039_simulation_video_shows_objective_boxes`
+- `tests/integration/architecture_p1/test_infrastructure.py::test_asset_persistence_linkage_int_040`
+- `tests/integration/architecture_p1/test_infrastructure.py::test_mjcf_joint_mapping_int_037`
+- `tests/integration/architecture_p1/test_infrastructure.py::test_controller_function_family_int_038`
+- `tests/integration/architecture_p1/test_reviewer_evidence.py::test_reviewer_evidence_completeness`
+- `tests/integration/architecture_p1/test_reviewer_evidence.py::test_engineer_execution_reviewer_handover_accepts_preview_evidence_paths`
+- `tests/integration/architecture_p1/test_reviewer_evidence.py::test_reviewer_approval_requires_media_inspection`
 - `tests/integration/architecture_p0/test_planner_gates.py::test_int_010_validate_and_price_adds_benchmark_drilling_cost`
 - `tests/integration/architecture_p0/test_planner_gates.py::test_int_010_submit_handoff_accepts_cheaper_workspace_drilling_override`
 - `tests/integration/architecture_p0/test_planner_gates.py::test_int_019_single_part_benchmark_submit_succeeds_without_cost_gate`
@@ -136,6 +141,7 @@ out of the negative bucket for now:
   negative-adjacent fuzzing, but it is a broad schema sweep rather than a single
   deterministic rejection scenario. Keep it separate unless the suite gets a
   dedicated fuzz bucket or a dedicated `INT-NEG` policy for generative probing.
-- The electronics file still uses internal imports and `monkeypatch`; if that
-  file is preserved, the negative rows above should move, but the long-term
-  cleanup is to replace those internals with HTTP-only black-box integration.
+- The publication-pruned benchmark workflow and retry-lineage candidates above
+  are placeholders until the negative catalog is populated for them. The long-
+  term cleanup is to replace any internal-import or `monkeypatch` coverage with
+  HTTP-only black-box integration.

@@ -1024,6 +1024,7 @@ The safe order is:
 
 <!-- Frozen reminder: the claim matrix above is derived from
   `docs/academic-submission/final-project-report.tex`. -->
+
 - [x] Mark every major repo surface as core, retained, or out-of-bundle.
 - [x] Remove every feature family whose first meaningful claim appears in
   Epic 8 or later, including drafting, electronics, fluids/FEM, and

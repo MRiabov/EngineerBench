@@ -13,6 +13,12 @@ added_at: '2026-03-31T12:24:08Z'
 This file lists every `@pytest.mark.integration_p#` test whose function name does not start with `test_int_`.
 The `UNDOC-###` values are provisional inventory IDs only.
 
+The publication-shape pruning migration already removed the long-tail support
+and eval rows from the published catalog. Treat rows whose canonical targets no
+longer appear in `specs/integration-test-list.md` as archival lineage only; the
+remaining rows are the smaller retained core plus the fail-closed cases that
+belong in the negative catalog.
+
 ## P0
 
 | ID | Test | Required assertions | Source |
