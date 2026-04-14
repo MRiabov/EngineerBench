@@ -283,8 +283,8 @@ enforce the new contract:
 - `specs/architecture/agents/roles-detailed/engineer-coder.md`
 - `specs/architecture/agents/artifacts-and-filesystem.md`
 - `specs/architecture/agents/agent-artifacts/README.md`
-- `specs/architecture/agents/agent-artifacts/plan_md_acceptance_criteria.md`
-  or its stage-split replacement docs
+- `specs/architecture/agents/agent-artifacts/benchmark_plan_md_acceptance_criteria.md`
+- `specs/architecture/agents/agent-artifacts/engineering_plan_md_acceptance_criteria.md`
 - `specs/integration-test-list.md`
 - `scripts/validate_eval_seed.py`
 - `tests/integration/**`
@@ -293,12 +293,9 @@ enforce the new contract:
 
 ## Open Questions
 
-- Should the legacy `plan.md` path stay readable for one release cycle in
-  seed replay helpers, or should the compatibility window be limited to only
-  the eval seed validator?
-- Should the generic `plan_md_acceptance_criteria.md` be split into two new
-  artifact-contract docs, or should it become a stage-scoped index that
-  points to benchmark and engineering contract files?
+The runtime compatibility window for `plan.md` has been removed. The remaining
+work in this migration is corpus cleanup and stale-reference removal in tests,
+seeds, and historical docs.
 
 ## Migration Checklist
 

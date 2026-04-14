@@ -20,7 +20,6 @@ Use this library when a role must seed or judge a concrete workspace file rather
 | -- | -- | -- |
 | [benchmark_plan.md](./benchmark_plan_md_acceptance_criteria.md) | Benchmark planner narrative for benchmark planners and benchmark plan reviewers | Benchmark objective, exact inventory, and stage scope |
 | [engineering_plan.md](./engineering_plan_md_acceptance_criteria.md) | Engineering planner narrative for engineering planners and engineering plan reviewers | Solution intent, proof structure, and stage scope |
-| [plan.md](./plan_md_acceptance_criteria.md) | Legacy compatibility alias for historical bundles only | Transitional replay support and stage mapping |
 | [todo.md](./todo_md_acceptance_criteria.md) | Execution-order checklist for the current stage | Ordered, actionable, stage-correct items |
 | [journal.md](./journal_md_acceptance_criteria.md) | Debugging and attempt log | Concrete blockers, probes, and next steps |
 | [bug_report.md](./bug_report_md_acceptance_criteria.md) | Maintainer-facing runtime blocker report | Infra/runtime failure details and archive metadata |

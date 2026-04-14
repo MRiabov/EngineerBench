@@ -40,8 +40,8 @@ flowchart TD
 
 | Graph | Stage Order | Review Gates | Output Artifacts |
 | -- | -- | -- | -- |
-| Benchmark Generator | Planner -> Plan Reviewer -> Coder -> Reviewer | Plan review before implementation, execution review after validation/simulation | `plan.md`, `todo.md`, `benchmark_definition.yaml`, `benchmark_assembly_definition.yaml`, renders, review manifests |
-| Engineer | Planner -> Plan Reviewer -> Coder -> Electronics Reviewer when needed -> Execution Reviewer | Plan review before coding, execution review after validated simulation | `plan.md`, `todo.md`, `benchmark_definition.yaml`, `assembly_definition.yaml`, `script.py`, renders, simulation results, review manifests |
+| Benchmark Generator | Planner -> Plan Reviewer -> Coder -> Reviewer | Plan review before implementation, execution review after validation/simulation | `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, `benchmark_assembly_definition.yaml`, renders, review manifests |
+| Engineer | Planner -> Plan Reviewer -> Coder -> Electronics Reviewer when needed -> Execution Reviewer | Plan review before coding, execution review after validated simulation | `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, `assembly_definition.yaml`, `script.py`, renders, simulation results, review manifests |
 
 The benchmark generator produces problems that the engineer graph later solves. The engineer graph consumes the benchmark definition as read-only context and must stay within the cost, weight, and handover constraints defined by the benchmark and workbench schemas.
 

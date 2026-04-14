@@ -898,6 +898,23 @@ def _run(
     )
 
 
+def _run_quietly(
+    cmd: list[str],
+    *,
+    check: bool = True,
+    env: dict[str, str] | None = None,
+    cwd: Path | None = None,
+) -> subprocess.CompletedProcess[bytes]:
+    return _run(
+        cmd,
+        check=check,
+        env=env,
+        cwd=cwd,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+
+
 def _resolve_alembic_database_url(repo_root: Path) -> str:
     url = os.environ.get("POSTGRES_URL") or os.environ.get("DATABASE_URL")
     if not url:
@@ -958,7 +975,7 @@ def _ensure_alembic_migrations(
             always=True,
         )
 
-    _run(["uv", "run", "alembic", "upgrade", "head"])
+    _run_quietly(["uv", "run", "alembic", "upgrade", "head"])
     return True
 
 
@@ -1644,7 +1661,7 @@ def _bring_up_infra_and_migrate(
     _wait_for_temporal_stable_tcp()
 
     _runner_status("Purging local S3 buckets before the run...")
-    _run(["uv", "run", "python", "scripts/cleanup_local_s3.py"])
+    _run_quietly(["uv", "run", "python", "scripts/cleanup_local_s3.py"])
 
     _runner_status(f"Ensuring integration database exists ({integration_db_name})...")
     _ensure_postgres_database(integration_db_name)
@@ -2002,10 +2019,10 @@ def _run_cleanup_command(args: argparse.Namespace) -> int:
         _runner_status(
             "Bringing down infrastructure containers (--down flag provided)..."
         )
-        _run([*compose_cmd, "down", "-v", "--remove-orphans"], check=False)
+        _run_quietly([*compose_cmd, "down", "-v", "--remove-orphans"], check=False)
     else:
         _runner_status("Stopping infrastructure containers...")
-        _run([*compose_cmd, "stop"], check=False)
+        _run_quietly([*compose_cmd, "stop"], check=False)
     return 0
 
 

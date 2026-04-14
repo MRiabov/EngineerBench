@@ -37,8 +37,8 @@ The main operational priority is backend dataset generation. The frontend is an 
 
 | Graph | Stage order | Required artifacts | Gate behavior |
 | -- | -- | -- | -- |
-| Benchmark generator | Planner -> Plan Reviewer -> Coder -> Reviewer | `plan.md`, `todo.md`, `benchmark_definition.yaml`, `benchmark_assembly_definition.yaml` | Plan review before implementation, execution review after validation and simulation |
-| Engineering | Planner -> Plan Reviewer -> Coder -> Electronics Reviewer when needed -> Execution Reviewer | `plan.md`, `todo.md`, `benchmark_definition.yaml`, `assembly_definition.yaml`, `script.py` | Plan review before coding, execution review after validated simulation |
+| Benchmark generator | Planner -> Plan Reviewer -> Coder -> Reviewer | `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, `benchmark_assembly_definition.yaml` | Plan review before implementation, execution review after validation and simulation |
+| Engineering | Planner -> Plan Reviewer -> Coder -> Electronics Reviewer when needed -> Execution Reviewer | `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, `assembly_definition.yaml`, `script.py` | Plan review before coding, execution review after validated simulation |
 
 Runtime conversations use four message roles: `system`, `user`, `assistant`, and `tool`.
 
@@ -59,9 +59,9 @@ Runtime conversations use four message roles: `system`, `user`, `assistant`, and
 
 | Stage | Required files | Stage manifest | Persisted review files |
 | -- | -- | -- | -- |
-| Benchmark planner submission | `plan.md`, `todo.md`, `benchmark_definition.yaml`, `benchmark_assembly_definition.yaml` | `.manifests/benchmark_plan_review_manifest.json` | N/A |
+| Benchmark planner submission | `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, `benchmark_assembly_definition.yaml` | `.manifests/benchmark_plan_review_manifest.json` | N/A |
 | Benchmark execution review | Latest validated `script.py` and benchmark artifacts | `.manifests/benchmark_review_manifest.json` | `reviews/benchmark-execution-review-decision-round-<n>.yaml`, `reviews/benchmark-execution-review-comments-round-<n>.yaml` |
-| Engineering planner submission | `plan.md`, `todo.md`, `benchmark_definition.yaml`, `assembly_definition.yaml` | `.manifests/engineering_plan_review_manifest.json` | N/A |
+| Engineering planner submission | `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, `assembly_definition.yaml` | `.manifests/engineering_plan_review_manifest.json` | N/A |
 | Engineering execution review | Latest validated `script.py` and engineering artifacts; coder-written handoff manifest shared with the reviewer gate | `.manifests/engineering_execution_handoff_manifest.json` | `reviews/engineering-execution-review-decision-round-<n>.yaml`, `reviews/engineering-execution-review-comments-round-<n>.yaml` |
 | Electronics review | Development-tree only electromechanical review artifacts | `.manifests/electronics_review_manifest.json` | `reviews/electronics-review-decision-round-<n>.yaml`, `reviews/electronics-review-comments-round-<n>.yaml` |
 
