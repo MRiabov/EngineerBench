@@ -98,28 +98,28 @@ drafting:
           value: 210.0
           tolerance: "nominal"
           note: "Keep the support tower tall enough to hold the raised shelf path."
-          plan_ref: "plan.md"
+          plan_ref: "benchmark_plan.md"
         - dimension_id: "raised_goal_shelf_width"
           kind: "linear"
           target: "raised_goal_shelf"
           value: 150.0
           tolerance: "nominal"
           note: "Keep the goal shelf wide enough to accept the transferred sphere."
-          plan_ref: "plan.md"
+          plan_ref: "benchmark_plan.md"
       callouts:
         - callout_id: 1
           label: "floor plate"
           target: "floor_plate"
-          plan_ref: "plan.md"
+          plan_ref: "benchmark_plan.md"
         - callout_id: 2
           label: "lift carriage"
           target: "lift_carriage"
-          plan_ref: "plan.md"
+          plan_ref: "benchmark_plan.md"
       notes:
         - note_id: "n1"
           text: "Gravity-only transfer stays within the X-axis lane and uses no active drive mechanism."
           critical: true
-          plan_ref: "plan.md"
+          plan_ref: "benchmark_plan.md"
 totals:
   estimated_unit_cost_usd: 55.0
   estimated_weight_g: 1360.0

@@ -47,24 +47,24 @@ drafting:
           value: 80.0
           tolerance: "nominal"
           note: "Keep the roof clearance above the 30 mm radius sphere and runtime jitter envelope."
-          plan_ref: "plan.md"
+          plan_ref: "benchmark_plan.md"
         - dimension_id: "tunnel_length"
           kind: "linear"
           target: "environment_fixture"
           value: 1020.0
           tolerance: "nominal"
           note: "Maintain enough tunnel length to carry the ball from entry shelf to exit lip."
-          plan_ref: "plan.md"
+          plan_ref: "benchmark_plan.md"
       callouts:
         - callout_id: 1
           label: "environment fixture"
           target: "environment_fixture"
-          plan_ref: "plan.md"
+          plan_ref: "benchmark_plan.md"
       notes:
         - note_id: "n1"
           text: "The tunnel body stays fixed and contains the rolling sphere until it reaches the goal zone."
           critical: true
-          plan_ref: "plan.md"
+          plan_ref: "benchmark_plan.md"
 totals:
   estimated_unit_cost_usd: 42.0
   estimated_weight_g: 1800.0

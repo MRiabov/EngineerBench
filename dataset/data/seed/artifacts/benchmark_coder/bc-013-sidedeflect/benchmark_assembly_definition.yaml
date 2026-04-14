@@ -100,7 +100,7 @@ drafting:
           tolerance: "+/- 0.5"
           binding: true
           note: "Keep the ramp plate thick enough to resist ball impact deformation."
-          plan_ref: "plan.md"
+          plan_ref: "benchmark_plan.md"
         - dimension_id: "ramp_angle"
           kind: "angular"
           target: "deflector_ramp"
@@ -108,17 +108,17 @@ drafting:
           tolerance: "+/- 1.0"
           binding: true
           note: "Deflector angle must remain 30° ±1° for reliable ball redirection."
-          plan_ref: "plan.md"
+          plan_ref: "benchmark_plan.md"
       callouts:
         - callout_id: 1
           label: "deflector ramp"
           target: "deflector_ramp"
-          plan_ref: "plan.md"
+          plan_ref: "benchmark_plan.md"
       notes:
         - note_id: "n1"
           text: "All benchmark fixtures are fixed. Only the projectile ball moves."
           critical: true
-          plan_ref: "plan.md"
+          plan_ref: "benchmark_plan.md"
 totals:
   estimated_unit_cost_usd: 29.0
   estimated_weight_g: 720.0

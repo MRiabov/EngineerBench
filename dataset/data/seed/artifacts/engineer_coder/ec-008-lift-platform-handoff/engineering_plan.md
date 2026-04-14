@@ -76,7 +76,7 @@ The funnel must catch the ball even when the platform position varies within its
 
 #### Cross-References
 
-- `plan.md#3-assembly-strategy`
+- `engineering_plan.md#3-assembly-strategy`
 - `benchmark_definition.yaml`
 
 ### CALC-002: Clearance guard stays outside platform travel zone
@@ -110,7 +110,7 @@ No engineer part may enter the `platform_travel_clearance` forbid zone.
 
 #### Cross-References
 
-- `plan.md#3-assembly-strategy`
+- `engineering_plan.md#3-assembly-strategy`
 - `benchmark_definition.yaml`
 
 ### CALC-003: Budget rollup from part masses and costs

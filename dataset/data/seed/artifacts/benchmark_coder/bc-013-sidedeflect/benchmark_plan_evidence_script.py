@@ -13,7 +13,7 @@ from build123d import Align, Box, Compound, Location
 
 from utils.metadata import CompoundMetadata, PartMetadata
 
-# Positions from benchmark_definition.yaml and plan.md
+# Positions from benchmark_definition.yaml and benchmark_plan.md
 
 BASE_PLATE_POS = (0.0, 0.0, 5.0)
 BASE_PLATE_SIZE = (300.0, 200.0, 10.0)

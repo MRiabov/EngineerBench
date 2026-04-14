@@ -9,7 +9,7 @@ The seeded benchmark handoff is not a passive gap-transfer fixture as written.
 Evidence:
 
 - `benchmark_assembly_definition.yaml` gives `bridge_reference_table` a `slide_y` DOF with `ON_OFF` control.
-- `plan.md` describes the bridge reference table as effectively passive, which conflicts with the motion metadata.
+- `benchmark_plan.md` describes the bridge reference table as effectively passive, which conflicts with the motion metadata.
 - The added self-centering correction introduces benchmark-side actuation semantics that are not justified by the surrounding benchmark narrative.
 
 Attempted fixes:

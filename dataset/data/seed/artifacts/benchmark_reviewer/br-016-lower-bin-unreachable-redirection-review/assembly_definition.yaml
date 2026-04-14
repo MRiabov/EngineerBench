@@ -80,14 +80,14 @@ drafting:
           value: 38.0
           tolerance: "nominal"
           note: "Steeper ramp angle keeps the redirection path explicit."
-          plan_ref: "plan.md"
+          plan_ref: "benchmark_plan.md"
         - dimension_id: "d_lower_bin_clearance"
           kind: "clearance"
           target: "lower_bin"
           value: 10.0
           tolerance: "nominal"
           note: "Clearance keeps the capture path credible."
-          plan_ref: "plan.md"
+          plan_ref: "benchmark_plan.md"
       callouts:
         - callout_id: 1
           label: "direct drop shield"
@@ -101,7 +101,7 @@ drafting:
         - note_id: "n_redirection_overview"
           text: "The redirection path must remain physically plausible and avoid the dead zone."
           critical: true
-          plan_ref: "plan.md"
+          plan_ref: "benchmark_plan.md"
 environment_drill_operations: []
 final_assembly:
   - name: upper_start_ledge
