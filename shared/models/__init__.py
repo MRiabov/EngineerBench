@@ -8,23 +8,13 @@ from .schemas import (
     ObjectivesSection,
     ReviewFrontmatter,
 )
-from .steerability import (
-    CodeReference,
-    GeometricSelection,
-    SelectionLevel,
-    SteerablePrompt,
-)
 
 __all__ = [
     "BenchmarkDefinition",
     "BoundingBox",
-    "CodeReference",
     "Constraints",
-    "GeometricSelection",
     "MovedObject",
     "MovingPart",
     "ObjectivesSection",
     "ReviewFrontmatter",
-    "SelectionLevel",
-    "SteerablePrompt",
 ]

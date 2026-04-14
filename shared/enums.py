@@ -88,7 +88,6 @@ class AssetType(UppercaseStrEnum):
     GLB = "GLB"
     PYTHON = "PYTHON"
     OTHER = "OTHER"
-    CIRCUIT_DATA = "CIRCUIT_DATA"
     TIMELINE = "TIMELINE"
     MARKDOWN = "MARKDOWN"
     LOG = "LOG"
@@ -226,28 +225,17 @@ class EvalRunnerBackend(StrEnum):
 
 
 class FailureReason(UppercaseStrEnum):
-    """Unified failure modes for physics and electronics simulation."""
+    """Unified failure modes for physics simulation and validation."""
 
     NONE = "NONE"
     TIMEOUT = "TIMEOUT"
     OUT_OF_BOUNDS = "OUT_OF_BOUNDS"
     FORBID_ZONE_HIT = "FORBID_ZONE_HIT"
     PART_BREAKAGE = "PART_BREAKAGE"
-    MOTOR_OVERLOAD = "MOTOR_OVERLOAD"
     STABILITY_ISSUE = "STABILITY_ISSUE"
     PHYSICS_INSTABILITY = "PHYSICS_INSTABILITY"
 
-    # Electronics failures
-    SHORT_CIRCUIT = "SHORT_CIRCUIT"
-    OVERCURRENT = "OVERCURRENT"
-    WIRE_TORN = "WIRE_TORN"
-    OPEN_CIRCUIT = "OPEN_CIRCUIT"
-
-    # WP2 Fluids & Physics failures
     ASSET_GENERATION_FAILED = "ASSET_GENERATION_FAILED"
-    FLUID_OBJECTIVE_FAILED = "FLUID_OBJECTIVE_FAILED"
-    STRESS_OBJECTIVE_EXCEEDED = "STRESS_OBJECTIVE_EXCEEDED"
-    ELECTRONICS_FLUID_DAMAGE = "ELECTRONICS_FLUID_DAMAGE"
 
     # Validation failures
     VALIDATION_FAILED = "VALIDATION_FAILED"
@@ -259,45 +247,12 @@ class FailureReason(UppercaseStrEnum):
 SimulationFailureMode = FailureReason
 
 
-class ElectronicComponentType(UppercaseStrEnum):
-    """Types of electronic components supported in the netlist."""
-
-    MOTOR = "MOTOR"
-    POWER_SUPPLY = "POWER_SUPPLY"
-    RELAY = "RELAY"
-    SWITCH = "SWITCH"
-    CONNECTOR = "CONNECTOR"
-
-
 class ManufacturingMethod(UppercaseStrEnum):
     """Supported manufacturing methods."""
 
     CNC = "CNC"
     THREE_DP = "3DP"
     INJECTION_MOLDING = "IM"
-
-
-class MotorControlMode(UppercaseStrEnum):
-    """Control modes for actuators."""
-
-    CONSTANT = "CONSTANT"
-    SINUSOIDAL = "SINUSOIDAL"
-    ON_OFF = "ON_OFF"
-
-
-class FluidShapeType(UppercaseStrEnum):
-    """Supported shapes for fluid volumes."""
-
-    CYLINDER = "CYLINDER"
-    BOX = "BOX"
-    SPHERE = "SPHERE"
-
-
-class FluidObjectiveType(UppercaseStrEnum):
-    """Types of fluid-related objectives."""
-
-    FLUID_CONTAINMENT = "fluid_containment"
-    FLOW_RATE = "flow_rate"
 
 
 class SimulationConfidence(StrEnum):
@@ -315,20 +270,6 @@ class ZoneType(StrEnum):
     GOAL = "goal"
     BUILD = "build"
     FORBID = "forbid"
-
-
-class FluidEvalAt(UppercaseStrEnum):
-    """When to evaluate fluid objectives."""
-
-    END = "END"
-    CONTINUOUS = "CONTINUOUS"
-
-
-class MovingPartType(UppercaseStrEnum):
-    """Types of moving parts in the assembly."""
-
-    MOTOR = "MOTOR"
-    PASSIVE = "PASSIVE"
 
 
 class ReviewDecision(UppercaseStrEnum):
@@ -353,12 +294,6 @@ class MechanicalRefusalReason(UppercaseStrEnum):
     AMBIGUOUS_OBJECTIVES = "AMBIGUOUS_OBJECTIVES"
 
 
-class ElectricalRefusalReason(UppercaseStrEnum):
-    """Electrical refusal reasons accepted by the unified engineering coder."""
-
-    INVALID_NETLIST = "INVALID_NETLIST"
-    POWER_INSUFFICIENT = "POWER_INSUFFICIENT"
-    WIRING_IMPOSSIBLE = "WIRING_IMPOSSIBLE"
     COMPONENT_CONFLICT = "COMPONENT_CONFLICT"
     AMBIGUOUS_OBJECTIVES = "AMBIGUOUS_OBJECTIVES"
 
