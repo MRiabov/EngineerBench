@@ -991,53 +991,6 @@ async def continue_episode(
 
     return {"status": ResponseStatus.ACCEPTED, "message": "Message sent to agent"}
 
-
-@router.get("/{episode_id}/electronics/schematic")
-async def get_episode_schematic(
-    episode_id: uuid.UUID,
-    db: AsyncSession = Depends(get_db),
-):
-    """Get the electronics schematic for an episode in a format compatible with tscircuit."""
-    result = await db.execute(select(Episode).where(Episode.id == episode_id))
-    episode = result.scalar_one_or_none()
-
-    if not episode:
-        raise HTTPException(status_code=404, detail="Episode not found")
-
-    worker_session_id = str(episode_id)
-    if episode.metadata_vars:
-        metadata = EpisodeMetadata.model_validate(episode.metadata_vars)
-        worker_session_id = metadata.worker_session_id or worker_session_id
-
-    worker_light_url = settings.worker_light_url
-    client = WorkerClient(
-        base_url=worker_light_url,
-        session_id=worker_session_id,
-        heavy_url=settings.worker_heavy_url,
-    )
-
-    try:
-        content = await client.read_file("assembly_definition.yaml")
-        import yaml
-
-        from shared.models.schemas import AssemblyDefinition
-
-        data = yaml.safe_load(content)
-        assembly = AssemblyDefinition(**data)
-
-        from shared.schematic_utils import generate_schematic_soup
-
-        return generate_schematic_soup(assembly)
-    except Exception as e:
-        logger.error(
-            "failed_to_get_schematic",
-            episode_id=str(episode_id),
-            session_id=str(episode_id),
-            error=str(e),
-        )
-        return []
-
-
 class TraceResponse(BaseModel):
     id: int
     user_session_id: uuid.UUID | None = None
