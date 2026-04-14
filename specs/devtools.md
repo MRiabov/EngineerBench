@@ -27,7 +27,7 @@ The developer instrumentation layer is split into a small set of canonical entry
 | Seed and fixture validation | `scripts/validate_eval_seed.py`, `scripts/update_eval_seed_renders.py`, `scripts/validate_integration_mock_response_preflight.py`, `scripts/normalize_integration_mock_responses.py` | Validate seeded eval rows against the current seeded-entry contract, update deterministic seed render bundles, validate integration mock-response scenarios, and repair deterministic fixture drift | Public maintenance utilities |
 | Derived artifact regeneration | `scripts/generate_openapi.py`, `scripts/persist_test_results.py` | Regenerate API schemas and persist test-history outputs | Public utilities |
 | Bug-report archival | `scripts/persist_bug_reports.py` | Copy `bug_report.md` into `logs/bug_reports/` with run/session metadata | Public utility |
-| Compatibility and environment helpers | `scripts/ensure_docker_vfs.sh`, `scripts/ensure_ngspice.sh`, `scripts/cleanup_local_s3.py` | Make the local stack runnable in constrained environments and clear object-store state before runs | Public support scripts |
+| Compatibility and environment helpers | `scripts/ensure_docker_vfs.sh`, `scripts/cleanup_local_s3.py` | Make the local stack runnable in constrained environments and clear object-store state before runs | Public support scripts |
 | Experimental probes | `scripts/experiments/**` | Measure or compare runtime behavior without defining the stable contract | Non-contractual |
 
 ## Local bootstrap
@@ -40,9 +40,9 @@ The developer instrumentation layer is split into a small set of canonical entry
 - The default profile is `integration`; `--profile eval` switches to the eval stack profile.
 - The script loads `.env` when present, exports the selected profile, and reuses the shared stack-profile helper from `evals.logic.stack_profiles`.
 - It stops the selected profile first, then starts infra and application services.
-- It starts the containerized infra stack from `docker-compose.test.yaml`, runs migrations, launches the local controller and workers, and starts the renderer in Docker.
+- It starts the containerized infra stack from `docker-compose.test.yaml`, ensures migrations are at Alembic head, launches the local controller and workers, and starts the renderer in Docker. The migration step skips the upgrade when the database is already current unless `--force-run-alembic` is passed.
 - It also starts the frontend dev server only when the port is available and the stack profile asks for it.
-- It performs local compatibility setup before bootstrapping services, including Docker VFS readiness and `ngspice` availability checks.
+- It performs local compatibility setup before bootstrapping services, including Docker VFS readiness checks.
 
 ### `scripts/env_down.sh`
 
@@ -55,7 +55,6 @@ The developer instrumentation layer is split into a small set of canonical entry
 ### Local bootstrap support scripts
 
 - `scripts/ensure_docker_vfs.sh` exists to keep Docker usable in environments where the default storage driver is not reliable.
-- `scripts/ensure_ngspice.sh` keeps electronics validation runnable before the stack starts.
 - `scripts/cleanup_local_s3.py` clears object-store state before a run so prior artifacts do not leak into the next session.
 
 ## Integration orchestration
@@ -71,6 +70,7 @@ The integration runner is a real-stack boundary contract, not a synthetic test h
 - `scripts/run_integration_tests.sh` is the only supported public entrypoint for integration verification.
 - The shell wrapper sets the integration defaults and then hands off to `scripts/internal/integration_runner.py`.
 - It keeps browser-fixture disabling, backend-error early stop, ordered marker slicing, and async cleanup as runner-level behavior rather than test-level improvisation.
+- It accepts `--force-run-alembic` to force the schema upgrade step when a caller explicitly wants it.
 - It should remain the human-facing command that other docs reference.
 
 ### Runner implementation
