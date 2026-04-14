@@ -317,8 +317,6 @@ def _expected_submission_stage_for_current_role(
         AgentName.ENGINEER_EXECUTION_REVIEWER,
     }:
         return AgentName.ENGINEER_EXECUTION_REVIEWER
-    if current_role == AgentName.ELECTRONICS_REVIEWER:
-        return AgentName.ELECTRONICS_REVIEWER
     return None
 
 
@@ -343,7 +341,6 @@ def submit_for_review(
     allowed_stages = {
         AgentName.BENCHMARK_REVIEWER,
         AgentName.ENGINEER_EXECUTION_REVIEWER,
-        AgentName.ELECTRONICS_REVIEWER,
     }
     if normalized_stage not in allowed_stages:
         raise ValueError(f"Unsupported reviewer_stage: {reviewer_stage}")
@@ -667,8 +664,6 @@ def submit_for_review(
         AgentName.BENCHMARK_PLANNER
         if normalized_stage == AgentName.BENCHMARK_REVIEWER
         else AgentName.ENGINEER_PLANNER
-        if normalized_stage == AgentName.ENGINEER_EXECUTION_REVIEWER
-        else AgentName.ELECTRONICS_PLANNER
     )
 
     cross_contract_errors = validate_planner_handoff_cross_contract(
@@ -821,7 +816,6 @@ def submit_for_review(
     stage_to_manifest = {
         AgentName.BENCHMARK_REVIEWER: "benchmark_review_manifest.json",
         AgentName.ENGINEER_EXECUTION_REVIEWER: "engineering_execution_handoff_manifest.json",
-        AgentName.ELECTRONICS_REVIEWER: "electronics_review_manifest.json",
     }
     manifest_name = stage_to_manifest[normalized_stage]
     manifest_path = manifests_dir / manifest_name

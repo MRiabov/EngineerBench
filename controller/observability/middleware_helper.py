@@ -102,16 +102,6 @@ def map_simulation_failure_reason(res_dict: dict[str, Any]) -> SimulationFailure
         return SimulationFailureMode.PART_BREAKAGE
     if "NAN" in raw_reason or "INSTABILITY" in raw_reason:
         return SimulationFailureMode.PHYSICS_INSTABILITY
-    if "SHORT_CIRCUIT" in raw_reason:
-        return SimulationFailureMode.SHORT_CIRCUIT
-    if "OVERCURRENT" in raw_reason:
-        return SimulationFailureMode.OVERCURRENT
-    if "WIRE_TORN" in raw_reason:
-        return SimulationFailureMode.WIRE_TORN
-    if "OPEN_CIRCUIT" in raw_reason:
-        return SimulationFailureMode.OPEN_CIRCUIT
-    if "ELECTRONICS_FLUID_DAMAGE" in raw_reason:
-        return SimulationFailureMode.ELECTRONICS_FLUID_DAMAGE
     if "PAYLOAD_TRAJECTORY" in raw_reason:
         return SimulationFailureMode.PAYLOAD_TRAJECTORY_CONTRACT_VIOLATION
 

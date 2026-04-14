@@ -331,7 +331,6 @@ async def api_simulate(
                     render_paths=_normalize_render_paths(root, result.render_paths),
                     object_store_keys=dict(result.render_object_store_keys),
                     mjcf_content=result.mjcf_content,
-                    stress_summaries=result.stress_summaries,
                     failure=result.failure,
                     total_cost=result.total_cost,
                     total_weight_g=result.total_weight_g,
@@ -635,7 +634,7 @@ async def api_submit(
                         detail=(
                             "reviewer_stage is required for the submit route. "
                             "Pass one of: benchmark_reviewer, "
-                            "engineering_execution_reviewer, electronics_reviewer."
+                            "engineering_execution_reviewer."
                         ),
                     )
                 failure_message: str | None = None
@@ -668,7 +667,6 @@ async def api_submit(
                     ".manifests/benchmark_review_manifest.json",
                     ".manifests/engineering_plan_review_manifest.json",
                     ".manifests/engineering_execution_handoff_manifest.json",
-                    ".manifests/electronics_review_manifest.json",
                 )
                 review_manifests: dict[str, str] = {}
                 for rel_path in stage_manifest_paths:

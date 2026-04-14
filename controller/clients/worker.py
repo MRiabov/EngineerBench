@@ -191,7 +191,6 @@ class WorkerClient:
         role_to_stage: dict[str, AgentName] = {
             AgentName.BENCHMARK_CODER.value: AgentName.BENCHMARK_REVIEWER,
             AgentName.BENCHMARK_REVIEWER.value: AgentName.BENCHMARK_REVIEWER,
-            AgentName.ELECTRONICS_REVIEWER.value: AgentName.ELECTRONICS_REVIEWER,
             AgentName.ENGINEER_CODER.value: AgentName.ENGINEER_EXECUTION_REVIEWER,
             AgentName.ENGINEER_EXECUTION_REVIEWER.value: AgentName.ENGINEER_EXECUTION_REVIEWER,
         }

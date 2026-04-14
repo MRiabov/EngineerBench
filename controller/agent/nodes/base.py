@@ -903,7 +903,6 @@ class BaseNode:
             AgentName.BENCHMARK_REVIEWER,
             AgentName.ENGINEER_PLAN_REVIEWER,
             AgentName.ENGINEER_EXECUTION_REVIEWER,
-            AgentName.ELECTRONICS_REVIEWER,
         }
 
     def _completion_tool_name(self, node_type: AgentName) -> str:
@@ -1004,7 +1003,6 @@ class BaseNode:
     def _requires_submit_plan(node_type: AgentName) -> bool:
         return node_type in {
             AgentName.ENGINEER_PLANNER,
-            AgentName.ELECTRONICS_PLANNER,
         }
 
     @staticmethod
@@ -1013,7 +1011,6 @@ class BaseNode:
             return ("submit_benchmark_plan", "submit_plan")
         if node_type in {
             AgentName.ENGINEER_PLANNER,
-            AgentName.ELECTRONICS_PLANNER,
         }:
             return ("submit_engineering_plan", "submit_plan")
         return ("submit_plan",)
@@ -1065,7 +1062,6 @@ class BaseNode:
     ) -> dspy.Prediction:
         summary = {
             AgentName.ENGINEER_PLANNER: "Mechanical planner artifacts submitted successfully.",
-            AgentName.ELECTRONICS_PLANNER: "Electronics planner artifacts submitted successfully.",
         }.get(node_type, "Planner artifacts submitted successfully.")
         return dspy.Prediction.from_completions(
             {

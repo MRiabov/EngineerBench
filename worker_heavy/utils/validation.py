@@ -34,7 +34,6 @@ from shared.models.simulation import (
     SimulationFailure,
     SimulationMetrics,
     SimulationResult,
-    StressSummary,
 )
 from shared.observability.events import emit_event
 from shared.observability.storage import S3Client, S3Config
@@ -152,29 +151,6 @@ def _shape_volume(shape: Any) -> float:
         except (TypeError, ValueError):
             continue
     return total
-
-
-def _sanitize_stress_summaries(
-    summaries: list[StressSummary],
-) -> list[StressSummary]:
-    """Ensure stress summary payloads are JSON-compliant."""
-    safe: list[StressSummary] = []
-    for summary in summaries:
-        safe.append(
-            StressSummary(
-                part_label=summary.part_label,
-                max_von_mises_pa=_finite_float(summary.max_von_mises_pa),
-                mean_von_mises_pa=_finite_float(summary.mean_von_mises_pa),
-                safety_factor=_finite_float(summary.safety_factor),
-                location_of_max=(
-                    _finite_float(summary.location_of_max[0]),
-                    _finite_float(summary.location_of_max[1]),
-                    _finite_float(summary.location_of_max[2]),
-                ),
-                utilization_pct=_finite_float(summary.utilization_pct),
-            )
-        )
-    return safe
 
 
 def _workspace_relative_render_paths(
@@ -812,44 +788,6 @@ def save_simulation_result(result: SimulationResult, path: Path):
     path.write_text(result.model_dump_json(indent=2), encoding="utf-8")
 
 
-def get_stress_report(
-    part_label: str, output_dir: Path | None = None, session_id: str | None = None
-) -> StressSummary | None:
-    """Returns the worst-case stress summary for a simulated FEM part."""
-    # Try to load from disk
-    candidates = [Path("simulation_result.json")]
-    working_dir = output_dir or Path(os.getenv("RENDERS_DIR", "./renders")).parent
-    candidates.append(working_dir / "simulation_result.json")
-
-    res = None
-    for p in candidates:
-        res = load_simulation_result(p)
-        if res:
-            break
-
-    if res is None:
-        logger.error(
-            "get_stress_report_called_before_simulation", session_id=session_id
-        )
-        return None
-
-    worst_summary = None
-    min_sf = float("inf")
-
-    for summary in res.stress_summaries:
-        if summary.part_label == part_label and summary.safety_factor < min_sf:
-            min_sf = summary.safety_factor
-            worst_summary = summary
-
-    if worst_summary:
-        return worst_summary
-
-    logger.error(
-        "stress_report_part_not_found", part_label=part_label, session_id=session_id
-    )
-    return None
-
-
 def to_mjcf(
     component: Compound,
     renders_dir: Path | None = None,
@@ -1123,7 +1061,6 @@ def validate_subprocess(
 def simulate(
     component: Compound,
     output_dir: Path | None = None,
-    fem_enabled: bool | None = None,
     particle_budget: int | None = None,
     smoke_test_mode: bool | None = None,
     backend: SimulatorBackendType | None = None,
@@ -1143,7 +1080,6 @@ def simulate(
 
     logger.info(
         "simulate_start",
-        fem_enabled=fem_enabled,
         particle_budget=particle_budget,
         smoke_test_mode=smoke_test_mode,
         backend=backend,
@@ -1570,8 +1506,6 @@ def simulate(
             render_paths=render_paths,
             render_object_store_keys=render_object_store_keys,
             mjcf_content=mjcf_content,
-            stress_summaries=_sanitize_stress_summaries(metrics.stress_summaries),
-            stress_fields=metrics.stress_fields,
             total_cost=cost,
             total_weight_g=weight,
             confidence=metrics.confidence,

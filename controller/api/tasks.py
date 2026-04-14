@@ -56,7 +56,6 @@ SYSTEM_TOOL_RETRY_EXHAUSTED_MARKER = "SYSTEM_TOOL_RETRY_EXHAUSTED"
 def _is_planner_agent(agent_name: AgentName) -> bool:
     return agent_name in {
         AgentName.ENGINEER_PLANNER,
-        AgentName.ELECTRONICS_PLANNER,
         AgentName.BENCHMARK_PLANNER,
     }
 
@@ -66,9 +65,6 @@ def _is_solution_workflow_agent(agent_name: AgentName) -> bool:
         AgentName.ENGINEER_PLANNER,
         AgentName.ENGINEER_CODER,
         AgentName.ENGINEER_PLAN_REVIEWER,
-        AgentName.ELECTRONICS_PLANNER,
-        AgentName.ELECTRONICS_ENGINEER,
-        AgentName.ELECTRONICS_REVIEWER,
         AgentName.ENGINEER_EXECUTION_REVIEWER,
     }
 
@@ -571,7 +567,6 @@ async def execute_agent_task(
                 if agent_name in {
                     AgentName.ENGINEER_CODER,
                     AgentName.ENGINEER_PLANNER,
-                    AgentName.ELECTRONICS_PLANNER,
                     AgentName.BENCHMARK_PLANNER,
                 }:
                     await seed_manufacturing_config(backend)
@@ -1125,7 +1120,6 @@ async def execute_agent_task(
                             ".manifests/benchmark_review_manifest.json",
                             ".manifests/engineering_plan_review_manifest.json",
                             ".manifests/engineering_execution_handoff_manifest.json",
-                            ".manifests/electronics_review_manifest.json",
                         )
                         for manifest_path in manifest_paths:
                             if await client.exists(

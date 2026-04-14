@@ -967,13 +967,6 @@ def validate_benchmark_definition_yaml(
                 f"manufacturing_config.yaml (got '{material_id}')"
             ]
 
-        # WP2: Validate that fluids are NOT requested if using MuJoCo
-        if objectives.physics.backend == SimulatorBackendType.MUJOCO:
-            if objectives.fluids:
-                return False, [
-                    "MuJoCo backend does not support fluids. Use Genesis instead."
-                ]
-
         objective_error = _validate_benchmark_definition_consistency(objectives)
         if objective_error:
             logger.error(
@@ -1125,31 +1118,6 @@ def validate_assembly_definition_yaml(
                             f"must match catalog value ({expected})"
                         )
                         return False, [msg]
-
-        if estimation.electronics:
-            from shared.models.schemas import PartConfig, SubassemblyEstimate
-
-            all_part_names = {p.part_name for p in estimation.manufactured_parts}
-            # Also check final_assembly
-            for item in estimation.final_assembly:
-                if isinstance(item, SubassemblyEstimate):
-                    for p_config in item.parts:
-                        all_part_names.add(p_config.name)
-                elif isinstance(item, PartConfig):
-                    all_part_names.add(item.name)
-
-            for comp in estimation.electronics.components:
-                if (
-                    comp.assembly_part_ref
-                    and comp.assembly_part_ref not in all_part_names
-                ):
-                    msg = f"Electronic component '{comp.component_id}' references unknown part '{comp.assembly_part_ref}'"
-                    logger.error(
-                        "electronics_reference_error",
-                        error=msg,
-                        session_id=session_id,
-                    )
-                    return False, [msg]
 
         logger.info("cost_estimation_yaml_valid", session_id=session_id)
         return True, estimation
@@ -1615,8 +1583,6 @@ def validate_planner_handoff_cross_contract(
         AgentName.ENGINEER_PLAN_REVIEWER.value,
         AgentName.ENGINEER_CODER.value,
         AgentName.ENGINEER_EXECUTION_REVIEWER.value,
-        AgentName.ELECTRONICS_PLANNER.value,
-        AgentName.ELECTRONICS_REVIEWER.value,
     }
 
     errors.extend(_validate_assembly_inventory_parity(assembly_definition))
@@ -1908,7 +1874,7 @@ def validate_node_output(
     Universally validate node output for required files and template placeholders.
 
     Args:
-        node_type: 'planner', 'coder', 'electronics_engineer', etc.
+        node_type: planner or coder role identifier.
         files_content_map: Mapping of filename to string content.
         session_id: Optional session ID for logging
 
@@ -1979,22 +1945,11 @@ def validate_node_output(
                     "benchmark_definition.yaml",
                     SOLUTION_SCRIPT_PATH,
                 ],
-                AgentName.ELECTRONICS_PLANNER: [
-                    resolved_plan_artifact_name,
-                    "todo.md",
-                    "benchmark_definition.yaml",
-                    "assembly_definition.yaml",
-                ],
                 AgentName.BENCHMARK_CODER: [
                     resolved_plan_artifact_name,
                     "todo.md",
                     "benchmark_definition.yaml",
                     BENCHMARK_SCRIPT_PATH,
-                ],
-                AgentName.ELECTRONICS_ENGINEER: [
-                    resolved_plan_artifact_name,
-                    "todo.md",
-                    "assembly_definition.yaml",
                 ],
             }.get(node_type, [])
     else:
@@ -2017,22 +1972,11 @@ def validate_node_output(
                 "benchmark_definition.yaml",
                 SOLUTION_SCRIPT_PATH,
             ],
-            AgentName.ELECTRONICS_PLANNER: [
-                resolved_plan_artifact_name,
-                "todo.md",
-                "benchmark_definition.yaml",
-                "assembly_definition.yaml",
-            ],
             AgentName.BENCHMARK_CODER: [
                 resolved_plan_artifact_name,
                 "todo.md",
                 "benchmark_definition.yaml",
                 BENCHMARK_SCRIPT_PATH,
-            ],
-            AgentName.ELECTRONICS_ENGINEER: [
-                resolved_plan_artifact_name,
-                "todo.md",
-                "assembly_definition.yaml",
             ],
         }.get(node_type, [])
 

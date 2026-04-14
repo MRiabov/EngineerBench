@@ -122,7 +122,6 @@ _REPLAY_REVIEW_MANIFEST_SUFFIXES = (
     "benchmark_review_manifest.json",
     "engineering_plan_review_manifest.json",
     "engineering_execution_handoff_manifest.json",
-    "electronics_review_manifest.json",
 )
 
 

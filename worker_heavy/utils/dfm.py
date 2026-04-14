@@ -486,7 +486,6 @@ def validate_and_price(
     config: ManufacturingConfig,
     build_zone: BoundingBox | None = None,
     quantity: int = 1,
-    fem_required: bool = False,
     session_id: str | None = None,
 ) -> WorkbenchResult:
     """
@@ -499,14 +498,10 @@ def validate_and_price(
         config: Manufacturing configuration
         build_zone: Optional build zone bounds to validate against
         quantity: Number of units
-        fem_required: If True, validates presence of FEM material fields.
-
     Returns:
         WorkbenchResult with manufacturability, cost, and violations
     """
-    logger.info(
-        "starting_dfm_facade_analysis", method=method, fem_required=fem_required
-    )
+    logger.info("starting_dfm_facade_analysis", method=method)
     metadata = getattr(part, "metadata", None)
     label = _part_label(part)
 
@@ -572,47 +567,6 @@ def validate_and_price(
         )
         raise ValueError(f"Unsupported manufacturing method: {method}")
 
-    # WP2: FEM material field validation.
-    fem_violations: list[str] = []
-    if fem_required:
-        material_id = getattr(metadata, "material_id", None)
-        # Check global materials and method-specific materials
-        mat_def = config.materials.get(material_id)
-        if not mat_def and method == ManufacturingMethod.CNC and config.cnc:
-            mat_def = config.cnc.materials.get(material_id)
-        elif (
-            not mat_def
-            and method == ManufacturingMethod.INJECTION_MOLDING
-            and config.injection_molding
-        ):
-            mat_def = config.injection_molding.materials.get(material_id)
-        elif not mat_def and method == ManufacturingMethod.THREE_DP and config.three_dp:
-            mat_def = config.three_dp.materials.get(material_id)
-
-        if not mat_def:
-            fem_violations = [
-                _prefix_part_violation(
-                    label,
-                    f"FEM Validation Error: Material '{material_id}' not found in configuration.",
-                )
-            ]
-        else:
-            required_fields = [
-                "youngs_modulus_pa",
-                "poissons_ratio",
-                "yield_stress_pa",
-                "ultimate_stress_pa",
-            ]
-            missing = [f for f in required_fields if getattr(mat_def, f) is None]
-            if missing:
-                fem_violations = [
-                    _prefix_part_violation(
-                        label,
-                        "FEM Validation Error: Material "
-                        f"'{material_id}' missing required FEM fields: {', '.join(missing)}",
-                    )
-                ]
-
     # Add DOF warning to metadata (for reviewer notification)
 
     additional_info = dict(result.metadata.additional_info or {})
@@ -639,11 +593,11 @@ def validate_and_price(
     all_violations = [
         _prefix_part_violation(label, violation)
         for violation in (
-            list(result.violations) + build_zone_violations + fem_violations
+            list(result.violations) + build_zone_violations
         )
     ]
     is_manufacturable = (
-        result.is_manufacturable and not build_zone_violations and not fem_violations
+        result.is_manufacturable and not build_zone_violations
     )
 
     return WorkbenchResult(
@@ -662,7 +616,6 @@ def validate_and_price_assembly(
     part_labels: set[str] | None = None,
     build_zone: BoundingBox | None = None,
     quantity: int = 1,
-    fem_required: bool = False,
     session_id: str | None = None,
     default_method: ManufacturingMethod = ManufacturingMethod.CNC,
 ) -> WorkbenchResult:
@@ -737,7 +690,6 @@ def validate_and_price_assembly(
             config,
             build_zone=build_zone,
             quantity=quantity,
-            fem_required=fem_required,
             session_id=session_id,
         )
         if assembly_definition is None:
@@ -797,7 +749,6 @@ def validate_and_price_assembly(
                 config,
                 build_zone=build_zone,
                 quantity=quantity,
-                fem_required=fem_required,
                 session_id=session_id,
             )
             total_cost += child_result.unit_cost
@@ -841,7 +792,6 @@ def validate_and_price_assembly(
             config,
             build_zone=build_zone,
             quantity=quantity,
-            fem_required=fem_required,
             session_id=session_id,
         )
         total_cost += child_result.unit_cost

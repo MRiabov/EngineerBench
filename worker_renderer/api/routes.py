@@ -39,7 +39,6 @@ from shared.workers.schema import (
     SegmentationLegendEntry,
     SimulationArtifacts,
     SimulationVideoRequest,
-    StressHeatmapRequest,
 )
 from worker_renderer.utils.build123d_rendering import (
     _OVERLAY_AXES_COLOR,
@@ -965,56 +964,6 @@ def _encode_simulation_video(
     return output_path
 
 
-def _render_stress_heatmap(
-    root: Path,
-    *,
-    stress_field,
-    output_name: str,
-    mesh_path: str | None = None,
-    width: int = 800,
-    height: int = 600,
-) -> Path:
-    import matplotlib.pyplot as plt
-    import trimesh
-
-    renders_dir = root / "renders" / "stress"
-    renders_dir.mkdir(parents=True, exist_ok=True)
-    output_path = renders_dir / output_name
-    nodes = np.array(stress_field.nodes)
-    stresses = np.array(stress_field.stress)
-
-    if mesh_path:
-        mesh_file = root / mesh_path
-    else:
-        mesh_file = None
-
-    if mesh_file is not None and mesh_file.exists():
-        mesh = trimesh.load(str(mesh_file))
-        norm = plt.Normalize(vmin=stresses.min(), vmax=stresses.max())
-        cmap = plt.get_cmap("jet")
-        colors = cmap(norm(stresses))[:, :3] * 255
-        if len(stresses) == len(mesh.vertices):
-            mesh.visual.vertex_colors = colors.astype(np.uint8)
-        scene = mesh.scene()
-        data = scene.save_image(resolution=(width, height))
-        with output_path.open("wb") as f:
-            f.write(data)
-    else:
-        fig = plt.figure(figsize=(width / 100, height / 100))
-        ax = fig.add_subplot(111, projection="3d")
-        p = ax.scatter(nodes[:, 0], nodes[:, 1], nodes[:, 2], c=stresses, cmap="jet")
-        fig.colorbar(p, label="von Mises Stress (Pa)")
-        plt.savefig(output_path)
-        plt.close(fig)
-
-    logger.info(
-        "renderer_stress_heatmap_complete",
-        output_path=str(output_path),
-        has_mesh=mesh_file is not None and mesh_file.exists(),
-    )
-    return output_path
-
-
 @renderer_router.post(
     "/benchmark/render_cad",
     response_model=PreviewDesignResponse,
@@ -1433,7 +1382,6 @@ async def api_static_preview(
         )
         return BenchmarkToolResponse(success=False, message=str(exc))
 
-
 @renderer_router.post(
     "/benchmark/simulation-video", response_model=BenchmarkToolResponse
 )
@@ -1511,70 +1459,5 @@ async def api_simulation_video(
     except Exception as exc:
         logger.warning(
             "renderer_simulation_video_failed", error=str(exc), session_id=x_session_id
-        )
-        return BenchmarkToolResponse(success=False, message=str(exc))
-
-
-@renderer_router.post("/benchmark/stress-heatmap", response_model=BenchmarkToolResponse)
-async def api_stress_heatmap(
-    request: StressHeatmapRequest,
-    x_session_id: str = Header(default="renderer"),
-):
-    """Render a stress heatmap artifact in the dedicated renderer worker."""
-    try:
-        async with render_operation_admission("stress-heatmap", x_session_id):
-            with _bundle_context(request.bundle_base64) as root:
-                with _event_file_context(root):
-                    output_path = await asyncio.to_thread(
-                        _render_stress_heatmap,
-                        root,
-                        stress_field=request.stress_field,
-                        output_name=request.output_name,
-                        mesh_path=request.mesh_path,
-                        width=request.width,
-                        height=request.height,
-                    )
-
-                output_rel_path = str(output_path.relative_to(root))
-                bundle_root = output_path.parent
-                manifest = build_render_manifest(
-                    {
-                        output_rel_path: RenderArtifactMetadata(
-                            modality="unknown",
-                            group_key=Path(output_rel_path).stem,
-                        )
-                    },
-                    workspace_root=root,
-                    episode_id=request.session_id or x_session_id,
-                    worker_session_id=x_session_id,
-                    bundle_path=str(bundle_root.relative_to(root)).replace("\\", "/"),
-                )
-                manifest_path = bundle_root / "render_manifest.json"
-                _write_text_atomic(manifest_path, manifest.model_dump_json(indent=2))
-                append_render_bundle_index(
-                    root,
-                    build_render_bundle_index_entry(
-                        manifest,
-                        manifest_path=str(manifest_path.relative_to(root)).replace(
-                            "\\", "/"
-                        ),
-                        primary_media_paths=[output_rel_path],
-                    ),
-                )
-
-                events = collect_and_cleanup_events(root, session_id=x_session_id)
-                return BenchmarkToolResponse(
-                    success=True,
-                    message="Stress heatmap generated successfully",
-                    artifacts=_collect_render_artifacts(
-                        root, [output_rel_path], session_id=x_session_id
-                    ),
-                    events=events,
-                )
-    except HTTPException:
-        raise
-    except Exception as exc:
-        logger.warning(
-            "renderer_stress_heatmap_failed", error=str(exc), session_id=x_session_id
         )
         return BenchmarkToolResponse(success=False, message=str(exc))

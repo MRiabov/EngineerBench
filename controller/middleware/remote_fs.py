@@ -145,8 +145,6 @@ class RemoteFilesystemMiddleware:
             AgentName.ENGINEER_PLANNER,
             AgentName.ENGINEER_PLAN_REVIEWER,
             AgentName.ENGINEER_CODER,
-            AgentName.ELECTRONICS_PLANNER,
-            AgentName.ELECTRONICS_REVIEWER,
             AgentName.ENGINEER_EXECUTION_REVIEWER,
         }
         if self.agent_role in benchmark_roles:

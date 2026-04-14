@@ -1231,7 +1231,6 @@ async def validate_seeded_workspace_handoff_artifacts(
             elif rel_path in {
                 ".manifests/benchmark_review_manifest.json",
                 ".manifests/engineering_execution_handoff_manifest.json",
-                ".manifests/electronics_review_manifest.json",
             }:
                 ReviewManifest.model_validate_json(content)
         except Exception as exc:  # pragma: no cover - defensive parse guard

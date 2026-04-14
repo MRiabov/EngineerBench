@@ -1916,7 +1916,6 @@ async def _persist_session_assets(
                     ".manifests/benchmark_review_manifest.json",
                     ".manifests/engineering_plan_review_manifest.json",
                     ".manifests/engineering_execution_handoff_manifest.json",
-                    ".manifests/electronics_review_manifest.json",
                     ".manifests/current_role.json",
                 ):
                     if await asyncio.wait_for(

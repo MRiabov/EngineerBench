@@ -357,7 +357,7 @@ def get_engineer_planner_tools(
     planner_node_type: AgentName = AgentName.ENGINEER_PLANNER,
 ) -> list[Callable]:
     """
-    Planner-specific toolset for engineer/electronics planners.
+    Planner-specific toolset for engineer planners.
 
     Includes explicit `submit_engineering_plan()` so planner completion is an intentional action.
     """
@@ -487,7 +487,7 @@ def get_engineer_planner_tools(
             validate_node_output,
         )
 
-        # Engineer planner and electronics planner share the same planner artifacts.
+        # Planner roles share the same planner artifacts.
         plan_path = plan_path_for_agent(planner_node_type).as_posix()
         legacy_plan_path = "plan.md"
         if (

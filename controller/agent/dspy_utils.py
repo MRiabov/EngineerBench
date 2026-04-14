@@ -56,12 +56,6 @@ class PredictionMetrics(BaseModel):
     bad_feedback_resistance_score: float = 0.0
     checklist: dict[str, Any] = Field(default_factory=dict)
 
-    # Electronics (WP3)
-    schematic_present: bool = False
-    power_budget_valid: bool = True
-    circuit_continuity: bool = False
-    total_power: float = 0.0
-
     # COTS Search
     n_queries: int = 0
     n_valid_candidates: int = 0
@@ -274,14 +268,6 @@ def cad_simulation_metric(
                     # Fallback for legacy formulas
                     context["max_weight"] = max_weight_g
 
-            if (
-                hasattr(obj_yaml, "electronics_requirements")
-                and obj_yaml.electronics_requirements
-            ):
-                ps = obj_yaml.electronics_requirements.power_supply_available
-                if ps:
-                    context["max_power"] = ps.voltage_dc * ps.max_current_a
-
     error_msg = getattr(prediction, "error", None)
 
     for milestone_name, m in cfg.all_milestones().items():
@@ -465,8 +451,6 @@ def map_events_to_prediction(
                     planned_files.add(Path(path).name)
                 if "review" in path.lower() and path.endswith(".yaml"):
                     metrics.review_artifacts_complete = True
-                if "schematic" in path.lower():
-                    metrics.schematic_present = True
 
         # 2. Planning & Logic
         if etype in [
@@ -555,27 +539,7 @@ def map_events_to_prediction(
             }:
                 metrics.review_actionable = len(reason) > 20
 
-        # 6. Electronics (WP3)
-        if etype == ObservabilityEventType.CIRCUIT_VALIDATION:
-            metrics.schematic_present = True
-            metrics.circuit_continuity = (
-                data.get("result", False)
-                if isinstance(data, dict)
-                else getattr(data, "result", False)
-            )
-            errors = (
-                data.get("errors", [])
-                if isinstance(data, dict)
-                else getattr(data, "errors", [])
-            )
-            metrics.power_budget_valid = len(errors) == 0
-            metrics.total_power = (
-                data.get("total_draw_a", 0.0)
-                if isinstance(data, dict)
-                else getattr(data, "total_draw_a", 0.0)
-            )
-
-        # 7. COTS Search
+        # 6. COTS Search
         if etype == ObservabilityEventType.COTS_SEARCH:
             metrics.n_queries += 1
             count = (
