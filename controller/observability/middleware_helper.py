@@ -98,8 +98,6 @@ def map_simulation_failure_reason(res_dict: dict[str, Any]) -> SimulationFailure
         return SimulationFailureMode.OUT_OF_BOUNDS
     if "FORBID" in raw_reason:
         return SimulationFailureMode.FORBID_ZONE_HIT
-    if "BREAK" in raw_reason or "STRESS" in raw_reason:
-        return SimulationFailureMode.PART_BREAKAGE
     if "NAN" in raw_reason or "INSTABILITY" in raw_reason:
         return SimulationFailureMode.PHYSICS_INSTABILITY
     if "PAYLOAD_TRAJECTORY" in raw_reason:

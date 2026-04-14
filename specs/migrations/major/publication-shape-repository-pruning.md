@@ -1180,6 +1180,14 @@ The safe order is:
 - [x] `tests/integration/architecture_p1/test_infrastructure.py`: remove
   `INT-041` and `INT-042`; delete the matching mock-response fixtures and
   scenario trees.
+- [x] Remove the orphaned motor/fluid/electronics fixture modules and
+  scenario-tree content not already named above, including
+  `tests/worker_heavy/simulation/test_builder_cots.py`,
+  `tests/integration/architecture_p1/test_cots_geometry_import.py`,
+  `tests/integration/architecture_p0/test_int_018_multipart_dfm_gate.py`,
+  `tests/integration/architecture_p0/scripts/verify_overload.py`, and the
+  `INT-005`, `INT-014`, `INT-034`, `INT-114`, `INT-129`, and `INT-142`
+  mock-response entries.
 
 ### Final publication bundle
 

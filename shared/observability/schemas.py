@@ -57,7 +57,6 @@ class ObservabilityEventType(StrEnum):
 
     # 25. Simulation and physics events
     SIMULATION_BACKEND_SELECTED = "simulation_backend_selected"
-    PART_BREAKAGE = "part_breakage"
     MESHING_FAILURE = "meshing_failure"
     PHYSICS_INSTABILITY = "physics_instability"
     GPU_OOM_RETRY = "gpu_oom_retry"

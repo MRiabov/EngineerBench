@@ -105,11 +105,8 @@ def _objective_validation_payload(
             "goal_zone": {"min": goal_zone_min, "max": goal_zone_max},
             "forbid_zones": forbid_zones or [],
             "build_zone": {"min": build_zone_min, "max": build_zone_max},
-            "fluid_objectives": [],
-            "stress_objectives": [],
         },
-        "physics": {"backend": "GENESIS", "fem_enabled": False},
-        "fluids": [],
+        "physics": {"backend": "GENESIS"},
         "simulation_bounds": {
             "min": simulation_bounds_min or [-30.0, -30.0, -10.0],
             "max": simulation_bounds_max or [30.0, 30.0, 30.0],
@@ -275,11 +272,8 @@ def build():
                 }
             ],
             "build_zone": {"min": [-5.0, -5.0, 0.0], "max": [5.0, 5.0, 15.0]},
-            "fluid_objectives": [],
-            "stress_objectives": [],
         },
-        "physics": {"backend": "GENESIS", "fem_enabled": False},
-        "fluids": [],
+        "physics": {"backend": "GENESIS"},
         "simulation_bounds": {
             "min": [-30.0, -30.0, -10.0],
             "max": [30.0, 30.0, 30.0],
@@ -677,8 +671,6 @@ def build():
             "goal_zone": {"min": [1.0, -1.0, 0.0], "max": [2.0, 1.0, 1.0]},
             "forbid_zones": [],
             "build_zone": {"min": [-5.0, -5.0, 0.0], "max": [5.0, 5.0, 15.0]},
-            "fluid_objectives": [],
-            "stress_objectives": [],
         },
         "benchmark_parts": [
             {
@@ -694,8 +686,7 @@ def build():
                 },
             }
         ],
-        "physics": {"backend": "GENESIS", "fem_enabled": False},
-        "fluids": [],
+        "physics": {"backend": "GENESIS"},
         "simulation_bounds": {
             "min": [-30.0, -30.0, -10.0],
             "max": [30.0, 30.0, 30.0],
@@ -799,11 +790,8 @@ def build():
             "goal_zone": {"min": [1.0, -1.0, 0.0], "max": [2.0, 1.0, 1.0]},
             "forbid_zones": [],
             "build_zone": {"min": [-5.0, -5.0, 0.0], "max": [5.0, 5.0, 15.0]},
-            "fluid_objectives": [],
-            "stress_objectives": [],
         },
-        "physics": {"backend": "GENESIS", "fem_enabled": False},
-        "fluids": [],
+        "physics": {"backend": "GENESIS"},
         "simulation_bounds": {
             "min": [-30.0, -30.0, -10.0],
             "max": [30.0, 30.0, 30.0],
@@ -897,12 +885,9 @@ def build():
             "goal_zone": {"min": [1.0, -1.0, 0.0], "max": [2.0, 1.0, 1.0]},
             "forbid_zones": [],
             "build_zone": {"min": [-5.0, -5.0, 0.0], "max": [5.0, 5.0, 15.0]},
-            "fluid_objectives": [],
-            "stress_objectives": [],
         },
         "benchmark_parts": _default_benchmark_parts(),
-        "physics": {"backend": "GENESIS", "fem_enabled": False},
-        "fluids": [],
+        "physics": {"backend": "GENESIS"},
         "simulation_bounds": {
             "min": [-30.0, -30.0, -10.0],
             "max": [30.0, 30.0, 30.0],
@@ -1034,8 +1019,6 @@ def build():
             "goal_zone": {"min": [1.0, -1.0, 0.0], "max": [2.0, 1.0, 1.0]},
             "forbid_zones": [],
             "build_zone": {"min": [-5.0, -5.0, 0.0], "max": [5.0, 5.0, 15.0]},
-            "fluid_objectives": [],
-            "stress_objectives": [],
         },
         "benchmark_parts": [
             {
@@ -1057,8 +1040,7 @@ def build():
                 },
             }
         ],
-        "physics": {"backend": "GENESIS", "fem_enabled": False},
-        "fluids": [],
+        "physics": {"backend": "GENESIS"},
         "simulation_bounds": {
             "min": [-30.0, -30.0, -10.0],
             "max": [30.0, 30.0, 30.0],
@@ -1234,8 +1216,6 @@ def build():
             "goal_zone": {"min": [1.0, -1.0, 0.0], "max": [2.0, 1.0, 1.0]},
             "forbid_zones": [],
             "build_zone": {"min": [-5.0, -5.0, 0.0], "max": [5.0, 5.0, 15.0]},
-            "fluid_objectives": [],
-            "stress_objectives": [],
         },
         "benchmark_parts": [
             {
@@ -1256,8 +1236,7 @@ def build():
                 },
             }
         ],
-        "physics": {"backend": "GENESIS", "fem_enabled": False},
-        "fluids": [],
+        "physics": {"backend": "GENESIS"},
         "simulation_bounds": {
             "min": [-30.0, -30.0, -10.0],
             "max": [30.0, 30.0, 30.0],
@@ -1350,7 +1329,7 @@ async def test_int_008_benchmark_drafting_cots_id_is_rejected():
   origin with a floor, side walls, and a center redirecting surface.
 - The static geometry should leave a clear gravity path that is still
   obstructed enough to require deliberate routing.
-- No benchmark-owned moving fixtures, motors, or fluids are needed.
+- No benchmark-owned moving fixtures are needed.
 
 ## 3. Objectives
 
@@ -1378,7 +1357,7 @@ async def test_int_008_benchmark_drafting_cots_id_is_rejected():
 - Keep the drafted benchmark grounded in a single passive environment fixture.
 - The benchmark_definition file will carry the copied customer caps and the
   exact payload contract.
-- No moving benchmark-owned fixtures, motors, or fluids are needed.
+- No moving benchmark-owned fixtures are needed.
 """
     valid_todo = "# TODO\n\n- [x] Planner handoff seeded\n"
     benchmark_definition = _drillable_benchmark_definition(_default_benchmark_parts())
@@ -1559,11 +1538,8 @@ def build():
                 }
             ],
             "build_zone": {"min": [-5.0, -5.0, 0.0], "max": [5.0, 5.0, 10.0]},
-            "fluid_objectives": [],
-            "stress_objectives": [],
         },
-        "physics": {"backend": "GENESIS", "fem_enabled": False},
-        "fluids": [],
+        "physics": {"backend": "GENESIS"},
         "simulation_bounds": {
             "min": [-30.0, -30.0, -10.0],
             "max": [30.0, 30.0, 30.0],
@@ -1669,11 +1645,8 @@ def build():
             "goal_zone": {"min": [3.0, 3.0, 3.0], "max": [4.0, 4.0, 4.0]},
             "forbid_zones": [],
             "build_zone": {"min": [-5.0, -5.0, 0.0], "max": [5.0, 5.0, 10.0]},
-            "fluid_objectives": [],
-            "stress_objectives": [],
         },
-        "physics": {"backend": "GENESIS", "fem_enabled": False},
-        "fluids": [],
+        "physics": {"backend": "GENESIS"},
         "simulation_bounds": {
             "min": [-30.0, -30.0, -10.0],
             "max": [30.0, 30.0, 30.0],
@@ -1782,12 +1755,9 @@ def _drillable_benchmark_definition(benchmark_parts: list[dict]) -> dict:
             "goal_zone": {"min": [1.0, -1.0, 0.0], "max": [2.0, 1.0, 1.0]},
             "forbid_zones": [],
             "build_zone": {"min": [-5.0, -5.0, 0.0], "max": [5.0, 5.0, 15.0]},
-            "fluid_objectives": [],
-            "stress_objectives": [],
         },
         "benchmark_parts": benchmark_parts,
-        "physics": {"backend": "GENESIS", "fem_enabled": False},
-        "fluids": [],
+        "physics": {"backend": "GENESIS"},
         "simulation_bounds": {
             "min": [-30.0, -30.0, -10.0],
             "max": [30.0, 30.0, 30.0],
