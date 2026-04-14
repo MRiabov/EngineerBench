@@ -137,7 +137,7 @@ The cube must slide reliably under the declared surface/friction assumptions.
 
 #### Cross-References
 
-- `plan.md#3-assembly-strategy`
+- `benchmark_plan.md#3-assembly-strategy`
 - `assembly_definition.yaml.drafting.views[front]`
 
 ## 6. Critical Constraints / Operating Envelope
@@ -474,18 +474,18 @@ async def test_int_005_mandatory_artifacts_gate(
     async with httpx.AsyncClient(timeout=300.0) as client:
         # Initial: All required files except one
         base_files = {
-            "plan.md": valid_plan,
+            "benchmark_plan.md": valid_plan,
             "todo.md": valid_todo,
             "benchmark_definition.yaml": valid_objectives,
             "benchmark_assembly_definition.yaml": valid_cost,
             "solution.py": minimal_script,
         }
 
-        # 1. Missing plan.md
+        # 1. Missing benchmark_plan.md
         files = base_files.copy()
-        del files["plan.md"]
+        del files["benchmark_plan.md"]
         await setup_workspace(client, base_headers, files)
-        delete_req = DeleteFileRequest(path="plan.md")
+        delete_req = DeleteFileRequest(path="benchmark_plan.md")
         await client.post(
             f"{WORKER_LIGHT_URL}/fs/delete",
             json=delete_req.model_dump(mode="json"),
@@ -502,7 +502,7 @@ async def test_int_005_mandatory_artifacts_gate(
         )
         data = BenchmarkToolResponse.model_validate(resp.json())
         assert not data.success
-        assert "plan.md is missing" in data.message
+        assert "benchmark_plan.md is missing" in data.message
 
         # 2. Missing todo.md
         files = base_files.copy()
@@ -730,7 +730,7 @@ async def test_int_114_benchmark_planner_flow_emits_submit_benchmark_plan_trace(
 async def test_int_006_plan_structure_validation(
     session_id, base_headers, valid_todo, valid_objectives, valid_cost, minimal_script
 ):
-    """INT-006: Verify plan.md structural requirements."""
+    """INT-006: Verify benchmark_plan.md structural requirements."""
     async with httpx.AsyncClient(timeout=300.0) as client:
         base_files = {
             "todo.md": valid_todo,
@@ -742,7 +742,7 @@ async def test_int_006_plan_structure_validation(
         # 1. Missing required heading
         invalid_plan = "## 1. Solution Overview\nNo other headings."
         await setup_workspace(
-            client, base_headers, {**base_files, "plan.md": invalid_plan}
+            client, base_headers, {**base_files, "benchmark_plan.md": invalid_plan}
         )
         submit_req = BenchmarkToolRequest(
             script_path="solution.py", reviewer_stage=AgentName.BENCHMARK_REVIEWER
@@ -753,7 +753,7 @@ async def test_int_006_plan_structure_validation(
             headers=base_headers,
         )
         data = BenchmarkToolResponse.model_validate(resp.json())
-        assert "plan.md invalid" in data.message
+        assert "benchmark_plan.md invalid" in data.message
         assert "Missing required section" in data.message
 
         # 2. Parts List missing table/bullets
@@ -799,7 +799,7 @@ The plan needs a traceable calculation instead of a freeform claim.
 
 #### Cross-References
 
-- `plan.md#3-assembly-strategy`
+        - `benchmark_plan.md#3-assembly-strategy`
 
 ## 6. Critical Constraints / Operating Envelope
 - Constraint: The mechanism must remain inside the derived operating limits.
@@ -810,7 +810,7 @@ The plan needs a traceable calculation instead of a freeform claim.
 - Risk: None
 """
         await setup_workspace(
-            client, base_headers, {**base_files, "plan.md": invalid_plan}
+            client, base_headers, {**base_files, "benchmark_plan.md": invalid_plan}
         )
         resp = await client.post(
             f"{WORKER_HEAVY_URL}/benchmark/submit",
@@ -851,7 +851,7 @@ The capture opening must exceed the throat.
 #### Design Impact
 - Ramp geometry must remain wider than the throat.
 #### Cross-References
-- `plan.md#3-assembly-strategy`
+        - `benchmark_plan.md#3-assembly-strategy`
 
 ## 6. Critical Constraints / Operating Envelope
 - Constraint: The mechanism must remain inside the derived operating limits.
@@ -862,7 +862,7 @@ The capture opening must exceed the throat.
 - Risk: None
 """
         await setup_workspace(
-            client, base_headers, {**base_files, "plan.md": invalid_plan}
+            client, base_headers, {**base_files, "benchmark_plan.md": invalid_plan}
         )
         resp = await client.post(
             f"{WORKER_HEAVY_URL}/benchmark/submit",
@@ -903,7 +903,7 @@ The capture opening must exceed the throat.
 #### Design Impact
 - Ramp geometry must remain wider than the throat.
 #### Cross-References
-- `plan.md#3-assembly-strategy`
+        - `benchmark_plan.md#3-assembly-strategy`
 
 ## 6. Critical Constraints / Operating Envelope
 - Constraint: The mechanism must remain inside the derived operating limits.
@@ -914,7 +914,7 @@ The capture opening must exceed the throat.
 - Risk: None
 """
         await setup_workspace(
-            client, base_headers, {**base_files, "plan.md": invalid_plan}
+            client, base_headers, {**base_files, "benchmark_plan.md": invalid_plan}
         )
         resp = await client.post(
             f"{WORKER_HEAVY_URL}/benchmark/submit",
@@ -958,7 +958,7 @@ The cube must slide reliably under the declared surface/friction assumptions.
 #### Design Impact
 - The ramp angle must be updated or the assumptions must change.
 #### Cross-References
-- `plan.md#3-assembly-strategy`
+        - `benchmark_plan.md#3-assembly-strategy`
 - `assembly_definition.yaml.drafting.views[front]`
 
 ## 6. Critical Constraints / Operating Envelope
@@ -975,7 +975,7 @@ The cube must slide reliably under the declared surface/friction assumptions.
             base_headers,
             {
                 **base_files,
-                "plan.md": valid_strict_plan,
+                "benchmark_plan.md": valid_strict_plan,
                 "solution.py": matching_script,
             },
         )
@@ -1001,7 +1001,7 @@ async def test_int_007_todo_integrity(
     """INT-007: Verify todo.md integrity (all items completed or skipped)."""
     async with httpx.AsyncClient(timeout=300.0) as client:
         base_files = {
-            "plan.md": valid_plan,
+            "benchmark_plan.md": valid_plan,
             "benchmark_definition.yaml": valid_objectives,
             "benchmark_assembly_definition.yaml": valid_cost,
             "solution.py": minimal_script,
@@ -1059,7 +1059,7 @@ async def test_int_008_objectives_validation(
     """INT-008: Verify benchmark_definition.yaml schema and template detection."""
     async with httpx.AsyncClient(timeout=300.0) as client:
         base_files = {
-            "plan.md": valid_plan,
+            "benchmark_plan.md": valid_plan,
             "todo.md": valid_todo,
             "benchmark_assembly_definition.yaml": valid_cost,
             "solution.py": minimal_script,
@@ -1185,7 +1185,7 @@ async def test_int_009_cost_estimation_validation(
     """INT-009: Verify benchmark_assembly_definition.yaml schema and placeholders."""
     async with httpx.AsyncClient(timeout=300.0) as client:
         base_files = {
-            "plan.md": valid_plan,
+            "benchmark_plan.md": valid_plan,
             "todo.md": valid_todo,
             "benchmark_definition.yaml": valid_objectives,
             "manufacturing_config.yaml": REPO_MANUFACTURING_CONFIG,
@@ -1289,7 +1289,7 @@ async def test_int_011_planner_caps_enforcement(
             },
         }
         files = {
-            "plan.md": valid_plan,
+            "benchmark_plan.md": valid_plan,
             "todo.md": valid_todo,
             "benchmark_definition.yaml": valid_objectives,
             "benchmark_assembly_definition.yaml": invalid_cost,
@@ -1339,7 +1339,7 @@ async def test_int_015_engineer_handover_immutability(
         await client.post(f"{WORKER_LIGHT_URL}/git/init", headers=base_headers)
 
         files = {
-            "plan.md": valid_plan,
+            "benchmark_plan.md": valid_plan,
             "todo.md": valid_todo,
             "benchmark_definition.yaml": valid_objectives,
             "benchmark_assembly_definition.yaml": valid_cost,
@@ -1443,7 +1443,7 @@ def build():
 """
 
         files = {
-            "plan.md": valid_plan,
+            "benchmark_plan.md": valid_plan,
             "todo.md": valid_todo,
             "benchmark_definition.yaml": relaxed_objectives,
             "benchmark_assembly_definition.yaml": invalid_drilling_cost,
@@ -1556,7 +1556,7 @@ def build():
 """
 
         files = {
-            "plan.md": valid_plan,
+            "benchmark_plan.md": valid_plan,
             "todo.md": valid_todo,
             "benchmark_definition.yaml": relaxed_objectives,
             "benchmark_assembly_definition.yaml": invalid_cost,
@@ -1666,7 +1666,7 @@ def build():
 """
 
         files = {
-            "plan.md": valid_plan,
+            "benchmark_plan.md": valid_plan,
             "todo.md": valid_todo,
             "benchmark_definition.yaml": relaxed_objectives,
             "benchmark_assembly_definition.yaml": invalid_cost,
@@ -1744,7 +1744,7 @@ def build():
         tight_cost.totals.estimated_unit_cost_usd = 0.0
         tight_cost.totals.estimated_weight_g = 0.0
         files = {
-            "plan.md": valid_plan,
+            "benchmark_plan.md": valid_plan,
             "todo.md": valid_todo,
             "benchmark_definition.yaml": tight_objectives,
             "benchmark_assembly_definition.yaml": tight_cost,
@@ -1822,7 +1822,7 @@ async def test_int_010_planner_pricing_script_integration(
             },
         }
         files = {
-            "plan.md": valid_plan,
+            "benchmark_plan.md": valid_plan,
             "todo.md": valid_todo,
             "benchmark_definition.yaml": valid_objectives,
             "benchmark_assembly_definition.yaml": invalid_cost,
@@ -2013,7 +2013,7 @@ def build():
             client,
             base_headers,
             {
-                "plan.md": valid_plan,
+                "benchmark_plan.md": valid_plan,
                 "todo.md": valid_todo,
                 "benchmark_definition.yaml": objectives,
                 "assembly_definition.yaml": assembly_definition,
@@ -2146,7 +2146,7 @@ def build():
             client,
             base_headers,
             {
-                "plan.md": valid_plan,
+                "benchmark_plan.md": valid_plan,
                 "todo.md": valid_todo,
                 "benchmark_definition.yaml": objectives,
                 "benchmark_assembly_definition.yaml": assembly_definition,
@@ -2270,7 +2270,7 @@ def build():
             client,
             base_headers,
             {
-                "plan.md": valid_plan,
+                "benchmark_plan.md": valid_plan,
                 "todo.md": valid_todo,
                 "benchmark_definition.yaml": objectives,
                 "benchmark_assembly_definition.yaml": assembly_definition,
@@ -2350,7 +2350,7 @@ def build():
 """
 
         files = {
-            "plan.md": valid_plan,
+            "benchmark_plan.md": valid_plan,
             "todo.md": valid_todo,
             "benchmark_definition.yaml": relaxed_objectives,
             "benchmark_assembly_definition.yaml": valid_cost,
@@ -2482,7 +2482,7 @@ def build():
 async def test_int_018_benchmark_submit_accepts_yaml_motion_without_literal_tokens():
     """
     INT-018: benchmark submit must accept semantically valid motion facts from
-    YAML even when plan.md/todo.md do not repeat the exact motion spellings.
+    YAML even when benchmark_plan.md/todo.md do not repeat the exact motion spellings.
     """
     session_id = f"INT-018-YAML-MOTION-{uuid.uuid4().hex[:8]}"
     headers = {"X-Session-ID": session_id}
@@ -2577,7 +2577,7 @@ def build():
             client,
             headers,
             {
-                "plan.md": plan_md,
+                "benchmark_plan.md": plan_md,
                 "todo.md": todo_md,
                 "benchmark_definition.yaml": objectives,
                 "benchmark_assembly_definition.yaml": assembly_definition,

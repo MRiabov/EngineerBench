@@ -58,6 +58,12 @@ async def test_int_071_filesystem_policy_precedence_and_reviewer_scope():
         role: RemoteFilesystemMiddleware(reviewer_client, agent_role=role)
         for role in reviewer_paths_by_role
     }
+    reviewer_plan_path_by_role = {
+        AgentName.BENCHMARK_PLAN_REVIEWER: "benchmark_plan.md",
+        AgentName.ENGINEER_PLAN_REVIEWER: "engineering_plan.md",
+        AgentName.ENGINEER_EXECUTION_REVIEWER: "engineering_plan.md",
+        AgentName.BENCHMARK_REVIEWER: "benchmark_plan.md",
+    }
 
     coder_client = WorkerClient(
         base_url=WORKER_LIGHT_URL,
@@ -77,7 +83,7 @@ async def test_int_071_filesystem_policy_precedence_and_reviewer_scope():
             "summary: ok\nrequired_fixes: []\nchecklist: {}\n",
         )
         with pytest.raises(PermissionError):
-            await fs.write_file("plan.md", "forbidden")
+            await fs.write_file(reviewer_plan_path_by_role[role], "forbidden")
         with pytest.raises(PermissionError):
             await fs.write_file("reviews/review-round-1/review.md", "forbidden")
 
@@ -116,7 +122,11 @@ async def test_int_071_filesystem_policy_precedence_and_reviewer_scope():
     async with httpx.AsyncClient(timeout=30.0) as client:
         seed_allowed = await client.post(
             f"{WORKER_LIGHT_URL}/fs/write",
-            json={"path": "plan.md", "content": "visible", "overwrite": True},
+            json={
+                "path": "engineering_plan.md",
+                "content": "visible",
+                "overwrite": True,
+            },
             headers={"X-Session-ID": session_id},
         )
         assert seed_allowed.status_code == 200
@@ -128,13 +138,13 @@ async def test_int_071_filesystem_policy_precedence_and_reviewer_scope():
         assert seed_blocked.status_code == 200
 
     listed_paths = {entry.path for entry in await coder_fs.list_files("/")}
-    assert "/plan.md" in listed_paths
+    assert "/engineering_plan.md" in listed_paths
     assert "/unmatched.txt" not in listed_paths
 
     workspace_alias_paths = {
         entry.path for entry in await coder_fs.list_files("/workspace")
     }
-    assert "/plan.md" in workspace_alias_paths
+    assert "/engineering_plan.md" in workspace_alias_paths
 
     grep_matches = await coder_fs.grep("hidden", path="/")
     assert all(match.path != "/unmatched.txt" for match in grep_matches)

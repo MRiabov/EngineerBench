@@ -121,7 +121,7 @@ comments:
   - Approved for dataset export coverage.
 evidence:
   files_checked:
-    - plan.md
+    - benchmark_plan.md
 ---
 Approved.
 """
@@ -184,7 +184,7 @@ async def test_dataset_export_benchmark_row_round_trip():
         _assert_manifest_contains(
             manifest,
             [
-                "plan.md",
+                "benchmark_plan.md",
                 "todo.md",
                 "journal.md",
                 "benchmark_definition.yaml",
@@ -282,7 +282,7 @@ async def test_dataset_export_solution_row_round_trip():
         _assert_manifest_contains(
             manifest,
             [
-                "plan.md",
+                "engineering_plan.md",
                 "todo.md",
                 "journal.md",
                 "script.py",

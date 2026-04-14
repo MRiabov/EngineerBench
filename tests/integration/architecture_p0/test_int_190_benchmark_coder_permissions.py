@@ -21,7 +21,7 @@ def test_int_190_benchmark_coder_filesystem_scope_matches_workspace_contract():
     for required in {
         ".agents/skills/**",
         "utils/**",
-        "plan.md",
+        "benchmark_plan.md",
         "todo.md",
         "journal.md",
         "benchmark_definition.yaml",
@@ -130,13 +130,19 @@ def test_int_190_agent_execution_timeouts_are_role_specific():
 def test_int_190_bug_report_mode_gates_workspace_root_bug_report_write(
     tmp_path: Path,
 ):
-    disabled_policy = FilesystemPolicy()
+    cfg = yaml.safe_load(Path("config/agents_config.yaml").read_text(encoding="utf-8"))
+    cfg.setdefault("bug_reports", {})["enabled"] = False
+    disabled_config_path = tmp_path / "agents_config.disabled.yaml"
+    disabled_config_path.write_text(
+        yaml.safe_dump(cfg, sort_keys=False),
+        encoding="utf-8",
+    )
+    disabled_policy = FilesystemPolicy(config_path=disabled_config_path)
     assert (
         disabled_policy.check_permission("benchmark_coder", "write", "bug_report.md")
         is False
     )
 
-    cfg = yaml.safe_load(Path("config/agents_config.yaml").read_text(encoding="utf-8"))
     cfg.setdefault("bug_reports", {})["enabled"] = True
     enabled_config_path = tmp_path / "agents_config.yaml"
     enabled_config_path.write_text(

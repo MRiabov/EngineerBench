@@ -4841,7 +4841,9 @@
           "conversation_length_exceeded",
           "node_entry_validation_failed",
           "media_inspection",
-          "llm_media_attached"
+          "llm_media_attached",
+          "skill_self_reflection",
+          "skill_update"
         ],
         "title": "ObservabilityEventType"
       },

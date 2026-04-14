@@ -223,7 +223,7 @@ def build():
         await client.post(
             f"{WORKER_LIGHT_URL}/fs/write",
             json=WriteFileRequest(
-                path="plan.md",
+                path="benchmark_plan.md",
                 content="Benchmark plan.\n",
                 overwrite=True,
             ).model_dump(mode="json"),

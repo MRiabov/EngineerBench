@@ -154,7 +154,7 @@ async def _seed_plan_reviewer_handoff(
     client: httpx.AsyncClient, session_id: str
 ) -> None:
     for relative_path in (
-        "plan.md",
+        "engineering_plan.md",
         "todo.md",
         "assembly_definition.yaml",
         "benchmark_definition.yaml",
@@ -162,7 +162,7 @@ async def _seed_plan_reviewer_handoff(
         content = Path(
             "tests/integration/mock_responses/INT-074/engineer_planner/entry_01/"
             + {
-                "plan.md": "01__plan.md",
+                "engineering_plan.md": "01__plan.md",
                 "todo.md": "02__todo.md",
                 "assembly_definition.yaml": "03__assembly_definition.yaml",
                 "benchmark_definition.yaml": "04__benchmark_definition.yaml",
@@ -281,7 +281,9 @@ async def test_int_074_engineering_dof_minimization_review_gate():
         benchmark_assembly_content = await _read_session_file(
             client, plan_session, "benchmark_assembly_definition.yaml"
         )
-        plan_content = await _read_session_file(client, plan_session, "plan.md")
+        plan_content = await _read_session_file(
+            client, plan_session, "engineering_plan.md"
+        )
         todo_content = await _read_session_file(client, plan_session, "todo.md")
         assembly_definition_content = await _read_session_file(
             client, plan_session, "assembly_definition.yaml"
@@ -290,7 +292,9 @@ async def test_int_074_engineering_dof_minimization_review_gate():
             client,
             plan_session,
             artifact_hashes={
-                "plan.md": hashlib.sha256(plan_content.encode("utf-8")).hexdigest(),
+                "engineering_plan.md": hashlib.sha256(
+                    plan_content.encode("utf-8")
+                ).hexdigest(),
                 "todo.md": hashlib.sha256(todo_content.encode("utf-8")).hexdigest(),
                 "benchmark_definition.yaml": hashlib.sha256(
                     benchmark_definition_content.encode("utf-8")
@@ -505,7 +509,7 @@ async def test_int_074_engineering_dof_minimization_review_gate():
         await client.post(
             "http://127.0.0.1:18001/fs/write",
             json={
-                "path": "plan.md",
+                "path": "engineering_plan.md",
                 "content": (
                     "## 1. Solution Overview\n\n"
                     "INT-075 strict-marker regression. This prose mentions "
@@ -536,7 +540,7 @@ async def test_int_074_engineering_dof_minimization_review_gate():
                     "\n#### Design Impact\n"
                     "\n- Update the design or inputs if the calculation changes.\n"
                     "\n#### Cross-References\n"
-                    "\n- \`plan.md#3-assembly-strategy\`\n"
+                    "\n- \`engineering_plan.md#3-assembly-strategy\`\n"
                     "\n"
                     "## 6. Critical Constraints / Operating Envelope\n"
                     "- Constraint: The mechanism must remain inside the derived operating limits.\n"
@@ -558,7 +562,7 @@ async def test_int_074_engineering_dof_minimization_review_gate():
             client,
             strict_marker_session,
             artifact_hashes={
-                "plan.md": hashlib.sha256(
+                "engineering_plan.md": hashlib.sha256(
                     b"## 1. Solution Overview\n\n"
                     b"INT-075 strict-marker regression. This prose mentions "
                     b"DOF_JUSTIFICATION:planner_link only as a token example "
@@ -588,7 +592,7 @@ async def test_int_074_engineering_dof_minimization_review_gate():
                     b"\n#### Design Impact\n"
                     b"\n- Update the design or inputs if the calculation changes.\n"
                     b"\n#### Cross-References\n"
-                    b"\n- `plan.md#3-assembly-strategy`\n"
+                    b"\n- `engineering_plan.md#3-assembly-strategy`\n"
                     b"\n"
                     b"## 6. Critical Constraints / Operating Envelope\n"
                     b"- Constraint: The mechanism must remain inside the derived operating limits.\n"
@@ -682,7 +686,7 @@ async def test_int_074_engineering_dof_minimization_review_gate():
         await client.post(
             "http://127.0.0.1:18001/fs/write",
             json={
-                "path": "plan.md",
+                "path": "engineering_plan.md",
                 "content": plan_content,
                 "overwrite": True,
             },
@@ -704,7 +708,9 @@ async def test_int_074_engineering_dof_minimization_review_gate():
             client,
             malformed_session,
             artifact_hashes={
-                "plan.md": hashlib.sha256(plan_content.encode("utf-8")).hexdigest(),
+                "engineering_plan.md": hashlib.sha256(
+                    plan_content.encode("utf-8")
+                ).hexdigest(),
                 "todo.md": hashlib.sha256(todo_content.encode("utf-8")).hexdigest(),
                 "benchmark_definition.yaml": hashlib.sha256(
                     benchmark_definition_content.encode("utf-8")

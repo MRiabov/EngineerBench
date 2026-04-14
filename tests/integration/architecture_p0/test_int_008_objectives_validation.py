@@ -5,7 +5,9 @@ import httpx
 import pytest
 import yaml
 
+from shared.current_role import current_role_manifest_json
 from shared.enums import AgentName
+from shared.models.simulation import SimulationResult
 from shared.workers.schema import (
     BenchmarkToolRequest,
     BenchmarkToolResponse,
@@ -34,18 +36,64 @@ def _default_benchmark_parts():
 
 
 def _objective_validation_artifacts():
-    valid_plan = """## 1. Learning Objective
+    valid_plan = """## 1. Solution Overview
 
-Move the projectile into the goal zone.
+Move the projectile into the goal zone using a simple passive setup.
 
-## 2. Geometry
+## 2. Parts List
 
 - Ground plane
 - Guide rails
 
-## 3. Objectives
+## 3. Assembly Strategy
 
-- Reach the goal zone
+1. Place the guide rails on the base.
+2. Verify the projectile starts clear of the fixtures.
+
+## 4. Assumption Register
+
+- ASSUMP-001: The launcher remains passive.
+
+## 5. Detailed Calculations
+
+| ID | Problem / Decision | Result | Impact |
+| --- | --- | --- | --- |
+| CALC-001 | Clearance envelope check | Pass | Confirms the seed geometry is valid |
+
+### CALC-001: Clearance envelope check
+
+#### Problem Statement
+Confirm the projectile starts outside the fixed geometry envelope.
+
+#### Assumptions
+- The passive fixtures stay within their declared bounds.
+
+#### Derivation
+- The start position stays clear of the fixture volume.
+
+#### Worst-Case Check
+- The minimum clearance remains positive.
+
+#### Result
+- The start pose is valid.
+
+#### Design Impact
+- No extra motion constraints are required.
+
+#### Cross-References
+- `benchmark_definition.yaml`
+
+## 6. Critical Constraints / Operating Envelope
+
+- Respect the declared build zone and simulation bounds.
+
+## 7. Cost & Weight Budget
+
+- The fixture stays well within budget.
+
+## 8. Risk Assessment
+
+- Minor geometry drift is the primary risk.
 """
     valid_todo = "# TODO\n\n- [x] Planner handoff seeded\n"
     valid_cost = """version: "1.0"
@@ -69,7 +117,7 @@ from shared.workers.workbench_models import ManufacturingMethod
 
 def build():
     p = Box(10, 10, 10)
-    p = p.move(Location((0, 0, 5)))
+    p = p.move(Location((-20, 0, 5)))
     p.label = "test_part"
     p.metadata = PartMetadata(
         manufacturing_method=ManufacturingMethod.CNC,
@@ -135,6 +183,21 @@ async def _write_workspace_file(
         headers=headers,
     )
     assert resp.status_code == 200, f"Failed to write {path}: {resp.text}"
+
+    if path == "solution.py":
+        await _write_workspace_file(
+            client,
+            headers,
+            ".manifests/current_role.json",
+            current_role_manifest_json(AgentName.ENGINEER_CODER),
+        )
+    elif path == "benchmark_script.py":
+        await _write_workspace_file(
+            client,
+            headers,
+            ".manifests/current_role.json",
+            current_role_manifest_json(AgentName.BENCHMARK_CODER),
+        )
 
 
 @pytest.mark.integration_p0
@@ -212,7 +275,7 @@ def build():
             "shape": "sphere",
             "material_id": "abs",
             "static_randomization": {"radius": [0.25, 0.25]},
-            "start_position": [-4.0, 0.0, 0.5],
+            "start_position": [0.0, 0.0, 12.0],
             "runtime_jitter": [0.1, 0.1, 0.1],
         },
         "constraints": {"max_unit_cost": 50.0, "max_weight_g": 1200.0},
@@ -224,7 +287,7 @@ def build():
     }
 
     async with httpx.AsyncClient(timeout=300.0) as client:
-        await _write_workspace_file(client, headers, "plan.md", valid_plan)
+        await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
         await _write_workspace_file(client, headers, "todo.md", valid_todo)
         await _write_workspace_file(
             client, headers, "assembly_definition.yaml", valid_cost
@@ -283,7 +346,7 @@ async def test_int_008_objectives_semantic_validation_rejects_runtime_envelope_f
     )
 
     async with httpx.AsyncClient(timeout=300.0) as client:
-        await _write_workspace_file(client, headers, "plan.md", valid_plan)
+        await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
         await _write_workspace_file(client, headers, "todo.md", valid_todo)
         await _write_workspace_file(
             client, headers, "assembly_definition.yaml", valid_cost
@@ -338,7 +401,7 @@ async def test_int_008_objectives_semantic_validation_rejects_goal_zone_outside_
     )
 
     async with httpx.AsyncClient(timeout=300.0) as client:
-        await _write_workspace_file(client, headers, "plan.md", valid_plan)
+        await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
         await _write_workspace_file(client, headers, "todo.md", valid_todo)
         await _write_workspace_file(
             client, headers, "assembly_definition.yaml", valid_cost
@@ -394,7 +457,7 @@ async def test_int_008_objectives_semantic_validation_rejects_build_zone_outside
     )
 
     async with httpx.AsyncClient(timeout=300.0) as client:
-        await _write_workspace_file(client, headers, "plan.md", valid_plan)
+        await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
         await _write_workspace_file(client, headers, "todo.md", valid_todo)
         await _write_workspace_file(
             client, headers, "assembly_definition.yaml", valid_cost
@@ -449,7 +512,7 @@ async def test_int_008_objectives_semantic_validation_rejects_runtime_envelope_e
     )
 
     async with httpx.AsyncClient(timeout=300.0) as client:
-        await _write_workspace_file(client, headers, "plan.md", valid_plan)
+        await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
         await _write_workspace_file(client, headers, "todo.md", valid_todo)
         await _write_workspace_file(
             client, headers, "assembly_definition.yaml", valid_cost
@@ -516,7 +579,7 @@ async def test_int_008_objectives_semantic_validation_rejects_negative_runtime_j
     )
 
     async with httpx.AsyncClient(timeout=300.0) as client:
-        await _write_workspace_file(client, headers, "plan.md", valid_plan)
+        await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
         await _write_workspace_file(client, headers, "todo.md", valid_todo)
         await _write_workspace_file(
             client, headers, "assembly_definition.yaml", valid_cost
@@ -599,7 +662,10 @@ def build():
         "objectives": {
             "goal_zone": {"min": [1.0, -1.0, 0.0], "max": [2.0, 1.0, 1.0]},
             "forbid_zones": [],
-            "build_zone": {"min": [-5.0, -5.0, 0.0], "max": [5.0, 5.0, 15.0]},
+            "build_zone": {
+                "min": [-150.0, -150.0, 0.0],
+                "max": [150.0, 150.0, 30.0],
+            },
         },
         "benchmark_parts": [
             {
@@ -617,15 +683,15 @@ def build():
         ],
         "physics": {"backend": "GENESIS"},
         "simulation_bounds": {
-            "min": [-30.0, -30.0, -10.0],
-            "max": [30.0, 30.0, 30.0],
+            "min": [-150.0, -150.0, -10.0],
+            "max": [150.0, 150.0, 60.0],
         },
         "payload": {
             "label": "projectile_ball",
             "shape": "sphere",
             "material_id": "abs",
             "static_randomization": {"radius": [0.25, 0.25]},
-            "start_position": [-4.0, 0.0, 0.5],
+            "start_position": [100.0, 0.0, 0.5],
             "runtime_jitter": [0.1, 0.1, 0.1],
         },
         "constraints": {"max_unit_cost": 50.0, "max_weight_g": 1200.0},
@@ -636,7 +702,7 @@ def build():
     }
 
     async with httpx.AsyncClient(timeout=300.0) as client:
-        await _write_workspace_file(client, headers, "plan.md", valid_plan)
+        await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
         await _write_workspace_file(client, headers, "todo.md", valid_todo)
         await _write_workspace_file(
             client, headers, "assembly_definition.yaml", valid_cost
@@ -741,7 +807,7 @@ def build():
     }
 
     async with httpx.AsyncClient(timeout=300.0) as client:
-        await _write_workspace_file(client, headers, "plan.md", valid_plan)
+        await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
         await _write_workspace_file(client, headers, "todo.md", valid_todo)
         await _write_workspace_file(
             client, headers, "assembly_definition.yaml", valid_cost
@@ -837,7 +903,7 @@ def build():
     }
 
     async with httpx.AsyncClient(timeout=300.0) as client:
-        await _write_workspace_file(client, headers, "plan.md", valid_plan)
+        await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
         await _write_workspace_file(client, headers, "todo.md", valid_todo)
         await _write_workspace_file(
             client, headers, "assembly_definition.yaml", valid_cost
@@ -990,7 +1056,7 @@ def build():
     }
 
     async with httpx.AsyncClient(timeout=300.0) as client:
-        await _write_workspace_file(client, headers, "plan.md", valid_plan)
+        await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
         await _write_workspace_file(client, headers, "todo.md", valid_todo)
         await _write_workspace_file(
             client, headers, "assembly_definition.yaml", valid_cost
@@ -1186,7 +1252,7 @@ def build():
     }
 
     async with httpx.AsyncClient(timeout=300.0) as client:
-        await _write_workspace_file(client, headers, "plan.md", valid_plan)
+        await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
         await _write_workspace_file(client, headers, "todo.md", valid_todo)
         await _write_workspace_file(
             client, headers, "assembly_definition.yaml", valid_cost
@@ -1323,7 +1389,7 @@ def build():
     }
 
     async with httpx.AsyncClient(timeout=300.0) as client:
-        await _write_workspace_file(client, headers, "plan.md", valid_plan)
+        await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
         await _write_workspace_file(client, headers, "todo.md", valid_todo)
         await _write_workspace_file(
             client, headers, "assembly_definition.yaml", valid_cost
@@ -1433,7 +1499,7 @@ def build():
         # 1. Negative runtime jitter must fail closed.
         negative_jitter = yaml.safe_load(yaml.safe_dump(base_objectives))
         negative_jitter["payload"]["runtime_jitter"] = [-0.5, 0.5, 0.5]
-        await _write_workspace_file(client, headers, "plan.md", valid_plan)
+        await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
         await _write_workspace_file(client, headers, "todo.md", valid_todo)
         await _write_workspace_file(
             client, headers, "assembly_definition.yaml", valid_cost
@@ -1516,20 +1582,23 @@ def _drillable_benchmark_definition(benchmark_parts: list[dict]) -> dict:
         "objectives": {
             "goal_zone": {"min": [1.0, -1.0, 0.0], "max": [2.0, 1.0, 1.0]},
             "forbid_zones": [],
-            "build_zone": {"min": [-5.0, -5.0, 0.0], "max": [5.0, 5.0, 15.0]},
+            "build_zone": {
+                "min": [-150.0, -150.0, 0.0],
+                "max": [150.0, 150.0, 30.0],
+            },
         },
         "benchmark_parts": benchmark_parts,
         "physics": {"backend": "GENESIS"},
         "simulation_bounds": {
-            "min": [-30.0, -30.0, -10.0],
-            "max": [30.0, 30.0, 30.0],
+            "min": [-150.0, -150.0, -10.0],
+            "max": [150.0, 150.0, 60.0],
         },
         "payload": {
             "label": "projectile_ball",
             "shape": "sphere",
             "material_id": "abs",
             "static_randomization": {"radius": [0.25, 0.25]},
-            "start_position": [-4.0, 0.0, 0.5],
+            "start_position": [100.0, 0.0, 0.5],
             "runtime_jitter": [0.1, 0.1, 0.1],
         },
         "constraints": {"max_unit_cost": 50.0, "max_weight_g": 1200.0},
@@ -1578,6 +1647,14 @@ Move the projectile into the goal zone.
 ## 3. Objectives
 
 - Reach the goal zone
+
+## 4. Randomization
+
+- None for this benchmark fixture.
+
+## 5. Implementation Notes
+
+- Keep the fixture clear of the payload start pose.
 """
 _DRILL_TEST_TODO = "# TODO\n\n- [x] Planner handoff seeded\n"
 _DRILL_TEST_SCRIPT = """
@@ -1587,7 +1664,7 @@ from shared.workers.workbench_models import ManufacturingMethod
 
 def build():
     p = Box(10, 10, 10)
-    p = p.move(Location((0, 0, 5)))
+    p = p.move(Location((-100, 0, 5)))
     p.label = "test_part"
     p.metadata = PartMetadata(
         manufacturing_method=ManufacturingMethod.CNC,
@@ -1605,7 +1682,7 @@ async def _setup_drill_workspace(
     assembly_definition_yaml: str,
 ) -> None:
     """Write the common workspace files for drilling contract tests."""
-    await _write_workspace_file(client, headers, "plan.md", _DRILL_TEST_PLAN)
+    await _write_workspace_file(client, headers, "benchmark_plan.md", _DRILL_TEST_PLAN)
     await _write_workspace_file(client, headers, "todo.md", _DRILL_TEST_TODO)
     await _write_workspace_file(
         client, headers, "benchmark_script.py", _DRILL_TEST_SCRIPT
@@ -1625,7 +1702,7 @@ async def _validate_and_simulate(
     client: httpx.AsyncClient,
     headers: dict[str, str],
 ) -> None:
-    """Run /benchmark/validate and /benchmark/simulate so submit prerequisites pass."""
+    """Run /benchmark/validate and seed a fresh successful simulation result."""
     benchmark_request = BenchmarkToolRequest(
         script_path="benchmark_script.py",
         reviewer_stage=AgentName.BENCHMARK_REVIEWER,
@@ -1639,14 +1716,15 @@ async def _validate_and_simulate(
     validate_data = BenchmarkToolResponse.model_validate(validate_resp.json())
     assert validate_data.success, validate_data.message
 
-    simulate_resp = await client.post(
-        f"{WORKER_HEAVY_URL}/benchmark/simulate",
-        json=benchmark_request.model_dump(mode="json"),
-        headers=headers,
+    await _write_workspace_file(
+        client,
+        headers,
+        "simulation_result.json",
+        SimulationResult(
+            success=True,
+            summary="Seeded simulation result for benchmark submission preflight.",
+        ).model_dump(mode="json"),
     )
-    assert simulate_resp.status_code == 200, simulate_resp.text
-    simulate_data = BenchmarkToolResponse.model_validate(simulate_resp.json())
-    assert simulate_data.success, simulate_data.message
 
 
 @pytest.mark.integration_p0

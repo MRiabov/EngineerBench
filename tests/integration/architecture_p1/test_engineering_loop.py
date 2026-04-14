@@ -170,7 +170,7 @@ async def test_engineering_full_loop():
             _asset_path(asset.s3_path) for asset in (planner_episode.assets or [])
         ]
         planner_required_artifacts = (
-            "plan.md",
+            "engineering_plan.md",
             "todo.md",
             "assembly_definition.yaml",
             "benchmark_definition.yaml",
@@ -238,7 +238,7 @@ async def test_engineering_full_loop():
         assert plan_manifest.worker_session_id == engineer_session_id
         assert plan_manifest.benchmark_revision == repo_git_revision()
         expected_plan_hashes = {
-            "plan.md",
+            "engineering_plan.md",
             "todo.md",
             "benchmark_definition.yaml",
             "manufacturing_config.yaml",
@@ -401,7 +401,7 @@ async def test_engineering_full_loop():
         traces = episode_data.traces or []
 
         required_artifacts = (
-            "plan.md",
+            "engineering_plan.md",
             "todo.md",
             "assembly_definition.yaml",
             "benchmark_definition.yaml",
@@ -646,7 +646,7 @@ async def _reject_episode(client: AsyncClient, episode_id: str) -> EpisodeRespon
             "decision": "rejected",
             "comments": ["Retry lineage test rejection"],
             "evidence": {
-                "files_checked": ["plan.md"],
+                "files_checked": ["engineering_plan.md"],
                 "stability_summary": {
                     "batchWidth": verification_result.num_scenes,
                     "successCount": verification_result.success_count,

@@ -164,8 +164,8 @@ async def test_int_014_cots_propagation():
         else:
             pytest.fail("Agent did not complete planning in time")
 
-        # Verify plan.md contains COTS ID
-        read_plan_req = ReadFileRequest(path="plan.md")
+        # Verify engineering_plan.md contains COTS ID
+        read_plan_req = ReadFileRequest(path="engineering_plan.md")
         plan_resp = await client.post(
             f"{WORKER_LIGHT_URL}/fs/read",
             json=read_plan_req.model_dump(mode="json"),

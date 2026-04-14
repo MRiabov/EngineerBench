@@ -2664,20 +2664,20 @@ def test_materialize_seed_workspace_threads_cli_provider_specific_appendix(
             ".manifests/benchmark_plan_review_manifest.json",
             (
                 "Use workspace-relative paths only.",
-                "bash scripts/submit_plan.sh",
+                "bash scripts/submit_benchmark_plan.sh",
                 "benchmark_assembly_definition.yaml",
             ),
             (
                 ".admin/clear_env.py",
-                "plan.md",
+                "benchmark_plan.md",
                 "todo.md",
                 "benchmark_definition.yaml",
                 "benchmark_assembly_definition.yaml",
-                "scripts/submit_plan.sh",
+                "scripts/submit_benchmark_plan.sh",
                 "scripts/submit_plan.py",
                 "journal.md",
             ),
-            ("scripts/submit_benchmark_plan.sh", "scripts/submit_plan.sh"),
+            ("scripts/submit_benchmark_plan.sh",),
         ),
         (
             "dataset/data/seed/role_based/engineer_plan_reviewer.json",
@@ -2686,21 +2686,21 @@ def test_materialize_seed_workspace_threads_cli_provider_specific_appendix(
             ".manifests/engineering_plan_review_manifest.json",
             (
                 "Use workspace-relative paths only.",
-                "bash scripts/submit_plan.sh",
+                "bash scripts/submit_engineering_plan.sh",
                 "assembly_definition.yaml",
             ),
             (
                 ".admin/clear_env.py",
-                "plan.md",
+                "engineering_plan.md",
                 "todo.md",
                 "benchmark_definition.yaml",
                 "benchmark_assembly_definition.yaml",
                 "assembly_definition.yaml",
-                "scripts/submit_plan.sh",
+                "scripts/submit_engineering_plan.sh",
                 "scripts/submit_plan.py",
                 "journal.md",
             ),
-            ("scripts/submit_engineering_plan.sh", "scripts/submit_plan.sh"),
+            ("scripts/submit_engineering_plan.sh",),
         ),
     ],
 )
@@ -2806,7 +2806,7 @@ async def test_codex_materialized_planner_workspace_submits(
     )
 
     completed = subprocess.run(
-        ["bash", "scripts/submit_plan.sh"],
+        ["bash", expected_helper_scripts[0]],
         cwd=workspace_dir,
         capture_output=True,
         text=True,
@@ -2919,7 +2919,7 @@ async def test_codex_role_scoped_planner_wrapper_rejects_mismatched_role(
             ),
             (
                 ".admin/clear_env.py",
-                "plan.md",
+                "benchmark_plan.md",
                 "todo.md",
                 "benchmark_definition.yaml",
                 "benchmark_assembly_definition.yaml",
@@ -2944,19 +2944,16 @@ async def test_codex_role_scoped_planner_wrapper_rejects_mismatched_role(
             ),
             (
                 ".admin/clear_env.py",
-                "plan.md",
+                "benchmark_plan.md",
                 "todo.md",
                 "benchmark_definition.yaml",
                 "benchmark_assembly_definition.yaml",
                 "benchmark_script.py",
                 "journal.md",
-                "scripts/submit_for_review.sh",
+                "scripts/submit_benchmark_for_review.sh",
                 "scripts/submit_for_review.py",
             ),
-            (
-                "scripts/submit_benchmark_for_review.sh",
-                "scripts/submit_for_review.sh",
-            ),
+            ("scripts/submit_benchmark_for_review.sh",),
         ),
         (
             "tests/integration/fixtures/codex_runner_mode/engineer_coder.json",
@@ -2974,20 +2971,17 @@ async def test_codex_role_scoped_planner_wrapper_rejects_mismatched_role(
             ),
             (
                 ".admin/clear_env.py",
-                "plan.md",
+                "engineering_plan.md",
                 "todo.md",
                 "benchmark_definition.yaml",
                 "benchmark_script.py",
                 "assembly_definition.yaml",
                 "benchmark_assembly_definition.yaml",
                 "journal.md",
-                "scripts/submit_for_review.sh",
+                "scripts/submit_solution_for_review.sh",
                 "scripts/submit_for_review.py",
             ),
-            (
-                "scripts/submit_solution_for_review.sh",
-                "scripts/submit_for_review.sh",
-            ),
+            ("scripts/submit_solution_for_review.sh",),
         ),
         (
             "tests/integration/fixtures/codex_runner_mode/engineer_plan_reviewer.json",
@@ -3002,7 +2996,7 @@ async def test_codex_role_scoped_planner_wrapper_rejects_mismatched_role(
             ),
             (
                 ".admin/clear_env.py",
-                "plan.md",
+                "engineering_plan.md",
                 "todo.md",
                 "benchmark_definition.yaml",
                 "benchmark_assembly_definition.yaml",
@@ -3028,7 +3022,7 @@ async def test_codex_role_scoped_planner_wrapper_rejects_mismatched_role(
             ),
             (
                 ".admin/clear_env.py",
-                "plan.md",
+                "benchmark_plan.md",
                 "todo.md",
                 "benchmark_definition.yaml",
                 "benchmark_assembly_definition.yaml",
@@ -3056,7 +3050,7 @@ async def test_codex_role_scoped_planner_wrapper_rejects_mismatched_role(
             ),
             (
                 ".admin/clear_env.py",
-                "plan.md",
+                "engineering_plan.md",
                 "todo.md",
                 "benchmark_definition.yaml",
                 "benchmark_assembly_definition.yaml",

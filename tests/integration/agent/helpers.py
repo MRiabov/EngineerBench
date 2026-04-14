@@ -301,7 +301,7 @@ async def seed_engineer_planner_handover(
     """Seed deterministic planner-entry artifacts for engineer planner runs."""
 
     for filename in (
-        "plan.md",
+        "engineering_plan.md",
         "todo.md",
         "assembly_definition.yaml",
         "benchmark_definition.yaml",

@@ -159,7 +159,7 @@ async def test_int_017_plan_refusal_loop(session_id, base_headers, controller_cl
 decision: rejected
 comments: ["Not good enough"]
 evidence:
-  files_checked: ["plan.md"]
+  files_checked: ["engineering_plan.md"]
   stability_summary:
     batchWidth: 1
     successCount: 0

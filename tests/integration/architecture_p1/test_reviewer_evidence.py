@@ -383,7 +383,7 @@ async def test_engineering_dof_review_evidence_uses_canonical_keys():
         await client.post(
             "http://127.0.0.1:18001/fs/write",
             json={
-                "path": "plan.md",
+                "path": "engineering_plan.md",
                 "content": over_actuated_plan,
                 "overwrite": True,
             },
@@ -605,7 +605,7 @@ async def test_engineer_execution_reviewer_rejects_over_actuated_dofs_after_rend
         await client.post(
             "http://127.0.0.1:18001/fs/write",
             json={
-                "path": "plan.md",
+                "path": "engineering_plan.md",
                 "content": (
                     "## 1. Solution Overview\n\n"
                     "INT-074 execution reviewer over-actuation deviation scenario.\n\n"
@@ -634,7 +634,7 @@ async def test_engineer_execution_reviewer_rejects_over_actuated_dofs_after_rend
                     "\n#### Design Impact\n"
                     "\n- Update the design or inputs if the calculation changes.\n"
                     "\n#### Cross-References\n"
-                    "\n- \`plan.md#3-assembly-strategy\`\n"
+                    "\n- \`engineering_plan.md#3-assembly-strategy\`\n"
                     "\n"
                     "## 6. Critical Constraints / Operating Envelope\n"
                     "- Constraint: The mechanism must remain inside the derived operating limits.\n"
