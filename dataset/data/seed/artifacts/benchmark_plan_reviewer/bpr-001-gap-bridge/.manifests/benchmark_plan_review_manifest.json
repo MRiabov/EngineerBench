@@ -4,8 +4,8 @@
   "session_id": "seed-bpr-001-gap-bridge",
   "planner_node_type": "benchmark_planner",
   "artifact_hashes": {
-    "benchmark_assembly_definition.yaml": "d95abfbb36b91cfb1dbc493077f63f347e94cc254fe0c8632097ad6022a29cad",
-    "benchmark_definition.yaml": "45b1ad3112a5ce155098059b485ad27f428e4399e9138a34ea495265ffbefab8",
+    "benchmark_assembly_definition.yaml": "d596f999edc77c9c18de7270cc35877e1e09bb39a667d1a4610ead3439c31ba5",
+    "benchmark_definition.yaml": "0306b6d1c1ae87e4a53bfbfacc05c2d96b037c6e6b0bd87b8cd152914e684213",
     "todo.md": "a8c11caa4c94d2738702f422bd155721a81cb9ad704e46ba3002c9f3d1520f4c",
     "benchmark_plan.md": "ecbde998c6fb09f9255ff67337b72a529046969812d5f8ab5c09ba207e065ed4"
   }

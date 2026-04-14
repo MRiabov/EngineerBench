@@ -27,8 +27,6 @@ objectives:
     - 360.0
     - 180.0
     - 260.0
-  fluid_objectives: []
-  stress_objectives: []
 benchmark_parts:
 - part_id: left_start_deck
   label: left_start_deck
@@ -52,9 +50,7 @@ benchmark_parts:
     material_id: aluminum_6061
 physics:
   backend: GENESIS
-  fem_enabled: false
   compute_target: auto
-fluids: []
 simulation_bounds:
   min:
   - -380.0
@@ -85,4 +81,3 @@ constraints:
 randomization:
   static_variation_id: benchmark_plan_reviewer_gap_bridge_v1
   runtime_jitter_enabled: true
-electronics_requirements: null
