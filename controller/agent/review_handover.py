@@ -31,7 +31,6 @@ from shared.workers.schema import (
 from worker_heavy.utils.file_validation import (
     validate_benchmark_assembly_motion_contract,
     validate_benchmark_definition_yaml,
-    validate_environment_attachment_contract,
     validate_planner_handoff_cross_contract,
 )
 from worker_heavy.workbenches.config import load_required_merged_config
@@ -766,13 +765,6 @@ async def validate_planner_artifacts_cross_contract(
         )
     except Exception as e:
         return f"planner handoff cross-validation parse failure: {e}"
-
-    attachment_errors = validate_environment_attachment_contract(
-        benchmark_definition=benchmark_definition,
-        assembly_definition=assembly_definition,
-    )
-    if attachment_errors:
-        return "; ".join(attachment_errors)
 
     try:
         manufacturing_raw = await worker_client.read_file_optional(

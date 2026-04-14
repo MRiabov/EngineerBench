@@ -1087,16 +1087,6 @@ class BenchmarkPlanReviewerNode(BaseNode):
                 "review_manifest_script_sha256": (
                     evidence.review_manifest_script_sha256 or ""
                 ),
-                "benchmark_attachment_policy_count": float(
-                    len(evidence.attachment_policy_summary)
-                ),
-                "benchmark_attachment_policy_summary": json.dumps(
-                    [
-                        summary.model_dump(mode="json")
-                        for summary in evidence.attachment_policy_summary
-                    ],
-                    sort_keys=True,
-                ),
                 "render_count": float(len(normalized_render_paths)),
                 "render_paths": ", ".join(normalized_render_paths),
                 "inspected_render_count": float(len(normalized_inspected_render_paths)),
@@ -1137,16 +1127,6 @@ class BenchmarkPlanReviewerNode(BaseNode):
                 {
                     "latest_revision_verified": bool(evidence.latest_revision_verified),
                     "review_manifest_revision": evidence.review_manifest_revision or "",
-                    "benchmark_attachment_policy_count": float(
-                        len(evidence.attachment_policy_summary)
-                    ),
-                    "benchmark_attachment_policy_summary": json.dumps(
-                        [
-                            summary.model_dump(mode="json")
-                            for summary in evidence.attachment_policy_summary
-                        ],
-                        sort_keys=True,
-                    ),
                     "render_count": 0.0,
                     "render_paths": "",
                     "inspected_render_count": 0.0,
@@ -1197,16 +1177,6 @@ class BenchmarkPlanReviewerNode(BaseNode):
             {
                 "latest_revision_verified": bool(evidence.latest_revision_verified),
                 "review_manifest_revision": evidence.review_manifest_revision or "",
-                "benchmark_attachment_policy_count": float(
-                    len(evidence.attachment_policy_summary)
-                ),
-                "benchmark_attachment_policy_summary": json.dumps(
-                    [
-                        summary.model_dump(mode="json")
-                        for summary in evidence.attachment_policy_summary
-                    ],
-                    sort_keys=True,
-                ),
                 "render_count": float(len(render_paths)),
                 "render_paths": ", ".join(render_paths),
                 "inspected_render_count": float(len(inspected_render_paths)),

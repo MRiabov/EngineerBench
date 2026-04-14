@@ -482,7 +482,6 @@ def get_engineer_planner_tools(
         from worker_heavy.utils.dfm import load_planner_manufacturing_config_from_text
         from worker_heavy.utils.file_validation import (
             validate_benchmark_definition_yaml,
-            validate_environment_attachment_contract,
             validate_exact_planner_cost_contract,
             validate_node_output,
         )
@@ -596,23 +595,12 @@ def get_engineer_planner_tools(
                 errors.extend(
                     [f"benchmark_definition.yaml: {msg}" for msg in benchmark_result]
                 )
-            benchmark_model = benchmark_result if benchmark_is_valid else None
             assembly_definition = yaml.safe_load(artifacts["assembly_definition.yaml"])
             from shared.models.schemas import AssemblyDefinition
 
             assembly_model = AssemblyDefinition.model_validate(
                 assembly_definition or {}
             )
-            if benchmark_model is not None:
-                attachment_errors = validate_environment_attachment_contract(
-                    benchmark_definition=benchmark_model,
-                    assembly_definition=assembly_model,
-                )
-                if attachment_errors:
-                    is_valid = False
-                    errors.extend(
-                        [f"attachment_contract: {msg}" for msg in attachment_errors]
-                    )
             cost_errors = validate_exact_planner_cost_contract(
                 assembly_definition=assembly_model,
                 manufacturing_config=manufacturing_config,

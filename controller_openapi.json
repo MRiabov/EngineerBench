@@ -2941,49 +2941,6 @@
         "title": "BaseEvent",
         "description": "Base class for all observability events."
       },
-      "BenchmarkAttachmentMethod": {
-        "type": "string",
-        "enum": [
-          "none",
-          "fastener"
-        ],
-        "title": "BenchmarkAttachmentMethod",
-        "description": "Allowed ways an engineer may attach to a benchmark-owned fixture."
-      },
-      "BenchmarkAttachmentPolicySummary": {
-        "properties": {
-          "part_id": {
-            "type": "string",
-            "title": "Part Id"
-          },
-          "label": {
-            "type": "string",
-            "title": "Label"
-          },
-          "allows_engineer_interaction": {
-            "type": "boolean",
-            "title": "Allows Engineer Interaction"
-          },
-          "attachment_policy": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/BenchmarkPartAttachmentPolicy"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "type": "object",
-        "required": [
-          "part_id",
-          "label",
-          "allows_engineer_interaction"
-        ],
-        "title": "BenchmarkAttachmentPolicySummary",
-        "description": "Structured summary of a benchmark-owned fixture attachment policy."
-      },
       "BenchmarkConfirmResponse": {
         "properties": {
           "status": {
@@ -3158,109 +3115,6 @@
           "objectives"
         ],
         "title": "BenchmarkObjectivesResponse"
-      },
-      "BenchmarkPartAttachmentPolicy": {
-        "properties": {
-          "attachment_methods": {
-            "items": {
-              "$ref": "#/components/schemas/BenchmarkAttachmentMethod"
-            },
-            "type": "array",
-            "title": "Attachment Methods"
-          },
-          "drill_policy": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/BenchmarkPartDrillPolicy"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "notes": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Notes"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "title": "BenchmarkPartAttachmentPolicy",
-        "description": "Benchmark-owned attachment policy for an environment part."
-      },
-      "BenchmarkPartDrillPolicy": {
-        "properties": {
-          "allowed": {
-            "type": "boolean",
-            "title": "Allowed",
-            "default": false
-          },
-          "max_hole_count": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Max Hole Count"
-          },
-          "diameter_range_mm": {
-            "anyOf": [
-              {
-                "prefixItems": [
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "number"
-                  }
-                ],
-                "type": "array",
-                "maxItems": 2,
-                "minItems": 2
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Diameter Range Mm"
-          },
-          "max_depth_mm": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Max Depth Mm"
-          },
-          "notes": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Notes"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "title": "BenchmarkPartDrillPolicy",
-        "description": "Benchmark-owned drilling policy for an environment part."
       },
       "BenchmarkToolResponse": {
         "properties": {
@@ -5863,13 +5717,6 @@
             },
             "type": "array",
             "title": "Renders"
-          },
-          "benchmark_attachment_policy_summary": {
-            "items": {
-              "$ref": "#/components/schemas/BenchmarkAttachmentPolicySummary"
-            },
-            "type": "array",
-            "title": "Benchmark Attachment Policy Summary"
           },
           "mjcf_path": {
             "anyOf": [

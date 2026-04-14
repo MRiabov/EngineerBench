@@ -14,7 +14,6 @@ from shared.models.schemas import (
 )
 from shared.script_contracts import plan_artifact_candidates_for_agent
 from shared.simulation.schemas import CustomObjectives, RandomizationStrategy
-from shared.workers.schema import BenchmarkAttachmentPolicySummary
 from worker_heavy.utils.file_validation import (
     validate_assembly_definition_yaml,
     validate_benchmark_assembly_motion_contract,
@@ -35,36 +34,11 @@ class BenchmarkPlanReviewerEvidence(BaseModel):
     deterministic_errors: list[str] = Field(default_factory=list)
     refusal_reason: BenchmarkRefusalReason | None = None
     solvability_summary: str = ""
-    attachment_policy_summary: list[BenchmarkAttachmentPolicySummary] = Field(
-        default_factory=list
-    )
     latest_revision_verified: bool = False
 
     def to_prompt_text(self) -> str:
         """Render the evidence as compact JSON for prompt injection."""
         return self.model_dump_json(indent=2, exclude_none=True)
-
-
-def _collect_attachment_policy_summary(
-    benchmark_definition: BenchmarkDefinition,
-) -> list[BenchmarkAttachmentPolicySummary]:
-    summary: list[BenchmarkAttachmentPolicySummary] = []
-    for benchmark_part in benchmark_definition.benchmark_parts:
-        metadata = benchmark_part.metadata
-        if (
-            not metadata.allows_engineer_interaction
-            and metadata.attachment_policy is None
-        ):
-            continue
-        summary.append(
-            BenchmarkAttachmentPolicySummary(
-                part_id=benchmark_part.part_id,
-                label=benchmark_part.label,
-                allows_engineer_interaction=metadata.allows_engineer_interaction,
-                attachment_policy=metadata.attachment_policy,
-            )
-        )
-    return summary
 
 
 def extract_benchmark_refusal_reason(
@@ -385,12 +359,6 @@ def build_benchmark_plan_reviewer_evidence(
             "recorded for the latest revision."
         )
 
-    attachment_policy_summary = (
-        _collect_attachment_policy_summary(benchmark_definition)
-        if benchmark_definition is not None
-        else []
-    )
-
     return BenchmarkPlanReviewerEvidence(
         session_id=session_id,
         review_manifest_path=review_manifest_path,
@@ -401,6 +369,5 @@ def build_benchmark_plan_reviewer_evidence(
         deterministic_errors=list(dict.fromkeys(validation_errors)),
         refusal_reason=refusal_reason,
         solvability_summary=solvability_summary,
-        attachment_policy_summary=attachment_policy_summary,
         latest_revision_verified=latest_revision_verified,
     )

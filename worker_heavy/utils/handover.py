@@ -9,13 +9,11 @@ from build123d import Compound, export_step
 from shared.current_role import current_role_agent_name
 from shared.enums import AgentName
 from shared.git_utils import repo_revision
-from shared.models.schemas import BenchmarkDefinition
 from shared.models.simulation import SimulationResult
 from shared.script_contracts import BENCHMARK_SCRIPT_PATH, plan_path_for_reviewer_stage
 from shared.workers.loader import load_component_from_script
 from shared.workers.schema import (
     LEGACY_REVIEWER_STAGE_ALIASES,
-    BenchmarkAttachmentPolicySummary,
     RenderManifest,
     ReviewManifest,
     ValidationResultRecord,
@@ -31,7 +29,6 @@ from worker_heavy.utils.file_validation import (
     _benchmark_script_expected_tokens,
     validate_component_inventory_exactness,
     validate_declared_planner_cost_contract,
-    validate_environment_attachment_contract,
     validate_planner_handoff_cross_contract,
 )
 from worker_heavy.utils.rendering import prerender_24_views
@@ -62,30 +59,6 @@ def _sha256_file(path: Path) -> str:
 def _goal_reached(summary: str) -> bool:
     s = (summary or "").lower()
     return "goal achieved" in s or "green zone" in s or "goal zone" in s
-
-
-def _benchmark_attachment_policy_summary(
-    benchmark_definition: BenchmarkDefinition | None,
-) -> list[BenchmarkAttachmentPolicySummary]:
-    if benchmark_definition is None:
-        return []
-    summary: list[BenchmarkAttachmentPolicySummary] = []
-    for benchmark_part in benchmark_definition.benchmark_parts:
-        metadata = benchmark_part.metadata
-        if (
-            not metadata.allows_engineer_interaction
-            and metadata.attachment_policy is None
-        ):
-            continue
-        summary.append(
-            BenchmarkAttachmentPolicySummary(
-                part_id=benchmark_part.part_id,
-                label=benchmark_part.label,
-                allows_engineer_interaction=metadata.allows_engineer_interaction,
-                attachment_policy=metadata.attachment_policy,
-            )
-        )
-    return summary
 
 
 def _is_static_preview_render(path: str) -> bool:
@@ -508,19 +481,6 @@ def submit_for_review(
     requested_quantity = resolve_requested_quantity(
         benchmark_definition=objectives_model
     )
-    attachment_errors = validate_environment_attachment_contract(
-        benchmark_definition=objectives_model,
-        assembly_definition=estimation,
-    )
-    if attachment_errors:
-        logger.warning(
-            "environment_attachment_contract_invalid",
-            errors=attachment_errors,
-            session_id=session_id,
-        )
-        raise ValueError(
-            "Attachment contract violation: " + "; ".join(attachment_errors)
-        )
     cost_errors = validate_declared_planner_cost_contract(
         assembly_definition=estimation,
         manufacturing_config=dfm_config,
@@ -856,9 +816,6 @@ def submit_for_review(
             else _goal_reached(simulation_result.summary)
         ),
         renders=render_paths,
-        benchmark_attachment_policy_summary=_benchmark_attachment_policy_summary(
-            benchmark_definition
-        ),
         mjcf_path=(
             None
             if normalized_stage
