@@ -20,10 +20,7 @@ geometry are invalid until seed and node-entry validation can see
 
 Preview-helper migration mainly affects this preview-evidence slice of the
 catalog: `INT-032`, `INT-033`, `INT-034`, `INT-039`, `INT-040`, `INT-074`,
-`INT-075`, `INT-181`, `INT-182`, `INT-183`, `INT-185`, `INT-186`,
-`INT-188`, `INT-189`, `INT-190`, `INT-203`, `INT-204`, `INT-205`,
-`INT-207`, `INT-208`, `INT-209`, `INT-212`, `INT-213`, `INT-214`, and
-`INT-215`, `INT-216`, `INT-217`.
+`INT-075`, and `INT-217`.
 
 ### P0: Architecture parity baseline
 
@@ -56,12 +53,6 @@ This section is the smallest must-pass set. Keep it narrowly scoped, determinist
 | INT-022 | Motor overload + forcerange behavior | Force clamping behaves correctly; sustained overload produces `motor_overload` failure reason. |
 | INT-023 | Fastener validity rules | Required fastener/joint constraints are enforced (e.g., rigid connection constraints and invalid mating rejection). |
 | INT-024 | Worker benchmark validation toolchain | Benchmark `validate` catches intersecting/invalid objective setups across randomization ranges, plus duplicate top-level labels and reserved `environment` / `zone_` namespace collisions before MJCF generation. |
-| INT-188 | Validation render-free contract | `/benchmark/validate` performs geometry/objective validation without generating preview artifacts or `renders/render_manifest.json` by default, even when `physics.backend=GENESIS`; preview evidence is produced only through explicit `render_cad(...)` requests; validation still fails closed on conflicting geometry/objectives, reserved labels, and missing benchmark handoff artifacts; Genesis parity remains covered by simulation-backend matrix tests rather than any validation-time render gate. |
-| INT-189 | Engineer solution evidence default contract | Finished engineer runs surface terminal metadata (`detailed_status`, `terminal_reason`, `failure_class`) and default the artifact pane to the latest solution evidence (`simulation_result.json` before `validation_results.json`, then render/video evidence) instead of the planner draft; evidence selection must remain traceable to the exact asset path. |
-| INT-206 | P1 | Failed episode replay bundle contract |
-| INT-207 | P1 | Engineer workspace preview renderer delegation contract |
-| INT-208 | P1 | Engineer planner drafting geometry overlap gate |
-| INT-209 | P1 | Validate is render-free; preview delegates through renderer-worker |
 | INT-025 | Events collection end-to-end | Worker emits `events.jsonl`, controller ingests/bulk-persists, event loss does not occur in normal path. |
 | INT-026 | Mandatory event families emitted | Tool calls, simulation request/result, manufacturability checks, lint failures, plan submissions, and review decisions are emitted in real runs. |
 | INT-027 | Seed/variant observability | Static variant ID + runtime seed tracked for every simulation run. |
@@ -82,35 +73,9 @@ This section is the smallest must-pass set. Keep it narrowly scoped, determinist
 | INT-074 | Engineering plan-reviewer DOF minimization gate | Engineering plan reviewer rejects excessive/unjustified `final_assembly.parts[*].dofs` assignments with deterministic suspicion threshold (`len(dofs) > 3` must reject unless explicit accepted mechanism-level justification exists) and re-runs reviewer-side `validate_and_price` (or equivalent wrapped validator), rejecting on mismatch/failure. |
 | INT-075 | Engineering execution-reviewer over-actuation deviation gate | Engineering execution reviewer flags over-actuated plan deviations (including unjustified DOF expansion) even when a single simulation run passes, and persists reviewer evidence/events for the deviation decision. |
 | INT-101 | Physics backend selection contract | Setting `physics.backend: "mujoco"` in config selects the MuJoCo backend; `"genesis"` selects Genesis. Default (`genesis`) is used when not specified. `simulation_backend_selected` event emitted. |
-| INT-102 | FEM material config validation | When `fem_enabled: true`, all manufactured parts must have FEM fields (`youngs_modulus_pa`, `poissons_ratio`, `yield_stress_pa`, `ultimate_stress_pa`) in `manufacturing_config.yaml`; missing fields rejected with clear error before simulation. |
-| INT-103 | Part breakage detection | Simulation with a part exceeding `ultimate_stress_pa` stops immediately with `failure_reason: PART_BREAKAGE`; result contains part label, stress value, location; `part_breakage` event emitted. |
-| INT-104 | Stress reporting in simulation result | After genesis/FEM simulation, `SimulationResult.stress_summaries` populated with per-part `StressSummary` (max von Mises, safety factor, utilization %); empty list for non-FEM runs. |
-| INT-105 | Fluid containment objective evaluation | Benchmark with `fluid_containment` objective passes when ≥ threshold fraction of particles remain in containment zone; fails otherwise with `FLUID_OBJECTIVE_FAILED`. |
-| INT-106 | Flow rate objective evaluation | Benchmark with `flow_rate` objective passes when measured particles-per-second across gate plane is within tolerance of target; fails otherwise with `FLUID_OBJECTIVE_FAILED`. |
-| INT-107 | Stress objective evaluation | Benchmark with `max_stress` objective fails simulation when max von Mises exceeds threshold with `STRESS_OBJECTIVE_EXCEEDED`; passes when below. |
-| INT-108 | Tetrahedralization pipeline | STL → TetGen → `.msh` pipeline succeeds for valid geometry; emits `meshing_failure` event and retries with mesh repair for non-manifold input; hard-fails with `FAILED_ASSET_GENERATION` if unrecoverable. |
-| INT-109 | Physics instability abort | If total kinetic energy exceeds threshold during simulation, simulation aborts with `failure_reason: PHYSICS_INSTABILITY`; `physics_instability` event emitted. |
-| INT-110 | GPU OOM retry with particle reduction | Forced CUDA OOM triggers auto-retry at 75% particle count; `gpu_oom_retry` event emitted; result annotated `confidence: approximate`. |
-| INT-111 | `validate_and_price` FEM material gate | `validate_and_price` rejects parts whose `material_id` lacks FEM fields when `fem_enabled: true` and `backend: genesis`. |
 | INT-112 | Genesis rigid-body mode: backend ignores FEM/fluid config | Running with default backend (`genesis`) ignores `fluids`, `fluid_objectives`, `stress_objectives`, and `fem_enabled` if not specified; existing benchmarks pass unchanged. |
 | INT-113 | Electronics planner explicit submission gate | Electronics planner must emit explicit `submit_engineering_plan` (`TOOL_START`) with `node_type=electronics_planner`; after submission, episode must reach `PLANNED` (and must not transition to `FAILED`). Missing submission fails closed. |
 | INT-114 | Benchmark planner explicit submission gate | Benchmark planner must emit explicit `submit_benchmark_plan` (`TOOL_START`) with `node_type=benchmark_planner`; successful submission must materialize `.manifests/benchmark_plan_review_manifest.json`, canonicalize planner-authored benchmark estimate fields into runtime-derived caps (`max_unit_cost`, `max_weight_g`), require schema-valid `benchmark_assembly_definition.yaml`, unblock `Benchmark Plan Reviewer`, and only after benchmark plan-review approval may the episode reach `PLANNED` (and must not transition to `FAILED`). Missing submission fails closed. |
-| INT-200 | Hidden benchmark-motion fail-closed gate | Benchmark planner must reject benchmark-owned motion that is not reviewer-visible in the handoff and fail closed before the plan reviewer or benchmark coder can start; rejection reason must be explicit and machine-readable. |
-| INT-201 | Motion-bounds fail-closed gate | Benchmark planner must fail closed when benchmark motion is visible but reviewer-visible motion bounds or limits are missing or underbounded; downstream reviewer/coder start is not permitted. |
-| INT-202 | Unsupported benchmark motion token rejection | Benchmark workflow must reject unsupported benchmark motion tokens in the planner handoff, preserve explicit solvability/refusal reasoning, and prevent downstream reviewer/coder start. |
-| INT-203 | Benchmark solvability review rejection | A schema-valid but logically unsolvable benchmark must be rejected explicitly by the benchmark plan reviewer with solvability rationale and must not advance to benchmark coding. |
-| INT-204 | Latest-revision render inspection gate | Benchmark plan approval must require `inspect_media(...)` on the current revision's benchmark render bundle produced from the drafting package (`benchmark_plan_evidence_script.py`, `benchmark_plan_technical_drawing_script.py`, `render_technical_drawing()`), and the persisted decision/comments YAML must remain attributable to that latest revision. |
-| INT-205 | Failed engineer retry lineage | A failed engineer episode can be revised and retried against the same benchmark package; the new episode must preserve `benchmark_id`, set `prior_episode_id`, mark `is_reused`, reuse the copied benchmark-owned assets, and expose the retry chain in the browser with the revise/retry control hidden on benchmark or non-failed episodes. |
-| INT-184 | Node-entry validation fail-fast + reroute metadata contract | Invalid node entry in integration mode must fail closed in one turn with `FAILED`, emit `node_entry_validation_failed` evidence, and skip target-node execution. Engineer planner/electronics planner intake must also fail closed when `benchmark_assembly_definition.yaml` is missing, and seeded drafting entries must reject unsupported projections, duplicate datum ids, undeclared callout/dimension targets, and malformed motion forecasts when drafting mode is active. Persisted metadata must include `node`, `disposition`, `reason_code`, and structured `errors`; when a deterministic previous-node mapping exists, `reroute_target` must be populated (for non-integration reroute parity) even when integration disposition is `fail_fast`. |
-| INT-120 | Circuit validation pre-gate | `validate_circuit()` must pass (no short circuits, no floating nodes, total draw ≤ PSU rating) before physics simulation proceeds; simulation rejected otherwise. |
-| INT-121 | Short circuit detection | Circuit with near-zero resistance path across supply triggers `FAILED_SHORT_CIRCUIT` with branch current in result. |
-| INT-122 | Overcurrent supply detection | Circuit total draw exceeding `max_current_a` triggers `FAILED_OVERCURRENT_SUPPLY`; validation reports total draw vs PSU rating. |
-| INT-123 | Overcurrent wire detection | Wire carrying current exceeding gauge rating triggers `FAILED_OVERCURRENT_WIRE` with wire ID and measured current. |
-| INT-124 | Open circuit / floating node detection | Unconnected circuit node triggers `FAILED_OPEN_CIRCUIT`; validation reports floating node identifier. |
-| INT-125 | Motor power gating in simulation | Motor with valid controller function but no circuit power (`is_powered = 0`) produces zero effective torque; motor with power produces expected torque. |
-| INT-126 | Wire tear during simulation | Wire tension exceeding rated tensile triggers `FAILED_WIRE_TORN`; affected motor stops (`is_powered` drops to 0); event emitted. |
-| INT-127 | Legacy implicit-power compatibility | Episodes without `electronics` section implicitly set `is_powered = 1.0` for all motors; existing benchmarks pass unchanged. |
-| INT-128 | `benchmark_definition.yaml` electronics schema gate | `electronics_requirements` section validates `power_supply_available`, `wiring_constraints`, and `circuit_validation_required` fields; malformed entries rejected. |
 | INT-129 | COTS geometry import runtime and motor MVP | A known motor `part_id` resolves through `ServoMotor.from_catalog_id`; the returned proxy preserves the catalog `cots_id`, explicit label, and origin-at-mounting-datum / `+Z` shaft-axis frame; invalid motor IDs fail closed; a declared COTS motor in `assembly_definition.yaml.cots_parts` must be instantiated in authored geometry or validation fails. |
 
 ### P0 negative integration tests (`INT-NEG-###`)
@@ -132,38 +97,13 @@ This section is the smallest must-pass set. Keep it narrowly scoped, determinist
 | INT-038 | Controller function family coverage | Constant/sinusoidal/square/trapezoidal (and position controllers where supported) execute via runtime config without schema/tool failures. |
 | INT-039 | Render artifact generation policy | On-demand render/video behavior matches policy and artifacts are discoverable by reviewer/consumer paths; persisted simulation video/image artifacts visually retain benchmark objective boxes (goal green, forbid red, build gray) when the benchmark defines them. |
 | INT-040 | Asset persistence linkage | Final scripts/renders/mjcf/video are stored in S3 and linked from DB records. |
-| INT-041 | Container preemption recovery path | Long task interruption records termination reason and resumes/retries through Temporal strategy. |
-| INT-042 | Async callbacks/webhook completion path | Long-running simulation/manufacturing checks complete via async callback path with durable state transitions. |
-| INT-043 | Batch-first execution path | Batch job submission across multiple episodes executes asynchronously with correct per-episode isolation. |
-| INT-044 | Schemathesis fuzzing integration | Fuzz critical endpoints for strict API behavior; no schema drift/crashers on core paths. |
-| INT-045 | Skills mount lifecycle | Worker exposes expected skills through the runtime mount at run start; skill read events captured; skill version metadata recorded. |
 | INT-057 | Backup-to-S3 logging flow | Backup endpoint writes expected snapshot/object(s) to S3 and persists backup status metadata (size, duration, key). |
 | INT-058 | Cross-system correlation IDs | A single episode/trace can be correlated across controller logs/events, Temporal records, and S3 asset metadata. |
 | INT-059 | Langfuse trace linkage in live runs | With valid `LANGFUSE_PUBLIC_KEY`/`LANGFUSE_SECRET_KEY`, live episode execution emits trace records linked by non-empty `langfuse_trace_id`; tool/LLM/event traces are correlated to the same run-level trace identity. |
 | INT-060 | Langfuse feedback forwarding contract | `POST /episodes/{episode_id}/traces/{trace_id}/feedback` forwards score/comment to Langfuse and persists local feedback fields; missing Langfuse client returns `503`, missing `langfuse_trace_id` returns `400`. |
 | INT-064 | COTS reproducibility metadata persistence | COTS queries/selection persist reproducibility metadata (`catalog_version`, `bd_warehouse_commit`, `generated_at`, `catalog_snapshot_id`) plus normalized query snapshot, ordered candidates, and final selected `part_id`s; all are exposed in downstream artifacts/events used for replayable evaluation, and handoff is invalid when selected parts exist without this metadata. |
-| INT-065 | Skill safety toggle enforcement | Skill-writer flow blocks or reverts sessions that overwrite/delete more than configured threshold lines (15), records safety event, and preserves prior skill content when guard trips. |
-| INT-218 | Skill catalog overlay precedence | `suggested_skills/` entries shadow canonical `.agents/skills/` entries when resolving skill reads and catalog entries, with overlay duplicates taking precedence over the approved tree. |
-| INT-219 | Skill overlay promotion publication contract | The promotion arbiter publishes the session overlay into canonical `.agents/skills/`, records the approved base commit and resulting promotion commit, and persists a traceable promotion record. |
-| INT-220 | Skill overlay promotion conflict gate | Dirty canonical repo state or unresolved overlay conflicts fail closed, do not publish a commit, and still emit a promotion record with the conflict reason. |
+| INT-131 | COTS inventory exactness under pair-swapped rows | Pair-swapped COTS rows fail inventory exactness and surface the mismatch through the live integration boundary. |
 | INT-221 | Frame-indexed object pose capture history | Published simulation bundles persist `objects.parquet` as frame-indexed pose history with multiple sampled capture points for a moving object, and the public render-bundle query route returns those rows in frame order with changing positions across frames. |
-| INT-222 | Skill overlay seeding replay contract | A retained skill-training session seeds `suggested_skills/` from the canonical `.agents/skills/` snapshot, records the approved base commit and repository root metadata, and resolves later reads against the seeded overlay first. |
-| INT-223 | Skill overlay deletion publication contract | A seeded overlay promotion applies deletions as part of the session diff, records the deleted paths in the promotion result, and removes deleted files from canonical `.agents/skills/` on publication. |
-| INT-066 | Fluid-on-electronics failure coupling | In electromechanical simulations with fluids enabled, fluid contact with powered electrical components triggers electrical failure state and benchmark failure/penalty path. |
-| INT-067 | Steerability exact-pointing + mention payload contract | Face/edge/vertex/part/subassembly selections and `@`-mentions are accepted over API/UI boundary, preserved in prompt payload, and observable in run traces/events used by the agent. |
-| INT-068 | Line-targeted steering contract | `@path/file.py:start-end` style references resolve and provide the exact requested code span to the agent context in the majority path; invalid ranges fail with explicit user-visible validation errors. |
-| INT-069 | Frontend delivery visibility contract | End-to-end UI flow exposes simulation outputs, schematics, and macro wire views backed by real API assets for completed episodes (not placeholder/test fixtures). |
-| INT-131 | Full fluid benchmark workflow (planner → engineer → reviewer) | Benchmark planner creates fluid-based benchmark; engineer designs solution with `define_fluid()` and `get_stress_report()`; reviewer verifies fluid containment metrics pass and stress results are reasonable. |
-| INT-132 | Full electromechanical workflow (split planning, unified implementation, specialist review) | `Engineering Planner` and `Electronics Planner` produce a combined handoff; `Engineering Plan Reviewer` approves it; one `Engineering Coder` implements mechanics, electronics, and wire routing in one revision; `Electronics Reviewer` and `Engineering Execution Reviewer` validate the unified result; simulation runs with circuit validation and power gating. |
-| INT-133 | Unified electromechanical conflict iteration loop | Wire-routing or packaging conflict (for example wire intersects moving-part sweep or connector/PSU clearance fails) routes back to the unified implementation/planning loop without inventing a separate late electrical implementer; reviewer and execution gates stay blocked until the latest revision resolves the conflict. |
-| INT-134 | Stress heatmap render artifact | `preview_stress()` produces stress heatmap images stored in S3 and discoverable by reviewer. |
-| INT-135 | Wire routing clearance validation | `check_wire_clearance()` rejects routes that intersect solid parts (except at attachment points) and wire bend radius violations. |
-| INT-136 | Power budget validation | `calculate_power_budget()` computes total draw vs PSU capacity; warns on over-provisioning (>200%) and rejects under-provisioning. |
-| INT-137 | COTS electrical component search | COTS search returns valid PSU, relay, connector, wire components from `parts.db`; required fields (`cots_part_id`, price, specs) present. |
-| INT-138 | Smoke-test mode for Genesis | `smoke_test_mode: true` caps particles to 5000, labels result `confidence: approximate`, and rejects use in final validation. |
-| INT-139 | Fluid data storage policy | Raw particle data stays on worker `/tmp`; only MP4 video, JSON summary metrics, and stress summaries uploaded to S3; raw cache wiped after upload. |
-| INT-140 | Wire and electrical component costing | `validate_and_price()` includes wire cost (per-meter × length) and COTS electrical component costs in total. |
-| INT-141 | Circuit transient simulation | `simulate_circuit_transient()` produces motor ON/OFF states over time; results match expected switching sequence from netlist. |
 | INT-217 | Solution motor backend parity | A solution-authored moving part declared once in `assembly_definition.yaml` materializes as a validated controllable actuator on both MuJoCo and Genesis; unresolved or unsupported motor mappings fail closed before simulation can report success; `get_all_actuator_names()` and `get_actuator_state()` expose the same solution motor identity and force limits used by power gating and overload monitoring. |
 
 ### P1 negative integration tests (`INT-NEG-###`)
@@ -201,76 +141,6 @@ This section is the smallest must-pass set. Keep it narrowly scoped, determinist
 - Keep negative coverage in this namespace so the positive `INT-xxx` lists stay focused on success-oriented architecture coverage.
 - When a negative test uses `MockDSPyLM`, its scenario file must use the matching `INT-NEG-###.yaml` name and remain one-to-one with that test.
 
-### Agent category: orchestration/trace contract (overlay suite)
-
-These tests verify agent behavior contracts (turn handling, tool-loop semantics, and session isolation) while still running as true integration tests over HTTP boundaries.
-This category is an overlay on priorities (`P0/P1/P2`), not a replacement.
-Tag these tests with both a priority marker and `integration_agent`.
-
-Determinism rule for this category:
-
-- Use `tests/integration/mock_responses/` scenarios to force multi-turn/tool-call paths.
-- Each integration test must load only its own scenario and scenario-local fixtures; that scenario is test-owned and may not call, reference, or reuse mock responses from any other test's scenario.
-- Assertions must target HTTP responses, persisted traces/events/assets, and service logs only.
-- Do not assert by importing agent internals.
-
-| ID | Priority | Test | Required assertions |
-| -- | -- | -- | -- |
-| INT-181 | P1 | Tool-loop ordering + termination contract | Trace/event order is consistent (`LLM` -> `TOOL_START` -> tool result -> next `LLM` ... -> completion call), and the run terminates cleanly once scripted tools are exhausted (`submit_review` for reviewer native loops, `finish` for non-reviewer native loops). |
-| INT-182 | P1 | Concurrent agent-run isolation (files + traces + context) | Parallel runs with different `X-Session-ID` do not leak files, steering context, or traces across sessions. |
-| INT-183 | P1 | Steerability queue single-consumption contract | Queued steering prompt is consumed once, affects subsequent node context in-run, and does not replay unexpectedly in later turns. |
-| INT-185 | P1 | Agent-failed tool error routing contract | Trigger a deterministic agent-caused tool failure (for example invalid write/edit arguments) through live APIs; assert tool error is surfaced back to the LM as an observation and the run continues with subsequent LM turn(s) under normal LM budgets. Assert no Temporal retry fan-out for the same failed tool request. |
-| INT-186 | P1 | System-failed tool retry cap + infra terminalization contract | Trigger infrastructure/transport unavailability for a live tool request; assert Temporal retries are capped at 3 attempts for the same tool request/stage, then fail closed. Assert terminal metadata reports `terminal_reason=SYSTEM_TOOL_RETRY_EXHAUSTED` and `failure_class=INFRA_DEVOPS_FAILURE`. Assert retry attempts are infra-level and do not inflate LM tool-call budget accounting. |
-| INT-190 | P1 | Seeded render evidence sanity gate + judge cost guard | Feed a seeded engineer-coder workspace with blank and visible render assets through `scripts/validate_eval_seed.py` and the shared seeded-entry preflight; assert blank images fail closed, visible images pass, benchmark-backed rows that claim geometry but lack `benchmark_script.py` fail the same preflight contract, and `--run-judge` over more than 10 selected seeds refuses to proceed without `-y` while still defaulting the follow-up judge backend to codex. Both paths must report the same render-validation outcome. |
-| INT-192 | P1 | Controller script-tools Temporal proxy contract | Call the controller `/api/script-tools/validate`, `/api/script-tools/simulate`, and `/api/script-tools/submit` entrypoints from a live session and assert they return the expected benchmark response payload while `worker-heavy` is temporarily busy. The controller proxy must wait through the Temporal-mediated heavy path instead of surfacing a raw `503 WORKER_BUSY` from the product path. |
-
-INT-186 exception note: a deterministic mock scenario in `tests/integration/mock_responses/` is acceptable for this case because the target is a devops/infra regression contract (system-tool transport failure and retry exhaustion), not product/business logic. This exception is scoped to INT-186 only and does not relax the no-mock rule for other integration tests.
-
-### Frontend category: UI integration and delivery contract
-
-These are end-to-end frontend integration tests (browser + real APIs + real artifacts). They must run against the same compose stack and must not mock controller/worker API responses.
-This category is functional-only: do not add pixel-perfect or visual-style assertions.
-To ensure stability and prevent Hot Module Replacement (HMR) reloads from interfering with tests, the frontend must be built and served as a static distribution on port **15173** (using `npx serve -s dist -p 15173`). All frontend service integration tests must standardize on this port.
-Additionally, we use test selectors for robust and easy frontend visibility testing like `data-testid="sidebar-resizer"`.
-Frontend integration tests run in strict browser-error mode: any significant unexpected `console.error` or `pageerror` event fails the test run. Known benign noise must be explicitly allowlisted (for example with test markers or configured regex allowlists), not ignored by default.
-Backend integration tests run in strict backend-log mode as well:
-
-- Unexpected backend exceptions/error-level signals during a test fail that test.
-- The suite uses dedicated per-service machine-readable error JSON logs (`logs/integration_tests/current/json/{controller,worker_light,worker_heavy,temporal_worker}_errors.json`, with compatibility symlinks in `logs/integration_tests/json/`) to avoid false positives from normal info/debug output.
-- Structured backend `ERROR` lines are required to include `session_id` or `episode_id`; strict teardown attributes by either field in integration mode.
-- The check is controlled by `STRICT_BACKEND_ERRORS` (default `1`) and supports explicit noise control via `@pytest.mark.allow_backend_errors` or `BACKEND_ERROR_ALLOWLIST_REGEXES` (regex patterns separated by `;;`).
-- Early-stop behavior is controlled by `INTEGRATION_EARLY_STOP_ON_BACKEND_ERRORS` (default `1` from the wrapper) and detects non-allowlisted backend error events from `logs/integration_tests/current/json/*_errors.json` (or compatibility symlinks at `logs/integration_tests/json/*_errors.json`); allowlisted events are filtered using global + per-test rules. Detection is surfaced by the runner, and the active test is failed by pytest fixture logic (not by runner SIGINT). Use `INTEGRATION_EARLY_STOP_ON_BACKEND_ERRORS=0` when intentionally collecting full-run logs despite known backend errors.
-- `@pytest.mark.allow_backend_errors` requires explicit regex patterns.
-- Accepted forms include `@pytest.mark.allow_backend_errors("fs failure")` and `@pytest.mark.allow_backend_errors(regexes=["fs failure"])`.
-- The backend-log teardown gate is skipped for tests already failing in call phase to avoid masking the primary failure.
-  Logging-level policy for integration observability: conditions that represent true contract/logic failures must be emitted at error level so strict backend-log checks can detect them; deviations from expected logic must not be logged as warnings. In particular, fallback paths that bypass or weaken intended behavior are failure signals and must be logged at error level. Warnings should be reserved for non-failing, recoverable, or advisory conditions.
-
-| ID | Priority | Test | Required assertions |
-| -- | -- | -- | -- |
-| INT-157 | P0 | Session history + workflow entry | Sidebar lists sessions from live API; selecting a session opens the correct benchmark/solution workflow with matching episode context and the expected read-only/writable authored-source split. |
-| INT-158 | P0 | Benchmark vs solution workflow parity | In both workflows, prompt submission, streamed assistant output, and artifact refresh behave consistently through real backend events; benchmark workflow surfaces read-only `benchmark_script.py` and solution workflow writes `solution_script.py`. |
-| INT-159 | P0 | Plan approval + comment contract | After planner output, approve/disapprove controls appear; action posts decision to API; optional user comment is persisted and visible in run history. |
-| INT-160 | P1 | Reasoning traces default-hidden + expandable | Reasoning traces are hidden by default, expand on user action, and render from backend-queryable live traces (not static placeholders or phase-label stubs only). |
-| INT-161 | P1 | Tool-call activity rendering | Every backend `TOOL_START` trace in a run is executable and represented in the UI activity feed with typed rows (`Edited`, `Viewed file`, `Viewed directory`); failed tool calls render failure notice. |
-| INT-162 | P0 | Interrupt UX to backend propagation | During active generation, `Send` is replaced by `Stop`; stop action calls interrupt API and run transitions to interrupted/cancelled state with no further streamed tokens. |
-| INT-163 | P0 | Steerability context cards + multi-select | Ctrl multi-select adds multiple context cards (CAD/code/etc.), cards are removable, and outgoing prompt payload contains structured selected elements only. |
-| INT-164 | P0 | Code viewer + line-target mention contract | File tree, syntax highlighting, and line numbers render from live files; selecting lines adds `@path:start-end` mention payload and invalid ranges return explicit validation errors. |
-| INT-165 | P0 | CAD topology selection modes | Part/primitive/subassembly selection modes work; face-selection mode activation is visually indicated; clicking geometry adds context cards; topology overlay is on by default and toggleable. |
-| INT-166 | P1 | Simulation viewer time navigation | Time controls (play/pause/seek/rewind) load corresponding simulation frames from real assets for both rigid-body and deformable playback paths. |
-| INT-167 | P0 | Controller-proxied CAD asset fetch contract | GLB/OBJ fetches for viewer use controller proxy endpoints (e.g. `/api/episodes/{id}/assets/{path}`); non-GET methods are rejected; UI does not depend on mocked local geometry fixtures. |
-| INT-168 | P1 | Circuit viewer integration | Circuit data renders through frontend circuit viewer from real backend outputs; selecting a circuit component can add it to steering context. |
-| INT-169 | P2 | Theme toggle persistence | Light/dark mode toggle updates UI theme and persists across reload/session restore without breaking core workflow readability. |
-| INT-170 | P0 | Post-run feedback UX + API persistence | Thumbs up/down appears only after model output completion; modal supports topic selection + text; submission is persisted via feedback API. |
-| INT-171 | P1 | 3-column layout + resize persistence | Session/chat/viewer columns load in default 3:3:6 layout, are user-resizable, and retain user-adjusted split on reload. |
-| INT-172 | P0 | Plan-approval control placement + gating | Approve/disapprove controls are available in both expected UI locations (chat-bottom and file-explorer/top-right) when planning is complete; controls are hidden/disabled before planner output is ready. |
-| INT-173 | P0 | Exact-pointing payload contract (CAD entities) | Selecting face/edge/vertex/part/subassembly (including face click in FACE mode) produces typed context payloads with stable entity IDs, center/normal metadata, and source asset reference; payload reaches backend unchanged. |
-| INT-174 | P0 | CAD show/hide behavior during design and simulation | Users can hide/show selected parts both in design and simulation views; visibility toggles do not corrupt selection state or context-card creation for visible entities. |
-| INT-175 | P1 | Controller-first API boundary for frontend | Browser network traffic for chat/files/assets/sessions uses controller endpoints only; frontend never calls worker host directly in normal operation. |
-| INT-176 | P1 | Tool-call failure recovery path in chat | Failed tool call message is rendered with failure reason, and subsequent successful tool calls/messages continue streaming without UI deadlock. |
-| INT-177 | P0 | Feedback modal edit/recall + persistence contract | After output completion, user can open feedback modal, change thumbs direction before submit, select topic(s), add text, and persisted feedback reflects final edited state. |
-| INT-178 | P1 | Session restore continuity (functional) | Reloading an active episode restores workflow mode, chat transcript, and artifact panel state from live APIs without requiring manual re-selection. |
-| INT-179 | P1 | Manual `@` mention contract in chat input | Typed `@` mentions for supported targets (CAD entities and code ranges) are accepted and serialized as structured steering inputs; invalid mentions return explicit user-visible validation errors. |
-
 ## Per-test Unit->Integration Implementation Map (mandatory)
 
 This section exists to force implementation as true integration tests, not unit tests.
@@ -305,7 +175,6 @@ benchmark geometry is exposed via `benchmark_script.py`, engineer code lives in
 | INT-022 | Run overload scenario in real simulation path and assert `motor_overload` behavior. | Synthetic return object with overload flag. |
 | INT-023 | Submit invalid fastener/joint setup via run flow and assert validation failure. Verify `PartMetadata` is used for joint definitions. | Unit-test of fastener rule function only. |
 | INT-024 | Run benchmark validation endpoint on conflicting geometry/objectives and assert failure. | Calling validation module directly in process. |
-| INT-188 | Call `/benchmark/validate` through the live heavy-worker path with `physics.backend=GENESIS`; assert validation succeeds without preview artifacts or `renders/render_manifest.json`, and that geometry/objective validation still fails closed on conflicts, missing artifacts, or reserved labels. Genesis parity remains covered by simulation-backend tests. | Static artifact-file snapshot checks without executing the live validation path or asserting only backend-selection helpers. |
 | INT-025 | Execute real episode; verify worker events ingestion/persistence end-to-end. | Reading only local mock event list. |
 | INT-026 | Verify required event families emitted from a real run, not fabricated payloads. | Event model unit tests only. |
 | INT-027 | Run simulation and assert persisted static variant/runtime seed fields. | Unit assertion against seeded fixture object. |
@@ -322,11 +191,6 @@ benchmark geometry is exposed via `benchmark_script.py`, engineer code lives in
 | INT-038 | Execute controller function modes via runtime config in real simulation runs. | Direct function math unit tests only. |
 | INT-039 | Trigger render/video via APIs and assert artifact policy behavior in storage. | Mocking renderer outputs. |
 | INT-040 | Verify assets stored in S3 + DB links after real episode completion. | Fake storage client + call-count assertions. |
-| INT-041 | Simulate container interruption in compose and validate Temporal-based recovery path. | Unit tests of retry helpers only. |
-| INT-042 | Validate async callback/webhook completion by observing real state transitions. | Mock callback invocation sequence only. |
-| INT-043 | Submit batch episodes through API and assert parallel/isolated outcomes. | Looping local function calls with fake inputs. |
-| INT-044 | Run schemathesis against live endpoints in compose environment. | Static schema-only checks with no server. |
-| INT-045 | Verify skill pull/read/versioning via live run and persisted metadata/events. | Unit tests of git/skills helper functions only. |
 | INT-046 | Run multi-episode plan->CAD reconstruction cycle and compare resulting fidelity metrics. | Single-run geometry unit check. |
 | INT-047 | Execute seed-batch episodes and compute transfer uplift from persisted outcomes. | Metric formula unit tests only. |
 | INT-048 | Replay reviewer-optimal cases against follow-up cheaper candidates in real pipeline. | Offline CSV analysis-only tests. |
@@ -346,9 +210,6 @@ benchmark geometry is exposed via `benchmark_script.py`, engineer code lives in
 | INT-062 | Generate/fetch worker OpenAPI artifact(s) in CI/integration environment and assert light+heavy endpoint coverage is present. | Linting a stale committed schema file without runtime generation. |
 | INT-063 | Attempt writes to mounted paths and writes to workspace root via live file APIs; assert read-only mounts and writable workspace behavior across worker surfaces. | Asserting config constants for mount paths without exercising container mounts. |
 | INT-064 | Execute COTS lookup and artifact handoff via APIs; assert persisted `catalog_version`, `bd_warehouse_commit`, `generated_at`, `catalog_snapshot_id`, normalized query snapshot, ordered candidates, and selected `part_id`s in events/records/artifacts. | Unit-testing metadata dataclass construction only. |
-| INT-218 | Resolve skill reads against an overlay-first session worktree and assert overlay duplicates win over canonical entries. | Unit testing catalog helper ordering without the session overlay contract. |
-| INT-219 | Promote a session overlay into canonical `.agents/skills/` and verify the resulting commit and promotion record are persisted. | Direct helper-only commit generation without promotion-record validation. |
-| INT-220 | Feed the arbiter a dirty canonical repo and assert fail-closed conflict handling with no published commit. | Direct helper-only conflict simulation without record persistence. |
 | INT-129 | Exercise `ServoMotor.from_catalog_id("ServoMotor_DS3218")` through the live worker runtime, assert the proxy keeps the catalog identity/label/frame contract, assert unknown motor IDs fail closed, and run the real validation path to prove declared-but-unused COTS parts are rejected. | Importing the geometry class and testing the constructor in-process without worker HTTP, or asserting only the catalog row without the authored-geometry validation gate. |
 | INT-070 | Attempt mounted-path traversal via live file APIs (e.g., `/utils/../...`); assert deterministic `403` and no cross-boundary access. | Path-normalization unit checks without exercising worker HTTP/file boundary. |
 | INT-071 | Execute per-agent file operations via live file APIs and assert `agents_config.yaml` precedence (`deny` > `allow`, unmatched deny, agent override), strict deny of `.manifests/**` to all agent roles, and reviewer-only stage-specific write scopes for the review decision/comments YAML pairs. | In-process path policy matcher and precedence helpers only. |
@@ -356,127 +217,25 @@ benchmark geometry is exposed via `benchmark_script.py`, engineer code lives in
 | INT-073 | Execute real episode runs and assert persisted traces/events expose `user_session_id`, `episode_id`, `simulation_run_id`, `cots_query_id`, `review_id`, `seed_id`, `seed_dataset`, `seed_match_method`, `generation_kind`, `parent_seed_id`, `is_integration_test`, and `integration_test_id` with joinable linkage and no session/episode conflation. | Checking schema fields exist without runtime persistence assertions. |
 | INT-074 | Run planner->plan-reviewer flow over HTTP with seeded over-actuated plans; assert plan reviewer rejects unjustified DOFs, enforces deterministic threshold (`len(dofs) > 3` reject unless explicitly accepted justification), and re-runs reviewer-side `validate_and_price` (or equivalent) with fail-closed rejection on mismatch/failure. | Unit tests that only compare parsed DOF lists or helper outputs without real orchestration/handover boundaries. |
 | INT-075 | Run coder->execution-reviewer flow over HTTP with seeded plan-deviation over-actuation; assert execution reviewer flags deviation with persisted review evidence/event even when a single simulation run passes. | Unit tests that only compare parsed DOF lists or helper outputs without real orchestration/handover boundaries. |
-| INT-065 | Run skill-update path through live workflow; attempt >15-line overwrite/delete and assert safety guard (block/revert) + persisted safety event. | Git diff unit test with mocked repository state. |
-| INT-066 | Run fluid-enabled electromechanical scenario via API where fluid contacts powered electronics; assert electrical failure reason and benchmark fail/penalty output. | Manually setting electrical failure enum without simulation path. |
-| INT-067 | Submit steerability request with topology selections and `@` part mentions through public API/UI contract; assert serialized payload reaches run trace/events and is consumed in agent prompt context. | Unit-testing prompt formatter with handcrafted input only. |
-| INT-068 | Submit chat prompt with code-line reference (`@file:line-line`) through API; assert resolved snippet in agent context and explicit validation error for invalid spans. | Parsing line references in isolation without executing run path. |
-| INT-069 | Execute UI e2e flow on completed episode and verify simulation media/schematic/wire views render from real backend assets. | Component tests with mocked API payloads only. |
 | INT-101 | Set `physics.backend` in config and hit simulation endpoint; assert backend-selected event and correct engine used. | Importing backend factory and calling it directly. |
-| INT-102 | Submit parts with missing FEM fields (using `PartMetadata`) via API when `fem_enabled: true`; assert rejection before simulation. | Calling Pydantic validator on material dict directly. |
-| INT-103 | Run simulation via API with a part designed to break; assert `PART_BREAKAGE` in result and `part_breakage` event in event stream. Script must use `PartMetadata`. | Constructing `SimulationResult` manually with breakage flag. |
-| INT-104 | Run FEM simulation via API; assert `stress_summaries` populated in HTTP response with expected fields. Requires `PartMetadata` on parts. | Calling stress computation function in-process. |
-| INT-105 | Upload objectives with `fluid_containment` and run simulation via API; assert pass/fail based on particle distribution in result. | Unit-testing particle counting function only. |
-| INT-106 | Upload objectives with `flow_rate` and run simulation; assert measured rate in result matches expected behavior. | Mocking particle gate crossings. |
-| INT-107 | Upload objectives with `max_stress` and run simulation; assert `STRESS_OBJECTIVE_EXCEEDED` on overloaded part. Requires `PartMetadata`. | Testing stress threshold comparison in isolation. |
-| INT-108 | Submit non-manifold geometry via API and assert mesh repair retry + eventual success or `FAILED_ASSET_GENERATION` with `meshing_failure` event. | Calling TetGen wrapper function directly. |
-| INT-109 | Run simulation designed to produce runaway energy via API; assert `PHYSICS_INSTABILITY` result and event. | Setting kinetic energy variable directly. |
-| INT-110 | (Requires GPU env) Force CUDA OOM conditions; assert retry at reduced particle count and `gpu_oom_retry` event. | Mocking CUDA allocator only. |
-| INT-111 | Submit part with FEM-missing `PartMetadata` via `validate_and_price` API when genesis+FEM; assert rejection. | Calling validation function directly with dict. |
 | INT-112 | Run existing rigid-body benchmark with default configuration; assert Genesis is used and success is unchanged despite fluids/FEM config being present in system but not active for the benchmark. | Importing backend and toggling flags in unit test. |
 | INT-113 | Run electronics-planner flow over controller APIs and assert traces include `TOOL_START submit_engineering_plan` with `node_type=electronics_planner`; after submission, episode must reach `PLANNED` and not `FAILED`; missing submission must not reach success-like status. | Mocking planner node returns or checking only status without trace-level `submit_engineering_plan` evidence. |
 | INT-114 | Run benchmark-planner flow over controller APIs and assert traces include `TOOL_START submit_benchmark_plan` with `node_type=benchmark_planner`; assert `.manifests/benchmark_plan_review_manifest.json` is created and benchmark plan reviewer entry is unblocked only for the latest planner revision; after plan-review approval, episode must reach `PLANNED` and not `FAILED`; benchmark planner must not receive `benchmark_script.py` before approval, because that file is introduced later by `Benchmark Coder`; missing submission must not reach success-like status. | Mocking benchmark planner internals or asserting only terminal status without planner submission trace evidence. |
-| INT-200 | Run benchmark-planner flow over HTTP with a hidden benchmark-motion handoff and assert fail-closed rejection before plan reviewer or benchmark coder start; verify deterministic motion-boundary logs and no downstream reviewer/coder traces. | Directly testing the validation helper or mocking planner node returns instead of exercising the live HTTP workflow. |
-| INT-201 | Run benchmark-planner flow over HTTP with visible motion but missing reviewer-visible bounds/limits and assert fail-closed rejection before downstream reviewer/coder start, with explicit validation logs. | Checking only final status or a local validation helper result. |
-| INT-202 | Run benchmark workflow over HTTP with an unsupported motion token and assert fail-closed rejection plus no benchmark plan reviewer/benchmark coder start. | Asserting only local status transitions or mocking the workflow node. |
-| INT-203 | Run benchmark generation over HTTP with schema-valid but unsolvable geometry, assert benchmark plan reviewer rejection includes explicit solvability reasoning, persist review artifacts, and prevent benchmark coder start. | Mocking reviewer output or asserting only terminal status without review artifacts and trace evidence. |
-| INT-204 | Run benchmark generation over HTTP and assert benchmark plan reviewer inspects the current revision benchmark render bundle produced from the drafting package (`benchmark_plan_evidence_script.py`, `benchmark_plan_technical_drawing_script.py`, `render_technical_drawing()`) via `inspect_media(...)` before approval, with persisted stage-specific decision/comments YAML tied to the latest revision. | Asserting only file presence or text summaries without media-inspection traces. |
-| INT-205 | Run a failed engineer episode over HTTP and in the browser, then click revise/retry and assert the follow-up episode reuses the same benchmark package, exposes revision lineage, and hides the retry control on benchmark or non-failed episodes. | Retrying by mutating the failed episode in place or checking only backend metadata without browser lineage visibility. |
-| INT-207 | Materialize a representative engineer-coder workspace, then execute the preview path against the staged workspace bundle or synthesized preview scene bundle; assert `validation_results.json` records a successful validation, `renders/render_manifest.json` is written for the workspace, and the preview work is routed through `worker-renderer` rather than any private-Xvfb fallback. | Exercising only a mocked renderer or skipping the preview render path that originally failed. |
-| INT-208 | Call the renderer worker directly over HTTP with a minimal authored build123d script and assert `/benchmark/preview` returns a valid preview image and workspace-relative render path. | Exercising only the heavy-worker proxy path or reusing a host display instead of the renderer service boundary. |
-| INT-209 | Execute `/benchmark/validate` and `/benchmark/preview` through the heavy-worker HTTP boundary with a live workspace bundle; assert `/benchmark/validate` remains render-free while explicit preview artifacts are persisted through the renderer-worker path (`renders/**` plus `renders/render_manifest.json`). | Testing only one route, mocking renderer responses, or asserting artifact paths without exercising the live heavy->renderer handoff. |
 | INT-210 | Run a MuJoCo simulation that captures video frames, assert `VideoRenderer.save()` delegates encoding to `worker-renderer`, and verify the final MP4 is materialized in the session workspace. | Keeping MP4 encoding in-process or asserting only a synthetic video stub. |
 | INT-211 | Run a Genesis-backed simulation that captures render frames and assert the same renderer-worker video path and storage contract are used for the final MP4. | Testing Genesis frame capture without verifying the render handoff or artifact persistence. |
-| INT-212 | Call the exported `utils.render_cad(...)` helper from a live worker-light runtime session and assert the helper normalizes scalar/list camera inputs, zip-pairs view requests, materializes preview renders under the engineer bucket, writes `renders/render_manifest.json` atomically, and returns a structured preview job ack while the eventual completion updates carry workspace-relative paths. | Using a mocked preview helper or skipping the live worker-light/runtime boundary. |
-| INT-213 | Route `POST /api/script-tools/preview` through the controller preview proxy with a live render bundle, assert the request reaches worker-light directly, and confirm the structured response preserves the requested modality set and camera/view metadata while the queued/view-ready stream remains visible. | Exercising only the worker-light helper or skipping the controller preview route. |
-| INT-214 | Call `utils.render_cad(...)` with multi-view camera lists and assert the helper enforces the 64-view cap, normalizes scalar camera inputs to lists, zip-pairs camera inputs by index, rejects incompatible non-singleton list lengths, and preserves request-scoped `view_index` metadata in the manifest. | Allowing unchecked cartesian expansion or asserting only a single render artifact. |
-| INT-215 | Exercise the preview websocket/control-plane stream with a queued preview job and assert queued, running, and view-ready updates are visible before the final manifest-backed completion. | Treating preview as a batch-only call or asserting only the final render artifact. |
-| INT-184 | Trigger deterministic node-entry rejection over HTTP (engineer + benchmark paths), assert terminal fail-fast, target-node non-execution, and persisted metadata schema (`node`, `disposition`, `reason_code`, `errors`, `reroute_target` when applicable); engineer planner/electronics planner runs must also fail closed when `benchmark_assembly_definition.yaml` is absent, and seeded drafting entries must reject unsupported projections, duplicate datum ids, undeclared callout/dimension targets, and malformed motion forecasts when drafting mode is active. | Calling `evaluate_node_entry_contract()` directly in-process or asserting only log strings without episode metadata/traces. |
-| INT-120 | Submit circuit via API; call `validate_circuit` endpoint; assert pass/fail controls whether simulate endpoint accepts the run. | Importing `validate_circuit()` and calling in-process. |
-| INT-121 | Submit circuit with near-zero-ohm path across supply via API; assert `FAILED_SHORT_CIRCUIT` and branch current in response. | Constructing PySpice result object manually. |
-| INT-122 | Submit circuit exceeding PSU `max_current_a` via API; assert `FAILED_OVERCURRENT_SUPPLY` with total draw reported. | Comparing current values in unit test. |
-| INT-123 | Submit circuit with overloaded wire gauge via API; assert `FAILED_OVERCURRENT_WIRE` with wire ID. | Mocking wire current lookup. |
-| INT-124 | Submit circuit with floating node via API; assert `FAILED_OPEN_CIRCUIT` and node ID in response. | Running Ngspice locally without API. |
-| INT-125 | Run simulation via API with motor that has controller function but no power; assert zero torque output. Run again with power; assert expected torque. | Calling `is_powered()` helper directly. |
-| INT-126 | Run simulation via API where wire tension exceeds rated tensile mid-run; assert `FAILED_WIRE_TORN` and motor stops in result. | Setting tendon tension variable directly. |
-| INT-127 | Run legacy benchmark (no electronics section) via API; assert all motors produce expected torque (implicit power=1.0). | Patching `is_powered` return value. |
-| INT-128 | Submit malformed `electronics_requirements` in objectives via API; assert schema rejection before simulation. | Validating Pydantic model constructor only. |
-| INT-131 | Execute full fluid benchmark planner→engineer→reviewer pipeline through APIs with real tool calls. | Patching agent graph nodes in-process. |
-| INT-132 | Execute the split-planning, unified-implementation electromechanical pipeline through APIs with real tool calls, circuit validation, wire routing, electronics review, and execution review. | Mocking LangGraph node transitions or splitting implementation ownership into staged in-process fake nodes. |
-| INT-133 | Trigger wire-routing or electrical-packaging conflict via API and assert routing returns to the unified implementation/planning loop while reviewer/execution gates remain blocked until a new latest revision resolves the conflict. | Unit-testing handover state machine only. |
-| INT-134 | Call `preview_stress` via API after simulation; assert images stored in S3 and accessible via asset endpoint. | Mocking renderer output files. |
-| INT-135 | Submit wire routes via API that intersect solid parts; assert `check_wire_clearance` rejection with specific failure details. | Calling clearance check function directly in-process. |
-| INT-136 | Submit circuit with known motor specs via `calculate_power_budget` API; assert correct total draw and over/under-provisioning warnings. | Unit-testing arithmetic helper only. |
-| INT-137 | Query COTS catalog for electrical components (PSU, relay, wire) via API; assert valid results with required fields. | Mocking catalog search response. |
-| INT-138 | Run genesis simulation with `smoke_test_mode: true` via API; assert particle cap applied and result labelled `approximate`. | Setting config flag in unit test. |
-| INT-139 | Run fluid simulation via API; assert only MP4/JSON/stress uploaded to S3; assert raw particle data absent from S3. | Checking local filesystem directly. |
-| INT-140 | Call `validate_and_price` on assembly with wires and electrical COTS parts; assert wire and elec costs included in total. | Calling pricing helper function directly. |
-| INT-141 | Run `simulate_circuit_transient` via API; assert motor ON/OFF timeline matches expected switching sequence. | Importing transient solver directly. |
 | INT-151 | Run engineer episodes via API with runtime-randomization batches; assert \<10% of jittered scenes produce `PART_BREAKAGE`. | Single mock seed assertion. |
 | INT-152 | Collect safety factors from multi-episode runs via API; assert average 1.5–5.0 in ≥80%. | Manual safety factor calculation. |
 | INT-153 | Execute planner→engineer fluid benchmark end-to-end via APIs; assert ≥50% pass containment metric. | Offline metric analysis only. |
 | INT-154 | Execute the combined engineering planning plus unified implementation flow on a motor-mechanism benchmark via APIs; assert ≥80% valid circuit first attempt. | Mocking circuit validation result. |
 | INT-155 | Execute wire-routed assemblies across 5 seeds via API; assert ≥70% survive without `FAILED_WIRE_TORN`. | Single-seed unit test only. |
 | INT-156 | Run electromechanical simulations via API; assert ≥95% correctly gate motor on/off based on circuit state. | Asserting `is_powered` return values only. |
-| INT-157 | Open frontend against live stack; load sessions via real API and navigate into both benchmark/solution pages with correct episode IDs, reflecting the authored-source split in the session/workflow UI. | Component test with mocked session list JSON only. |
-| INT-158 | Execute benchmark and solution prompt flows end-to-end in browser with live streaming/events; benchmark pages expose read-only `benchmark_script.py` context and solution pages write `solution_script.py`. | UI-only snapshot tests with fake websocket payloads. |
-| INT-159 | Trigger approve/disapprove controls in live run; assert decision/comment persisted via API and reflected in follow-up state. | Unit-test of plan approval button state only. |
-| INT-160 | Verify reasoning panel hidden by default and populated only after expand from live trace payload; with `View reasoning` ON, content must come from persisted backend traces (`/api/episodes/{id}`), not synthetic labels only. | Rendering static reasoning markdown fixture or asserting only `Starting task phase...` strings. |
-| INT-161 | Run real tool calls and assert activity feed entries (`Edited`/`Viewed`) originate from backend `TOOL_START` traces; verify UI row count aligns with backend trace count for the run. | Hardcoded activity card fixtures in component tests. |
-| INT-162 | Start real run, click stop in UI, and assert interrupt endpoint + terminal interrupted state + stream halt. | Mocking interrupt action creator without backend. |
-| INT-163 | Use multi-select in live CAD/code UI; assert selected context objects are posted in steering payload and removable before send. | Testing local React state reducer only. |
-| INT-164 | Select lines in live code viewer and submit mention; assert backend receives resolved range and rejects invalid spans with surfaced error. | Parsing mention syntax in a unit helper test. |
-| INT-165 | Use live CAD assets to switch selection modes, click geometry in FACE mode, and assert visible mode activation + context-card creation + topology browser toggle behavior over real UI. | Mocking three.js selection handlers only. |
-| INT-166 | Scrub simulation timeline in browser against real simulation assets; assert frame/time sync and seek boundaries. | Video-player unit tests with local MP4 only. |
-| INT-167 | Inspect live network calls during CAD load; assert controller `GET /episodes/{id}/assets/{path}` endpoints are used; verify worker is reached via proxy and disallowed methods fail. | Asserting URL builder function output only. |
-| INT-168 | Render circuit view from live episode outputs and assert selectable components propagate into context payload. | Static circuit SVG snapshot tests only. |
-| INT-169 | Toggle theme in live app, reload browser, assert persisted preference in real runtime behavior. | Unit test of theme store/localStorage adapter only. |
-| INT-170 | Submit post-run feedback in live UI and assert API persistence + retrieval in episode trace metadata. | Modal component unit test with mocked submit handler. |
-| INT-171 | Resize live 3-column layout, reload, and assert persisted split ratios and working panes. | CSS layout unit snapshot without runtime persistence. |
-| INT-172 | Drive planner run to completion in live UI and assert approve/disapprove controls in both required locations; before planner completion, assert controls absent or disabled. | Asserting only conditional rendering flags in component props. |
-| INT-173 | In live CAD viewer, select face/edge/vertex/part/subassembly and submit prompt; assert outbound payload includes typed entity schema (`level`, `target_id`, `center`/`normal` where available), stable IDs, and backend receives same structure unchanged. | Unit-testing selection-to-payload mapper with static fixtures only. |
-| INT-174 | Use live CAD/simulation view to hide/show parts and then select remaining visible entities; assert visibility changes and intact context-card behavior end-to-end. | Toggling local visibility state without real assets or backend context submission. |
-| INT-175 | Capture browser network in live run and assert all API calls target controller origin (sessions/chat/files/assets), with no direct worker-origin calls. | Checking frontend base URL constants only. |
-| INT-176 | Force a real tool-call failure during run and assert failure row appears with reason; then assert later successful calls and tokens continue to render. | Rendering hardcoded failed/success event fixtures. |
-| INT-177 | Submit feedback in live UI after editing score/topics/comment before final submit; assert persisted record equals final edited values, not intermediate draft. | Unit-testing modal form reducer only. |
-| INT-178 | Reload browser mid-episode in live stack; assert same episode/workflow opens and chat/artifact panes repopulate from API state. | Snapshot-testing initial page layout without backend state restoration. |
-| INT-179 | Type valid and invalid `@` mentions directly in live chat input; assert valid structured payload creation and explicit validation errors for invalid mention syntax/ranges. | Parsing `@` tokens in an isolated helper test only. |
-| INT-181 | Execute a scripted multi-tool scenario through live APIs and assert persisted trace/event ordering and clean completion once tool list is exhausted (`submit_review` for reviewer native loops, `finish` for non-reviewer native loops). | Asserting mocked node transitions/tool arrays without runtime orchestration. |
-| INT-182 | Start parallel live agent runs with distinct sessions and assert no cross-session reads/writes/traces/context leakage. | Unit-testing session-keyed maps/locks without HTTP/system boundaries. |
-| INT-183 | Enqueue steering via live steerability endpoints during active run; assert single dequeue/consumption and downstream trace evidence in same episode. | Isolated queue unit test with mocked state transitions. |
-| INT-185 | Force a deterministic LM-caused invalid tool invocation over HTTP (for example invalid path/args policy violation), assert tool error observation reaches subsequent LM turn, and verify no Temporal retry loop is created for that request. | Calling runtime retry classifiers/helpers in-process without live controller and Temporal-worker boundaries. |
-| INT-186 | Induce worker/API unavailability for a live tool request, assert exactly up-to-3 Temporal retries then fail-closed terminalization with `SYSTEM_TOOL_RETRY_EXHAUSTED` + `INFRA_DEVOPS_FAILURE`, and verify retries are infra-level (not LM-budget increments). | Unit tests that simulate retry counters without real Temporal orchestration execution traces. |
 
 ## Recommended suite organization
 
 - `tests/integration/smoke/`: INT-001..INT-004 (fast baseline).
-- `tests/integration/architecture_p0/`: INT-005..INT-030, INT-053..INT-056, INT-061..INT-063, INT-070..INT-075, INT-101..INT-114, INT-120..INT-128, INT-184, INT-187, INT-188, INT-189, INT-200, INT-201, INT-202, INT-203, INT-204, INT-205, INT-209.
-- `tests/integration/architecture_p1/`: INT-034, INT-160..INT-179, INT-190, INT-192, INT-206, INT-207, INT-208, INT-210, INT-211, INT-212, INT-213, INT-214, INT-215, INT-216, INT-217, INT-218, INT-219, INT-220.
+- `tests/integration/architecture_p0/`: INT-005..INT-030, INT-053..INT-056, INT-061..INT-063, INT-070..INT-075, INT-101, INT-112..INT-114, INT-129.
+- `tests/integration/architecture_p1/`: INT-031..INT-040, INT-046..INT-052, INT-057..INT-060, INT-064, INT-131, INT-151..INT-156, INT-210, INT-211, INT-217, INT-221.
 - `tests/integration/architecture_p2/`: (TODO: find tests here)
-
-<!--- `tests/integration/evals_p2/`: INT-046..INT-052, INT-151..INT-156. 
-Note: eval tests are not in force - eval themselves are.--->
-
-- `tests/integration/agent/p1/`: INT-181, INT-182, INT-183, INT-185, INT-186.
-- `tests/integration/frontend/p0/`: INT-157, INT-158, INT-159, INT-162, INT-163, INT-164, INT-165, INT-167, INT-170, INT-172, INT-173, INT-174, INT-177, INT-189, INT-205.
-- `tests/integration/frontend/p1/`: INT-160, INT-161, INT-166, INT-168, INT-171, INT-175, INT-176, INT-178, INT-179.
-- `tests/integration/frontend/p2/`: INT-169.
-
-Marker recommendation:
-
-- `@pytest.mark.int_id("INT-034")` or `@pytest.mark.int_id("INT-NEG-001")`
-- `@pytest.mark.integration_p0`
-- `@pytest.mark.integration_p1`
-- `@pytest.mark.integration_p2`
-- `@pytest.mark.integration_agent`
-- `@pytest.mark.integration_frontend`
-
-CI gates recommendation:
-
-- PR gate: run `integration_p0`.
-- Optional PR fast-regression slice: run `integration_agent and integration_p0`.
-- Nightly: run `integration_p0 or integration_p1`.
-- Nightly agent slice: run `integration_agent and integration_p1`.
-- Weekly or pre-release: run full `integration_p0 or integration_p1 or integration_p2`.
 
 ## Notes
 
