@@ -2,6 +2,7 @@ import os
 import uuid
 
 import pytest
+import yaml
 
 from controller.agent.node_entry_validation import (
     validate_seeded_workspace_handoff_artifacts,
