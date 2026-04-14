@@ -31,7 +31,6 @@ from shared.workers.schema import (
     AnalyzeRequest,
     BenchmarkToolRequest,
     BenchmarkToolResponse,
-    ElectronicsValidationRequest,
     PreviewDesignRequest,
     PreviewDesignResponse,
     PreviewRenderingType,
@@ -333,7 +332,6 @@ async def api_simulate(
                     object_store_keys=dict(result.render_object_store_keys),
                     mjcf_content=result.mjcf_content,
                     stress_summaries=result.stress_summaries,
-                    fluid_metrics=result.fluid_metrics,
                     failure=result.failure,
                     total_cost=result.total_cost,
                     total_weight_g=result.total_weight_g,
@@ -407,51 +405,6 @@ async def api_simulate(
             artifacts=SimulationArtifacts(
                 failure=SimulationFailure(
                     reason=FailureReason.PHYSICS_INSTABILITY, detail=str(e)
-                )
-            ),
-        )
-
-
-@heavy_router.post("/benchmark/validate_circuit", response_model=BenchmarkToolResponse)
-async def api_validate_circuit(
-    request: ElectronicsValidationRequest,
-    x_session_id: str = Header(...),
-):
-    """Run SPICE validation on the provided electronics section."""
-    try:
-        async with heavy_operation_admission("validate_circuit", x_session_id):
-            from shared.circuit_builder import build_circuit_from_section
-            from shared.pyspice_utils import validate_circuit
-
-            circuit = build_circuit_from_section(request.section)
-            res = validate_circuit(
-                circuit, request.section.power_supply, section=request.section
-            )
-
-            artifacts = SimulationArtifacts(
-                circuit_validation_result=res.model_dump(),
-            )
-            if not res.valid:
-                artifacts.failure = SimulationFailure(
-                    reason=FailureReason.VALIDATION_FAILED,
-                    detail="; ".join(res.errors),
-                )
-
-            return BenchmarkToolResponse(
-                success=res.valid,
-                message="; ".join(res.errors) if not res.valid else "Circuit is valid",
-                artifacts=artifacts,
-            )
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.warning("api_validate_circuit_failed", error=str(e))
-        return BenchmarkToolResponse(
-            success=False,
-            message=str(e),
-            artifacts=SimulationArtifacts(
-                failure=SimulationFailure(
-                    reason=FailureReason.VALIDATION_FAILED, detail=str(e)
                 )
             ),
         )

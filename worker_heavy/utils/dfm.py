@@ -499,7 +499,7 @@ def validate_and_price(
         config: Manufacturing configuration
         build_zone: Optional build zone bounds to validate against
         quantity: Number of units
-        fem_required: If True, validates presence of FEM material fields (WP2/INT-111)
+        fem_required: If True, validates presence of FEM material fields.
 
     Returns:
         WorkbenchResult with manufacturability, cost, and violations
@@ -572,7 +572,7 @@ def validate_and_price(
         )
         raise ValueError(f"Unsupported manufacturing method: {method}")
 
-    # WP2: FEM Material Field Validation (INT-111)
+    # WP2: FEM material field validation.
     fem_violations: list[str] = []
     if fem_required:
         material_id = getattr(metadata, "material_id", None)

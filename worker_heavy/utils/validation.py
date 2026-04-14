@@ -19,11 +19,8 @@ from build123d import Compound
 from shared.agents.config import load_agents_config
 from shared.current_role import current_role_agent_name
 from shared.enums import (
-    AgentName,
     BenchmarkRefusalReason,
-    ElectronicComponentType,
     FailureReason,
-    MotorControlMode,
     SimulationConfidence,
 )
 from shared.git_utils import repo_revision
@@ -31,27 +28,20 @@ from shared.models.schemas import (
     AssemblyDefinition,
     BenchmarkDefinition,
     CotsPartEstimate,
-    ElectronicsSection,
-    FluidDefinition,
-    FluidProperties,
-    FluidVolume,
     PayloadTrajectoryDefinition,
 )
 from shared.models.simulation import (
     SimulationFailure,
     SimulationMetrics,
     SimulationResult,
-    StressFieldData,
     StressSummary,
 )
 from shared.observability.events import emit_event
-from shared.observability.schemas import WireRoutingEvent
 from shared.observability.storage import S3Client, S3Config
 from shared.rendering import (
     append_render_bundle_index,
     build_render_bundle_index_entry,
     normalize_render_manifest,
-    render_stress_heatmap_artifact,
     select_scratch_preview_render_subdir,
 )
 from shared.script_contracts import (
@@ -65,7 +55,6 @@ from shared.simulation.schemas import (
     SimulatorBackendType,
     get_default_simulator_backend,
 )
-from shared.wire_utils import calculate_path_length, check_wire_clearance
 from shared.workers.schema import RenderManifest
 from shared.workers.workbench_models import ManufacturingConfig
 from worker_heavy.simulation.factory import (
@@ -86,7 +75,6 @@ from .dfm import (
     calculate_benchmark_drilling_cost,
     resolve_requested_quantity,
     validate_and_price,
-    validate_and_price_assembly,
 )
 
 logger = structlog.get_logger(__name__)
@@ -107,40 +95,6 @@ def _find_workspace_assembly_definition(
     return None
 
 
-def _drafting_preview_role(script_path: str | Path | None) -> AgentName | None:
-    del script_path
-    try:
-        agent_role = current_role_agent_name(Path.cwd())
-    except Exception:
-        return None
-    if agent_role in {
-        AgentName.BENCHMARK_CODER,
-        AgentName.BENCHMARK_REVIEWER,
-        AgentName.ENGINEER_CODER,
-        AgentName.ENGINEER_EXECUTION_REVIEWER,
-        AgentName.ELECTRONICS_REVIEWER,
-    }:
-        return agent_role
-    if agent_role in {
-        AgentName.BENCHMARK_PLANNER,
-        AgentName.ENGINEER_PLANNER,
-        AgentName.ELECTRONICS_PLANNER,
-        AgentName.BENCHMARK_PLAN_REVIEWER,
-        AgentName.ENGINEER_PLAN_REVIEWER,
-    }:
-        return None
-    return None
-
-
-def _validate_drafting_preview_gate(
-    *,
-    working_root: Path,
-    script_path: str | Path | None,
-    session_id: str | None,
-) -> str | None:
-    return None
-
-
 def _load_valid_benchmark_definition(
     content: str, *, session_id: str | None = None
 ) -> BenchmarkDefinition:
@@ -155,25 +109,7 @@ def _load_valid_benchmark_definition(
 
 
 def _benchmark_requires_genesis(objectives: BenchmarkDefinition | None) -> bool:
-    """Return True only when the benchmark needs FEM/fluid-capable physics."""
-    if objectives is None:
-        return False
-
-    physics = getattr(objectives, "physics", None)
-    if physics and getattr(physics, "fem_enabled", False):
-        return True
-
-    if getattr(objectives, "fluids", None):
-        return True
-
-    objective_section = getattr(objectives, "objectives", None)
-    if objective_section is None:
-        return False
-
-    if getattr(objective_section, "fluid_objectives", None):
-        return True
-    if getattr(objective_section, "stress_objectives", None):
-        return True
+    """Return whether the benchmark requires the Genesis backend."""
     return False
 
 
@@ -914,139 +850,6 @@ def get_stress_report(
     return None
 
 
-def preview_stress(
-    _component: Compound,
-    _view_angles: list[tuple[float, float]] | None = None,
-    output_dir: Path | None = None,
-    session_id: str | None = None,
-) -> list[str]:
-    """Renders the component with a von Mises stress heatmap overlay."""
-    # Try to load from disk
-    candidates = [Path("simulation_result.json")]
-    working_dir = output_dir or Path(os.getenv("RENDERS_DIR", "./renders")).parent
-    candidates.append(working_dir / "simulation_result.json")
-
-    res = None
-    for p in candidates:
-        res = load_simulation_result(p)
-        if res:
-            break
-
-    if res is None:
-        logger.error("preview_stress_called_before_simulation", session_id=session_id)
-        return []
-
-    logger.info("rendering_stress_heatmaps", count=len(res.stress_fields))
-    working_dir = output_dir or Path(os.getenv("RENDERS_DIR", "./renders")).parent
-    stress_renders_dir = working_dir / "renders" / "stress"
-    stress_renders_dir.mkdir(parents=True, exist_ok=True)
-    assets_dir = working_dir / "assets"
-
-    render_paths = []
-    for part_label, field_data in res.stress_fields.items():
-        # T019: Use attribute access for StressFieldData model (WP2)
-        nodes = getattr(field_data, "nodes", None) or field_data["nodes"]
-        stress = getattr(field_data, "stress", None) or field_data["stress"]
-        out_path = stress_renders_dir / f"stress_{part_label}.png"
-
-        # Use the exported mesh for better VLM visibility if available
-        mesh_path = assets_dir / f"{part_label}.obj"
-        if not mesh_path.exists():
-            mesh_path = None
-
-        rendered = render_stress_heatmap_artifact(
-            StressFieldData(nodes=nodes, stress=stress),
-            output_name=out_path.name,
-            session_id=session_id or "simulation",
-            mesh_path=mesh_path,
-        )
-        out_path.write_bytes(rendered.image_bytes)
-        render_paths.append(str(out_path))
-
-    return render_paths
-
-
-def define_fluid(
-    name: str,
-    shape_type: Literal["cylinder", "box", "sphere"],
-    center: tuple[float, float, float],
-    size: tuple[float, float, float] | None = None,
-    radius: float | None = None,
-    height: float | None = None,
-    viscosity: float = 1.0,
-    density: float = 1000,
-    surface_tension: float = 0.07,
-    color: tuple[int, int, int] = (0, 0, 200),
-    output_dir: Path | None = None,
-    session_id: str | None = None,
-) -> FluidDefinition:
-    """Defines a fluid type for use in the simulation."""
-    props = FluidProperties(
-        viscosity_cp=viscosity,
-        density_kg_m3=density,
-        surface_tension_n_m=surface_tension,
-    )
-    vol = FluidVolume(
-        type=shape_type, center=center, size=size, radius=radius, height=height
-    )
-    fluid = FluidDefinition(
-        fluid_id=name, properties=props, initial_volume=vol, color=color
-    )
-
-    working_dir = output_dir or Path(os.getenv("RENDERS_DIR", "./renders")).parent
-    obj_path = working_dir / "benchmark_definition.yaml"
-
-    if obj_path.exists():
-        objs = _load_valid_benchmark_definition(
-            obj_path.read_text(encoding="utf-8"),
-            session_id=session_id,
-        )
-        updated = False
-        for i, f in enumerate(objs.fluids):
-            if f.fluid_id == name:
-                objs.fluids[i] = fluid
-                updated = True
-                break
-        if not updated:
-            objs.fluids.append(fluid)
-        obj_path.write_text(yaml.dump(objs.model_dump(mode="json")), encoding="utf-8")
-    else:
-        logger.error(
-            "define_fluid_objectives_not_found",
-            path=str(obj_path),
-            session_id=session_id,
-        )
-
-    return fluid
-
-
-def set_soft_mesh(
-    part_id: str, enabled: bool = True, output_dir: Path | None = None
-) -> bool:
-    """Explicitly enables FEM for the scene and marks intent for a specific part."""
-    working_dir = output_dir or Path(os.getenv("RENDERS_DIR", "./renders")).parent
-    obj_path = working_dir / "benchmark_definition.yaml"
-
-    if obj_path.exists():
-        try:
-            objs = _load_valid_benchmark_definition(
-                obj_path.read_text(encoding="utf-8")
-            )
-            objs.physics.fem_enabled = enabled
-            if enabled:
-                # FEM currently requires Genesis backend
-                objs.physics.backend = SimulatorBackendType.GENESIS.value
-            obj_path.write_text(
-                yaml.dump(objs.model_dump(mode="json")), encoding="utf-8"
-            )
-            logger.info("set_soft_mesh_enabled", part_id=part_id, fem_enabled=enabled)
-            return True
-        except Exception as e:
-            logger.warning("set_soft_mesh_failed", error=str(e))
-            return False
-    return False
-
-
 def to_mjcf(
     component: Compound,
     renders_dir: Path | None = None,
@@ -1072,14 +875,13 @@ def to_mjcf(
 def calculate_assembly_totals(
     component: Compound,
     assembly_definition: AssemblyDefinition | None = None,
-    electronics: ElectronicsSection | None = None,
     cots_parts: list[CotsPartEstimate] | None = None,
     manufacturing_config: ManufacturingConfig | None = None,
     session_id: str | None = None,
     quantity: int = 1,
 ) -> tuple[float, float]:
     """
-    Calculate total cost and weight of the assembly including electronics and COTS.
+    Calculate total cost and weight of the assembly including COTS.
     """
     config = manufacturing_config or load_config()
     total_cost = 0.0
@@ -1166,122 +968,7 @@ def calculate_assembly_totals(
             )
             raise
 
-    # 2. Electronics and COTS parts
-    if electronics:
-        for comp in electronics.components:
-            if comp.type == ElectronicComponentType.POWER_SUPPLY and comp.cots_part_id:
-                from shared.cots.parts.electronics import PowerSupply
-
-                try:
-                    psu = PowerSupply(size=comp.cots_part_id)
-                    total_cost += getattr(psu, "price", 0.0)
-                    total_weight += getattr(psu, "weight_g", 0.0)
-                except Exception as e:
-                    logger.error(
-                        "failed_to_price_psu",
-                        cots_id=comp.cots_part_id,
-                        error=str(e),
-                        session_id=session_id,
-                    )
-                    raise ValueError(
-                        f"Failed to resolve power supply COTS part_id '{comp.cots_part_id}'"
-                    ) from e
-            elif comp.type == ElectronicComponentType.RELAY and comp.cots_part_id:
-                from shared.cots.parts.electronics import ElectronicRelay
-
-                try:
-                    relay = ElectronicRelay(size=comp.cots_part_id)
-                    total_cost += getattr(relay, "price", 0.0)
-                    total_weight += getattr(relay, "weight_g", 0.0)
-                except Exception as e:
-                    logger.error(
-                        "failed_to_price_relay",
-                        cots_id=comp.cots_part_id,
-                        error=str(e),
-                        session_id=session_id,
-                    )
-                    raise ValueError(
-                        f"Failed to resolve relay COTS part_id '{comp.cots_part_id}'"
-                    ) from e
-            elif comp.type == ElectronicComponentType.SWITCH and comp.cots_part_id:
-                from shared.cots.parts.electronics import Switch
-
-                try:
-                    sw = Switch(size=comp.cots_part_id)
-                    total_cost += getattr(sw, "price", 0.0)
-                    total_weight += getattr(sw, "weight_g", 0.0)
-                except Exception as e:
-                    logger.error(
-                        "failed_to_price_switch",
-                        cots_id=comp.cots_part_id,
-                        error=str(e),
-                        session_id=session_id,
-                    )
-                    raise ValueError(
-                        f"Failed to resolve switch COTS part_id '{comp.cots_part_id}'"
-                    ) from e
-            elif comp.type == ElectronicComponentType.CONNECTOR and comp.cots_part_id:
-                from shared.cots.parts.electronics import Connector
-
-                try:
-                    conn = Connector(size=comp.cots_part_id)
-                    total_cost += getattr(conn, "price", 0.0)
-                    total_weight += getattr(conn, "weight_g", 0.0)
-                except Exception as e:
-                    logger.error(
-                        "failed_to_price_connector",
-                        cots_id=comp.cots_part_id,
-                        error=str(e),
-                        session_id=session_id,
-                    )
-                    raise ValueError(
-                        f"Failed to resolve connector COTS part_id '{comp.cots_part_id}'"
-                    ) from e
-            elif comp.type == ElectronicComponentType.MOTOR and comp.cots_part_id:
-                from shared.cots.parts.motors import ServoMotor
-
-                try:
-                    motor = ServoMotor(size=comp.cots_part_id)
-                    total_cost += getattr(motor, "price", 0.0)
-                    total_weight += getattr(motor, "weight_g", 0.0)
-                except Exception as e:
-                    logger.error(
-                        "failed_to_price_motor",
-                        cots_id=comp.cots_part_id,
-                        error=str(e),
-                        session_id=session_id,
-                    )
-                    raise ValueError(
-                        f"Failed to resolve motor COTS part_id '{comp.cots_part_id}'"
-                    ) from e
-
-        for wire in electronics.wiring:
-            from shared.wire_utils import get_awg_properties
-
-            length_m = wire.length_mm / 1000.0
-            props = get_awg_properties(wire.gauge_awg)
-            # Estimate weight based on copper density and diameter
-            # Area (mm2) = pi * (d/2)^2
-            import math
-
-            area_mm2 = math.pi * (props["diameter_mm"] / 2.0) ** 2
-            # Weight (g/m) = Area (mm2) * Density (8.96 g/cm3)
-            # 1 mm2 * 1 m = 1000 mm3 = 1 cm3
-            weight_g_m = area_mm2 * 8.96
-
-            # Use cost from config if available, otherwise fallback to reasonable default
-            cost_per_m = 0.5  # default
-            if config.wires:
-                awg_key = f"awg{wire.gauge_awg}"
-                if hasattr(config.wires, awg_key):
-                    cost_per_m = getattr(config.wires, awg_key).cost_per_m
-                elif isinstance(config.wires, dict) and awg_key in config.wires:
-                    cost_per_m = config.wires[awg_key].get("cost_per_m", 0.5)
-
-            total_cost += length_m * cost_per_m
-            total_weight += length_m * weight_g_m
-
-    # 3. Generic COTS parts from assembly definition
+    # 2. Generic COTS parts from assembly definition
     if cots_parts:
         declared_cots_counts: dict[str, int] = {}
         for p in cots_parts:
@@ -1428,19 +1115,7 @@ def validate_subprocess(
         session_id=session_id,
         smoke_test_mode=smoke_test_mode,
         particle_budget=particle_budget,
-        script_path=script_path,
-        script_content=script_content,
     )
-    fem_valid, fem_message = validate_fem_manufacturability(
-        component,
-        Path(session_root),
-        session_id=session_id,
-    )
-    if is_valid and not fem_valid:
-        is_valid = False
-        message = (
-            f"{message}; {fem_message}" if message and fem_message else fem_message
-        )
 
     return is_valid, message
 
@@ -1553,21 +1228,6 @@ def simulate(
                 requested_quantity = resolve_requested_quantity(
                     benchmark_definition=objectives,
                 )
-                fem_valid, fem_message = validate_fem_manufacturability(
-                    component,
-                    working_dir,
-                    session_id=session_id,
-                )
-                if not fem_valid:
-                    return SimulationResult(
-                        success=False,
-                        summary=fem_message or "Material validation failed",
-                        failure=SimulationFailure(
-                            reason=FailureReason.VALIDATION_FAILED,
-                            detail=fem_message or "Material validation failed",
-                        ),
-                        confidence=SimulationConfidence.HIGH,
-                    )
             except Exception as e:
                 import traceback
 
@@ -1626,101 +1286,23 @@ def simulate(
 
     builder = get_simulation_builder(output_dir=working_dir, backend_type=backend_type)
     moving_parts = assembly_definition.moving_parts if assembly_definition else []
-    electronics = assembly_definition.electronics if assembly_definition else None
     manufactured_part_labels = (
         {part.part_name for part in assembly_definition.manufactured_parts}
         if assembly_definition
         else set()
     )
 
-    # T021: Proactive electronics validation before starting expensive physics backend (INT-120)
-    if electronics:
-        from .electronics import build_circuit_from_section, validate_circuit
-
-        try:
-            circuit = build_circuit_from_section(electronics)
-            cv_res = validate_circuit(
-                circuit, psu_config=electronics.power_supply, section=electronics
-            )
-            if not cv_res.valid:
-                error_msg = "; ".join(cv_res.errors)
-                logger.error(
-                    "electronics_validation_failed_gate",
-                    errors=error_msg,
-                    session_id=session_id,
-                )
-                return SimulationResult(
-                    success=False,
-                    summary=error_msg,
-                    failure=SimulationFailure(
-                        reason=FailureReason.VALIDATION_FAILED,
-                        detail=error_msg,
-                    ),
-                    confidence=SimulationConfidence.HIGH,
-                )
-        except Exception as e:
-            logger.error(
-                "electronics_pre_validation_skipped",
-                error=str(e),
-                session_id=session_id,
-            )
-
     scene_path = builder.build_from_assembly(
         component,
         objectives=objectives,
         moving_parts=moving_parts,
-        electronics=electronics,
         smoke_test_mode=smoke_test_mode,
     )
-
-    # Fast preflight: if a fluid spawn volume intersects an electronics part's bounding
-    # box, classify as electronics fluid damage immediately.
-    if objectives and objectives.fluids and electronics:
-        try:
-            children = getattr(component, "children", []) or [component]
-            by_label = {
-                getattr(child, "label", ""): child
-                for child in children
-                if getattr(child, "label", None)
-            }
-
-            def _point_in_bbox(point, bb) -> bool:
-                return (
-                    bb.min.X <= point[0] <= bb.max.X
-                    and bb.min.Y <= point[1] <= bb.max.Y
-                    and bb.min.Z <= point[2] <= bb.max.Z
-                )
-
-            for fluid in objectives.fluids:
-                center = fluid.initial_volume.center
-                for ecomp in electronics.components:
-                    part_ref = ecomp.assembly_part_ref or ecomp.component_id
-                    part = by_label.get(part_ref)
-                    if not part:
-                        continue
-                    bb = part.bounding_box()
-                    if _point_in_bbox(center, bb):
-                        return SimulationResult(
-                            success=False,
-                            summary="Electronics fluid damage detected.",
-                            failure=SimulationFailure(
-                                reason=FailureReason.ELECTRONICS_FLUID_DAMAGE,
-                                detail=part_ref,
-                            ),
-                            confidence=SimulationConfidence.HIGH,
-                        )
-        except Exception as e:
-            logger.error(
-                "fluid_electronics_preflight_skipped",
-                error=str(e),
-                session_id=session_id,
-            )
 
     loop = SimulationLoop(
         str(scene_path),
         component=component,
         backend_type=backend_type,
-        electronics=electronics,
         objectives=objectives,
         payload_trajectory_definition=payload_trajectory_definition,
         smoke_test_mode=smoke_test_mode,
@@ -1737,29 +1319,6 @@ def simulate(
 
     dynamic_controllers = {}
     control_inputs = {}
-    if assembly_definition and assembly_definition.moving_parts:
-        try:
-            from worker_heavy.utils.controllers import sinusoidal
-
-            for part in assembly_definition.moving_parts:
-                if part.control:
-                    if part.control.mode == MotorControlMode.SINUSOIDAL:
-                        dynamic_controllers[part.part_name] = lambda t, p=part.control: (
-                            sinusoidal(t, p.speed, p.frequency or 1.0)
-                        )
-                    elif part.control.mode == MotorControlMode.CONSTANT:
-                        control_inputs[part.part_name] = part.control.speed
-                    elif part.control.mode == MotorControlMode.ON_OFF:
-                        # T019: Handle ON_OFF mode using frequency toggle
-                        freq = part.control.frequency or 1.0
-                        period = 1.0 / freq
-                        dynamic_controllers[part.part_name] = (
-                            lambda t, p=part.control, per=period: (
-                                p.speed if (t % per) < (per / 2) else 0.0
-                            )
-                        )
-        except Exception as e:
-            logger.warning("failed_to_load_controllers", error=str(e))
 
     frame_stream_publisher = None
     try:
@@ -1831,7 +1390,6 @@ def simulate(
                 str(scene_path),
                 component=component,
                 backend_type=backend_type,
-                electronics=electronics,
                 objectives=objectives,
                 payload_trajectory_definition=payload_trajectory_definition,
                 smoke_test_mode=True,
@@ -1982,7 +1540,6 @@ def simulate(
             cost, weight = calculate_assembly_totals(
                 component,
                 assembly_definition=assembly_definition,
-                electronics=electronics,
                 cots_parts=(
                     assembly_definition.cots_parts if assembly_definition else None
                 ),
@@ -2015,7 +1572,6 @@ def simulate(
             mjcf_content=mjcf_content,
             stress_summaries=_sanitize_stress_summaries(metrics.stress_summaries),
             stress_fields=metrics.stress_fields,
-            fluid_metrics=getattr(metrics, "fluid_metrics", []),
             total_cost=cost,
             total_weight_g=weight,
             confidence=metrics.confidence,
@@ -2035,24 +1591,6 @@ def simulate(
         )
         if benchmark_payload_evidence_summary:
             result.summary = f"{result.summary}\n{benchmark_payload_evidence_summary}"
-
-        # T023: Generate stress heatmaps and append to render_paths
-        if metrics.stress_fields:
-            # Save first so preview_stress can load it
-            try:
-                save_simulation_result(result, working_dir / "simulation_result.json")
-            except Exception as e:
-                logger.error(
-                    "failed_to_save_simulation_result_pre_preview",
-                    error=str(e),
-                    session_id=session_id,
-                )
-
-            stress_renders = preview_stress(component, output_dir=working_dir)
-            stress_renders = _workspace_relative_render_paths(
-                stress_renders, working_dir
-            )
-            result.render_paths.extend(stress_renders)
 
         try:
             save_simulation_result(result, working_dir / "simulation_result.json")
@@ -2086,8 +1624,6 @@ def validate(
     session_id: str | None = None,
     smoke_test_mode: bool | None = None,
     particle_budget: int | None = None,
-    script_path: str | Path | None = None,
-    script_content: str | None = None,
 ) -> tuple[bool, str | None]:
     """Verify geometric validity."""
     from worker_heavy.config import settings
@@ -2113,7 +1649,7 @@ def validate(
                 label_i = getattr(solids[i], "label", None) or f"unlabeled_solid_{i}"
                 label_j = (
                     getattr(solids[j], "label", None) or f"unlabeled_solid_{j}"
-                )  # human note: I've changed it to `unlabeled_solid_{i} so that there is no confusion from agent that they forgot to label it. Anyway, if it fails anywhere, just update it.
+                )
                 intersection = solids[i].intersect(solids[j])
                 intersection_volume = _shape_volume(intersection)
                 if intersection_volume > 0.1:
@@ -2208,144 +1744,6 @@ def validate(
                 f"Boundary constraint violation: size {bbox.size} exceeds 1000.0",
             )
 
-    # Check wire clearance if assembly definition is available
-    if output_dir:
-        asm_path = _find_workspace_assembly_definition(
-            output_dir, prefer_benchmark=True
-        )
-        if asm_path is not None:
-            try:
-                data = yaml.safe_load(asm_path.read_text(encoding="utf-8"))
-                if data and "electronics" in data and "wiring" in data["electronics"]:
-                    wires_data = data["electronics"]["wiring"]
-
-                    wire_errors = []
-                    total_length = 0.0
-                    wire_count = 0
-
-                    for w in wires_data:
-                        wire_id = w.get("wire_id", "unknown")
-                        waypoints = w.get("waypoints")
-                        routed_in_3d = w.get("routed_in_3d", False)
-
-                        if not waypoints or len(waypoints) < 2:
-                            continue
-
-                        # Convert to list of tuples if needed
-                        pts = []
-                        for p in waypoints:
-                            if isinstance(p, (list, tuple)) and len(p) >= 3:
-                                pts.append((float(p[0]), float(p[1]), float(p[2])))
-
-                        if len(pts) >= 2:
-                            wire_count += 1
-                            # Calculate length for observability
-                            total_length += calculate_path_length(
-                                pts, use_spline=routed_in_3d
-                            )
-
-                            if routed_in_3d:
-                                if not check_wire_clearance(
-                                    pts,
-                                    component,
-                                    clearance_mm=2.0,
-                                    session_id=session_id,
-                                ):
-                                    wire_errors.append(
-                                        f"Wire clearance violation: {wire_id}"
-                                    )
-
-                    # Emit observability event for validation result
-                    if wire_count > 0:
-                        emit_event(
-                            WireRoutingEvent(
-                                wire_count=wire_count,
-                                total_length_mm=total_length,
-                                clearance_passed=(len(wire_errors) == 0),
-                                errors=wire_errors,
-                            )
-                        )
-
-                    if wire_errors:
-                        return (False, "; ".join(wire_errors))
-
-            except Exception as e:
-                logger.warning(
-                    "wire_clearance_check_failed_during_validate",
-                    error=str(e),
-                    session_id=session_id,
-                )
-
-    drafting_gate_error = _validate_drafting_preview_gate(
-        working_root=working_root,
-        script_path=script_path,
-        session_id=session_id,
-    )
-    if drafting_gate_error:
-        return False, drafting_gate_error
-
     # Validation is intentionally geometry-only. Preview evidence belongs to the
     # explicit preview path, not the default validate() contract.
-    return True, None
-
-
-def validate_fem_manufacturability(
-    component: Compound, session_root: Path, session_id: str | None = None
-) -> tuple[bool, str | None]:
-    """Check if FEM material validation is required and if it passes."""
-    obj_path = session_root / "benchmark_definition.yaml"
-    if not obj_path.exists():
-        return True, None
-
-    try:
-        content = obj_path.read_text(encoding="utf-8")
-        if "[TEMPLATE]" in content:
-            return True, None
-
-        objs = _load_valid_benchmark_definition(content, session_id=session_id)
-        if objs.physics and objs.physics.fem_enabled:
-            config = load_config()
-            custom_config_path = session_root / "manufacturing_config.yaml"
-            if custom_config_path.exists():
-                config = load_merged_config(custom_config_path)
-
-            from shared.workers.workbench_models import ManufacturingMethod
-
-            assembly_definition_path = _find_workspace_assembly_definition(
-                session_root, prefer_benchmark=True
-            )
-            manufactured_labels: set[str] = set()
-            assembly: AssemblyDefinition | None = None
-            if assembly_definition_path is not None:
-                assembly_data = yaml.safe_load(
-                    assembly_definition_path.read_text(encoding="utf-8")
-                )
-                assembly = AssemblyDefinition(**assembly_data)
-                manufactured_labels = {
-                    part.part_name for part in assembly.manufactured_parts
-                }
-            requested_quantity = resolve_requested_quantity(
-                benchmark_definition=objs,
-            )
-            val_report = validate_and_price_assembly(
-                component,
-                config,
-                assembly_definition=assembly,
-                part_labels=manufactured_labels or None,
-                fem_required=True,
-                session_id=session_id,
-                quantity=requested_quantity,
-                default_method=ManufacturingMethod.CNC,
-            )
-            if not val_report.is_manufacturable:
-                msg = "Material validation failed: " + "; ".join(
-                    map(str, val_report.violations)
-                )
-                return False, msg
-    except Exception as e:
-        logger.warning(
-            "fem_manufacturability_check_failed", error=str(e), session_id=session_id
-        )
-        return False, f"FEM manufacturability check failed: {e!s}"
-
     return True, None

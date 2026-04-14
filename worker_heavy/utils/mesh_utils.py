@@ -5,9 +5,6 @@ from typing import Literal
 import structlog
 import trimesh
 
-from shared.observability.events import emit_event
-from shared.observability.schemas import MeshingFailureEvent
-
 logger = structlog.get_logger(__name__)
 
 
@@ -89,9 +86,7 @@ def tetrahedralize(
 ) -> Path:
     """Tetrahedralizes a surface mesh into a 3D volumetric mesh.
 
-    Per INT-108:
-    - Retries with mesh repair for non-manifold input.
-    - Emits MeshingFailureEvent on failure.
+    Retries with mesh repair for non-manifold input.
 
     Args:
         input_path: Path to the input surface mesh (STL).
@@ -123,16 +118,6 @@ def tetrahedralize(
             logger.warning(
                 f"Tetrahedralization attempt {attempt} failed for {part_label} using {method}: {e}",
                 session_id=session_id,
-            )
-
-            # Emit MeshingFailureEvent per INT-108
-            emit_event(
-                MeshingFailureEvent(
-                    part_label=part_label,
-                    error=str(e),
-                    retry_count=attempt,
-                    repaired=repaired,
-                )
             )
 
             if attempt < max_retries:
