@@ -4,7 +4,7 @@
   "created_at": "2026-04-08T06:38:13.914912+00:00",
   "episode_id": "56d7c14a-ae01-5475-b771-1cd082361820",
   "worker_session_id": "seed-renders-ep-010-lower-bin-694698e3",
-  "revision": "2c863859c48d785f4afd842882c7499861629721",
+  "revision": "faca613b94895c55de9ed329d8283f94291c22ae",
   "scene_hash": "b57e5cd6e8ae7c9a3e8677e583ffa0f096712a88b27729515cd7e20154e67e20",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",
