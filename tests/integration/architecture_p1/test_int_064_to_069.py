@@ -1,32 +1,15 @@
 import os
-import time
 import uuid
 
 import httpx
 import pytest
 
-from controller.api.schemas import (
-    AgentRunRequest,
-    CotsMetadataResponse,
-    CotsSearchItem,
-    EpisodeCreateResponse,
-)
-from shared.enums import FailureReason as SimulationFailureMode
-from shared.models.schemas import SchematicItem
-from shared.models.steerability import (
-    GeometricSelection,
-    SelectionLevel,
-    SteerablePrompt,
-)
-from shared.simulation.schemas import SimulatorBackendType
+from controller.api.schemas import CotsMetadataResponse, CotsSearchItem
 from shared.workers.schema import (
-    BenchmarkToolRequest,
-    BenchmarkToolResponse,
     ExecuteRequest,
     ExecuteResponse,
     WriteFileRequest,
 )
-from tests.integration.backend_utils import skip_unless_genesis
 
 CONTROLLER_URL = os.getenv("CONTROLLER_URL", "http://127.0.0.1:18000")
 WORKER_LIGHT_URL = os.getenv("WORKER_LIGHT_URL", "http://127.0.0.1:18001")

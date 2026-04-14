@@ -10,7 +10,6 @@ from build123d import Box
 from shared.models.simulation import SimulationMetrics, StressSummary
 from worker_heavy.utils.validation import (
     get_stress_report,
-    preview_stress,
     simulate,
 )
 
@@ -21,9 +20,6 @@ def mock_simulation_dependencies():
         patch("worker_heavy.utils.validation.get_simulation_builder") as mock_builder,
         patch("worker_heavy.simulation.loop.SimulationLoop") as mock_loop_cls,
         patch("worker_heavy.utils.validation.prerender_24_views") as mock_render,
-        patch(
-            "worker_heavy.utils.validation.render_stress_heatmap_artifact"
-        ) as mock_heatmap,
         patch("worker_heavy.utils.validation.calculate_assembly_totals") as mock_totals,
         patch("worker_heavy.utils.validation.validate_and_price"),
     ):
@@ -62,7 +58,6 @@ def mock_simulation_dependencies():
 
         # Mock render
         mock_render.return_value = ["render.png"]
-        mock_heatmap.return_value = MagicMock(image_bytes=b"heatmap-bytes")
 
         # Mock totals
         mock_totals.return_value = (10.0, 5.0)
@@ -100,12 +95,3 @@ def test_simulation_persistence(tmp_path, mock_simulation_dependencies):
     assert report is not None
     assert report.part_label == "part1"
     assert report.max_von_mises_pa == 100.0
-
-    # 4. Call preview_stress
-    # It needs to find simulation result to proceed (it logs warning and returns [] if not found)
-    # If found, it returns placeholder path
-
-    # Mock output_dir for preview_stress to be tmp_path
-    paths = preview_stress(component, output_dir=tmp_path)
-    assert len(paths) > 0
-    assert "stress_part1.png" in paths[0]
