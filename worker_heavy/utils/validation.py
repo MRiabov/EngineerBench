@@ -1220,6 +1220,8 @@ def simulate(
             backend_type = SimulatorBackendType.GENESIS
 
     builder = get_simulation_builder(output_dir=working_dir, backend_type=backend_type)
+    # FIXME(mvp-release): remove the moving_parts pass-through after the MVP
+    # contract is simplified and builders no longer need this temporary seam.
     moving_parts = assembly_definition.moving_parts if assembly_definition else []
     manufactured_part_labels = (
         {part.part_name for part in assembly_definition.manufactured_parts}
