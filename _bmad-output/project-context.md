@@ -18,7 +18,7 @@ This repo is brownfield. Treat `specs/desired_architecture.md` and the files und
 
 - Backend: Python 3.12 (`~=3.12.0`), FastAPI, Uvicorn, TemporalIO, SQLAlchemy, Alembic, PostgreSQL, MinIO/S3, structlog, Pydantic v2, pydantic-settings.
 - Agent/runtime layer: DSPy, LiteLLM, LangGraph, Langfuse, OpenInference for DSPy.
-- CAD/simulation: build123d, bd-warehouse, MuJoCo, Genesis, Gmsh, trimesh, NumPy, SciPy, PySpice/ngspice, torch.
+- CAD/simulation: build123d, bd-warehouse, MuJoCo, Genesis, Gmsh, trimesh, NumPy, SciPy, PySpice, torch.
 - Frontend: Vite 7.2.4, React 19.2.0, TypeScript ~5.9.3, Vitest, Testing Library, Radix UI, React Three Fiber, three.
 - Tooling: `uv`, Ruff, Pyright, pytest, schemathesis, Playwright, Docker/Podman, Docker Compose.
 

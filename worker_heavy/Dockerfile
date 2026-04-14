@@ -15,7 +15,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libsm6 \
     curl \
     dnsutils \
-    libngspice0 \
     libvulkan1 \
     vulkan-tools \
     libxcursor1 \

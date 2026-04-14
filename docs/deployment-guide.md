@@ -33,7 +33,6 @@ This script:
 - Stops any existing local environment first.
 - Loads `.env` if present.
 - Ensures Docker/VFS compatibility for constrained environments.
-- Ensures `ngspice` is available for electronics validation.
 - Starts the test infrastructure containers from `docker-compose.test.yaml`.
 - Runs database migrations.
 - Starts the controller, worker-light, worker-heavy, controller-temporal-worker, and worker-heavy Temporal worker as local processes.

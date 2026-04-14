@@ -21,8 +21,6 @@ This reference documents integration-run helpers and implicit dependencies that 
 
 - `scripts/ensure_docker_vfs.sh`
   - Compatibility helper for environments where Docker storage drivers are problematic.
-- `scripts/ensure_ngspice.sh`
-  - Ensures `ngspice` is available for electronics-related validation paths.
 - `parts.db`
   - Auto-populated by `shared.cots.indexer` when missing/empty.
   - Used by COTS integration flows.
