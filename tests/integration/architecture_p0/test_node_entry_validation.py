@@ -5,11 +5,15 @@ import pytest
 import yaml
 
 from controller.agent.node_entry_validation import (
+    ValidationScope,
+    _run_seed_validation_engineering_gate,
     validate_seeded_workspace_handoff_artifacts,
 )
 from controller.clients.worker import WorkerClient
+from evals.logic.workspace import InMemorySeedWorkspaceClient
 from shared.current_role import current_role_manifest_json
 from shared.enums import AgentName
+from shared.workers.schema import BenchmarkToolResponse
 
 WORKER_LIGHT_URL = os.getenv("WORKER_LIGHT_URL", "http://127.0.0.1:18001")
 
@@ -126,3 +130,48 @@ async def test_int_current_role_manifest_wins_over_mixed_workspace_files():
         and "mismatch" in error.message.lower()
         for error in errors
     ), errors
+
+
+@pytest.mark.integration_p0
+@pytest.mark.asyncio
+async def test_heavy_simulation_scope_replays_engineering_simulation(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    worker = InMemorySeedWorkspaceClient(session_id="scope-3")
+    dummy_component = object()
+
+    monkeypatch.setattr(
+        "controller.agent.node_entry_validation.load_component_from_script",
+        lambda **_: dummy_component,
+    )
+    monkeypatch.setattr(
+        "controller.agent.node_entry_validation.validate_engineering",
+        lambda *_, **__: (True, None),
+    )
+    monkeypatch.setattr(
+        "controller.agent.node_entry_validation.simulate_engineering",
+        lambda *_, **__: BenchmarkToolResponse(
+            success=False,
+            message="heavy simulation invoked",
+        ),
+    )
+
+    scope2_errors = await _run_seed_validation_engineering_gate(
+        worker_client=worker,
+        gate_name="engineering coder validation",
+        validation_scope=ValidationScope.CURRENT_AND_PREVIOUS_NODES,
+        gate_role=AgentName.ENGINEER_CODER,
+    )
+    scope3_errors = await _run_seed_validation_engineering_gate(
+        worker_client=worker,
+        gate_name="engineering coder validation",
+        validation_scope=ValidationScope.CURRENT_AND_PREVIOUS_NODES_WITH_HEAVY_SIMULATION,
+        gate_role=AgentName.ENGINEER_CODER,
+    )
+
+    assert scope2_errors == []
+    assert any(
+        error.artifact_path == "simulation_result.json"
+        and "heavy simulation invoked" in error.message
+        for error in scope3_errors
+    ), scope3_errors

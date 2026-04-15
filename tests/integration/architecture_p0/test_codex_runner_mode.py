@@ -84,6 +84,20 @@ def _validate_eval_seed_env(**extra: str) -> dict[str, str]:
     return env
 
 
+def _run_validate_eval_seed(
+    *args: str, timeout: int = 300
+) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        [sys.executable, "scripts/validate_eval_seed.py", *args],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=timeout,
+        env=_validate_eval_seed_env(),
+    )
+
+
 def _load_dataset_item(_dataset_rel_path: str, row_id: str) -> EvalDatasetItem:
     dataset_path = ROOT / _dataset_rel_path
     if not dataset_path.exists():
@@ -539,7 +553,7 @@ def test_materialize_seed_workspace_overrides_integration_test_env(
         part for part in (completed.stdout, completed.stderr) if part
     )
 
-    assert completed.returncode == 0, combined_output
+    assert completed.returncode == 1, combined_output
     assert workspace_dir.exists(), combined_output
     assert "workspace:" in combined_output
     assert "integration-test setup via IS_INTEGRATION_TEST=true" not in combined_output
@@ -3402,7 +3416,7 @@ def test_clear_env_re_materializes_seeded_workspace_in_place(tmp_path: Path):
         part for part in (completed.stdout, completed.stderr) if part
     )
 
-    assert completed.returncode == 0, combined_output
+    assert completed.returncode == 1, combined_output
     assert '"ok": true' in completed.stdout.lower()
     refreshed_snapshot = _workspace_snapshot(workspace_dir)
     refreshed_snapshot.pop("benchmark_definition.yaml", None)
@@ -3449,17 +3463,18 @@ def test_validate_eval_seed_accepts_curated_rows_and_preserves_redundancy_metada
     assert "--judge-provider" in help_output, help_completed.stdout
     assert "-y" in help_output, help_completed.stdout
     assert "--runner-backend" in help_output, help_completed.stdout
+    assert "--validation-scope" in help_output, help_completed.stdout
     assert "cli" in help_output, help_completed.stdout
 
     validation_cases = (
         ("benchmark_planner", "bp-001"),
-        ("benchmark_plan_reviewer", "bpr-001"),
+        ("benchmark_plan_reviewer", "bpr-002"),
         ("benchmark_coder", "bc-001"),
         ("benchmark_reviewer", "br-001"),
         ("engineer_planner", "ep-002"),
-        ("engineer_plan_reviewer", "epr-001"),
+        ("engineer_plan_reviewer", "epr-002"),
         ("engineer_coder", "ec-001"),
-        ("engineer_execution_reviewer", "eer-001"),
+        ("engineer_execution_reviewer", "eer-002"),
     )
     for agent_name, row_id in validation_cases:
         completed = subprocess.run(
@@ -3585,7 +3600,7 @@ def test_validate_eval_seed_removes_preview_bundles_from_all_seed_artifacts():
         part for part in (completed.stdout, completed.stderr) if part
     )
 
-    assert completed.returncode == 0, combined_output
+    assert completed.returncode == 1, combined_output
     assert "PASS benchmark_planner bp-001:" in completed.stdout, completed.stdout
     assert "black/empty" not in combined_output, combined_output
 
@@ -3753,6 +3768,76 @@ def test_validate_eval_seed_skip_env_up_fails_while_exclusive_eval_lock_is_held(
     assert completed.returncode == 1, combined_output
     assert "another eval run is already running." in completed.stderr
     assert not state_path.exists(), state_path
+
+
+@pytest.mark.integration_p0
+@pytest.mark.int_id("INT-276")
+def test_validate_eval_seed_default_scope_rejects_ec002():
+    completed = _run_validate_eval_seed(
+        "--skip-env-up",
+        "--agent",
+        "engineer_coder",
+        "--task-id",
+        "ec-002",
+        "--fail-fast",
+        "--concurrency",
+        "1",
+    )
+
+    combined_output = "\n".join(
+        part for part in (completed.stdout, completed.stderr) if part
+    )
+
+    assert completed.returncode == 1, combined_output
+    assert "Validated 1 row(s): 0 passed, 1 failed." in combined_output, combined_output
+    assert "benchmark coder validation" in combined_output, combined_output
+    assert "FAIL engineer_coder ec-002:" in completed.stdout, completed.stdout
+
+
+@pytest.mark.integration_p0
+@pytest.mark.int_id("INT-277")
+def test_validate_eval_seed_current_node_scope_still_passes_ec002():
+    completed = _run_validate_eval_seed(
+        "--skip-env-up",
+        "--agent",
+        "engineer_coder",
+        "--task-id",
+        "ec-002",
+        "--validation-scope",
+        "current-node",
+        "--fail-fast",
+        "--concurrency",
+        "1",
+    )
+
+    combined_output = "\n".join(
+        part for part in (completed.stdout, completed.stderr) if part
+    )
+
+    assert completed.returncode == 0, combined_output
+    assert "PASS engineer_coder ec-002:" in completed.stdout, completed.stdout
+    assert "seeded-entry contract valid" in completed.stdout, completed.stdout
+
+
+@pytest.mark.integration_p0
+@pytest.mark.int_id("INT-278")
+def test_validate_eval_seed_rejects_invalid_validation_scope():
+    completed = _run_validate_eval_seed(
+        "--skip-env-up",
+        "--agent",
+        "engineer_coder",
+        "--task-id",
+        "ec-002",
+        "--validation-scope",
+        "not-a-real-scope",
+    )
+
+    combined_output = "\n".join(
+        part for part in (completed.stdout, completed.stderr) if part
+    )
+
+    assert completed.returncode != 0, combined_output
+    assert "Unknown validation scope" in combined_output, combined_output
 
 
 @pytest.mark.integration_p0

@@ -3,10 +3,14 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import json
+import os
+import tempfile
 import uuid
 from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any, Protocol
 
 import httpx
@@ -48,7 +52,7 @@ from controller.clients.worker import WorkerClient
 from controller.config.settings import settings as controller_settings
 from controller.persistence.db import get_sessionmaker
 from controller.persistence.models import Episode
-from shared.current_role import parse_current_role_manifest
+from shared.current_role import current_role_manifest_json, parse_current_role_manifest
 from shared.enums import AgentName, EntryFailureDisposition, EntryValidationSource
 from shared.models.schemas import (
     AssemblyDefinition,
@@ -60,10 +64,18 @@ from shared.script_contracts import (
     BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
     BENCHMARK_SCRIPT_PATH,
     SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
+    authored_script_path_for_agent,
     authored_script_path_for_reviewer_stage,
     plan_path_for_agent,
 )
 from shared.simulation.schemas import CustomObjectives
+from shared.utils.agent import (
+    simulate_benchmark,
+    simulate_engineering,
+    validate_benchmark,
+    validate_engineering,
+)
+from shared.workers.loader import load_component_from_script
 from shared.workers.markdown_validator import validate_todo_md
 from shared.workers.schema import (
     PlanReviewManifest,
@@ -96,6 +108,133 @@ REASON_CUSTOM_CHECK_FAILED = "custom_check_failed"
 class ValidationGraph(StrEnum):
     ENGINEER = "engineer"
     BENCHMARK = "benchmark"
+
+
+class ValidationScope(StrEnum):
+    CURRENT_NODE = "current-node"
+    CURRENT_AND_PREVIOUS_NODES = "current-and-previous-nodes"
+    CURRENT_AND_PREVIOUS_NODES_WITH_HEAVY_SIMULATION = (
+        "current-and-previous-nodes-with-heavy-simulation"
+    )
+
+
+@dataclass(frozen=True)
+class _SeedValidationGateSpec:
+    role: AgentName
+    gate_name: str
+    artifact_path: str | None
+    runner: str
+
+
+class _LocalSeedWorkspaceClient:
+    def __init__(self, root: Path, session_id: str):
+        self.root = root
+        self.session_id = session_id
+
+    @staticmethod
+    def _normalize(path: str | Path) -> Path:
+        candidate = str(path or "").strip()
+        if candidate in {"", "/", "."}:
+            return Path(".")
+        normalized = candidate.lstrip("/")
+        if normalized.startswith("../") or "/../" in normalized or normalized == "..":
+            raise ValueError(f"Path escapes workspace root: {path}")
+        return Path(normalized)
+
+    def _resolve(self, path: str | Path) -> Path:
+        rel_path = self._normalize(path)
+        return self.root / rel_path
+
+    async def exists(
+        self, path: str, *, bypass_agent_permissions: bool = False
+    ) -> bool:  # noqa: ARG002
+        resolved = self._resolve(path)
+        if resolved.exists():
+            return True
+        rel_prefix = resolved.relative_to(self.root).as_posix().rstrip("/")
+        if not rel_prefix:
+            return True
+        rel_prefix = f"{rel_prefix}/"
+        for child in self.root.rglob("*"):
+            if child.relative_to(self.root).as_posix().startswith(rel_prefix):
+                return True
+        return False
+
+    async def read_file(
+        self, path: str, *, bypass_agent_permissions: bool = False
+    ) -> str:  # noqa: ARG002
+        content = self._resolve(path).read_text(encoding="utf-8")
+        return content
+
+    async def read_file_optional(
+        self, path: str, *, bypass_agent_permissions: bool = False
+    ) -> str | None:  # noqa: ARG002
+        resolved = self._resolve(path)
+        if not resolved.exists():
+            return None
+        try:
+            return resolved.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            return None
+
+    async def read_file_binary(
+        self, path: str, *, bypass_agent_permissions: bool = False
+    ) -> bytes:  # noqa: ARG002
+        return self._resolve(path).read_bytes()
+
+    async def read_files_binary(
+        self,
+        paths: list[str],
+        *,
+        bypass_agent_permissions: bool = False,
+    ) -> dict[str, bytes]:  # noqa: ARG002
+        blobs: dict[str, bytes] = {}
+        for path in paths:
+            resolved = self._resolve(path)
+            if resolved.exists():
+                blobs[path] = resolved.read_bytes()
+        return blobs
+
+    async def list_files(
+        self, path: str = "/", *, bypass_agent_permissions: bool = False
+    ) -> list[SimpleNamespace]:  # noqa: ARG002
+        resolved = self._resolve(path)
+        if not resolved.exists():
+            return []
+
+        directory = resolved if resolved.is_dir() else resolved.parent
+        entries: list[SimpleNamespace] = []
+        for child in sorted(directory.iterdir()):
+            rel_path = child.relative_to(self.root).as_posix()
+            entries.append(
+                SimpleNamespace(path=rel_path, name=child.name, is_dir=child.is_dir())
+            )
+        return entries
+
+    async def aclose(self) -> None:
+        return None
+
+
+def _seed_validation_role_manifest(agent_name: AgentName) -> str:
+    return current_role_manifest_json(agent_name)
+
+
+def _seed_validation_workspace_role(target_node: AgentName) -> AgentName:
+    if target_node in {
+        AgentName.BENCHMARK_PLANNER,
+        AgentName.BENCHMARK_PLAN_REVIEWER,
+        AgentName.BENCHMARK_CODER,
+        AgentName.BENCHMARK_REVIEWER,
+    }:
+        return AgentName.BENCHMARK_CODER
+    if target_node in {
+        AgentName.ENGINEER_PLANNER,
+        AgentName.ENGINEER_PLAN_REVIEWER,
+        AgentName.ENGINEER_CODER,
+        AgentName.ENGINEER_EXECUTION_REVIEWER,
+    }:
+        return AgentName.ENGINEER_CODER
+    return target_node
 
 
 # Static and deterministic by contract. If a node has no previous node, reroute
@@ -966,6 +1105,635 @@ def _benchmark_validation_errors(
     return refusal_errors + fallback_errors
 
 
+@contextlib.contextmanager
+def _seed_validation_workspace_env(root: Path) -> Any:
+    old_values = {
+        "WORKER_SESSIONS_DIR": os.environ.get("WORKER_SESSIONS_DIR"),
+        "SESSION_ID": os.environ.get("SESSION_ID"),
+        "IS_HEAVY_WORKER": os.environ.get("IS_HEAVY_WORKER"),
+    }
+    os.environ["WORKER_SESSIONS_DIR"] = str(root.parent)
+    os.environ["SESSION_ID"] = root.name
+    os.environ["IS_HEAVY_WORKER"] = "1"
+    try:
+        yield
+    finally:
+        for key, value in old_values.items():
+            if value is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = value
+
+
+async def _materialize_worker_workspace_snapshot(
+    worker_client: Any,
+    target_root: Path,
+) -> None:
+    pending_dirs = ["/"]
+    visited_dirs: set[str] = set()
+    file_paths: list[str] = []
+
+    while pending_dirs:
+        current_dir = pending_dirs.pop()
+        normalized_dir = str(Path(current_dir)).replace("\\", "/")
+        if normalized_dir in visited_dirs:
+            continue
+        visited_dirs.add(normalized_dir)
+        try:
+            entries = await worker_client.list_files(
+                current_dir,
+                bypass_agent_permissions=True,
+            )
+        except TypeError:
+            entries = await worker_client.list_files(current_dir)
+
+        for entry in entries:
+            entry_path = str(getattr(entry, "path", "") or "").strip()
+            if not entry_path:
+                continue
+            if getattr(entry, "is_dir", False):
+                pending_dirs.append(entry_path)
+                continue
+            normalized_path = Path(entry_path).as_posix().lstrip("/")
+            if normalized_path and normalized_path not in file_paths:
+                file_paths.append(normalized_path)
+
+    if not file_paths:
+        return
+
+    read_files_binary = getattr(worker_client, "read_files_binary", None)
+    blobs: dict[str, bytes] = {}
+    if callable(read_files_binary):
+        try:
+            blobs = await read_files_binary(
+                file_paths,
+                bypass_agent_permissions=True,
+            )
+        except TypeError:
+            blobs = await read_files_binary(file_paths)
+
+    for rel_path in file_paths:
+        target_path = target_root / Path(rel_path)
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+        if rel_path in blobs:
+            target_path.write_bytes(blobs[rel_path])
+            continue
+
+        read_file_binary = getattr(worker_client, "read_file_binary", None)
+        if callable(read_file_binary):
+            try:
+                target_path.write_bytes(
+                    await read_file_binary(
+                        rel_path,
+                        bypass_agent_permissions=True,
+                    )
+                )
+                continue
+            except TypeError:
+                target_path.write_bytes(await read_file_binary(rel_path))
+                continue
+
+        content = await worker_client.read_file_optional(
+            rel_path,
+            bypass_agent_permissions=True,
+        )
+        if content is None:
+            raise FileNotFoundError(
+                f"Seed validation snapshot missing file content for {rel_path}"
+            )
+        target_path.write_text(content, encoding="utf-8")
+
+
+def _seed_validation_git_init(root: Path) -> None:
+    try:
+        from shared.git_utils import init_workspace_repo
+
+        init_workspace_repo(root)
+    except Exception:
+        # The planner submission helpers need a git repo. If the repo cannot be
+        # initialized, the planner gate will fail closed when invoked.
+        return
+
+
+async def _run_seed_validation_gate(
+    *,
+    worker_client: Any,
+    gate_role: AgentName,
+    gate_name: str,
+    artifact_path: str | None,
+    gate_runner,
+) -> list[NodeEntryValidationError]:
+    session_id = str(getattr(worker_client, "session_id", "") or "").strip() or str(
+        uuid.uuid4()
+    )
+    with tempfile.TemporaryDirectory(prefix="seed-validation-") as tmp:
+        root = Path(tmp)
+        try:
+            await _materialize_worker_workspace_snapshot(worker_client, root)
+            root.joinpath(".manifests").mkdir(parents=True, exist_ok=True)
+            root.joinpath(".manifests/current_role.json").write_text(
+                _seed_validation_role_manifest(gate_role),
+                encoding="utf-8",
+            )
+            _seed_validation_git_init(root)
+            local_client = _LocalSeedWorkspaceClient(root, session_id=session_id)
+            with _seed_validation_workspace_env(root):
+                return await gate_runner(root=root, local_client=local_client)
+        except Exception as exc:
+            return [
+                _seeded_schema_error(
+                    message=f"{gate_name} replay failed: {exc}",
+                    artifact_path=artifact_path,
+                )
+            ]
+
+
+async def _run_seed_validation_benchmark_gate(
+    *,
+    worker_client: Any,
+    gate_name: str,
+    validation_scope: ValidationScope,
+    gate_role: AgentName,
+) -> list[NodeEntryValidationError]:
+    async def _gate_runner(
+        *, root: Path, local_client: _LocalSeedWorkspaceClient
+    ) -> list[NodeEntryValidationError]:
+        script_path = root / authored_script_path_for_agent(gate_role)
+        component = load_component_from_script(
+            script_path=script_path, session_root=root
+        )
+        validation_errors: list[NodeEntryValidationError] = []
+        ok, message = validate_benchmark(
+            component,
+            script_path=script_path,
+            output_dir=root,
+            session_id=local_client.session_id,
+            smoke_test_mode=controller_settings.is_integration_test,
+        )
+        if not ok:
+            validation_errors.append(
+                _seeded_schema_error(
+                    message=f"{gate_name}: {message or 'validation failed'}",
+                    artifact_path=script_path.relative_to(root).as_posix(),
+                )
+            )
+            return validation_errors
+
+        if (
+            validation_scope
+            == ValidationScope.CURRENT_AND_PREVIOUS_NODES_WITH_HEAVY_SIMULATION
+        ):
+            simulation_result = simulate_benchmark(
+                component,
+                script_path=script_path,
+                output_dir=root,
+                session_id=local_client.session_id,
+                smoke_test_mode=controller_settings.is_integration_test,
+            )
+            if not simulation_result.success:
+                validation_errors.append(
+                    _seeded_schema_error(
+                        message=(
+                            f"{gate_name}: "
+                            f"{simulation_result.message or 'simulation failed'}"
+                        ),
+                        artifact_path="simulation_result.json",
+                    )
+                )
+        return validation_errors
+
+    return await _run_seed_validation_gate(
+        worker_client=worker_client,
+        gate_role=gate_role,
+        gate_name=gate_name,
+        artifact_path=authored_script_path_for_agent(gate_role).as_posix(),
+        gate_runner=_gate_runner,
+    )
+
+
+async def _run_seed_validation_engineering_gate(
+    *,
+    worker_client: Any,
+    gate_name: str,
+    validation_scope: ValidationScope,
+    gate_role: AgentName,
+) -> list[NodeEntryValidationError]:
+    async def _gate_runner(
+        *, root: Path, local_client: _LocalSeedWorkspaceClient
+    ) -> list[NodeEntryValidationError]:
+        script_path = root / authored_script_path_for_agent(gate_role)
+        component = load_component_from_script(
+            script_path=script_path, session_root=root
+        )
+        validation_errors: list[NodeEntryValidationError] = []
+        ok, message = validate_engineering(
+            component,
+            script_path=script_path,
+            output_dir=root,
+            session_id=local_client.session_id,
+            smoke_test_mode=controller_settings.is_integration_test,
+        )
+        if not ok:
+            validation_errors.append(
+                _seeded_schema_error(
+                    message=f"{gate_name}: {message or 'validation failed'}",
+                    artifact_path=script_path.relative_to(root).as_posix(),
+                )
+            )
+            return validation_errors
+
+        if (
+            validation_scope
+            == ValidationScope.CURRENT_AND_PREVIOUS_NODES_WITH_HEAVY_SIMULATION
+        ):
+            simulation_result = simulate_engineering(
+                component,
+                script_path=script_path,
+                output_dir=root,
+                session_id=local_client.session_id,
+                smoke_test_mode=controller_settings.is_integration_test,
+            )
+            if not simulation_result.success:
+                validation_errors.append(
+                    _seeded_schema_error(
+                        message=(
+                            f"{gate_name}: "
+                            f"{simulation_result.message or 'simulation failed'}"
+                        ),
+                        artifact_path="simulation_result.json",
+                    )
+                )
+        return validation_errors
+
+    return await _run_seed_validation_gate(
+        worker_client=worker_client,
+        gate_role=gate_role,
+        gate_name=gate_name,
+        artifact_path=authored_script_path_for_agent(gate_role).as_posix(),
+        gate_runner=_gate_runner,
+    )
+
+
+async def _run_seed_validation_submit_plan_gate(
+    *,
+    worker_client: Any,
+    gate_name: str,
+    submit_fn,
+    gate_role: AgentName,
+) -> list[NodeEntryValidationError]:
+    async def _gate_runner(
+        *, root: Path, local_client: _LocalSeedWorkspaceClient
+    ) -> list[NodeEntryValidationError]:
+        result = submit_fn(root)
+        if result.ok and result.status == "submitted":
+            return []
+        messages = result.errors or [f"{gate_name} returned status {result.status}"]
+        return _benchmark_validation_errors(
+            messages=messages,
+            message_prefix=f"{gate_name}: ",
+            artifact_path=plan_path_for_agent(gate_role).as_posix(),
+        )
+
+    return await _run_seed_validation_gate(
+        worker_client=worker_client,
+        gate_role=gate_role,
+        gate_name=gate_name,
+        artifact_path=plan_path_for_agent(gate_role).as_posix(),
+        gate_runner=_gate_runner,
+    )
+
+
+async def _run_seed_validation_plan_reviewer_gate(
+    *,
+    worker_client: Any,
+    gate_name: str,
+    manifest_path: str,
+    expected_stage: AgentName,
+) -> list[NodeEntryValidationError]:
+    async def _gate_runner(
+        *, root: Path, local_client: _LocalSeedWorkspaceClient
+    ) -> list[NodeEntryValidationError]:
+        error = await validate_plan_reviewer_handover(
+            local_client,
+            manifest_path=manifest_path,
+            expected_stage=expected_stage,
+        )
+        if error is None:
+            return []
+        return [
+            _seeded_schema_error(
+                message=f"{gate_name}: {error}",
+                artifact_path=manifest_path,
+            )
+        ]
+
+    return await _run_seed_validation_gate(
+        worker_client=worker_client,
+        gate_role=expected_stage,
+        gate_name=gate_name,
+        artifact_path=manifest_path,
+        gate_runner=_gate_runner,
+    )
+
+
+async def _run_seed_validation_reviewer_gate(
+    *,
+    worker_client: Any,
+    gate_name: str,
+    manifest_path: str,
+    expected_stage: AgentName,
+    require_verification_result: bool | None = None,
+    heavy_simulation: bool = False,
+) -> list[NodeEntryValidationError]:
+    async def _gate_runner(
+        *, root: Path, local_client: _LocalSeedWorkspaceClient
+    ) -> list[NodeEntryValidationError]:
+        if heavy_simulation:
+            script_path = root / authored_script_path_for_reviewer_stage(expected_stage)
+            component = load_component_from_script(
+                script_path=script_path,
+                session_root=root,
+            )
+            simulation_result = (
+                simulate_benchmark(
+                    component,
+                    script_path=script_path,
+                    output_dir=root,
+                    session_id=local_client.session_id,
+                    smoke_test_mode=controller_settings.is_integration_test,
+                )
+                if expected_stage == AgentName.BENCHMARK_REVIEWER
+                else simulate_engineering(
+                    component,
+                    script_path=script_path,
+                    output_dir=root,
+                    session_id=local_client.session_id,
+                    smoke_test_mode=controller_settings.is_integration_test,
+                )
+            )
+            if not simulation_result.success:
+                return [
+                    _seeded_schema_error(
+                        message=(
+                            f"{gate_name}: "
+                            f"{simulation_result.message or 'simulation failed'}"
+                        ),
+                        artifact_path="simulation_result.json",
+                    )
+                ]
+
+        error = await validate_reviewer_handover(
+            local_client,
+            manifest_path=manifest_path,
+            expected_stage=expected_stage,
+            require_verification_result=require_verification_result,
+        )
+        if error is None:
+            return []
+        return [
+            _seeded_schema_error(
+                message=f"{gate_name}: {error}",
+                artifact_path=manifest_path,
+            )
+        ]
+
+    return await _run_seed_validation_gate(
+        worker_client=worker_client,
+        gate_role=expected_stage,
+        gate_name=gate_name,
+        artifact_path=manifest_path,
+        gate_runner=_gate_runner,
+    )
+
+
+async def _validate_seeded_workspace_scope_gates(
+    *,
+    worker_client: Any,
+    target_node: AgentName,
+    validation_scope: ValidationScope,
+) -> list[NodeEntryValidationError]:
+    from shared.agent_templates.codex.scripts.submit_plan import (
+        submit_benchmark_plan,
+        submit_engineering_plan,
+    )
+
+    if validation_scope == ValidationScope.CURRENT_NODE:
+        return []
+
+    errors: list[NodeEntryValidationError] = []
+
+    if target_node == AgentName.BENCHMARK_PLANNER:
+        errors.extend(
+            await _run_seed_validation_submit_plan_gate(
+                worker_client=worker_client,
+                gate_name="benchmark planner submission",
+                submit_fn=submit_benchmark_plan,
+                gate_role=AgentName.BENCHMARK_PLANNER,
+            )
+        )
+        return errors
+
+    if target_node == AgentName.BENCHMARK_PLAN_REVIEWER:
+        errors.extend(
+            await _run_seed_validation_submit_plan_gate(
+                worker_client=worker_client,
+                gate_name="benchmark planner submission",
+                submit_fn=submit_benchmark_plan,
+                gate_role=AgentName.BENCHMARK_PLANNER,
+            )
+        )
+        errors.extend(
+            await _run_seed_validation_plan_reviewer_gate(
+                worker_client=worker_client,
+                gate_name="benchmark plan reviewer handover",
+                manifest_path=".manifests/benchmark_plan_review_manifest.json",
+                expected_stage=AgentName.BENCHMARK_PLAN_REVIEWER,
+            )
+        )
+        return errors
+
+    if target_node == AgentName.BENCHMARK_CODER:
+        errors.extend(
+            await _run_seed_validation_submit_plan_gate(
+                worker_client=worker_client,
+                gate_name="benchmark planner submission",
+                submit_fn=submit_benchmark_plan,
+                gate_role=AgentName.BENCHMARK_PLANNER,
+            )
+        )
+        errors.extend(
+            await _run_seed_validation_plan_reviewer_gate(
+                worker_client=worker_client,
+                gate_name="benchmark plan reviewer handover",
+                manifest_path=".manifests/benchmark_plan_review_manifest.json",
+                expected_stage=AgentName.BENCHMARK_PLAN_REVIEWER,
+            )
+        )
+        errors.extend(
+            await _run_seed_validation_benchmark_gate(
+                worker_client=worker_client,
+                gate_name="benchmark coder validation",
+                validation_scope=validation_scope,
+                gate_role=AgentName.BENCHMARK_CODER,
+            )
+        )
+        return errors
+
+    if target_node == AgentName.BENCHMARK_REVIEWER:
+        errors.extend(
+            await _run_seed_validation_submit_plan_gate(
+                worker_client=worker_client,
+                gate_name="benchmark planner submission",
+                submit_fn=submit_benchmark_plan,
+                gate_role=AgentName.BENCHMARK_PLANNER,
+            )
+        )
+        errors.extend(
+            await _run_seed_validation_plan_reviewer_gate(
+                worker_client=worker_client,
+                gate_name="benchmark plan reviewer handover",
+                manifest_path=".manifests/benchmark_plan_review_manifest.json",
+                expected_stage=AgentName.BENCHMARK_PLAN_REVIEWER,
+            )
+        )
+        errors.extend(
+            await _run_seed_validation_benchmark_gate(
+                worker_client=worker_client,
+                gate_name="benchmark coder validation",
+                validation_scope=validation_scope,
+                gate_role=AgentName.BENCHMARK_CODER,
+            )
+        )
+        errors.extend(
+            await _run_seed_validation_reviewer_gate(
+                worker_client=worker_client,
+                gate_name="benchmark reviewer handover",
+                manifest_path=".manifests/benchmark_review_manifest.json",
+                expected_stage=AgentName.BENCHMARK_REVIEWER,
+            )
+        )
+        return errors
+
+    if target_node == AgentName.ENGINEER_PLANNER:
+        errors.extend(
+            await _run_seed_validation_benchmark_gate(
+                worker_client=worker_client,
+                gate_name="benchmark coder validation",
+                validation_scope=validation_scope,
+                gate_role=AgentName.BENCHMARK_CODER,
+            )
+        )
+        errors.extend(
+            await _run_seed_validation_submit_plan_gate(
+                worker_client=worker_client,
+                gate_name="engineering planner submission",
+                submit_fn=submit_engineering_plan,
+                gate_role=AgentName.ENGINEER_PLANNER,
+            )
+        )
+        return errors
+
+    if target_node == AgentName.ENGINEER_PLAN_REVIEWER:
+        errors.extend(
+            await _run_seed_validation_submit_plan_gate(
+                worker_client=worker_client,
+                gate_name="engineering planner submission",
+                submit_fn=submit_engineering_plan,
+                gate_role=AgentName.ENGINEER_PLANNER,
+            )
+        )
+        errors.extend(
+            await _run_seed_validation_plan_reviewer_gate(
+                worker_client=worker_client,
+                gate_name="engineering plan reviewer handover",
+                manifest_path=".manifests/engineering_plan_review_manifest.json",
+                expected_stage=AgentName.ENGINEER_PLAN_REVIEWER,
+            )
+        )
+        return errors
+
+    if target_node == AgentName.ENGINEER_CODER:
+        errors.extend(
+            await _run_seed_validation_benchmark_gate(
+                worker_client=worker_client,
+                gate_name="benchmark coder validation",
+                validation_scope=validation_scope,
+                gate_role=AgentName.BENCHMARK_CODER,
+            )
+        )
+        errors.extend(
+            await _run_seed_validation_submit_plan_gate(
+                worker_client=worker_client,
+                gate_name="engineering planner submission",
+                submit_fn=submit_engineering_plan,
+                gate_role=AgentName.ENGINEER_PLANNER,
+            )
+        )
+        errors.extend(
+            await _run_seed_validation_plan_reviewer_gate(
+                worker_client=worker_client,
+                gate_name="engineering plan reviewer handover",
+                manifest_path=".manifests/engineering_plan_review_manifest.json",
+                expected_stage=AgentName.ENGINEER_PLAN_REVIEWER,
+            )
+        )
+        errors.extend(
+            await _run_seed_validation_engineering_gate(
+                worker_client=worker_client,
+                gate_name="engineering coder validation",
+                validation_scope=validation_scope,
+                gate_role=AgentName.ENGINEER_CODER,
+            )
+        )
+        return errors
+
+    if target_node == AgentName.ENGINEER_EXECUTION_REVIEWER:
+        errors.extend(
+            await _run_seed_validation_benchmark_gate(
+                worker_client=worker_client,
+                gate_name="benchmark coder validation",
+                validation_scope=validation_scope,
+                gate_role=AgentName.BENCHMARK_CODER,
+            )
+        )
+        errors.extend(
+            await _run_seed_validation_submit_plan_gate(
+                worker_client=worker_client,
+                gate_name="engineering planner submission",
+                submit_fn=submit_engineering_plan,
+                gate_role=AgentName.ENGINEER_PLANNER,
+            )
+        )
+        errors.extend(
+            await _run_seed_validation_plan_reviewer_gate(
+                worker_client=worker_client,
+                gate_name="engineering plan reviewer handover",
+                manifest_path=".manifests/engineering_plan_review_manifest.json",
+                expected_stage=AgentName.ENGINEER_PLAN_REVIEWER,
+            )
+        )
+        errors.extend(
+            await _run_seed_validation_engineering_gate(
+                worker_client=worker_client,
+                gate_name="engineering coder validation",
+                validation_scope=validation_scope,
+                gate_role=AgentName.ENGINEER_CODER,
+            )
+        )
+        errors.extend(
+            await _run_seed_validation_reviewer_gate(
+                worker_client=worker_client,
+                gate_name="engineering execution reviewer handover",
+                manifest_path=".manifests/engineering_execution_handoff_manifest.json",
+                expected_stage=AgentName.ENGINEER_EXECUTION_REVIEWER,
+                require_verification_result=True,
+            )
+        )
+        return errors
+
+    return errors
+
+
 def _required_render_bundle_sidecars(
     *,
     manifest: RenderManifest,
@@ -1019,6 +1787,7 @@ async def validate_seeded_workspace_handoff_artifacts(
     *,
     worker_client: WorkerClient,
     target_node: AgentName,
+    validation_scope: ValidationScope = ValidationScope.CURRENT_NODE,
 ) -> list[NodeEntryValidationError]:
     """Fail-closed schema + semantic checks for seeded/direct entry workspaces."""
     errors: list[NodeEntryValidationError] = []
@@ -1395,6 +2164,15 @@ async def validate_seeded_workspace_handoff_artifacts(
                 )
             )
 
+    if validation_scope != ValidationScope.CURRENT_NODE:
+        errors.extend(
+            await _validate_seeded_workspace_scope_gates(
+                worker_client=worker_client,
+                target_node=target_node,
+                validation_scope=validation_scope,
+            )
+        )
+
     return errors
 
 
@@ -1686,6 +2464,7 @@ __all__ = [
     "NodeEntryValidationError",
     "NodeEntryValidationResult",
     "ValidationGraph",
+    "ValidationScope",
     "benchmark_coder_handover_custom_check",
     "benchmark_coder_handover_custom_check_from_session_id",
     "benchmark_plan_reviewer_handover_custom_check",

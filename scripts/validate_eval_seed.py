@@ -45,6 +45,7 @@ _STACK_PROFILE_NAME = (
 )
 apply_stack_profile_env(_STACK_PROFILE_NAME, env=os.environ, root=ROOT)
 
+from controller.agent.node_entry_validation import ValidationScope  # noqa: E402
 from controller.clients.worker import WorkerClient  # noqa: E402
 from evals.logic.curation import load_dataset_curation_manifest  # noqa: E402
 from evals.logic.models import EvalDatasetItem  # noqa: E402
@@ -112,6 +113,16 @@ def _parse_runner_backend_arg(value: str) -> str:
         available = ", ".join(backend.value for backend in EvalRunnerBackend)
         raise argparse.ArgumentTypeError(
             f"Unknown eval runner backend {value!r}. Available: {available}"
+        ) from exc
+
+
+def _parse_validation_scope_arg(value: str) -> ValidationScope:
+    try:
+        return ValidationScope(value)
+    except ValueError as exc:
+        available = ", ".join(scope.value for scope in ValidationScope)
+        raise argparse.ArgumentTypeError(
+            f"Unknown validation scope {value!r}. Available: {available}"
         ) from exc
 
 
@@ -228,6 +239,15 @@ def _parse_args() -> argparse.Namespace:
             "Deprecated compatibility alias. Regenerate deterministic seed "
             "render bundles before validation (default: disabled). Prefer "
             "scripts/update_eval_seed_renders.py for maintenance runs."
+        ),
+    )
+    parser.add_argument(
+        "--validation-scope",
+        type=_parse_validation_scope_arg,
+        default=ValidationScope.CURRENT_AND_PREVIOUS_NODES,
+        help=(
+            "Depth of seed validation to run. Default: "
+            f"{ValidationScope.CURRENT_AND_PREVIOUS_NODES.value}."
         ),
     )
     parser.add_argument(
@@ -503,6 +523,7 @@ async def _validate_item(
     update_manifests: bool,
     update_renders: bool,
     errors_only: bool = False,
+    validation_scope: ValidationScope = ValidationScope.CURRENT_AND_PREVIOUS_NODES,
 ) -> tuple[bool, str | SeededEntryContractError]:
     session_id = _build_session_id(agent, item.id)
     spec = AGENT_SPECS[agent]
@@ -530,6 +551,7 @@ async def _validate_item(
             worker_light_url=WORKER_LIGHT_URL,
             logger=item_logger,
             workspace_client=snapshot_client,
+            validation_scope=validation_scope,
         )
     except SeededEntryContractError as exc:
         return False, exc
@@ -670,6 +692,7 @@ async def _async_main(args: argparse.Namespace) -> int:
                     update_manifests=args.update_manifests,
                     update_renders=args.update_renders,
                     errors_only=args.errors_only,
+                    validation_scope=args.validation_scope,
                 )
                 if not ok:
                     print(_format_failure_message(agent.value, item.id, detail))
@@ -691,6 +714,7 @@ async def _async_main(args: argparse.Namespace) -> int:
                         update_manifests=args.update_manifests,
                         update_renders=args.update_renders,
                         errors_only=args.errors_only,
+                        validation_scope=args.validation_scope,
                     )
                     return agent, item, ok, detail
 

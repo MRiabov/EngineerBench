@@ -15,6 +15,7 @@ from controller.agent.node_entry_validation import (
     NodeEntryValidationError,
     NodeEntryValidationResult,
     ValidationGraph,
+    ValidationScope,
     benchmark_coder_handover_custom_check_from_session_id,
     benchmark_plan_reviewer_handover_custom_check_from_session_id,
     build_benchmark_node_contracts,
@@ -555,6 +556,7 @@ async def preflight_seeded_entry_contract(
     worker_light_url: str,
     logger: Any,
     workspace_client: Any | None = None,
+    validation_scope: ValidationScope = ValidationScope.CURRENT_NODE,
 ) -> None:
     if item.seed_artifact_dir is None and not item.seed_files:
         return
@@ -693,6 +695,7 @@ async def preflight_seeded_entry_contract(
             supplemental_errors = await validate_seeded_workspace_handoff_artifacts(
                 worker_client=worker,
                 target_node=target_node,
+                validation_scope=validation_scope,
             )
         except Exception as exc:
             add_message(
