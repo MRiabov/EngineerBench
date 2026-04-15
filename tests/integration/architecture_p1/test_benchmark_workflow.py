@@ -146,6 +146,9 @@ async def test_benchmark_planner_cad_reviewer_path():
         assert Path("benchmark_definition.yaml") in artifact_paths, (
             f"benchmark_definition.yaml missing. Artifacts: {artifact_paths}"
         )
+        assert Path("benchmark_plan_evidence_script.py") in artifact_paths, (
+            f"benchmark_plan_evidence_script.py missing. Artifacts: {artifact_paths}"
+        )
         assert Path("benchmark_script.py") in artifact_paths, (
             f"benchmark_script.py missing. Artifacts: {artifact_paths}"
         )

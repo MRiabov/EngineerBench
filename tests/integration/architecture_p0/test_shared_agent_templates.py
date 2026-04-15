@@ -2,7 +2,11 @@ from pathlib import Path
 
 import pytest
 
-from shared.agent_templates import load_common_template_files, load_template_text
+from shared.agent_templates import (
+    load_common_template_files,
+    load_role_template_files,
+    load_template_text,
+)
 from shared.current_role import parse_current_role_manifest
 from shared.enums import AgentName
 from tests.integration.agent.helpers import load_integration_mock_scenarios
@@ -34,6 +38,27 @@ def test_common_agent_templates_load_from_shared_templates():
         load_template_text("common/solution_script.py")
         == templates["solution_script.py"]
     )
+
+
+@pytest.mark.integration_p0
+def test_planner_agent_templates_include_retained_evidence_scripts():
+    benchmark_templates = load_role_template_files(AgentName.BENCHMARK_PLANNER)
+    engineer_templates = load_role_template_files(AgentName.ENGINEER_PLANNER)
+
+    assert set(benchmark_templates) == {
+        "benchmark_plan.md",
+        "todo.md",
+        "benchmark_definition.yaml",
+        "benchmark_assembly_definition.yaml",
+        "benchmark_plan_evidence_script.py",
+    }
+    assert set(engineer_templates) == {
+        "engineering_plan.md",
+        "todo.md",
+        "assembly_definition.yaml",
+        "benchmark_plan_evidence_script.py",
+        "solution_plan_evidence_script.py",
+    }
 
 
 @pytest.mark.integration_p0

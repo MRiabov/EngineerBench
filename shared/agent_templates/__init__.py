@@ -22,6 +22,8 @@ ROLE_TEMPLATE_FILES: dict[AgentName, tuple[str, ...]] = {
         "engineering_plan.md",
         "todo.md",
         "assembly_definition.yaml",
+        "benchmark_plan_evidence_script.py",
+        "solution_plan_evidence_script.py",
     ),
 }
 

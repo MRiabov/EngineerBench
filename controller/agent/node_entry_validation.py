@@ -57,6 +57,7 @@ from shared.models.schemas import (
 )
 from shared.models.simulation import SimulationResult
 from shared.script_contracts import (
+    BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
     BENCHMARK_SCRIPT_PATH,
     SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
     authored_script_path_for_reviewer_stage,
@@ -187,6 +188,7 @@ def _benchmark_planner_entry_artifacts() -> list[str]:
         "todo.md",
         "benchmark_definition.yaml",
         "benchmark_assembly_definition.yaml",
+        BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
     ]
 
 
@@ -198,6 +200,7 @@ def _engineer_planner_entry_artifacts() -> list[str]:
         "assembly_definition.yaml",
         "benchmark_assembly_definition.yaml",
         "benchmark_script.py",
+        SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
     ]
 
 

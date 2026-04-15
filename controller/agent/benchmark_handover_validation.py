@@ -260,6 +260,7 @@ async def validate_benchmark_planner_handoff_artifacts(
         "todo.md",
         "benchmark_definition.yaml",
         "benchmark_assembly_definition.yaml",
+        "benchmark_plan_evidence_script.py",
     ):
         if not await client.exists(rel_path):
             errors.append(f"Missing planner artifact: {rel_path}")
@@ -277,7 +278,6 @@ async def validate_benchmark_planner_handoff_artifacts(
         require_structured_plan=require_structured_plan,
     )
     ignored_missing_files = {
-        "benchmark_plan_evidence_script.py",
         "renders/benchmark_renders/render_manifest.json",
     }
     validation_messages = [

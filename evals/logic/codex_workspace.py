@@ -36,6 +36,7 @@ from shared.agent_templates import (
     load_codex_template_files,
     load_common_template_files,
     load_role_template_files,
+    load_template_repo_files,
 )
 from shared.current_role import current_role_manifest_json, parse_current_role_manifest
 from shared.enums import AgentName

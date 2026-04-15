@@ -36,7 +36,9 @@ from shared.models.schemas import (
     SubassemblyEstimate,
 )
 from shared.script_contracts import (
+    BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
     BENCHMARK_SCRIPT_PATH,
+    SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
     SOLUTION_SCRIPT_PATH,
     plan_path_for_agent,
 )
@@ -1463,12 +1465,14 @@ def validate_node_output(
                     "todo.md",
                     "benchmark_definition.yaml",
                     "assembly_definition.yaml",
+                    SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
                 ],
                 AgentName.BENCHMARK_PLANNER: [
                     plan_artifact_name,
                     "todo.md",
                     "benchmark_definition.yaml",
                     "benchmark_assembly_definition.yaml",
+                    BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
                 ],
                 AgentName.ENGINEER_CODER: [
                     plan_artifact_name,
@@ -1490,12 +1494,14 @@ def validate_node_output(
                 "todo.md",
                 "benchmark_definition.yaml",
                 "assembly_definition.yaml",
+                SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
             ],
             AgentName.BENCHMARK_PLANNER: [
                 plan_artifact_name,
                 "todo.md",
                 "benchmark_definition.yaml",
                 "benchmark_assembly_definition.yaml",
+                BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
             ],
             AgentName.ENGINEER_CODER: [
                 plan_artifact_name,
@@ -1605,6 +1611,19 @@ def validate_node_output(
                 else:
                     # Should not happen based on validate_plan_refusal return type
                     errors.append("plan_refusal.md: Invalid structure")
+        elif filename in {
+            BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
+            SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
+        }:
+            errors.extend(
+                [
+                    f"{filename}: {message}"
+                    for message in validate_planner_evidence_script_layout_contract(
+                        artifact_name=filename,
+                        content=content,
+                    )
+                ]
+            )
 
     if benchmark_definition_model is not None and assembly_definition_models:
         if effective_config is None:

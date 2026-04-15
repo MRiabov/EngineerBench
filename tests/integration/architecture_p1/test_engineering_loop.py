@@ -197,6 +197,8 @@ async def test_engineering_full_loop():
             "assembly_definition.yaml",
             "benchmark_definition.yaml",
             "benchmark_assembly_definition.yaml",
+            "benchmark_plan_evidence_script.py",
+            "solution_plan_evidence_script.py",
             "manufacturing_config.yaml",
             ".manifests/engineering_plan_review_manifest.json",
             "renders/render_manifest.json",
@@ -264,6 +266,7 @@ async def test_engineering_full_loop():
             "todo.md",
             "benchmark_definition.yaml",
             "manufacturing_config.yaml",
+            "solution_plan_evidence_script.py",
         }
         assert expected_plan_hashes <= set(plan_manifest.artifact_hashes), (
             plan_manifest.artifact_hashes

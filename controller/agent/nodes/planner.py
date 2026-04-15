@@ -10,6 +10,7 @@ from controller.agent.tools import get_engineer_planner_tools
 from controller.observability.tracing import record_worker_events
 from shared.enums import AgentName
 from shared.observability.schemas import SubmissionValidationEvent
+from shared.script_contracts import SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH
 from shared.type_checking import type_check
 
 from .base import BaseNode, SharedNodeContext
@@ -67,6 +68,7 @@ class PlannerNode(BaseNode):
             "benchmark_definition.yaml",
             "assembly_definition.yaml",
             "benchmark_assembly_definition.yaml",
+            SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
         ]
 
         prediction, artifacts, journal_entry = await self._run_program(

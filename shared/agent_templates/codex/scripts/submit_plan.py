@@ -10,7 +10,11 @@ from shared.current_role import current_role_agent_name
 from shared.enums import AgentName
 from shared.git_utils import commit_submission_attempt, repo_revision
 from shared.models.schemas import PlannerSubmissionResult
-from shared.script_contracts import plan_path_for_agent
+from shared.script_contracts import (
+    BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
+    SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
+    plan_path_for_agent,
+)
 from shared.workers.schema import PlanReviewManifest
 from worker_heavy.utils.dfm import (
     load_planner_manufacturing_config_from_text,
@@ -71,12 +75,14 @@ def _required_files(agent_name: AgentName) -> tuple[str, ...]:
             "todo.md",
             "benchmark_definition.yaml",
             "benchmark_assembly_definition.yaml",
+            BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
             "manufacturing_config.yaml",
         )
     return (
         "todo.md",
         "benchmark_definition.yaml",
         "assembly_definition.yaml",
+        SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
         "manufacturing_config.yaml",
     )
 

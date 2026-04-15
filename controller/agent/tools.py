@@ -14,6 +14,7 @@ from shared.git_utils import repo_revision
 from shared.models.schemas import PlannerSubmissionResult
 from shared.observability.schemas import ToolInvocationEvent
 from shared.script_contracts import (
+    SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
     authored_script_path_for_agent,
     plan_path_for_agent,
 )
@@ -278,6 +279,7 @@ def get_engineer_planner_tools(
             "todo.md",
             "benchmark_definition.yaml",
             "assembly_definition.yaml",
+            SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
         ]
         artifacts: dict[str, str] = {}
         missing_files: list[str] = []

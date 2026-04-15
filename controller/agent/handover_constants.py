@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 from shared.script_contracts import (
+    BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
     BENCHMARK_PLAN_PATH,
     BENCHMARK_SCRIPT_PATH,
     ENGINEERING_PLAN_PATH,
     PAYLOAD_TRAJECTORY_DEFINITION_PATH,
+    SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
     SOLUTION_SCRIPT_PATH,
 )
 
@@ -20,6 +22,7 @@ BENCHMARK_PLANNER_HANDOFF_ARTIFACTS: tuple[str, ...] = (
     "todo.md",
     "benchmark_definition.yaml",
     "benchmark_assembly_definition.yaml",
+    BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
 )
 
 BENCHMARK_CODER_HANDOFF_ARTIFACTS: tuple[str, ...] = (
@@ -40,6 +43,7 @@ ENGINEER_PLANNER_HANDOFF_ARTIFACTS: tuple[str, ...] = (
     "todo.md",
     "benchmark_definition.yaml",
     "assembly_definition.yaml",
+    SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
     *ENGINEER_BENCHMARK_CONTEXT_ARTIFACTS,
 )
 

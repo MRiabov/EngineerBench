@@ -3,6 +3,10 @@ from shared.enums import AgentName, EvalMode
 from shared.eval_artifacts import (
     workspace_artifacts_for_agent,
 )
+from shared.script_contracts import (
+    BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
+    SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
+)
 
 # Base planner artifact contract.
 PLANNER_REQUIRED_FILES: dict[AgentName, tuple[str, ...]] = {
@@ -11,12 +15,14 @@ PLANNER_REQUIRED_FILES: dict[AgentName, tuple[str, ...]] = {
         "todo.md",
         "benchmark_definition.yaml",
         "benchmark_assembly_definition.yaml",
+        BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
     ),
     AgentName.ENGINEER_PLANNER: (
         "engineering_plan.md",
         "todo.md",
         "benchmark_definition.yaml",
         "assembly_definition.yaml",
+        SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
     ),
 }
 

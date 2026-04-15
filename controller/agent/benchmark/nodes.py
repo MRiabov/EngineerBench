@@ -30,6 +30,7 @@ from shared.models.schemas import ReviewResult
 from shared.models.simulation import SimulationResult
 from shared.observability.schemas import ReviewDecisionEvent
 from shared.script_contracts import (
+    BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
     BENCHMARK_PLAN_PATH,
     BENCHMARK_SCRIPT_PATH,
 )
@@ -194,6 +195,7 @@ class BenchmarkPlannerNode(BaseNode):
                 "todo.md",
                 "benchmark_definition.yaml",
                 "benchmark_assembly_definition.yaml",
+                BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
             ]
             prediction, _, journal_entry = await self._run_program(
                 dspy.ReAct,
@@ -592,6 +594,7 @@ class BenchmarkPlannerNode(BaseNode):
             "todo.md",
             "benchmark_definition.yaml",
             "benchmark_assembly_definition.yaml",
+            BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
         ]
         episode_id = getattr(state, "episode_id", None) or self.ctx.episode_id
         db_callback = None

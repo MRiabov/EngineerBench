@@ -4,7 +4,9 @@ from collections.abc import Iterable
 
 from shared.enums import AgentName
 from shared.script_contracts import (
+    BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
     CURRENT_ROLE_MANIFEST_PATH,
+    SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
 )
 
 _BENCHMARK_PLAN_BASE_FILES: tuple[str, ...] = (
@@ -12,6 +14,7 @@ _BENCHMARK_PLAN_BASE_FILES: tuple[str, ...] = (
     "todo.md",
     "benchmark_definition.yaml",
     "benchmark_assembly_definition.yaml",
+    BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
 )
 
 _ENGINEER_PLAN_BASE_FILES: tuple[str, ...] = (
@@ -19,6 +22,7 @@ _ENGINEER_PLAN_BASE_FILES: tuple[str, ...] = (
     "todo.md",
     "benchmark_definition.yaml",
     "assembly_definition.yaml",
+    SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
 )
 
 _BENCHMARK_PLAN_ROLES = {
