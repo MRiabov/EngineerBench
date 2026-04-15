@@ -208,7 +208,14 @@ class EvalRunnerBackend(StrEnum):
     """Execution backend used by the eval runner."""
 
     CONTROLLER = "controller"
-    CODEX = "codex"
+    CLI = "cli"
+    CODEX = "cli"
+
+    @classmethod
+    def _missing_(cls, value):
+        if isinstance(value, str) and value.strip().lower() == "codex":
+            return cls.CLI
+        return None
 
 
 class FailureReason(UppercaseStrEnum):

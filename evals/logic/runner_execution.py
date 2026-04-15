@@ -477,10 +477,10 @@ async def _run_cli_eval(
         task_id=task_id,
         agent_name=agent_name,
         eval_mode=spec.mode,
-        runner_backend=EvalRunnerBackend.CODEX.value,
+        runner_backend=EvalRunnerBackend.CLI.value,
         provider_name=provider.provider_name,
     )
-    log.info("eval_start", backend=EvalRunnerBackend.CODEX.value)
+    log.info("eval_start", backend=EvalRunnerBackend.CLI.value)
 
     success = False
     failure_reason = ""
@@ -523,7 +523,7 @@ async def _run_cli_eval(
                 "eval_mode": spec.mode.value,
                 "complexity_level": item.complexity_level,
                 "provider_name": provider.provider_name,
-                "runner_backend": EvalRunnerBackend.CODEX.value,
+                "runner_backend": EvalRunnerBackend.CLI.value,
                 "session_id": session_id,
                 "status": "materialized",
                 "success": False,
@@ -731,6 +731,7 @@ async def _run_cli_eval(
                 session_id=session_id,
                 codex_workspace_root=cli_workspace_root,
                 codex_runtime_root=cli_runtime_root,
+                provider_name=provider.provider_name,
                 log=log,
             )
 
@@ -777,7 +778,7 @@ async def _run_cli_eval(
             "episode_id": None,
             "eval_mode": spec.mode.value,
             "provider_name": provider.provider_name,
-            "runner_backend": EvalRunnerBackend.CODEX.value,
+            "runner_backend": EvalRunnerBackend.CLI.value,
             "session_id": session_id,
             "status": "completed" if success else "failed",
             "success": success,
@@ -914,7 +915,7 @@ async def run_single_eval(
         )
         return
 
-    if runner_backend == EvalRunnerBackend.CODEX:
+    if runner_backend == EvalRunnerBackend.CLI:
         await _run_cli_eval(
             item=item,
             stats=stats,

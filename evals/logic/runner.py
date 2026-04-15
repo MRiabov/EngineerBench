@@ -166,12 +166,22 @@ def _resolve_runner_backend(
         return EvalRunnerBackend.CONTROLLER
 
     if call_paid_api is False:
-        return EvalRunnerBackend.CODEX
+        return EvalRunnerBackend.CLI
 
     if env_runner_backend:
         return EvalRunnerBackend(env_runner_backend)
 
-    return EvalRunnerBackend.CODEX
+    return EvalRunnerBackend.CLI
+
+
+def _parse_runner_backend_arg(value: str) -> str:
+    try:
+        return EvalRunnerBackend(value).value
+    except ValueError as exc:
+        available = ", ".join(backend.value for backend in EvalRunnerBackend)
+        raise argparse.ArgumentTypeError(
+            f"Unknown eval runner backend {value!r}. Available: {available}"
+        ) from exc
 
 
 def _mirror_session_trace_to_readable_logs(
@@ -343,7 +353,7 @@ async def run_single_eval(
         )
         return
 
-    if runner_backend == EvalRunnerBackend.CODEX:
+    if runner_backend == EvalRunnerBackend.CLI:
         await _run_cli_eval(
             item=item,
             stats=stats,
@@ -582,13 +592,13 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--runner-backend",
-        type=str,
-        default=None,
+        type=_parse_runner_backend_arg,
+        default=EvalRunnerBackend.CLI.value,
         choices=[backend.value for backend in EvalRunnerBackend],
         help=(
             "Explicit execution backend override: 'controller' for the API LLM "
-            "path, 'codex' for the local CLI LLM path. Codex is the default "
-            "when neither --call-paid-api nor EVAL_RUNNER_BACKEND is set."
+            "path, 'cli' for the local CLI LLM path. CLI is the default when "
+            "neither --call-paid-api nor EVAL_RUNNER_BACKEND is set."
         ),
     )
     parser.add_argument(
@@ -627,8 +637,8 @@ async def main():
     except ValueError as exc:
         parser.error(str(exc))
 
-    if args.open_cli_ui and runner_backend != EvalRunnerBackend.CODEX:
-        parser.error("--open-cli-ui requires the local Codex CLI backend")
+    if args.open_cli_ui and runner_backend != EvalRunnerBackend.CLI:
+        parser.error("--open-cli-ui requires the local CLI backend")
 
     requested_command = [sys.argv[0], *sys.argv[1:]]
     requested_selection = EvalRunSelection(

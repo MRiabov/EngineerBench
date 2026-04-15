@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from evals.logic.cli_provider import available_cli_providers  # noqa: E402
 from evals.logic.dataset_selection import (  # noqa: E402
     parse_level_filters,
     resolve_agents_for,
@@ -102,6 +103,16 @@ def _format_failure_message(
     return "\n".join(
         header + ["  report:"] + ["    " + line for line in body.splitlines()]
     )
+
+
+def _parse_runner_backend_arg(value: str) -> str:
+    try:
+        return EvalRunnerBackend(value).value
+    except ValueError as exc:
+        available = ", ".join(backend.value for backend in EvalRunnerBackend)
+        raise argparse.ArgumentTypeError(
+            f"Unknown eval runner backend {value!r}. Available: {available}"
+        ) from exc
 
 
 async def _wait_for_worker_ready(
@@ -237,8 +248,15 @@ def _parse_args() -> argparse.Namespace:
         action="store_true",
         help=(
             "After validating the selected seeds, run the eval runner in judge "
-            "mode using the codex backend to validate the seed quality itself."
+            "mode to validate the seed quality itself."
         ),
+    )
+    parser.add_argument(
+        "--judge-provider",
+        type=str,
+        default="qwen",
+        choices=available_cli_providers(),
+        help=("CLI provider to use for --run-judge follow-up evals (default: qwen)."),
     )
     parser.add_argument(
         "-y",
@@ -251,12 +269,12 @@ def _parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--runner-backend",
-        type=str,
-        default=EvalRunnerBackend.CODEX.value,
+        type=_parse_runner_backend_arg,
+        default=EvalRunnerBackend.CLI.value,
         choices=[backend.value for backend in EvalRunnerBackend],
         help=(
             "Backend to use for --run-judge follow-up evals "
-            f"(default: {EvalRunnerBackend.CODEX.value})."
+            f"(default: {EvalRunnerBackend.CLI.value})."
         ),
     )
     parser.add_argument(
@@ -722,6 +740,8 @@ async def _async_main(args: argparse.Namespace) -> int:
                 "--skip-env-up",
                 "--runner-backend",
                 judge_backend.value,
+                "--provider",
+                args.judge_provider,
                 "--run-judge",
                 "--agent",
                 agent_value,
@@ -740,7 +760,9 @@ async def _async_main(args: argparse.Namespace) -> int:
                 judge_command.append("--no-update-manifests")
 
             print(
-                f"Running judge evals for {agent_value} via {judge_backend.value} backend..."
+                "Running judge evals for "
+                f"{agent_value} via {judge_backend.value} backend "
+                f"with {args.judge_provider} provider..."
             )
             result = subprocess.run(judge_command, check=False, cwd=ROOT)
             if result.returncode != 0:

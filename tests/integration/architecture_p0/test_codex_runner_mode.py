@@ -42,11 +42,18 @@ from shared.agents.config import AgentsConfig
 from shared.current_role import current_role_manifest_json, parse_current_role_manifest
 from shared.enums import AgentName, ManufacturingMethod, ReviewDecision
 from shared.models.schemas import (
+    AssemblyConstraints,
+    AssemblyDefinition,
+    CostTotals,
     DatasetCurationManifest,
     PartMetadata,
     PlannerSubmissionResult,
 )
 from shared.workers.bundling import extract_bundle_base64
+from tests.integration.agent.helpers import (
+    REPO_MANUFACTURING_CONFIG,
+    _fixture_entry_file_content,
+)
 from worker_renderer.utils.build123d_rendering import (
     export_preview_scene_bundle,
     render_preview_view,
@@ -92,6 +99,161 @@ def _load_dataset_item(_dataset_rel_path: str, row_id: str) -> EvalDatasetItem:
             "seed_dataset": dataset_path.relative_to(ROOT),
         }
     )
+
+
+def _synthetic_planner_item(agent_name: AgentName, item_id: str) -> EvalDatasetItem:
+    def _normalize_benchmark_definition_content(
+        benchmark_definition_content: str,
+    ) -> str:
+        benchmark_definition = yaml.safe_load(benchmark_definition_content) or {}
+        physics = benchmark_definition.get("physics")
+        if isinstance(physics, dict) and "fem_enabled" in physics:
+            physics = dict(physics)
+            physics.pop("fem_enabled", None)
+            benchmark_definition["physics"] = physics
+        return yaml.safe_dump(benchmark_definition, sort_keys=False)
+
+    def _minimal_benchmark_assembly_definition_content(
+        benchmark_definition_content: str,
+    ) -> str:
+        benchmark_definition = yaml.safe_load(benchmark_definition_content) or {}
+        constraints = benchmark_definition.get("constraints") or {}
+        max_unit_cost = float(constraints["max_unit_cost"])
+        max_weight_g = float(constraints["max_weight_g"])
+        benchmark_assembly_definition = AssemblyDefinition(
+            version="1.0",
+            constraints=AssemblyConstraints(
+                benchmark_max_unit_cost_usd=max_unit_cost,
+                benchmark_max_weight_g=max_weight_g,
+                planner_target_max_unit_cost_usd=max_unit_cost,
+                planner_target_max_weight_g=max_weight_g,
+            ),
+            manufactured_parts=[],
+            final_assembly=[],
+            totals=CostTotals(
+                estimated_unit_cost_usd=0.0,
+                estimated_weight_g=0.0,
+                estimate_confidence="high",
+            ),
+        )
+        return yaml.safe_dump(
+            benchmark_assembly_definition.model_dump(
+                mode="json", by_alias=True, exclude_none=True
+            ),
+            sort_keys=False,
+        )
+
+    if agent_name == AgentName.BENCHMARK_PLANNER:
+        benchmark_definition_content = _normalize_benchmark_definition_content(
+            _fixture_entry_file_content(
+                "INT-204",
+                filename_suffix="benchmark_definition.yaml",
+                node="benchmark_planner",
+            )
+        )
+        return EvalDatasetItem(
+            id=item_id,
+            task="benchmark planner workspace contract smoke test",
+            complexity_level=0,
+            seed_dataset=None,
+            seed_files={
+                "benchmark_plan.md": textwrap.dedent(
+                    """
+                    ## 1. Learning Objective
+
+                    Show a solvable benchmark for `projectile_ball` moving through
+                    the open corridor toward the goal zone.
+
+                    ## 2. Static Geometry
+
+                    - `open_corridor_frame` keeps the corridor open between the
+                      spawn side and the goal zone.
+                    - The geometry stays inside the declared build zone.
+
+                    ## 3. Input Object
+
+                    - `projectile_ball` starts on the spawn side and remains a
+                      single moving payload.
+
+                    ## 4. Objectives
+
+                    - Reach the goal zone without colliding with any forbid zone.
+
+                    ## 5. Design
+
+                    - Keep the path open and legible for downstream implementation.
+
+                    ## 6. Randomization
+
+                    - Use the declared open-corridor variation and no runtime
+                      jitter beyond the seeded policy.
+
+                    ## 7. Build123d Strategy
+
+                    - Build the visible fixture with labeled, metadata-complete
+                      parts so reviewers can inspect the scene directly.
+
+                    ## 8. Cost & Weight Envelope
+
+                    - Respect the benchmark cost and weight caps derived from the
+                      planner estimates.
+
+                    ## 9. Part Metadata
+
+                    - Preserve the labels and metadata for `open_corridor_frame`
+                      and any other benchmark-owned parts exactly.
+                    """
+                ).strip()
+                + "\n",
+                "todo.md": _fixture_entry_file_content(
+                    "INT-204",
+                    filename_suffix="todo.md",
+                    node="benchmark_planner",
+                ),
+                "benchmark_assembly_definition.yaml": _minimal_benchmark_assembly_definition_content(
+                    benchmark_definition_content
+                ),
+                "benchmark_definition.yaml": benchmark_definition_content,
+                "manufacturing_config.yaml": REPO_MANUFACTURING_CONFIG,
+            },
+        )
+    if agent_name == AgentName.ENGINEER_PLANNER:
+        benchmark_definition_content = _normalize_benchmark_definition_content(
+            _fixture_entry_file_content(
+                "INT-033",
+                filename_suffix="benchmark_definition.yaml",
+                node="engineer_planner",
+            )
+        )
+        return EvalDatasetItem(
+            id=item_id,
+            task="engineer planner workspace contract smoke test",
+            complexity_level=0,
+            seed_dataset=None,
+            seed_files={
+                "engineering_plan.md": _fixture_entry_file_content(
+                    "INT-033",
+                    filename_suffix="plan.md",
+                    node="engineer_planner",
+                ),
+                "todo.md": _fixture_entry_file_content(
+                    "INT-033",
+                    filename_suffix="todo.md",
+                    node="engineer_planner",
+                ),
+                "assembly_definition.yaml": _fixture_entry_file_content(
+                    "INT-033",
+                    filename_suffix="assembly_definition.yaml",
+                    node="engineer_planner",
+                ),
+                "benchmark_definition.yaml": benchmark_definition_content,
+                "benchmark_assembly_definition.yaml": _minimal_benchmark_assembly_definition_content(
+                    benchmark_definition_content
+                ),
+                "manufacturing_config.yaml": REPO_MANUFACTURING_CONFIG,
+            },
+        )
+    raise ValueError(f"Unsupported planner agent for synthetic item: {agent_name}")
 
 
 def _load_submission_result(stdout: str) -> PlannerSubmissionResult:
@@ -264,7 +426,8 @@ def _load_agents_config_with_reasoning_effort_enabled(
 
 
 @pytest.mark.integration_p0
-def test_run_evals_help_exposes_codex_backend():
+@pytest.mark.int_id("INT-220")
+def test_run_evals_help_exposes_cli_backend():
     completed = subprocess.run(
         [sys.executable, "dataset/evals/run_evals.py", "--help"],
         cwd=ROOT,
@@ -284,12 +447,14 @@ def test_run_evals_help_exposes_codex_backend():
     )
     assert re.search(r"default:\s*1\s*smoke-\s*test\s*item", completed.stdout)
     assert re.search(r"default:\s*1\s*for\s*smoke-\s*test\s*runs", completed.stdout)
-    assert "codex" in normalized_stdout
+    assert "explicit execution backend override" in normalized_stdout.lower()
+    assert "'cli' for the local cli llm path" in normalized_stdout.lower()
     assert "qwen" in normalized_stdout
     assert "--codex-skill-loop" in normalized_stdout
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-221")
 def test_train_skills_help_exposes_retained_bundle_cli():
     completed = subprocess.run(
         [sys.executable, "-m", "evals.logic.skill_training", "--help"],
@@ -308,6 +473,7 @@ def test_train_skills_help_exposes_retained_bundle_cli():
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-222")
 def test_eval_entrypoints_ignore_outer_integration_env_under_eval_profile(
     tmp_path,
 ):
@@ -317,7 +483,7 @@ def test_eval_entrypoints_ignore_outer_integration_env_under_eval_profile(
             "dataset/evals/run_evals.py",
             "--skip-env-up",
             "--runner-backend",
-            "codex",
+            "cli",
             "--task-id",
             "missing-task-id",
         ],
@@ -342,6 +508,7 @@ def test_eval_entrypoints_ignore_outer_integration_env_under_eval_profile(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-223")
 def test_materialize_seed_workspace_overrides_integration_test_env(
     tmp_path: Path,
 ):
@@ -379,6 +546,7 @@ def test_materialize_seed_workspace_overrides_integration_test_env(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-224")
 def test_materialize_seed_workspace_requires_explicit_yolo_choice(
     tmp_path: Path,
 ):
@@ -410,6 +578,7 @@ def test_materialize_seed_workspace_requires_explicit_yolo_choice(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-225")
 @pytest.mark.parametrize(
     ("flag_name", "attr_name"),
     [
@@ -449,6 +618,7 @@ def test_materialize_seed_workspace_uses_generic_cli_flag_names(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-226")
 def test_materialize_seed_workspace_defaults_provider_to_qwen(
     monkeypatch: pytest.MonkeyPatch,
 ):
@@ -472,6 +642,7 @@ def test_materialize_seed_workspace_defaults_provider_to_qwen(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-227")
 def test_materialize_seed_workspace_forwards_new_terminal_flag_to_open_cli_ui(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -532,6 +703,7 @@ def test_materialize_seed_workspace_forwards_new_terminal_flag_to_open_cli_ui(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-228")
 def test_run_e2e_seed_stage_continues_after_closing_open_cli_ui_terminal(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -621,6 +793,7 @@ def test_run_e2e_seed_stage_continues_after_closing_open_cli_ui_terminal(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-229")
 def test_run_e2e_seed_resume_from_dir_uses_checkpoint(tmp_path: Path):
     import dataset.evals.run_e2e_seed as run_e2e_seed_module
     from evals.logic.models import E2EResumeStageRecord
@@ -662,6 +835,7 @@ def test_run_e2e_seed_resume_from_dir_uses_checkpoint(tmp_path: Path):
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-230")
 def test_run_e2e_seed_resume_from_dir_requires_checkpoint(tmp_path: Path):
     import dataset.evals.run_e2e_seed as run_e2e_seed_module
 
@@ -682,6 +856,7 @@ def test_run_e2e_seed_resume_from_dir_requires_checkpoint(tmp_path: Path):
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-231")
 def test_run_e2e_seed_resume_from_agent_handle_uses_stage_dir(tmp_path: Path):
     import dataset.evals.run_e2e_seed as run_e2e_seed_module
 
@@ -706,6 +881,7 @@ def test_run_e2e_seed_resume_from_agent_handle_uses_stage_dir(tmp_path: Path):
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-232")
 def test_run_e2e_seed_resume_from_agent_handle_uses_checkpoint_chain(
     tmp_path: Path,
 ):
@@ -753,6 +929,7 @@ def test_run_e2e_seed_resume_from_agent_handle_uses_checkpoint_chain(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-233")
 def test_run_e2e_seed_resume_from_agent_handle_requires_completed_predecessor(
     tmp_path: Path,
 ):
@@ -772,6 +949,8 @@ def test_run_e2e_seed_resume_from_agent_handle_requires_completed_predecessor(
         )
 
 
+@pytest.mark.integration_p0
+@pytest.mark.int_id("INT-234")
 @pytest.mark.asyncio
 async def test_seed_workspace_artifacts_skip_git_metadata(
     tmp_path: Path,
@@ -830,6 +1009,7 @@ async def test_seed_workspace_artifacts_skip_git_metadata(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-235")
 def test_cli_provider_registry_supports_qwen(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
@@ -943,6 +1123,7 @@ def test_cli_provider_registry_supports_qwen(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-236")
 def test_cli_provider_invocation_supports_prompt_flag_transport(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -1059,6 +1240,7 @@ def test_cli_provider_invocation_supports_prompt_flag_transport(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-237")
 def test_open_cli_ui_uses_new_terminal_when_requested(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -1153,6 +1335,7 @@ def test_open_cli_ui_uses_new_terminal_when_requested(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-238")
 def test_skill_training_preserves_legacy_provider_metadata(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -1258,6 +1441,7 @@ def test_skill_training_preserves_legacy_provider_metadata(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-239")
 def test_run_evals_codex_exec_help_exposes_workspace_write_sandbox(
     tmp_path: Path,
 ):
@@ -1276,6 +1460,7 @@ def test_run_evals_codex_exec_help_exposes_workspace_write_sandbox(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-240")
 def test_resume_codex_exec_uses_cli_provider_resume_command(
     tmp_path: Path, monkeypatch
 ):
@@ -1329,6 +1514,7 @@ def test_resume_codex_exec_uses_cli_provider_resume_command(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-241")
 def test_run_evals_defaults_are_smoke_test_contract():
     from evals.logic.runner import _build_parser
 
@@ -1342,6 +1528,7 @@ def test_run_evals_defaults_are_smoke_test_contract():
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-242")
 @pytest.mark.asyncio
 async def test_run_evals_codex_judge_does_not_launch_reviewers_without_flag(
     tmp_path, monkeypatch
@@ -1442,6 +1629,7 @@ async def test_run_evals_codex_judge_does_not_launch_reviewers_without_flag(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-243")
 @pytest.mark.asyncio
 async def test_run_evals_codex_skill_loop_flag_enables_loop_backend(
     tmp_path, monkeypatch
@@ -1516,6 +1704,7 @@ async def test_run_evals_codex_skill_loop_flag_enables_loop_backend(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-244")
 @pytest.mark.parametrize(
     "launch_return_code,expected_timed_out",
     [
@@ -1711,6 +1900,7 @@ async def test_run_evals_codex_skill_loop_resumes_same_session_twice(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-245")
 @pytest.mark.asyncio
 async def test_run_evals_codex_skill_loop_falls_back_to_primary_session_when_trace_missing(
     tmp_path, monkeypatch
@@ -1815,6 +2005,7 @@ async def test_run_evals_codex_skill_loop_falls_back_to_primary_session_when_tra
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-246")
 def test_run_evals_codex_readable_logs_mirror_imported_transcript(
     tmp_path, monkeypatch
 ):
@@ -1862,6 +2053,7 @@ def test_run_evals_codex_readable_logs_mirror_imported_transcript(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-247")
 def test_run_evals_level_filter_parser_accepts_repeated_and_bracketed_values():
     from evals.logic.runner import _parse_level_filters
 
@@ -1876,6 +2068,7 @@ def test_run_evals_level_filter_parser_accepts_repeated_and_bracketed_values():
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-248")
 def test_run_evals_codex_env_uses_isolated_home_and_workspace_pythonpath(tmp_path):
     source_auth_path = tmp_path / "source-home" / ".codex" / "auth.json"
     source_auth_path.parent.mkdir(parents=True, exist_ok=True)
@@ -1934,6 +2127,7 @@ def test_run_evals_codex_env_uses_isolated_home_and_workspace_pythonpath(tmp_pat
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-249")
 def test_cli_provider_reasoning_effort_translation_hook_is_used(tmp_path):
     source_auth_path = tmp_path / "source-home" / ".codex" / "auth.json"
     source_auth_path.parent.mkdir(parents=True, exist_ok=True)
@@ -1974,6 +2168,7 @@ def test_cli_provider_reasoning_effort_translation_hook_is_used(tmp_path):
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-250")
 def test_run_evals_codex_env_supports_repo_root_imports(tmp_path):
     source_auth_path = tmp_path / "source-home" / ".codex" / "auth.json"
     source_auth_path.parent.mkdir(parents=True, exist_ok=True)
@@ -2025,6 +2220,7 @@ def test_run_evals_codex_env_supports_repo_root_imports(tmp_path):
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-251")
 def test_run_evals_codex_env_uses_role_reasoning_effort_and_can_disable(
     tmp_path, monkeypatch
 ):
@@ -2082,6 +2278,7 @@ def test_run_evals_codex_env_uses_role_reasoning_effort_and_can_disable(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-252")
 def test_run_evals_build_dspy_lm_uses_configured_reasoning_effort_and_toggle(
     monkeypatch,
 ):
@@ -2152,6 +2349,7 @@ def test_run_evals_build_dspy_lm_uses_configured_reasoning_effort_and_toggle(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-253")
 def test_run_evals_codex_vtk_preview_renders_headlessly(tmp_path, monkeypatch):
     monkeypatch.delenv("DISPLAY", raising=False)
     monkeypatch.delenv("XAUTHORITY", raising=False)
@@ -2181,6 +2379,7 @@ def test_run_evals_codex_vtk_preview_renders_headlessly(tmp_path, monkeypatch):
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-254")
 def test_preview_scene_bundle_carries_current_role_manifest(tmp_path):
     workspace_root = tmp_path / "workspace"
     workspace_root.mkdir()
@@ -2222,6 +2421,7 @@ def test_preview_scene_bundle_carries_current_role_manifest(tmp_path):
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-255")
 def test_run_evals_codex_submit_helper_imports_workspace_script_from_cwd(
     tmp_path,
 ):
@@ -2270,6 +2470,7 @@ def test_run_evals_codex_submit_helper_imports_workspace_script_from_cwd(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-256")
 def test_run_evals_codex_submit_helper_forces_headless_rendering_env(tmp_path):
     item = _load_dataset_item(
         "dataset/data/seed/role_based/engineer_coder.json",
@@ -2354,6 +2555,7 @@ def test_run_evals_codex_submit_helper_forces_headless_rendering_env(tmp_path):
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-257")
 @pytest.mark.parametrize(
     ("extra_flags", "expected_fragment", "unexpected_fragment"),
     [
@@ -2410,6 +2612,7 @@ def test_launch_codex_exec_uses_expected_sandbox_policy(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-258")
 def test_launch_codex_exec_allows_host_loopback_when_requested(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -2485,6 +2688,7 @@ def _build_cli_runtime_context_for_test(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-259")
 def test_prompt_source_role_prompts_follow_runtime_order():
     prompt_source = load_prompts()
 
@@ -2508,6 +2712,7 @@ def test_prompt_source_role_prompts_follow_runtime_order():
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-260")
 def test_prompt_manager_unified_render_uses_shared_source_model(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -2567,6 +2772,7 @@ def test_prompt_manager_unified_render_uses_shared_source_model(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-261")
 def test_prompt_manager_appends_cli_provider_specific_appendix():
     item = _load_dataset_item(
         "dataset/data/seed/role_based/engineer_coder.json",
@@ -2601,6 +2807,7 @@ def test_prompt_manager_appends_cli_provider_specific_appendix():
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-262")
 def test_prompt_manager_injects_bug_reporting_appendix_only_when_enabled(
     monkeypatch: pytest.MonkeyPatch,
 ):
@@ -2639,6 +2846,7 @@ def test_prompt_manager_injects_bug_reporting_appendix_only_when_enabled(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-263")
 def test_materialize_seed_workspace_threads_cli_provider_specific_appendix(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -2670,84 +2878,24 @@ def test_materialize_seed_workspace_threads_cli_provider_specific_appendix(
     )
 
 
-@pytest.mark.integration_p0
-@pytest.mark.asyncio
-@pytest.mark.parametrize(
-    (
-        "seed_dataset",
-        "row_id",
-        "agent_name",
-        "expected_manifest",
-        "prompt_fragments",
-        "expected_files",
-        "expected_helper_scripts",
-    ),
-    [
-        (
-            "dataset/data/seed/role_based/benchmark_planner.json",
-            "bp-001",
-            AgentName.BENCHMARK_PLANNER,
-            ".manifests/benchmark_plan_review_manifest.json",
-            (
-                "Use workspace-relative paths only.",
-                "bash scripts/submit_benchmark_plan.sh",
-                "benchmark_assembly_definition.yaml",
-            ),
-            (
-                ".admin/clear_env.py",
-                "benchmark_plan.md",
-                "todo.md",
-                "benchmark_definition.yaml",
-                "benchmark_assembly_definition.yaml",
-                "scripts/submit_benchmark_plan.sh",
-                "scripts/submit_plan.py",
-                "journal.md",
-            ),
-            ("scripts/submit_benchmark_plan.sh",),
-        ),
-        (
-            "dataset/data/seed/role_based/engineer_planner.json",
-            "ep-001",
-            AgentName.ENGINEER_PLANNER,
-            ".manifests/engineering_plan_review_manifest.json",
-            (
-                "Use workspace-relative paths only.",
-                "bash scripts/submit_engineering_plan.sh",
-                "assembly_definition.yaml",
-            ),
-            (
-                ".admin/clear_env.py",
-                "engineering_plan.md",
-                "todo.md",
-                "benchmark_definition.yaml",
-                "benchmark_assembly_definition.yaml",
-                "assembly_definition.yaml",
-                "scripts/submit_engineering_plan.sh",
-                "scripts/submit_plan.py",
-                "journal.md",
-            ),
-            ("scripts/submit_engineering_plan.sh",),
-        ),
-    ],
-)
-async def test_codex_materialized_planner_workspace_submits(
+async def _assert_codex_materialized_planner_workspace_submits(
+    *,
     tmp_path: Path,
-    seed_dataset: str,
-    row_id: str,
+    int_id: str,
     agent_name: AgentName,
     expected_manifest: str,
     prompt_fragments: tuple[str, ...],
     expected_files: tuple[str, ...],
     expected_helper_scripts: tuple[str, ...],
-):
-    item = _load_dataset_item(seed_dataset, row_id)
-    workspace_dir = tmp_path / agent_name.value / row_id
+) -> None:
+    item = _synthetic_planner_item(agent_name, int_id)
+    workspace_dir = tmp_path / agent_name.value / item.id
     materialized = materialize_seed_workspace(
         item=item,
         agent_name=agent_name,
         workspace_dir=workspace_dir,
     )
-    mirror_workspace_dir = tmp_path / f"{agent_name.value}-mirror" / row_id
+    mirror_workspace_dir = tmp_path / f"{agent_name.value}-mirror" / item.id
     mirror_materialized = materialize_seed_workspace(
         item=item,
         agent_name=agent_name,
@@ -2814,7 +2962,7 @@ async def test_codex_materialized_planner_workspace_submits(
         task_id=item.id,
         workspace_dir=workspace_dir,
         codex_home_root=codex_home_root,
-        session_id=f"INT-CODEX-{agent_name.value}-{row_id}",
+        session_id=f"{int_id}-{agent_name.value}",
         agent_name=agent_name,
     )
     assert "AGENT_NAME" not in env
@@ -2857,6 +3005,71 @@ async def test_codex_materialized_planner_workspace_submits(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-218")
+@pytest.mark.asyncio
+async def test_codex_materialized_benchmark_planner_workspace_submits(
+    tmp_path: Path,
+):
+    await _assert_codex_materialized_planner_workspace_submits(
+        tmp_path=tmp_path,
+        int_id="INT-218",
+        agent_name=AgentName.BENCHMARK_PLANNER,
+        expected_manifest=".manifests/benchmark_plan_review_manifest.json",
+        prompt_fragments=(
+            "Use workspace-relative paths only.",
+            "bash scripts/submit_benchmark_plan.sh",
+            "benchmark_assembly_definition.yaml",
+        ),
+        expected_files=(
+            ".admin/clear_env.py",
+            "benchmark_plan.md",
+            "todo.md",
+            "benchmark_definition.yaml",
+            "benchmark_assembly_definition.yaml",
+            "benchmark_plan_evidence_script.py",
+            "scripts/submit_benchmark_plan.sh",
+            "scripts/submit_plan.py",
+            "journal.md",
+        ),
+        expected_helper_scripts=("scripts/submit_benchmark_plan.sh",),
+    )
+
+
+@pytest.mark.integration_p0
+@pytest.mark.int_id("INT-219")
+@pytest.mark.asyncio
+async def test_codex_materialized_engineer_planner_workspace_submits(
+    tmp_path: Path,
+):
+    await _assert_codex_materialized_planner_workspace_submits(
+        tmp_path=tmp_path,
+        int_id="INT-219",
+        agent_name=AgentName.ENGINEER_PLANNER,
+        expected_manifest=".manifests/engineering_plan_review_manifest.json",
+        prompt_fragments=(
+            "Use workspace-relative paths only.",
+            "bash scripts/submit_engineering_plan.sh",
+            "assembly_definition.yaml",
+        ),
+        expected_files=(
+            ".admin/clear_env.py",
+            "engineering_plan.md",
+            "todo.md",
+            "benchmark_definition.yaml",
+            "benchmark_assembly_definition.yaml",
+            "assembly_definition.yaml",
+            "benchmark_plan_evidence_script.py",
+            "solution_plan_evidence_script.py",
+            "scripts/submit_engineering_plan.sh",
+            "scripts/submit_plan.py",
+            "journal.md",
+        ),
+        expected_helper_scripts=("scripts/submit_engineering_plan.sh",),
+    )
+
+
+@pytest.mark.integration_p0
+@pytest.mark.int_id("INT-264")
 @pytest.mark.asyncio
 async def test_codex_role_scoped_planner_wrapper_rejects_mismatched_role(
     tmp_path: Path,
@@ -2919,6 +3132,7 @@ async def test_codex_role_scoped_planner_wrapper_rejects_mismatched_role(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-265")
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     (
@@ -3147,6 +3361,7 @@ async def test_codex_seed_workspace_materialization_is_role_specific_and_determi
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-266")
 def test_clear_env_re_materializes_seeded_workspace_in_place(tmp_path: Path):
     item = _load_dataset_item(
         "dataset/data/seed/role_based/engineer_coder.json",
@@ -3203,6 +3418,7 @@ def test_clear_env_re_materializes_seeded_workspace_in_place(tmp_path: Path):
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-267")
 def test_validate_eval_seed_accepts_curated_rows_and_preserves_redundancy_metadata():
     """
     Seeded render evidence sanity gate and judge cost guard.
@@ -3230,16 +3446,17 @@ def test_validate_eval_seed_accepts_curated_rows_and_preserves_redundancy_metada
     assert help_completed.returncode == 0, help_completed.stderr
     help_output = " ".join(help_completed.stdout.split()).lower()
     assert "--run-judge" in help_output, help_completed.stdout
+    assert "--judge-provider" in help_output, help_completed.stdout
     assert "-y" in help_output, help_completed.stdout
     assert "--runner-backend" in help_output, help_completed.stdout
-    assert "codex" in help_output, help_completed.stdout
+    assert "cli" in help_output, help_completed.stdout
 
     validation_cases = (
         ("benchmark_planner", "bp-001"),
         ("benchmark_plan_reviewer", "bpr-001"),
         ("benchmark_coder", "bc-001"),
         ("benchmark_reviewer", "br-001"),
-        ("engineer_planner", "ep-001"),
+        ("engineer_planner", "ep-002"),
         ("engineer_plan_reviewer", "epr-001"),
         ("engineer_coder", "ec-001"),
         ("engineer_execution_reviewer", "eer-001"),
@@ -3341,6 +3558,7 @@ def test_validate_eval_seed_accepts_curated_rows_and_preserves_redundancy_metada
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-268")
 def test_validate_eval_seed_removes_preview_bundles_from_all_seed_artifacts():
     completed = subprocess.run(
         [
@@ -3393,6 +3611,7 @@ def test_validate_eval_seed_removes_preview_bundles_from_all_seed_artifacts():
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-269")
 def test_validate_eval_seed_can_filter_rows_by_complexity_level():
     completed = subprocess.run(
         [
@@ -3423,6 +3642,7 @@ def test_validate_eval_seed_can_filter_rows_by_complexity_level():
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-270")
 def test_validate_eval_seed_errors_only_suppresses_pass_output():
     completed = subprocess.run(
         [
@@ -3452,6 +3672,7 @@ def test_validate_eval_seed_errors_only_suppresses_pass_output():
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-271")
 def test_validate_eval_seed_skip_env_up_can_join_shared_eval_lock(tmp_path: Path):
     lock_path = tmp_path / "problemologist-eval.lock"
     state_path = tmp_path / "problemologist-eval.run.json"
@@ -3492,6 +3713,7 @@ def test_validate_eval_seed_skip_env_up_can_join_shared_eval_lock(tmp_path: Path
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-272")
 def test_validate_eval_seed_skip_env_up_fails_while_exclusive_eval_lock_is_held(
     tmp_path: Path,
 ):
@@ -3534,6 +3756,7 @@ def test_validate_eval_seed_skip_env_up_fails_while_exclusive_eval_lock_is_held(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-273")
 def test_run_evals_skip_env_up_can_join_shared_eval_lock(tmp_path: Path):
     lock_path = tmp_path / "problemologist-eval.lock"
     state_path = tmp_path / "problemologist-eval.run.json"
@@ -3576,6 +3799,7 @@ def test_run_evals_skip_env_up_can_join_shared_eval_lock(tmp_path: Path):
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-274")
 def test_update_eval_seed_renders_skip_env_up_can_join_shared_eval_lock(
     tmp_path: Path,
 ):
@@ -3618,6 +3842,7 @@ def test_update_eval_seed_renders_skip_env_up_can_join_shared_eval_lock(
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-275")
 def test_refresh_plan_review_manifest_hashes_can_fix_drift(tmp_path: Path):
     artifact_dir = tmp_path / "seed_artifacts"
     artifact_dir.mkdir()

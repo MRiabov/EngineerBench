@@ -404,6 +404,7 @@ async def _run_reviewer_chain_for_judge(
     session_id: str,
     codex_workspace_root: Path,
     codex_runtime_root: Path,
+    provider_name: str | None = None,
     log,
 ) -> list[dict[str, Any]]:
     reviewer_chain = JUDGE_REVIEWER_CHAIN.get(agent_name, ())
@@ -444,6 +445,7 @@ async def _run_reviewer_chain_for_judge(
             session_id=reviewer_session_id,
             runtime_root=codex_runtime_root,
             yolo=False,
+            provider_name=provider_name,
         )
 
         verification_result = await _verify_workspace_for_agent(
