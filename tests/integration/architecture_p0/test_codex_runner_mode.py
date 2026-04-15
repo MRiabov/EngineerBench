@@ -20,7 +20,13 @@ from build123d import Box, BuildPart
 from controller.agent.prompt_manager import PromptManager
 from controller.prompts import load_prompts
 from evals.logic import runner
-from evals.logic.cli_provider import CliInvocation, CodexCliProvider, QwenCliProvider
+from evals.logic.cli_provider import (
+    CliInvocation,
+    CodexCliProvider,
+    PiCliProvider,
+    QwenCliProvider,
+    get_cli_provider,
+)
 from evals.logic.codex_session_trace import (
     CodexSessionTraceArtifact,
     diff_workspace_snapshots,
@@ -1096,7 +1102,7 @@ def test_cli_provider_registry_supports_qwen(
         yolo=True,
     )
 
-    assert available_cli_providers() == ["codex", "qwen"]
+    assert available_cli_providers() == ["codex", "pi", "qwen"]
     assert isinstance(provider, QwenCliProvider)
     assert provider.provider_name == "qwen"
     assert provider.binary_name == "qwen"
@@ -1134,6 +1140,71 @@ def test_cli_provider_registry_supports_qwen(
     assert ui_invocation.prompt_transport == "prompt_flag"
     assert ui_invocation.argv[1:3] == ["--chat-recording", "--yolo"]
     assert "--prompt-interactive" in ui_invocation.argv
+
+
+@pytest.mark.integration_p0
+@pytest.mark.int_id("INT-238")
+def test_pi_cli_provider_selection_and_invocation_shapes(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setenv("HOME", str(tmp_path / "fake-home"))
+
+    provider = get_cli_provider("pi")
+    pi_home_root = resolve_cli_home_root(
+        task_id="task-1",
+        runtime_root=tmp_path,
+        provider_name="pi",
+    )
+    workspace_dir = tmp_path / "workspace"
+    workspace_dir.mkdir()
+    pi_home_dir = provider.prepare_home(
+        codex_home_root=pi_home_root,
+        workspace_dir=workspace_dir,
+    )
+    env = provider.build_env(
+        task_id="task-1",
+        workspace_dir=workspace_dir,
+        codex_home_root=pi_home_root,
+        session_id="session-1",
+    )
+    exec_invocation = provider.build_exec_invocation(
+        workspace_dir=workspace_dir,
+        prompt_text="inspect this workspace",
+        yolo=False,
+        resume_session_id="resume-1",
+    )
+    ui_invocation = provider.build_ui_invocation(
+        workspace_dir=workspace_dir,
+        prompt_text="open ui prompt",
+        yolo=True,
+    )
+
+    assert isinstance(provider, PiCliProvider)
+    assert provider.provider_name == "pi"
+    assert provider.binary_name == "pi"
+    assert provider.home_dir_name == ".pi/agent"
+    assert provider.runtime_root_name == "pi-runtime"
+    assert provider.session_prefix == "local-pi"
+    assert env["PI_CODING_AGENT_DIR"].endswith("/.pi/agent")
+    assert env["CODEX_HOME"] == env["PI_CODING_AGENT_DIR"]
+    assert pi_home_dir.parent.name == ".pi"
+    assert pi_home_dir.name == "agent"
+    assert pi_home_root.parent.parent.name == "pi-runtime"
+    assert pi_home_root.parent.name == "homes"
+    assert pi_home_root.name.startswith("local-pi-task-1-")
+    assert provider.build_help_command() == ["pi", "--help"]
+    assert provider.build_exec_command(
+        workspace_dir=workspace_dir,
+        yolo=False,
+        resume_session_id="resume-1",
+    ) == ["pi", "--print", "--resume", "resume-1"]
+    assert exec_invocation.prompt_transport == "positional"
+    assert exec_invocation.argv[-1] == "inspect this workspace"
+    assert "--resume" in exec_invocation.argv
+    assert "--print" in exec_invocation.argv
+    assert ui_invocation.prompt_transport == "positional"
+    assert ui_invocation.argv == ["pi", "open ui prompt"]
 
 
 @pytest.mark.integration_p0

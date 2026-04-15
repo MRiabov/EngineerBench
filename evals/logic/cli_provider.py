@@ -564,8 +564,126 @@ class QwenCliProvider(CodexCliProvider):
         return [self.binary_name, "--help"]
 
 
+@dataclass(frozen=True, slots=True)
+class PiCliProvider(CodexCliProvider):
+    provider_name: str = "pi"
+    binary_name: str = "pi"
+    home_dir_name: str = ".pi/agent"
+    runtime_root_name: str = "pi-runtime"
+    session_prefix: str = "local-pi"
+
+    def prepare_home(
+        self,
+        *,
+        codex_home_root: Path,
+        workspace_dir: Path,
+        source_auth_path: Path | None = None,
+        agent_name: AgentName | None = None,
+        reasoning_effort: ReasoningEffortArg = REASONING_EFFORT_UNSET,
+    ) -> Path:
+        source_auth_path = source_auth_path or self._default_source_auth_path()
+        pi_home_dir = codex_home_root / self.home_dir_name
+        pi_home_dir.mkdir(parents=True, exist_ok=True)
+        (codex_home_root / ".cache").mkdir(parents=True, exist_ok=True)
+        (codex_home_root / ".config").mkdir(parents=True, exist_ok=True)
+        (codex_home_root / ".tmp").mkdir(parents=True, exist_ok=True)
+        if source_auth_path.exists():
+            _copy_auth_bundle(source_auth_path, pi_home_dir)
+        return pi_home_dir
+
+    def build_env(
+        self,
+        *,
+        task_id: str,
+        workspace_dir: Path,
+        codex_home_root: Path,
+        session_id: str | None = None,
+        agent_name: AgentName | None = None,
+    ) -> dict[str, str]:
+        env = CodexCliProvider.build_env(
+            self,
+            task_id=task_id,
+            workspace_dir=workspace_dir,
+            codex_home_root=codex_home_root,
+            session_id=session_id,
+            agent_name=agent_name,
+        )
+        env["PI_CODING_AGENT_DIR"] = env["CODEX_HOME"]
+        return env
+
+    def _build_exec_argv(
+        self,
+        *,
+        workspace_dir: Path,
+        yolo: bool,
+        resume_session_id: str | None = None,
+        output_last_message_path: Path | None = None,
+    ) -> list[str]:
+        cmd = [self.binary_name, "--print"]
+        if resume_session_id is not None:
+            cmd.extend(["--resume", resume_session_id])
+        if output_last_message_path is not None:
+            output_last_message_path.parent.mkdir(parents=True, exist_ok=True)
+        return cmd
+
+    def build_exec_invocation(
+        self,
+        *,
+        workspace_dir: Path,
+        prompt_text: str,
+        yolo: bool,
+        resume_session_id: str | None = None,
+        output_last_message_path: Path | None = None,
+    ) -> CliInvocation:
+        return CliInvocation(
+            argv=self._build_exec_argv(
+                workspace_dir=workspace_dir,
+                yolo=yolo,
+                resume_session_id=resume_session_id,
+                output_last_message_path=output_last_message_path,
+            )
+            + [prompt_text],
+            prompt_text=prompt_text,
+            prompt_transport="positional",
+            cwd=workspace_dir,
+            resume_session_id=resume_session_id,
+            output_last_message_path=output_last_message_path,
+        )
+
+    def _build_ui_argv(
+        self,
+        *,
+        workspace_dir: Path,
+        prompt_text: str,
+        yolo: bool,
+    ) -> list[str]:
+        return [self.binary_name, prompt_text]
+
+    def build_ui_invocation(
+        self,
+        *,
+        workspace_dir: Path,
+        prompt_text: str,
+        yolo: bool,
+    ) -> CliInvocation:
+        return CliInvocation(
+            argv=self._build_ui_argv(
+                workspace_dir=workspace_dir,
+                prompt_text=prompt_text,
+                yolo=yolo,
+            ),
+            prompt_text=prompt_text,
+            prompt_transport="positional",
+            cwd=workspace_dir,
+        )
+
+    def build_help_command(self) -> list[str]:
+        return [self.binary_name, "--help"]
+
+
 _CLI_PROVIDER_REGISTRY: dict[str, type[CliProvider]] = {
     "codex": CodexCliProvider,
+    "pi": PiCliProvider,
     "qwen": QwenCliProvider,
 }
 
