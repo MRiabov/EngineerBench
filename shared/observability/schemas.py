@@ -37,24 +37,16 @@ class ObservabilityEventType(StrEnum):
     PLAN_SUBMISSION_BENCHMARK = "plan_submission_benchmark"
     # 10. Plan submission (Engineer)
     PLAN_SUBMISSION_ENGINEER = "plan_submission_engineer"
-    # 11. Price/weight failure escalation request (CAD engineer)
-    ESCALATION_REQUEST = "escalation_request"
-    # 12. Price/weight failure escalation decision (reviewer)
-    ESCALATION_DECISION = "escalation_decision"
     TOOL_INSPECT_MEDIA = "inspect_media_tool"
     # 13. Submission validation
     SUBMISSION_VALIDATION = "submission_validation"
-    # 14. Cost/weight delta heuristic
-    COST_WEIGHT_DELTA = "cost_weight_delta"
-    # 15. Review decision (full details)
+    # 14. Review decision (full details)
     REVIEW_DECISION = "review_decision"
 
     # 25. Simulation and physics events
     SIMULATION_BACKEND_SELECTED = "simulation_backend_selected"
     MESHING_FAILURE = "meshing_failure"
-    PHYSICS_INSTABILITY = "physics_instability"
     GPU_OOM_RETRY = "gpu_oom_retry"
-    CONVERSATION_LENGTH_EXCEEDED = "conversation_length_exceeded"
     NODE_ENTRY_VALIDATION_FAILED = "node_entry_validation_failed"
     MEDIA_INSPECTION = "media_inspection"
     LLM_MEDIA_ATTACHED = "llm_media_attached"
@@ -184,19 +176,6 @@ class PlanSubmissionEngineerEvent(BaseEvent):
     plan_path: str
 
 
-class EscalationRequestEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.ESCALATION_REQUEST
-    reason: str
-    current_price: float | None = None
-    current_weight: float | None = None
-
-
-class EscalationDecisionEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.ESCALATION_DECISION
-    decision: str  # "approved", "rejected"
-    comments: list[str] = Field(default_factory=list)
-
-
 class InspectMediaToolEvent(BaseEvent):
     event_type: ObservabilityEventType = ObservabilityEventType.TOOL_INSPECT_MEDIA
     path: str
@@ -212,15 +191,6 @@ class SubmissionValidationEvent(BaseEvent):
     verification_passed: bool
     reasoning_trace_quality: float = Field(..., ge=0.0, le=1.0)
     errors: list[str] = Field(default_factory=list)
-
-
-class CostWeightDeltaEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.COST_WEIGHT_DELTA
-    best_simulated_cost: float
-    best_simulated_weight_g: float
-    final_cost: float
-    final_weight_g: float
-    is_worse: bool
 
 
 class ReviewEvidenceStats(BaseModel):
@@ -262,30 +232,10 @@ class SimulationBackendSelectedEvent(BaseEvent):
     compute_target: str
 
 
-class PhysicsInstabilityEvent(BaseEvent):
-    event_type: ObservabilityEventType = ObservabilityEventType.PHYSICS_INSTABILITY
-    kinetic_energy: float
-    threshold: float
-    step: int
-
-
 class GpuOomRetryEvent(BaseEvent):
     event_type: ObservabilityEventType = ObservabilityEventType.GPU_OOM_RETRY
     original_particles: int
     reduced_particles: int
-
-
-class ConversationLengthExceededEvent(BaseEvent):
-    event_type: ObservabilityEventType = (
-        ObservabilityEventType.CONVERSATION_LENGTH_EXCEEDED
-    )
-    previous_length: int
-    threshold: int
-    compacted_length: int | None = None
-    compaction_strategy: str = "journal_summarization"
-    message: str = (
-        "Conversation length exceeded configured limit; context was compacted."
-    )
 
 
 class NodeEntryValidationFailedEvent(BaseEvent):

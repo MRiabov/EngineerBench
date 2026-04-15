@@ -8,7 +8,6 @@ from shared.workers.workbench_models import ManufacturingConfig, ManufacturingMe
 __all__ = [
     "ManufacturingConfig",
     "ManufacturingMethod",
-    "preview",
     "render_cad",
     "renderer_client",
     "simulate",
@@ -23,8 +22,7 @@ _LAZY_ATTRS: dict[str, tuple[str, str | None]] = {
     "submit_for_review": ("worker_heavy.utils.handover", "submit_for_review"),
     "simulate": ("worker_heavy.utils.validation", "simulate"),
     "validate": ("worker_heavy.utils.validation", "validate"),
-    "render_cad": ("worker_heavy.utils.preview", "render_cad"),
-    "preview": ("worker_heavy.utils.preview", "preview"),
+    "render_cad": ("worker_heavy.utils.render_cad", "render_cad"),
 }
 
 

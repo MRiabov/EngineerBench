@@ -1,4 +1,4 @@
-"""Preview design utility for CAD visualization."""
+"""CAD rendering utility for preview visualization."""
 
 import base64
 import os
@@ -6,7 +6,6 @@ from pathlib import Path
 
 import structlog
 from build123d import Compound, Part
-from deprecated import deprecated
 
 from shared.agents import get_image_render_resolution
 from shared.models.schemas import BenchmarkDefinition
@@ -23,8 +22,7 @@ from worker_renderer.utils.scene_builder import normalize_preview_label
 logger = structlog.get_logger(__name__)
 
 
-@deprecated("Use render_cad instead. preview remains as a compatibility alias only.")
-def preview(
+def render_cad(
     component: Part | Compound,
     orbit_pitch: float | list[float] = 45.0,
     orbit_yaw: float | list[float] = 45.0,
@@ -136,33 +134,3 @@ def preview(
         rendering_type=response.rendering_type.value,
     )
     return response
-
-
-def render_cad(
-    component: Part | Compound,
-    orbit_pitch: float | list[float] = 45.0,
-    orbit_yaw: float | list[float] = 45.0,
-    rgb: bool | None = None,
-    depth: bool | None = None,
-    segmentation: bool | None = None,
-    payload_path: bool = False,
-    rendering_type: PreviewRenderingType | str | None = None,
-    output_dir: Path | None = None,
-    objectives: BenchmarkDefinition | None = None,
-    width: int | None = None,
-    height: int | None = None,
-) -> PreviewDesignResponse:
-    return preview(
-        component,
-        orbit_pitch=orbit_pitch,
-        orbit_yaw=orbit_yaw,
-        rgb=rgb,
-        depth=depth,
-        segmentation=segmentation,
-        payload_path=payload_path,
-        rendering_type=rendering_type,
-        output_dir=output_dir,
-        objectives=objectives,
-        width=width,
-        height=height,
-    )

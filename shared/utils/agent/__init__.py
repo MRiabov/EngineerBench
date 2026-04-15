@@ -9,7 +9,6 @@ from typing import Any
 import httpx
 import structlog
 from build123d import Align, Box, Compound, Location, Part
-from deprecated import deprecated
 from pydantic import BaseModel
 
 from shared.current_role import current_role_agent_name
@@ -965,29 +964,6 @@ def render_cad(
             payload_path=payload_path,
             rendering_type=rendering_type,
         )
-    )
-
-
-@deprecated("Use render_cad instead. preview remains as a compatibility alias only.")
-def preview(
-    component: Part | Compound,
-    orbit_pitch: float | list[float] = 45,
-    orbit_yaw: float | list[float] = 45,
-    rgb: bool | None = None,
-    depth: bool | None = None,
-    segmentation: bool | None = None,
-    payload_path: bool = False,
-    rendering_type: PreviewRenderingType | str | None = None,
-) -> _PreviewResponseProxy:
-    return render_cad(
-        component,
-        orbit_pitch=orbit_pitch,
-        orbit_yaw=orbit_yaw,
-        rgb=rgb,
-        depth=depth,
-        segmentation=segmentation,
-        payload_path=payload_path,
-        rendering_type=rendering_type,
     )
 
 

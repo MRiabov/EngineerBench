@@ -75,13 +75,6 @@ app.include_router(benchmark.router, prefix="/api")
 app.include_router(datasets.router, prefix="/api")
 app.include_router(script_tools.router, prefix="/api")
 app.include_router(skills.router, prefix="/api")
-# Backward compatibility for integration tests and legacy clients that use
-# unprefixed controller routes.
-app.include_router(episodes.router)
-app.include_router(benchmark.router)
-app.include_router(datasets.router)
-app.include_router(script_tools.router)
-app.include_router(skills.router)
 
 
 from controller.api.schemas import (
@@ -95,7 +88,6 @@ from controller.utils import apply_integration_test_metadata, get_episode_id
 
 
 @app.post("/api/test/episodes", status_code=201, response_model=EpisodeCreateResponse)
-@app.post("/test/episodes", status_code=201, response_model=EpisodeCreateResponse)
 async def create_test_episode(request: AgentRunRequest):
     """Create a dummy episode for testing purposes (no agent run)."""
     if not settings.is_integration_test:
@@ -158,7 +150,6 @@ async def create_test_episode(request: AgentRunRequest):
 
 
 @app.get("/api/health")
-@app.get("/health")
 async def health_check():
     """Health check endpoint."""
     return {
@@ -171,7 +162,6 @@ async def health_check():
     "/api/test/is_integration_test",
     response_model=IntegrationTestStatusResponse,
 )
-@app.get("/test/is_integration_test", response_model=IntegrationTestStatusResponse)
 async def is_integration_test():
     """Return whether the controller is running in integration-test mode."""
     return IntegrationTestStatusResponse(
@@ -180,7 +170,6 @@ async def is_integration_test():
 
 
 @app.post("/api/agent/run", status_code=202, response_model=AgentRunResponse)
-@app.post("/agent/run", status_code=202, response_model=AgentRunResponse)
 async def run_agent(request: AgentRunRequest):
     # Note: We removed BackgroundTasks - we use asyncio.create_task for granular control
     session_factory = get_sessionmaker()

@@ -261,7 +261,7 @@ class CodexCliProvider:
         )
         env.setdefault("IS_HEAVY_WORKER", "1")
         env.setdefault("PROBLEMOLOGIST_SCRIPT_IMPORT_MODE", "0")
-        env.setdefault("COTS_DB_PATH", str(ROOT / "parts.db"))
+        env.setdefault("CATALOG_DB_PATH", str(ROOT / "parts.db"))
         env.setdefault("PROBLEMOLOGIST_REPO_ROOT", str(ROOT))
         current_revision = repo_revision(ROOT)
         if current_revision:

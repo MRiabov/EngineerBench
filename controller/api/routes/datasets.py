@@ -200,32 +200,6 @@ async def _load_episode(db: AsyncSession, episode_id: uuid.UUID) -> Episode | No
     return (await db.execute(stmt)).scalar_one_or_none()
 
 
-def _select_latest_assets(assets: list[Asset]) -> list[Asset]:
-    latest_by_family: dict[str, Asset] = {}
-    latest_round_by_family: dict[str, tuple[int, Asset]] = {}
-
-    for asset in sorted(assets, key=lambda item: (item.created_at, item.id)):
-        path = _normalize_path(asset.s3_path)
-        if not _should_include_asset(path):
-            continue
-
-        match = _REVIEW_ROUND_RE.match(path)
-        if match:
-            family = match.group("prefix").removeprefix("reviews/")
-            round_index = int(match.group("round"))
-            current = latest_round_by_family.get(family)
-            if current is None or round_index >= current[0]:
-                latest_round_by_family[family] = (round_index, asset)
-            continue
-
-        latest_by_family[path] = asset
-
-    selected: list[Asset] = list(latest_by_family.values())
-    selected.extend(asset for _, asset in latest_round_by_family.values())
-    selected.sort(key=lambda item: (_asset_family(item.s3_path), item.s3_path))
-    return selected
-
-
 def _missing_required_artifacts(
     *,
     episode_type: EpisodeType,
@@ -418,34 +392,6 @@ def _source_artifact_hash(
     return _sha256_bytes(encoded)
 
 
-def _archive_members(
-    *,
-    archive_manifest: DatasetRowArchiveManifest,
-    selected_assets: list[Asset],
-    s3_client,
-    bucket: str,
-) -> bytes:
-    buffer = io.BytesIO()
-    with tarfile.open(mode="w:gz", fileobj=buffer) as archive:
-        for asset in selected_assets:
-            path = _normalize_path(asset.s3_path)
-            body = _asset_bytes(asset, s3_client=s3_client, bucket=bucket)
-
-            info = tarfile.TarInfo(name=path)
-            info.size = len(body)
-            archive.addfile(info, io.BytesIO(body))
-
-        manifest_bytes = archive_manifest.model_dump_json(
-            by_alias=True, exclude_none=False, indent=2
-        ).encode("utf-8")
-        manifest_info = tarfile.TarInfo(name="dataset_row_manifest.json")
-        manifest_info.size = len(manifest_bytes)
-        archive.addfile(manifest_info, io.BytesIO(manifest_bytes))
-
-    buffer.seek(0)
-    return buffer.read()
-
-
 async def _materialize_dataset_export(
     db: AsyncSession, episode_id: uuid.UUID
 ) -> DatasetExportResponse:
@@ -490,7 +436,27 @@ async def _materialize_dataset_export(
             detail=f"benchmark asset record missing for benchmark_id={source_benchmark_id}",
         )
 
-    selected_assets = _select_latest_assets(list(episode.assets))
+    latest_by_family: dict[str, Asset] = {}
+    latest_round_by_family: dict[str, tuple[int, Asset]] = {}
+    for asset in sorted(episode.assets, key=lambda item: (item.created_at, item.id)):
+        path = _normalize_path(asset.s3_path)
+        if not _should_include_asset(path):
+            continue
+
+        match = _REVIEW_ROUND_RE.match(path)
+        if match:
+            family = match.group("prefix").removeprefix("reviews/")
+            round_index = int(match.group("round"))
+            current = latest_round_by_family.get(family)
+            if current is None or round_index >= current[0]:
+                latest_round_by_family[family] = (round_index, asset)
+            continue
+
+        latest_by_family[path] = asset
+
+    selected_assets: list[Asset] = list(latest_by_family.values())
+    selected_assets.extend(asset for _, asset in latest_round_by_family.values())
+    selected_assets.sort(key=lambda item: (_asset_family(item.s3_path), item.s3_path))
     if not selected_assets:
         raise HTTPException(
             status_code=422,
@@ -579,12 +545,25 @@ async def _materialize_dataset_export(
         validation_notes=validation_notes,
     )
 
-    archive_bytes = _archive_members(
-        archive_manifest=manifest,
-        selected_assets=selected_assets,
-        s3_client=s3_client,
-        bucket=_ASSET_BUCKET,
-    )
+    buffer = io.BytesIO()
+    with tarfile.open(mode="w:gz", fileobj=buffer) as archive:
+        for asset in selected_assets:
+            path = _normalize_path(asset.s3_path)
+            body = _asset_bytes(asset, s3_client=s3_client, bucket=_ASSET_BUCKET)
+
+            info = tarfile.TarInfo(name=path)
+            info.size = len(body)
+            archive.addfile(info, io.BytesIO(body))
+
+        manifest_bytes = manifest.model_dump_json(
+            by_alias=True, exclude_none=False, indent=2
+        ).encode("utf-8")
+        manifest_info = tarfile.TarInfo(name="dataset_row_manifest.json")
+        manifest_info.size = len(manifest_bytes)
+        archive.addfile(manifest_info, io.BytesIO(manifest_bytes))
+
+    buffer.seek(0)
+    archive_bytes = buffer.read()
     archive_sha256 = _sha256_bytes(archive_bytes)
     manifest_bytes = manifest.model_dump_json(
         by_alias=True, exclude_none=False, indent=2
@@ -665,14 +644,6 @@ async def export_dataset(
     db: AsyncSession = Depends(get_db),
 ):
     return await _materialize_dataset_export(db, request.episode_id)
-
-
-@router.post("/{episode_id}/export", response_model=DatasetExportResponse)
-async def export_dataset_for_episode(
-    episode_id: uuid.UUID,
-    db: AsyncSession = Depends(get_db),
-):
-    return await _materialize_dataset_export(db, episode_id)
 
 
 @router.get("/exports/{export_id}", response_model=DatasetExportResponse)

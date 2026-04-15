@@ -30,7 +30,9 @@ class StackProfile:
     default_archive_dir: Path
     default_worker_sessions_dir: Path
 
-    def host_url_env(self) -> dict[str, str]:
+    def profile_env(self, *, root: Path) -> dict[str, str]:
+        repo_root = root.expanduser().resolve()
+        stack_state_dir = repo_root / "logs" / "stacks" / self.name
         controller_url = f"http://127.0.0.1:{self.controller_host_port}"
         worker_light_url = f"http://127.0.0.1:{self.worker_light_host_port}"
         worker_heavy_url = f"http://127.0.0.1:{self.worker_heavy_host_port}"
@@ -38,7 +40,21 @@ class StackProfile:
         frontend_url = f"http://127.0.0.1:{self.frontend_host_port}"
         s3_endpoint = f"http://127.0.0.1:{self.minio_host_port}"
         postgres_url = f"postgresql+asyncpg://postgres:postgres@127.0.0.1:{self.postgres_host_port}/postgres"
-        return {
+        env = {
+            "PROBLEMOLOGIST_STACK_PROFILE": self.name,
+            "COMPOSE_PROJECT_NAME": self.compose_project_name,
+            "PROBLEMOLOGIST_RENDER_PARALLEL_MODALITIES": "false",
+            "IS_INTEGRATION_TEST": "true"
+            if self.name == STACK_PROFILE_INTEGRATION
+            else "false",
+            "CONTROLLER_HOST_PORT": str(self.controller_host_port),
+            "WORKER_LIGHT_HOST_PORT": str(self.worker_light_host_port),
+            "WORKER_HEAVY_HOST_PORT": str(self.worker_heavy_host_port),
+            "WORKER_RENDERER_HOST_PORT": str(self.worker_renderer_host_port),
+            "POSTGRES_HOST_PORT": str(self.postgres_host_port),
+            "MINIO_HOST_PORT": str(self.minio_host_port),
+            "MINIO_CONSOLE_HOST_PORT": str(self.minio_console_host_port),
+            "FRONTEND_HOST_PORT": str(self.frontend_host_port),
             "CONTROLLER_URL": controller_url,
             "WORKER_URL": worker_light_url,
             "WORKER_LIGHT_URL": worker_light_url,
@@ -49,30 +65,6 @@ class StackProfile:
             "S3_ENDPOINT_URL": s3_endpoint,
             "POSTGRES_URL": postgres_url,
             "DATABASE_URL": postgres_url,
-        }
-
-    def compose_host_port_env(self) -> dict[str, str]:
-        return {
-            "CONTROLLER_HOST_PORT": str(self.controller_host_port),
-            "WORKER_LIGHT_HOST_PORT": str(self.worker_light_host_port),
-            "WORKER_HEAVY_HOST_PORT": str(self.worker_heavy_host_port),
-            "WORKER_RENDERER_HOST_PORT": str(self.worker_renderer_host_port),
-            "POSTGRES_HOST_PORT": str(self.postgres_host_port),
-            "MINIO_HOST_PORT": str(self.minio_host_port),
-            "MINIO_CONSOLE_HOST_PORT": str(self.minio_console_host_port),
-            "FRONTEND_HOST_PORT": str(self.frontend_host_port),
-        }
-
-    def profile_env(self, *, root: Path) -> dict[str, str]:
-        repo_root = root.expanduser().resolve()
-        stack_state_dir = repo_root / "logs" / "stacks" / self.name
-        env = {
-            "PROBLEMOLOGIST_STACK_PROFILE": self.name,
-            "COMPOSE_PROJECT_NAME": self.compose_project_name,
-            "PROBLEMOLOGIST_RENDER_PARALLEL_MODALITIES": "false",
-            "IS_INTEGRATION_TEST": "true"
-            if self.name == STACK_PROFILE_INTEGRATION
-            else "false",
             "STACK_STATE_DIR": str(stack_state_dir),
             "STACK_PID_DIR": str(stack_state_dir / "pids"),
             "STACK_DEFAULT_LOG_DIR": str(repo_root / self.default_log_dir),
@@ -89,8 +81,6 @@ class StackProfile:
             "ASSET_S3_BUCKET": "problemologist",
             "BACKUP_S3_BUCKET": "problemologist-backup",
         }
-        env.update(self.compose_host_port_env())
-        env.update(self.host_url_env())
         return env
 
     def shell_exports(self, *, root: Path) -> str:

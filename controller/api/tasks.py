@@ -734,6 +734,7 @@ async def execute_agent_task(
                     initial_input = {
                         "task": task,
                         "session_id": workspace_session_id,
+                        "worker_session_id": workspace_session_id,
                         "episode_id": str(episode_id),
                         "start_node": start_node.value if start_node else None,
                         "messages": [HumanMessage(content=task)],
