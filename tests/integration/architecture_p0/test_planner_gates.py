@@ -583,14 +583,14 @@ async def test_int_005_engineer_planner_flow_emits_submit_engineering_plan_trace
         )
 
         manifest_resp = await client.get(
-            f"{CONTROLLER_URL}/episodes/{episode_id}/assets/.manifests/engineering_plan_review_manifest.json"
+            f"{CONTROLLER_URL}/api/episodes/{episode_id}/assets/.manifests/engineering_plan_review_manifest.json"
         )
         assert manifest_resp.status_code == 200, manifest_resp.text
         manifest = PlanReviewManifest.model_validate_json(manifest_resp.text)
         assert "manufacturing_config.yaml" in manifest.artifact_hashes, manifest
 
         config_resp = await client.get(
-            f"{CONTROLLER_URL}/episodes/{episode_id}/assets/manufacturing_config.yaml"
+            f"{CONTROLLER_URL}/api/episodes/{episode_id}/assets/manufacturing_config.yaml"
         )
         assert config_resp.status_code == 200, config_resp.text
         expected_hash = hashlib.sha256(config_resp.text.encode("utf-8")).hexdigest()
@@ -653,7 +653,7 @@ async def test_int_114_benchmark_planner_flow_emits_submit_benchmark_plan_trace(
             "Expected persisted benchmark plan review comments file before PLANNED. "
             f"episode_id={episode_id}"
         )
-        episode_resp = await client.get(f"{CONTROLLER_URL}/episodes/{episode_id}")
+        episode_resp = await client.get(f"{CONTROLLER_URL}/api/episodes/{episode_id}")
         assert episode_resp.status_code == 200, episode_resp.text
         episode_data = EpisodeResponse.model_validate(episode_resp.json())
         artifact_paths = [_asset_path(a.s3_path) for a in (episode_data.assets or [])]
@@ -661,7 +661,7 @@ async def test_int_114_benchmark_planner_flow_emits_submit_benchmark_plan_trace(
         plan_paths = [p for p in artifact_paths if p == Path("benchmark_plan.md")]
         assert plan_paths, f"benchmark_plan.md missing. Artifacts: {artifact_paths}"
         plan_resp = await client.get(
-            f"{CONTROLLER_URL}/episodes/{episode_id}/assets/{plan_paths[0]}"
+            f"{CONTROLLER_URL}/api/episodes/{episode_id}/assets/{plan_paths[0]}"
         )
         assert plan_resp.status_code == 200, plan_resp.text
         plan_text = plan_resp.text.lower()
@@ -675,7 +675,7 @@ async def test_int_114_benchmark_planner_flow_emits_submit_benchmark_plan_trace(
             f"benchmark_definition.yaml missing. Artifacts: {artifact_paths}"
         )
         benchmark_definition_resp = await client.get(
-            f"{CONTROLLER_URL}/episodes/{episode_id}/assets/{benchmark_definition_paths[0]}"
+            f"{CONTROLLER_URL}/api/episodes/{episode_id}/assets/{benchmark_definition_paths[0]}"
         )
         assert benchmark_definition_resp.status_code == 200, (
             benchmark_definition_resp.text
@@ -692,7 +692,7 @@ async def test_int_114_benchmark_planner_flow_emits_submit_benchmark_plan_trace(
             f"benchmark_assembly_definition.yaml missing. Artifacts: {artifact_paths}"
         )
         assembly_resp = await client.get(
-            f"{CONTROLLER_URL}/episodes/{episode_id}/assets/{assembly_paths[0]}"
+            f"{CONTROLLER_URL}/api/episodes/{episode_id}/assets/{assembly_paths[0]}"
         )
         assert assembly_resp.status_code == 200, assembly_resp.text
         benchmark_assembly_definition = AssemblyDefinition.model_validate(

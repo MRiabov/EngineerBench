@@ -19,6 +19,7 @@ SERVICES = [
     "http://127.0.0.1:18001",  # Worker Light
     "http://127.0.0.1:18002",  # Worker Heavy
 ]
+CONTROLLER_URL = os.getenv("CONTROLLER_URL", "http://127.0.0.1:18000")
 WORKER_HEAVY_URL = os.getenv("WORKER_HEAVY_URL", "http://127.0.0.1:18002")
 
 # Temporary baseline allowlist for known frontend noise.
@@ -45,6 +46,12 @@ INTEGRATION_WORKFLOW_HINT = (
     "not going through ./scripts/run_integration_tests.sh. Follow the "
     "integration-tests-workflow and use the runner instead of plain pytest."
 )
+
+
+def _service_health_path(service_url: str) -> str:
+    if service_url.rstrip("/") == CONTROLLER_URL.rstrip("/"):
+        return "/api/health"
+    return "/health"
 
 
 def _is_integration_test(request: pytest.FixtureRequest) -> bool:
@@ -110,7 +117,7 @@ def _wait_for_service_health_stable(
 
     while time.monotonic() < deadline:
         try:
-            response = client.get(f"{service_url}/health")
+            response = client.get(f"{service_url}{_service_health_path(service_url)}")
             if response.status_code == 200:
                 stable += 1
                 if stable >= consecutive_successes:
@@ -615,7 +622,10 @@ def log_test_marker(request):
     with httpx.Client(timeout=1.0) as client:
         for service_url in SERVICES:
             try:
-                client.get(f"{service_url}/health", params={"marker": marker_start})
+                client.get(
+                    f"{service_url}{_service_health_path(service_url)}",
+                    params={"marker": marker_start},
+                )
             except Exception:
                 # Service might not be up or endpoint doesn't exist, ignore
                 pass
@@ -626,7 +636,10 @@ def log_test_marker(request):
     with httpx.Client(timeout=1.0) as client:
         for service_url in SERVICES:
             with contextlib.suppress(Exception):
-                client.get(f"{service_url}/health", params={"marker": marker_finish})
+                client.get(
+                    f"{service_url}{_service_health_path(service_url)}",
+                    params={"marker": marker_finish},
+                )
 
 
 def _wait_for_worker_heavy_idle(

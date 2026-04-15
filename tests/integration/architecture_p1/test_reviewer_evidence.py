@@ -139,7 +139,7 @@ async def _wait_for_trace_name(
 async def _read_episode_asset_text(
     client: AsyncClient, episode_id: str, path: str
 ) -> str:
-    resp = await client.get(f"/episodes/{episode_id}/assets/{path}")
+    resp = await client.get(f"/api/episodes/{episode_id}/assets/{path}")
     assert resp.status_code == 200, resp.text
     return resp.text
 
@@ -204,7 +204,7 @@ async def test_reviewer_evidence_completeness():
             )
         )
 
-        ep_resp = await client.get(f"/episodes/{episode_id}")
+        ep_resp = await client.get(f"/api/episodes/{episode_id}")
         assert ep_resp.status_code == 200, ep_resp.text
         ep_data = EpisodeResponse.model_validate(ep_resp.json())
         artifact_paths = [_asset_path(a.s3_path) for a in (ep_data.assets or [])]
@@ -445,7 +445,7 @@ async def test_reviewer_approval_requires_media_inspection():
             task="INT-034 reviewer media gate",
             session_id=session_id,
         )
-        run_resp = await client.post("/agent/run", json=run_request.model_dump())
+        run_resp = await client.post("/api/agent/run", json=run_request.model_dump())
         assert run_resp.status_code in [200, 202], (
             f"Agent trigger failed: {run_resp.text}"
         )
@@ -454,7 +454,7 @@ async def test_reviewer_approval_requires_media_inspection():
         rejected_review_trace = None
         ep_data = None
         for _ in range(180):
-            ep_resp = await client.get(f"/episodes/{episode_id}")
+            ep_resp = await client.get(f"/api/episodes/{episode_id}")
             assert ep_resp.status_code == 200, ep_resp.text
             ep_data = EpisodeResponse.model_validate(ep_resp.json())
             traces = ep_data.traces or []
@@ -492,7 +492,7 @@ async def test_reviewer_approval_requires_media_inspection():
             f"Final status: {ep_data.status}"
         )
 
-        interrupt_resp = await client.post(f"/episodes/{episode_id}/interrupt")
+        interrupt_resp = await client.post(f"/api/episodes/{episode_id}/interrupt")
         assert interrupt_resp.status_code in [200, 202], interrupt_resp.text
 
         traces = ep_data.traces or []

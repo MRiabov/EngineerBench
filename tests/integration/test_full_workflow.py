@@ -64,7 +64,7 @@ async def _wait_for_engineer_completion(
     latest: EpisodeResponse | None = None
 
     for _ in range(max_attempts):
-        ep_resp = await client.get(f"/episodes/{episode_id}")
+        ep_resp = await client.get(f"/api/episodes/{episode_id}")
         assert ep_resp.status_code == 200, ep_resp.text
         latest = EpisodeResponse.model_validate(ep_resp.json())
         assert latest.user_session_id == expected_user_session_id, (
@@ -126,7 +126,9 @@ async def test_full_workflow_end_to_end():
             user_session_id=user_session_id,
         )
 
-        run_resp = await client.post("/agent/run", json=req_run.model_dump(mode="json"))
+        run_resp = await client.post(
+            "/api/agent/run", json=req_run.model_dump(mode="json")
+        )
         assert run_resp.status_code == 202, (
             f"Failed to trigger engineer: {run_resp.text}"
         )

@@ -296,48 +296,50 @@ async def seed_engineer_planner_handover(
     *,
     session_id: str,
     int_id: str,
+    include_reviewer_artifacts: bool = True,
 ) -> None:
     """Seed deterministic planner-entry artifacts for engineer planner runs."""
 
-    for filename in (
-        "engineering_plan.md",
-        "todo.md",
-        "assembly_definition.yaml",
-        "benchmark_definition.yaml",
+    for filename, fixture_suffix in (
+        ("engineering_plan.md", "plan.md"),
+        ("todo.md", "todo.md"),
+        ("assembly_definition.yaml", "assembly_definition.yaml"),
+        ("benchmark_definition.yaml", "benchmark_definition.yaml"),
     ):
         await _seed_workspace_file(
             client,
             session_id=session_id,
             path=filename,
-            content=_fixture_entry_file_content(int_id, filename_suffix=filename),
+            content=_fixture_entry_file_content(int_id, filename_suffix=fixture_suffix),
             bypass_agent_permissions=True,
         )
 
-    await _seed_workspace_file(
-        client,
-        session_id=session_id,
-        path="solution_plan_evidence_script.py",
-        content=_fixture_entry_file_content(
-            "INT-033",
-            filename_suffix="solution_plan_evidence_script.py",
-        ),
-        bypass_agent_permissions=True,
-    )
-    await _seed_workspace_file(
-        client,
-        session_id=session_id,
-        path="benchmark_plan_evidence_script.py",
-        content=_fixture_entry_file_content(
-            "INT-204",
-            filename_suffix="benchmark_plan_evidence_script.py",
-            node="benchmark_planner",
-        ),
-        bypass_agent_permissions=True,
-    )
-    await seed_current_revision_render_preview(
-        client,
-        session_id=session_id,
-    )
+    if include_reviewer_artifacts:
+        await _seed_workspace_file(
+            client,
+            session_id=session_id,
+            path="solution_plan_evidence_script.py",
+            content=_fixture_entry_file_content(
+                "INT-033",
+                filename_suffix="solution_plan_evidence_script.py",
+            ),
+            bypass_agent_permissions=True,
+        )
+        await _seed_workspace_file(
+            client,
+            session_id=session_id,
+            path="benchmark_plan_evidence_script.py",
+            content=_fixture_entry_file_content(
+                "INT-204",
+                filename_suffix="benchmark_plan_evidence_script.py",
+                node="benchmark_planner",
+            ),
+            bypass_agent_permissions=True,
+        )
+        await seed_current_revision_render_preview(
+            client,
+            session_id=session_id,
+        )
 
 
 async def _seed_workspace_file(

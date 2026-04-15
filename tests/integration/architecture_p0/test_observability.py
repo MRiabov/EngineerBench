@@ -13,6 +13,7 @@ from controller.api.schemas import (
 from shared.enums import AssetType, EpisodeStatus, TraceType
 from tests.integration.agent.helpers import (
     seed_benchmark_assembly_definition,
+    seed_engineer_planner_handover,
     wait_for_episode_terminal,
 )
 
@@ -52,6 +53,12 @@ async def test_int_053_episode_lifecycle_persists():
     """INT-053: Verify episode lifecycle persistence over the live controller path."""
     session_id = f"INT-053-obs-{uuid.uuid4().hex[:8]}"
     async with httpx.AsyncClient(timeout=300.0) as client:
+        await seed_engineer_planner_handover(
+            client,
+            session_id=session_id,
+            int_id="INT-053",
+            include_reviewer_artifacts=False,
+        )
         episode_id = await _start_observability_episode(
             client,
             session_id=session_id,

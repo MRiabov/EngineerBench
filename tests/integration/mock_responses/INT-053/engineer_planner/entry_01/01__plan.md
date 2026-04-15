@@ -4,11 +4,13 @@ INT-053 observability deterministic simulation plan.
 
 ## 2. Parts List
 
-- Goal-zone block (manufactured, abs)
+- `environment_fixture`: fixed reference geometry from the benchmark assembly.
+- `projectile_ball`: manufactured payload sphere with abs material.
 
 ## 3. Assembly Strategy
 
-1. Place one part inside the goal zone.
+1. Keep `environment_fixture` fixed.
+2. Place `projectile_ball` inside the goal zone.
 
 ## 4. Assumption Register
 

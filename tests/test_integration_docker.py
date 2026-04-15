@@ -22,7 +22,7 @@ async def test_services_health():
     async with httpx.AsyncClient() as client:
         # Check Controller
         try:
-            resp = await client.get(f"{CONTROLLER_URL}/health", timeout=10.0)
+            resp = await client.get(f"{CONTROLLER_URL}/api/health", timeout=10.0)
             assert resp.status_code == 200
             health = HealthResponse.model_validate(resp.json())
             assert health.status in [ResponseStatus.HEALTHY, ResponseStatus.OK]
@@ -55,7 +55,7 @@ async def test_controller_to_worker_agent_run():
 
         # Trigger agent run
         resp = await client.post(
-            f"{CONTROLLER_URL}/agent/run",
+            f"{CONTROLLER_URL}/api/agent/run",
             json=run_req.model_dump(mode="json"),
             timeout=10.0,
         )
@@ -68,7 +68,9 @@ async def test_controller_to_worker_agent_run():
         max_retries = 30
         completed = False
         for _ in range(max_retries):
-            status_resp = await client.get(f"{CONTROLLER_URL}/episodes/{episode_id}")
+            status_resp = await client.get(
+                f"{CONTROLLER_URL}/api/episodes/{episode_id}"
+            )
             if status_resp.status_code == 200:
                 ep_data = EpisodeResponse.model_validate(status_resp.json())
                 if ep_data.status == EpisodeStatus.COMPLETED:

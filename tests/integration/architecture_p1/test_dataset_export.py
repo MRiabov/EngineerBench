@@ -159,7 +159,7 @@ async def test_dataset_export_benchmark_row_round_trip():
         )
 
         export_resp = await client.post(
-            "/datasets/export",
+            "/api/datasets/export",
             json=DatasetExportRequest(
                 episode_id=benchmark_create.episode_id
             ).model_dump(mode="json"),
@@ -167,7 +167,7 @@ async def test_dataset_export_benchmark_row_round_trip():
         assert export_resp.status_code == 200, export_resp.text
         export_data = DatasetExportResponse.model_validate(export_resp.json())
 
-        get_resp = await client.get(f"/datasets/exports/{export_data.export_id}")
+        get_resp = await client.get(f"/api/datasets/exports/{export_data.export_id}")
         assert get_resp.status_code == 200, get_resp.text
         loaded_export = DatasetExportResponse.model_validate(get_resp.json())
         assert loaded_export == export_data
@@ -251,7 +251,7 @@ async def test_dataset_export_solution_row_round_trip():
             session_id=engineer_session_id,
             metadata_vars={"benchmark_id": str(benchmark_create.episode_id)},
         )
-        run_resp = await client.post("/agent/run", json=run_request.model_dump())
+        run_resp = await client.post("/api/agent/run", json=run_request.model_dump())
         assert run_resp.status_code in (200, 202), run_resp.text
         engineer_episode_id = str(
             AgentRunResponse.model_validate(run_resp.json()).episode_id
@@ -261,7 +261,7 @@ async def test_dataset_export_solution_row_round_trip():
         assert engineer_episode.status == EpisodeStatus.COMPLETED, engineer_episode
 
         export_resp = await client.post(
-            "/datasets/export",
+            "/api/datasets/export",
             json=DatasetExportRequest(
                 episode_id=uuid.UUID(engineer_episode_id)
             ).model_dump(mode="json"),
@@ -332,7 +332,7 @@ async def test_dataset_export_invalid_lineage_fails_closed():
     async with AsyncClient(base_url=CONTROLLER_URL, timeout=120.0) as client:
         session_id = f"INT-EXPORT-BAD-{uuid.uuid4().hex[:8]}"
         create_resp = await client.post(
-            "/test/episodes",
+            "/api/test/episodes",
             json={
                 "task": "Invalid lineage export test",
                 "session_id": session_id,
@@ -347,17 +347,17 @@ async def test_dataset_export_invalid_lineage_fails_closed():
         episode_id = EpisodeCreateResponse.model_validate(create_resp.json()).episode_id
 
         review_resp = await client.post(
-            f"/episodes/{episode_id}/review",
+            f"/api/episodes/{episode_id}/review",
             json={"review_content": _approve_review_content()},
         )
         assert review_resp.status_code == 200, review_resp.text
 
         export_resp = await client.post(
-            "/datasets/export",
+            "/api/datasets/export",
             json=DatasetExportRequest(episode_id=episode_id).model_dump(mode="json"),
         )
         assert export_resp.status_code == 422, export_resp.text
         assert "benchmark_id" in export_resp.text
 
-        lookup_resp = await client.get(f"/datasets/episodes/{episode_id}")
+        lookup_resp = await client.get(f"/api/datasets/episodes/{episode_id}")
         assert lookup_resp.status_code == 404, lookup_resp.text

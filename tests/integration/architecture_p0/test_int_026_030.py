@@ -45,7 +45,8 @@ def _default_benchmark_parts():
 
 async def _require_service(client: httpx.AsyncClient, name: str, url: str):
     try:
-        resp = await client.get(f"{url}/health", timeout=5.0)
+        health_path = "/api/health" if name == "controller" else "/health"
+        resp = await client.get(f"{url}{health_path}", timeout=5.0)
         resp.raise_for_status()
     except Exception:
         pytest.skip(f"{name} is not reachable at {url}")
@@ -141,7 +142,7 @@ async def _wait_for_episode_trace_names(
     deadline = asyncio.get_running_loop().time() + timeout_s
     seen_names: set[str] = set()
     while asyncio.get_running_loop().time() < deadline:
-        response = await client.get(f"{CONTROLLER_URL}/episodes/{episode_id}")
+        response = await client.get(f"{CONTROLLER_URL}/api/episodes/{episode_id}")
         assert response.status_code == 200, response.text
         episode = EpisodeResponse.model_validate(response.json())
         seen_names = {
@@ -280,7 +281,7 @@ async def test_int_027_seed_variant_tracking():
             },
         )
         resp = await client.post(
-            f"{CONTROLLER_URL}/agent/run", json=payload.model_dump(mode="json")
+            f"{CONTROLLER_URL}/api/agent/run", json=payload.model_dump(mode="json")
         )
         assert resp.status_code == 202
         run_data = AgentRunResponse.model_validate(resp.json())
@@ -291,7 +292,7 @@ async def test_int_027_seed_variant_tracking():
         for _ in range(5):
             try:
                 status_resp = await client.get(
-                    f"{CONTROLLER_URL}/episodes/{episode_id}", timeout=10.0
+                    f"{CONTROLLER_URL}/api/episodes/{episode_id}", timeout=10.0
                 )
                 if status_resp.status_code == 200:
                     ep_data = EpisodeResponse.model_validate(status_resp.json())
@@ -347,7 +348,7 @@ async def test_int_030_interrupt_propagation():
             session_id=session_id,
         )
         resp = await client.post(
-            f"{CONTROLLER_URL}/agent/run", json=payload.model_dump(mode="json")
+            f"{CONTROLLER_URL}/api/agent/run", json=payload.model_dump(mode="json")
         )
         assert resp.status_code == 202
         run_data = AgentRunResponse.model_validate(resp.json())
@@ -356,7 +357,7 @@ async def test_int_030_interrupt_propagation():
         await asyncio.sleep(0.5)
 
         interrupt_resp = await client.post(
-            f"{CONTROLLER_URL}/episodes/{episode_id}/interrupt"
+            f"{CONTROLLER_URL}/api/episodes/{episode_id}/interrupt"
         )
         assert interrupt_resp.status_code in [200, 202]
         StandardResponse.model_validate(interrupt_resp.json())
@@ -364,7 +365,9 @@ async def test_int_030_interrupt_propagation():
         status = None
         for _i in range(20):
             await asyncio.sleep(0.5)
-            status_resp = await client.get(f"{CONTROLLER_URL}/episodes/{episode_id}")
+            status_resp = await client.get(
+                f"{CONTROLLER_URL}/api/episodes/{episode_id}"
+            )
             assert status_resp.status_code == 200
             ep_data = EpisodeResponse.model_validate(status_resp.json())
             status = ep_data.status
@@ -414,7 +417,7 @@ async def test_int_030_benchmark_interrupt_propagation():
         assert saw_running, "Benchmark run never entered RUNNING before interrupt"
 
         interrupt_resp = await client.post(
-            f"{CONTROLLER_URL}/episodes/{episode_id}/interrupt"
+            f"{CONTROLLER_URL}/api/episodes/{episode_id}/interrupt"
         )
         assert interrupt_resp.status_code in [200, 202]
         StandardResponse.model_validate(interrupt_resp.json())

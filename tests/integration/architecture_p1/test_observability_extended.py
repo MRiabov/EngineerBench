@@ -27,14 +27,14 @@ async def test_int_058_cross_system_correlation():
         await seed_benchmark_assembly_definition(client, session_id)
         request = AgentRunRequest(task=task, session_id=session_id)
         resp = await client.post(
-            f"{CONTROLLER_URL}/agent/run",
+            f"{CONTROLLER_URL}/api/agent/run",
             json=request.model_dump(),
         )
         assert resp.status_code == 202
         episode_id = AgentRunResponse.model_validate(resp.json()).episode_id
 
         # 1. Verify Episode in DB
-        status_resp = await client.get(f"{CONTROLLER_URL}/episodes/{episode_id}")
+        status_resp = await client.get(f"{CONTROLLER_URL}/api/episodes/{episode_id}")
         assert status_resp.status_code == 200
         ep = EpisodeResponse.model_validate(status_resp.json())
         assert str(ep.id) == str(episode_id)

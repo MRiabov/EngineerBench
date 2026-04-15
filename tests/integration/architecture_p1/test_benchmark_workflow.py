@@ -122,7 +122,7 @@ async def test_benchmark_planner_cad_reviewer_path():
         assert final_metadata.episode_phase == EpisodePhase.BENCHMARK_REVIEWING
 
         # 3. Verify Artifacts from episode assets
-        episode_resp = await client.get(f"/episodes/{session_id}")
+        episode_resp = await client.get(f"/api/episodes/{session_id}")
         assert episode_resp.status_code == 200, (
             f"Failed to fetch episode assets: {episode_resp.text}"
         )
@@ -156,7 +156,7 @@ async def test_benchmark_planner_cad_reviewer_path():
             p for p in artifact_paths if p == Path("benchmark_definition.yaml")
         ]
         benchmark_definition_resp = await client.get(
-            f"/episodes/{session_id}/assets/{benchmark_definition_paths[0]}"
+            f"/api/episodes/{session_id}/assets/{benchmark_definition_paths[0]}"
         )
         assert benchmark_definition_resp.status_code == 200, (
             benchmark_definition_resp.text
@@ -184,7 +184,9 @@ async def test_benchmark_planner_cad_reviewer_path():
         assert "randomization:" in benchmark_definition_resp.text
         assert "runtime_jitter:" in benchmark_definition_resp.text
         plan_paths = [p for p in artifact_paths if p == Path("benchmark_plan.md")]
-        plan_resp = await client.get(f"/episodes/{session_id}/assets/{plan_paths[0]}")
+        plan_resp = await client.get(
+            f"/api/episodes/{session_id}/assets/{plan_paths[0]}"
+        )
         assert plan_resp.status_code == 200, plan_resp.text
         assert Path("benchmark_assembly_definition.yaml") in artifact_paths, (
             f"benchmark_assembly_definition.yaml missing. Artifacts: {artifact_paths}"
@@ -193,7 +195,7 @@ async def test_benchmark_planner_cad_reviewer_path():
             p for p in artifact_paths if p == Path("benchmark_assembly_definition.yaml")
         ]
         assembly_resp = await client.get(
-            f"/episodes/{session_id}/assets/{assembly_paths[0]}"
+            f"/api/episodes/{session_id}/assets/{assembly_paths[0]}"
         )
         assert assembly_resp.status_code == 200, assembly_resp.text
         benchmark_assembly_definition = AssemblyDefinition.model_validate(
@@ -255,7 +257,7 @@ async def test_benchmark_planner_cad_reviewer_path():
             f"review manifest must be in .manifests/. Found: {manifest_paths}"
         )
         manifest_resp = await client.get(
-            f"/episodes/{session_id}/assets/{manifest_paths[0]}"
+            f"/api/episodes/{session_id}/assets/{manifest_paths[0]}"
         )
         assert manifest_resp.status_code == 200, manifest_resp.text
         manifest = ReviewManifest.model_validate_json(manifest_resp.text)
@@ -281,7 +283,7 @@ async def test_benchmark_planner_cad_reviewer_path():
             p for p in artifact_paths if p == Path("benchmark_assembly_definition.yaml")
         )
         benchmark_assembly_definition_resp = await client.get(
-            f"/episodes/{session_id}/assets/{benchmark_assembly_definition_path}"
+            f"/api/episodes/{session_id}/assets/{benchmark_assembly_definition_path}"
         )
         assert benchmark_assembly_definition_resp.status_code == 200, (
             benchmark_assembly_definition_resp.text
@@ -292,7 +294,7 @@ async def test_benchmark_planner_cad_reviewer_path():
         assert manifest.environment_version == benchmark_assembly_definition["version"]
 
         script_resp = await client.get(
-            f"/episodes/{session_id}/assets/{manifest.script_path}"
+            f"/api/episodes/{session_id}/assets/{manifest.script_path}"
         )
         assert script_resp.status_code == 200, script_resp.text
         assert (

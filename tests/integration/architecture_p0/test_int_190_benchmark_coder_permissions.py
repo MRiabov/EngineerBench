@@ -74,16 +74,12 @@ def test_int_190_unit_eval_allowlists_are_explicit_and_reviewer_driven():
         "benchmark_coder",
         "benchmark_reviewer",
     }
-    assert "skill_agent" not in benchmark_coder_allowlist
-    assert "git_agent" not in benchmark_coder_allowlist
 
     engineer_coder_allowlist = set(agents["engineer_coder"]["allowed_during_unit_eval"])
     assert engineer_coder_allowlist == {
         "engineer_coder",
         "engineer_execution_reviewer",
     }
-    assert "skill_agent" not in engineer_coder_allowlist
-    assert "git_agent" not in engineer_coder_allowlist
 
     benchmark_planner_allowlist = set(
         agents["benchmark_planner"]["allowed_during_unit_eval"]
@@ -109,9 +105,6 @@ def test_int_190_unit_eval_allowlists_are_explicit_and_reviewer_driven():
         "engineer_coder",
         "engineer_execution_reviewer",
     }
-
-    git_agent_allowlist = set(agents["git_agent"]["allowed_during_unit_eval"])
-    assert git_agent_allowlist == {"git_agent"}
 
 
 @pytest.mark.integration

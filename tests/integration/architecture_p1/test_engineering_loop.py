@@ -53,7 +53,7 @@ def _asset_path(asset_path: str | Path) -> Path:
 async def _read_episode_asset_text(
     client: AsyncClient, episode_id: str, asset_path: str | Path
 ) -> str:
-    resp = await client.get(f"/episodes/{episode_id}/assets/{asset_path}")
+    resp = await client.get(f"/api/episodes/{episode_id}/assets/{asset_path}")
     assert resp.status_code == 200, resp.text
     return resp.text
 
@@ -102,7 +102,9 @@ async def test_engineering_full_loop():
             benchmark_session_id=benchmark_session_id,
             benchmark_episode_id=benchmark_episode_id,
         )
-        benchmark_episode_resp = await client.get(f"/episodes/{benchmark_episode_id}")
+        benchmark_episode_resp = await client.get(
+            f"/api/episodes/{benchmark_episode_id}"
+        )
         assert benchmark_episode_resp.status_code == 200, benchmark_episode_resp.text
         benchmark_episode = EpisodeResponse.model_validate(
             benchmark_episode_resp.json()
@@ -412,7 +414,7 @@ async def test_engineering_full_loop():
         )
         assert engineer_episode.metadata_vars.terminal_reason == TerminalReason.APPROVED
 
-        episode_resp = await client.get(f"/episodes/{engineer_episode_id}")
+        episode_resp = await client.get(f"/api/episodes/{engineer_episode_id}")
         assert episode_resp.status_code == 200, episode_resp.text
         episode_data = EpisodeResponse.model_validate(episode_resp.json())
         artifact_paths = [
@@ -817,11 +819,11 @@ async def _reject_episode(client: AsyncClient, episode_id: str) -> EpisodeRespon
     ).strip()
     review_content += "\n---\nRejecting the episode for deterministic retry coverage.\n"
     response = await client.post(
-        f"/episodes/{episode_id}/review",
+        f"/api/episodes/{episode_id}/review",
         json={"review_content": review_content},
     )
     assert response.status_code == 200, response.text
-    status_response = await client.get(f"/episodes/{episode_id}")
+    status_response = await client.get(f"/api/episodes/{episode_id}")
     assert status_response.status_code == 200, status_response.text
     episode = EpisodeResponse.model_validate(status_response.json())
     assert episode.status == EpisodeStatus.FAILED
@@ -831,6 +833,6 @@ async def _reject_episode(client: AsyncClient, episode_id: str) -> EpisodeRespon
 async def _read_episode_asset_text(
     client: AsyncClient, episode_id: str, asset_path: str
 ) -> str:
-    resp = await client.get(f"/episodes/{episode_id}/assets/{asset_path}")
+    resp = await client.get(f"/api/episodes/{episode_id}/assets/{asset_path}")
     assert resp.status_code == 200, resp.text
     return resp.text

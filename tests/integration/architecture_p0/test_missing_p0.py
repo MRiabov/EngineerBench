@@ -50,7 +50,7 @@ async def test_int_004_episode_artifact_persistence():
             metadata_vars={"worker_session_id": session_id},
         )
         resp = await client.post(
-            f"{CONTROLLER_URL}/test/episodes",
+            f"{CONTROLLER_URL}/api/test/episodes",
             json=req.model_dump(mode="json"),
         )
         assert resp.status_code == 201
@@ -58,7 +58,7 @@ async def test_int_004_episode_artifact_persistence():
         episode_id = str(episode_create.episode_id)
 
         # Let's check episodes list
-        resp = await client.get(f"{CONTROLLER_URL}/episodes/")
+        resp = await client.get(f"{CONTROLLER_URL}/api/episodes/")
         assert resp.status_code == 200
         episodes = [EpisodeListItem.model_validate(e) for e in resp.json()]
         assert any(str(e.id) == episode_id for e in episodes)
@@ -84,7 +84,7 @@ async def test_int_005_trace_realtime_broadcast():
         # Run a very short agent task
         run_req = AgentRunRequest(task="Say hello", session_id=session_id)
         resp = await client.post(
-            f"{CONTROLLER_URL}/agent/run",
+            f"{CONTROLLER_URL}/api/agent/run",
             json=run_req.model_dump(mode="json"),
         )
         assert resp.status_code == 202
@@ -94,7 +94,7 @@ async def test_int_005_trace_realtime_broadcast():
         # Wait a bit for traces
         await asyncio.sleep(5.0)
 
-        resp = await client.get(f"{CONTROLLER_URL}/episodes/{episode_id}")
+        resp = await client.get(f"{CONTROLLER_URL}/api/episodes/{episode_id}")
         ep_data = EpisodeResponse.model_validate(resp.json())
         assert len(ep_data.traces) > 0
 
@@ -138,7 +138,7 @@ async def test_int_025_events_collection_e2e():
         await seed_benchmark_assembly_definition(client, session_id)
         run_req = AgentRunRequest(task="Run a simulation", session_id=session_id)
         run_resp = await client.post(
-            f"{CONTROLLER_URL}/agent/run",
+            f"{CONTROLLER_URL}/api/agent/run",
             json=run_req.model_dump(mode="json"),
         )
         assert run_resp.status_code == 202
@@ -149,7 +149,9 @@ async def test_int_025_events_collection_e2e():
         max_attempts = 60
         for _ in range(max_attempts):
             await asyncio.sleep(5.0)
-            status_resp = await client.get(f"{CONTROLLER_URL}/episodes/{episode_id}")
+            status_resp = await client.get(
+                f"{CONTROLLER_URL}/api/episodes/{episode_id}"
+            )
             if status_resp.status_code != 200:
                 continue
             ep_data = EpisodeResponse.model_validate(status_resp.json())
@@ -159,7 +161,7 @@ async def test_int_025_events_collection_e2e():
             pytest.fail("Agent did not complete simulation task in time")
 
         # Verify traces contain the simulation result event
-        resp = await client.get(f"{CONTROLLER_URL}/episodes/{episode_id}")
+        resp = await client.get(f"{CONTROLLER_URL}/api/episodes/{episode_id}")
         ep_data = EpisodeResponse.model_validate(resp.json())
 
         assert any("simulation" in str(t.content).lower() for t in ep_data.traces)

@@ -2497,7 +2497,6 @@ def test_prompt_source_role_prompts_follow_runtime_order():
         "engineer_plan_reviewer",
         "engineer_coder",
         "engineer_execution_reviewer",
-        "skill_agent",
         "journalling_agent",
         "default",
     ]
@@ -2762,9 +2761,6 @@ async def test_codex_materialized_planner_workspace_submits(
     assert "python .admin/clear_env.py" in materialized.prompt_text
     assert "Available skills you can read:" not in materialized.prompt_text
     assert "/skills/runtime-script-contract/SKILL.md" not in materialized.prompt_text
-    assert "Technical drawing mode is active." not in materialized.prompt_text
-    assert "assembly_definition.yaml.drafting" not in materialized.prompt_text
-    assert "benchmark_assembly_definition.yaml.drafting" not in materialized.prompt_text
     _assert_skills_tree_materialized(workspace_dir)
     _assert_skills_tree_materialized(mirror_workspace_dir)
     assert any(path.startswith(".agents/skills/") for path in materialized.copied_paths)
@@ -3298,8 +3294,6 @@ def test_validate_eval_seed_accepts_curated_rows_and_preserves_redundancy_metada
     )
     assert "benchmark_coder" in all_agents_output, all_agents_output
     assert "engineer_execution_reviewer" in all_agents_output, all_agents_output
-    assert "skill_agent" not in all_agents_output, all_agents_output
-    assert "git_agent" not in all_agents_output, all_agents_output
     assert "journalling_agent" not in all_agents_output, all_agents_output
 
     for manifest_path in (

@@ -162,11 +162,11 @@ async def test_render_artifact_generation_int_039():
     async with AsyncClient(base_url=CONTROLLER_URL, timeout=300.0) as client:
         # 1. Trigger Agent Run (or Benchmark Generation)
         prompt = "Create a simple cube and simulate it."
-        # We use /agent/run for a standard agent flow
+        # We use /api/agent/run for a standard agent flow
         session_id = f"INT-039-{uuid.uuid4().hex[:8]}"
         await seed_benchmark_assembly_definition(client, session_id)
         resp = await client.post(
-            "/agent/run", json={"task": prompt, "session_id": session_id}
+            "/api/agent/run", json={"task": prompt, "session_id": session_id}
         )
         assert resp.status_code in [200, 202], f"Failed to trigger agent: {resp.text}"
         run_data = AgentRunResponse.model_validate(resp.json())
@@ -175,7 +175,7 @@ async def test_render_artifact_generation_int_039():
         # 2. Poll for completion
         completed = False
         for _ in range(150):
-            status_resp = await client.get(f"/episodes/{episode_id}")
+            status_resp = await client.get(f"/api/episodes/{episode_id}")
             if status_resp.status_code == 200:
                 ep_data = EpisodeResponse.model_validate(status_resp.json())
                 if ep_data.status in [EpisodeStatus.COMPLETED, EpisodeStatus.FAILED]:
@@ -187,7 +187,7 @@ async def test_render_artifact_generation_int_039():
 
         # 3. Verify Artifacts (discoverable by reviewer/consumer paths)
         ep_data = EpisodeResponse.model_validate(
-            (await client.get(f"/episodes/{episode_id}")).json()
+            (await client.get(f"/api/episodes/{episode_id}")).json()
         )
         assets = ep_data.assets
 
@@ -348,7 +348,7 @@ async def test_asset_persistence_linkage_int_040():
         session_id = f"INT-040-{uuid.uuid4().hex[:8]}"
         await seed_benchmark_assembly_definition(client, session_id)
         resp = await client.post(
-            "/agent/run",
+            "/api/agent/run",
             json={
                 "task": "Create a part named 'linkage_test' and simulate.",
                 "session_id": session_id,
@@ -360,7 +360,7 @@ async def test_asset_persistence_linkage_int_040():
         # Wait for completion
         for _ in range(150):
             ep_data = EpisodeResponse.model_validate(
-                (await client.get(f"/episodes/{episode_id}")).json()
+                (await client.get(f"/api/episodes/{episode_id}")).json()
             )
             if ep_data.status in [EpisodeStatus.COMPLETED, EpisodeStatus.FAILED]:
                 break
@@ -368,7 +368,7 @@ async def test_asset_persistence_linkage_int_040():
 
         # Verify Linkage
         ep_data = EpisodeResponse.model_validate(
-            (await client.get(f"/episodes/{episode_id}")).json()
+            (await client.get(f"/api/episodes/{episode_id}")).json()
         )
         asset_paths = [a.s3_path for a in ep_data.assets]
 
@@ -405,7 +405,7 @@ async def test_mjcf_joint_mapping_int_037():
 
         await seed_benchmark_assembly_definition(client, session_id)
         resp = await client.post(
-            "/agent/run", json={"task": prompt, "session_id": session_id}
+            "/api/agent/run", json={"task": prompt, "session_id": session_id}
         )
         run_data = AgentRunResponse.model_validate(resp.json())
         episode_id = run_data.episode_id
@@ -413,14 +413,14 @@ async def test_mjcf_joint_mapping_int_037():
         # Wait for completion
         for _ in range(150):
             ep_data = EpisodeResponse.model_validate(
-                (await client.get(f"/episodes/{episode_id}")).json()
+                (await client.get(f"/api/episodes/{episode_id}")).json()
             )
             if ep_data.status in [EpisodeStatus.COMPLETED, EpisodeStatus.FAILED]:
                 break
             await asyncio.sleep(2)
 
         ep_data = EpisodeResponse.model_validate(
-            (await client.get(f"/episodes/{episode_id}")).json()
+            (await client.get(f"/api/episodes/{episode_id}")).json()
         )
         # Find MJCF asset
         mjcf_asset = next(
@@ -469,14 +469,14 @@ async def test_controller_function_family_int_038():
         session_id = f"INT-038-{uuid.uuid4().hex[:8]}"
         await seed_benchmark_assembly_definition(client, session_id)
         resp = await client.post(
-            "/agent/run", json={"task": prompt, "session_id": session_id}
+            "/api/agent/run", json={"task": prompt, "session_id": session_id}
         )
         run_data = AgentRunResponse.model_validate(resp.json())
         episode_id = run_data.episode_id
 
         for _ in range(150):
             ep_data = EpisodeResponse.model_validate(
-                (await client.get(f"/episodes/{episode_id}")).json()
+                (await client.get(f"/api/episodes/{episode_id}")).json()
             )
             if ep_data.status in [EpisodeStatus.COMPLETED, EpisodeStatus.FAILED]:
                 break
@@ -484,7 +484,7 @@ async def test_controller_function_family_int_038():
 
         # Verify it ran without crashing (Simulation stable / Goal achieved)
         ep_data = EpisodeResponse.model_validate(
-            (await client.get(f"/episodes/{episode_id}")).json()
+            (await client.get(f"/api/episodes/{episode_id}")).json()
         )
         assert ep_data.status == EpisodeStatus.COMPLETED
         # Check traces for simulation progress/completion signal

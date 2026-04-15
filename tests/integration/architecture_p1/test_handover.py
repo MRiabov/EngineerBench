@@ -88,7 +88,7 @@ async def test_benchmark_to_engineer_handoff():
             pytest.fail(f"Benchmark generation failed: {last_episode.status}")
 
         # 3. Verify Handoff Package Artifacts from episode assets
-        episode_resp = await client.get(f"/episodes/{session_id}")
+        episode_resp = await client.get(f"/api/episodes/{session_id}")
         assert episode_resp.status_code == 200, (
             f"Failed to fetch episode assets: {episode_resp.text}"
         )
@@ -141,7 +141,7 @@ async def test_benchmark_to_engineer_handoff():
             f"review manifest must be in .manifests/. Found: {manifest_paths}"
         )
         manifest_resp = await client.get(
-            f"/episodes/{session_id}/assets/{manifest_paths[0]}"
+            f"/api/episodes/{session_id}/assets/{manifest_paths[0]}"
         )
         assert manifest_resp.status_code == 200, manifest_resp.text
         manifest = ReviewManifest.model_validate_json(manifest_resp.text)
@@ -164,7 +164,7 @@ async def test_benchmark_to_engineer_handoff():
             p for p in artifact_paths if p == Path("benchmark_assembly_definition.yaml")
         )
         benchmark_assembly_definition_resp = await client.get(
-            f"/episodes/{session_id}/assets/{benchmark_assembly_definition_path}"
+            f"/api/episodes/{session_id}/assets/{benchmark_assembly_definition_path}"
         )
         assert benchmark_assembly_definition_resp.status_code == 200, (
             benchmark_assembly_definition_resp.text
@@ -198,7 +198,7 @@ async def test_benchmark_to_engineer_handoff():
         )
 
         plan_review_comments_resp = await client.get(
-            f"/episodes/{session_id}/assets/{plan_review_comments_paths[0]}"
+            f"/api/episodes/{session_id}/assets/{plan_review_comments_paths[0]}"
         )
         assert plan_review_comments_resp.status_code == 200, (
             plan_review_comments_resp.text
@@ -213,7 +213,7 @@ async def test_benchmark_to_engineer_handoff():
         assert "review_manifest_revision" in plan_review_comments["checklist"]
 
         script_resp = await client.get(
-            f"/episodes/{session_id}/assets/{manifest.script_path}"
+            f"/api/episodes/{session_id}/assets/{manifest.script_path}"
         )
         assert script_resp.status_code == 200, script_resp.text
         assert (
@@ -222,7 +222,7 @@ async def test_benchmark_to_engineer_handoff():
         )
 
         validation_manifest_resp = await client.get(
-            f"/episodes/{session_id}/assets/validation_results.json"
+            f"/api/episodes/{session_id}/assets/validation_results.json"
         )
         assert validation_manifest_resp.status_code == 200, (
             validation_manifest_resp.text
@@ -234,7 +234,7 @@ async def test_benchmark_to_engineer_handoff():
         assert validation_record.script_sha256 == manifest.script_sha256
 
         render_manifest_resp = await client.get(
-            f"/episodes/{session_id}/assets/{render_manifest_paths[0]}"
+            f"/api/episodes/{session_id}/assets/{render_manifest_paths[0]}"
         )
         assert render_manifest_resp.status_code == 200, render_manifest_resp.text
         render_manifest = RenderManifest.model_validate_json(render_manifest_resp.text)
