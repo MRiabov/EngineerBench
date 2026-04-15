@@ -12,6 +12,7 @@ from controller.agent.reward import (
     MilestoneConfig,
     load_reward_config,
 )
+from controller.clients.worker import WorkerClient
 from evals.logic.codex_workspace import LocalWorkspaceClient as _LocalWorkspaceClient
 from evals.logic.models import HardCheckAggregate
 from evals.logic.review_checks import (
@@ -44,7 +45,7 @@ def _load_agent_reward_configs() -> dict[AgentName, AgentRewardConfig]:
         return {}
 
     configs: dict[AgentName, AgentRewardConfig] = {}
-    for group in (reward_cfg.benchmark, reward_cfg.engineer, reward_cfg.shared):
+    for group in (reward_cfg.benchmark, reward_cfg.engineer):
         for name, cfg in group.items():
             with contextlib.suppress(ValueError):
                 configs[AgentName(name)] = cfg

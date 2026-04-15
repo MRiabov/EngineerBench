@@ -69,37 +69,31 @@ class AgentRewardConfig(BaseModel):
 
     @model_validator(mode="after")
     def validate_milestone_layout(self) -> "AgentRewardConfig":
-        merged_keys = (
-            set(self.milestones)
-            | set(self.hard_checks)
-            | set(self.judge_evaluation.all_milestones())
-        )
-        total_count = (
-            len(self.milestones)
-            + len(self.hard_checks)
-            + len(self.judge_evaluation.all_milestones())
-        )
+        raw_milestones = self._raw_all_milestones()
+        merged_keys = set(raw_milestones)
+        total_count = len(raw_milestones)
         if not merged_keys:
             raise ValueError("AgentRewardConfig must define at least one milestone")
         if len(merged_keys) != total_count:
             raise ValueError(
                 "Duplicate milestone names across milestones/hard_checks/judge_evaluation"
             )
-        total_weight = sum(
-            milestone.weight for milestone in self.all_milestones().values()
-        )
+        total_weight = sum(milestone.weight for milestone in raw_milestones.values())
         if abs(total_weight - 1.0) > 1e-6:
             raise ValueError(
                 f"AgentRewardConfig weights must sum to 1.0, got {total_weight:.3f}"
             )
         return self
 
-    def all_milestones(self) -> dict[str, MilestoneConfig]:
+    def _raw_all_milestones(self) -> dict[str, MilestoneConfig]:
         merged: dict[str, MilestoneConfig] = {}
         merged.update(self.hard_checks)
         merged.update(self.judge_evaluation.all_milestones())
         merged.update(self.milestones)
         return merged
+
+    def all_milestones(self) -> dict[str, MilestoneConfig]:
+        return self._raw_all_milestones()
 
 
 class RewardConfig(BaseModel):
@@ -108,7 +102,6 @@ class RewardConfig(BaseModel):
     bootstrap_threshold: float
     benchmark: dict[str, AgentRewardConfig]
     engineer: dict[str, AgentRewardConfig]
-    shared: dict[str, AgentRewardConfig]
 
 
 def load_reward_config(config_path: Path | None = None) -> RewardConfig:

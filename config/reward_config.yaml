@@ -111,7 +111,7 @@ benchmark:
           description: >
             Planner handoff is sufficiently specific and free of ambiguity.
       feedback_response_score:
-        weight: 0.15
+        weight: 0.20
         description: >
           Fraction of valid failed reviewer checklist items addressed on the
           next planner revision without introducing new blocker regressions.
@@ -259,7 +259,7 @@ benchmark:
           description: >
             Reviewer correctly judged whether the plan package was ambiguity-free.
       review_actionable:
-        weight: 0.20
+        weight: 0.22
         description: >
           Rejections include concrete fixes aligned with the failed checklist
           items. Acceptances receive full credit.
@@ -380,7 +380,7 @@ engineer:
     milestones:
       # Gate 7 — engineer successfully implemented the plan (downstream)
       engineer_implemented_successfully:
-        weight: 0.25
+        weight: 0.32
         description: >
           The CAD engineer produced a passing simulation based on this plan.
           This measures downstream utility of the plan beyond review acceptance.
@@ -477,7 +477,7 @@ engineer:
     milestones:
       # Gate 7 — simulation result (dominant term)
       simulation_result:
-        weight: 0.45
+        weight: 0.525
         description: >
           Simulation outcome. Full credit for success. Partial credit for
           failure proportional to progress toward goal:
@@ -588,7 +588,7 @@ engineer:
           description: >
             Reviewer correctly judged whether the plan was implementation-ready and unambiguous.
       review_actionable:
-        weight: 0.20
+        weight: 0.27
         description: >
           Rejections include specific fixes aligned with the failed checklist
           items. Acceptances receive full credit.
@@ -650,7 +650,7 @@ engineer:
           description: >
             Reviewer correctly judged manufacturability compliance.
       review_actionable:
-        weight: 0.20
+        weight: 0.25
         description: >
           Rejections include specific, file-referenced fix suggestions.
           Acceptances: full credit automatically.
