@@ -21,7 +21,7 @@
 ## What belongs here
 
 - This file does not repeat the core tool set already documented in [Agent tools](./tools.md).
-- The core surfaces that remain documented elsewhere include `validate_benchmark`, `validate_engineering`, `simulate_benchmark`, `simulate_engineering`, `submit_benchmark_plan`, `submit_engineering_plan`, `submit_benchmark_for_review`, `submit_solution_for_review`, `inspect_media`, `inspect_topology`, `search_cots_catalog`, `invoke_cots_search_subagent`, `validate_costing_and_price`, `preview`, and `objectives_geometry`.
+- The core surfaces that remain documented elsewhere include `validate_benchmark`, `validate_engineering`, `simulate_benchmark`, `simulate_engineering`, `submit_benchmark_plan`, `submit_engineering_plan`, `submit_benchmark_for_review`, `submit_solution_for_review`, `inspect_media`, `inspect_topology`, `validate_costing_and_price`, `preview`, and `objectives_geometry`.
 - This file instead tracks helper namespaces and functions that are secondary, role-specific, or experimental.
 
 ## Render-query helpers
@@ -37,7 +37,7 @@
 | -- | -- | -- | -- |
 | `shared.utils.agent` | `refuse_plan(reason)` | Auxiliary wrapper | Writes a refusal artifact or forwards to the heavy-worker refusal path. The other proxy wrappers in this module are core and stay documented in `tools.md`. |
 | `controller.agent.tools` | `run_validate_and_price_script(fs)` | Internal bridge | Runs the checked-in planner pricing script. The exposed planner gate is `validate_costing_and_price()`, which uses this bridge. |
-| `controller.agent.nodes.skills` | `save_suggested_skill(title, content)` | Skill-training staging helper | Writes staged skill drafts into the session-local `suggested_skills/` worktree/checkpoint for the standalone training loop. It is a compatibility write primitive, not evidence that a separate `skill_agent` is required by the target architecture. |
+| `controller.agent.nodes.skills` | `save_suggested_skill(title, content)` | Skill-training staging helper | Writes staged skill drafts into the session-local `suggested_skills/` worktree/checkpoint for the standalone training loop. It is a compatibility write primitive, not evidence that a separate skill-promotion role is required by the target architecture. |
 
 ## Planned render-query surfaces
 

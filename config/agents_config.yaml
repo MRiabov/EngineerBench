@@ -72,10 +72,6 @@ execution:
       timeout_seconds: 90
       max_turns: 150
       max_total_tokens: 400000
-    skill_agent:
-      timeout_seconds: 120
-      max_turns: 150
-      max_total_tokens: 400000
 bug_reports:
   enabled: true
   archive_root: logs/bug_reports
@@ -557,47 +553,3 @@ agents:
       - write_file
       - edit_file
       - execute_command
-  skill_agent:
-    filesystem_permissions:
-      read:
-        allow:
-          - "**"
-        deny:
-          - .git/**
-          - .env
-          - "**/secrets/**"
-          - .manifests/**
-      write:
-        allow:
-          - suggested_skills/**
-          - journal.md
-        deny:
-          - .manifests/**
-    tools:
-      - list_files
-      - read_file
-      - write_file
-      - edit_file
-      - grep
-      - execute_command
-      - inspect_topology
-      - save_suggested_skill
-    allowed_during_unit_eval:
-      - skill_agent
-  git_agent:
-    filesystem_permissions:
-      read:
-        allow:
-          - "**"
-        deny:
-          - .git/**
-          - .env
-          - "**/secrets/**"
-          - .manifests/**
-      write:
-        allow: []
-        deny:
-          - "**"
-    tools: []
-    allowed_during_unit_eval:
-      - git_agent

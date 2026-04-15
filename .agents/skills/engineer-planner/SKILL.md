@@ -72,7 +72,6 @@ Load specialist skill support only when it materially changes the plan:
 - `build123d-cad-drafting-skill` for drafting geometry or layout support
 - `manufacturing-knowledge` when budget, quantity, or manufacturability matters
 - `mechanical-engineering` when mechanism feasibility or load path needs deeper analysis
-- `electronics-engineering` only when the handoff explicitly includes electronics requirements
 - [solution archetypes](../engineer-coder/references/solution_archetypes.md) when a solution family needs a quick prior
 
 ## Source Hierarchy

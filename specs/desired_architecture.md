@@ -24,7 +24,6 @@ When a task references `@specs/desired_architecture.md`, treat the files below a
 - [Agent handovers and contracts](./architecture/agents/handover-contracts.md): file-level handoff contracts and refusal/review routing.
 - [Agent harness](./architecture/agents/agent-harness.md): DSPy/LangGraph runtime, debug CLI-provider backend, workspace/prompt/runner contract, and skill-loading policy.
 - [Prompt management](./architecture/agents/prompt-management.md): unified prompt-source model, backend appendices, shared template context, and the skills-versus-prompts boundary.
-- [Engineering planner technical drawings](./architecture/agents/engineering-planner-technical-drawings.md): planner drafting contract, technical drawing review rules, and `render_technical_drawing()` expectations.
 - [Agent skills](./architecture/agents/agent-skill.md): canonical skill-tree source, authoring contract, workspace materialization, and skill-improvement loop.
 - [Agent artifacts and filesystem](./architecture/agents/artifacts-and-filesystem.md): artifact surfaces, file ownership, and path-permission policy.
 - [Agent artifact contracts](./architecture/agents/agent-artifacts/README.md): file-level acceptance criteria for seeded workspace artifacts, including hard checks, quality bars, and reviewer look-fors.
@@ -38,7 +37,6 @@ Within the agents tree, `specs/architecture/agents/roles-detailed/` is the sourc
 
 - [Distributed execution](./architecture/distributed-execution.md): controller plus split worker plane, worker APIs, dedicated renderer worker, persistence, Temporal boundary, and backend-routing rules such as fast validation preview versus physics simulation.
 - [CAD and other infrastructure](./architecture/CAD-and-other-infra.md): CAD metadata, rendering direction, dedicated renderer worker boundary, validation-preview rendering policy, schema contracts, and supporting infra assumptions.
-- [COTS geometry import](./architecture/cots-geometry-import.md): class-first COTS resolution contract, typed class registry, interface-faithful proxy policy, and verification expectations for COTS parts.
 
 ### Evaluation and quality gates
 

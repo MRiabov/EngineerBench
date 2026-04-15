@@ -17,26 +17,6 @@ Use `references/index.md` for the file map, then use this document when you need
 - Dataset row: `id`, `task`, `expected_criteria`
 - Workspace at entry: none; this corpus currently uses prompt-only rows for benchmark planning.
 
-### `electronics_planner`
-
-- Dataset row: `id`, `task`, `expected_criteria`
-- Workspace at entry: none; this corpus currently uses prompt-only rows for electronics planning.
-
-### `engineer_reviewer`
-
-- Dataset row: `id`, `task`, `expected_criteria`, `expected_decision`
-- Workspace at entry: none; this is a legacy/simple reviewer row and does not use `seed_artifact_dir`.
-
-### `skill_agent`
-
-- Dataset row: `id`, `task`, `expected_criteria`
-- Workspace at entry: none.
-
-### `git_agent`
-
-- Dataset row: `id`, `task`, `expected_criteria`, `git_eval`
-- Workspace at entry: none.
-
 ## Seeded Rows
 
 ### `benchmark_plan_reviewer`

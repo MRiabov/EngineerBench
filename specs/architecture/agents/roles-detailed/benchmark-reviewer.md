@@ -21,7 +21,6 @@ The Benchmark Reviewer decides whether the implemented benchmark is ready to han
 - `simulation_result.json`
 - `scene.json`
 - `benchmark_plan_evidence_script.py`
-- `benchmark_plan_technical_drawing_script.py`
 - `renders/benchmark_renders/**`
 - `renders/current-episode/**` when it exists
 - `.manifests/benchmark_review_manifest.json`
@@ -35,7 +34,6 @@ The Benchmark Reviewer decides whether the implemented benchmark is ready to han
 - `grep`
 - `execute_command`
 - `inspect_topology`
-- `invoke_cots_search_subagent`
 
 ## What Humans Must Tell It
 
@@ -65,4 +63,3 @@ The Benchmark Reviewer decides whether the implemented benchmark is ready to han
 - `.agents/skills/render-evidence/SKILL.md`
 - `.agents/skills/mechanical-engineering/SKILL.md`
 - `.agents/skills/runtime-script-contract/SKILL.md`
-- `.agents/skills/cots-parts/SKILL.md` when benchmark-owned fixtures are catalog-backed

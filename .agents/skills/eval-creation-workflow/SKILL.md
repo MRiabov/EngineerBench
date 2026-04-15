@@ -115,7 +115,7 @@ Use these as the default minimums unless the target role contract requires more.
   Seed `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, `journal.md`.
 - `benchmark_reviewer`:
   Seed `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, `journal.md`, `script.py`, `validation_results.json`, `simulation_result.json`, `.manifests/benchmark_review_manifest.json`.
-- Engineering and electronics roles:
+- Engineering roles:
   Seed `engineering_plan.md` and follow the exact handoff contract in `specs/architecture/agents/handover-contracts.md`. Do not guess file names.
 
 For engineering eval seeds with motion proof, keep `assembly_definition.yaml.motion_forecast` and `payload_trajectory_definition.yaml` aligned on the same moving parts, build-safe start, contact order, and terminal goal proof. If `engineering_plan.md` includes timing or speed math, derive it from the exact waypoint sequence in the precise path and state whether the result is an average-segment envelope or a measured runtime trace.
@@ -150,7 +150,6 @@ The canonical files in that library use the same basenames as the workspace arti
 - `benchmark_execution_review_yaml_acceptance_criteria.md`
 - `engineering_plan_review_yaml_acceptance_criteria.md`
 - `engineering_execution_review_yaml_acceptance_criteria.md`
-- `electronics_review_yaml_acceptance_criteria.md`
 - `renders_acceptance_criteria.md`
 
 ## Workflow
@@ -175,8 +174,6 @@ Reviewer stages are fail-closed.
   `.manifests/engineering_plan_review_manifest.json`
 - Engineering execution reviewer manifest path:
   `.manifests/engineering_execution_handoff_manifest.json`
-- Electronics reviewer manifest path:
-  `.manifests/electronics_review_manifest.json`
 
 If the manifest is missing, stale, or schema-invalid, fix the seeded artifact set. Do not loosen the gate.
 

@@ -274,18 +274,6 @@
 │   │   │   ├── ./kitty-specs/005-benchmark-scenario-generator/tasks/WP04-planner-reviewer.md # Markdown documentation or specification.
 │   │   │   └── ./kitty-specs/005-benchmark-scenario-generator/tasks/WP05-integrations.md # Markdown documentation or specification.
 │   │   └── ./kitty-specs/005-benchmark-scenario-generator/tasks.md # Markdown documentation or specification.
-│   ├── ./kitty-specs/006-cots-assembly-system
-│   │   ├── ./kitty-specs/006-cots-assembly-system/data-model.md # Markdown documentation or specification.
-│   │   ├── ./kitty-specs/006-cots-assembly-system/meta.json # JSON data or configuration.
-│   │   ├── ./kitty-specs/006-cots-assembly-system/plan.md # Markdown documentation or specification.
-│   │   ├── ./kitty-specs/006-cots-assembly-system/quickstart.md # Markdown documentation or specification.
-│   │   ├── ./kitty-specs/006-cots-assembly-system/research.md # Markdown documentation or specification.
-│   │   ├── ./kitty-specs/006-cots-assembly-system/spec.md # Markdown documentation or specification.
-│   │   ├── ./kitty-specs/006-cots-assembly-system/tasks
-│   │   │   ├── ./kitty-specs/006-cots-assembly-system/tasks/WP01-data-core.md # Markdown documentation or specification.
-│   │   │   ├── ./kitty-specs/006-cots-assembly-system/tasks/WP02-indexer.md # Markdown documentation or specification.
-│   │   │   └── ./kitty-specs/006-cots-assembly-system/tasks/WP03-search-runtime.md # Markdown documentation or specification.
-│   │   └── ./kitty-specs/006-cots-assembly-system/tasks.md # Markdown documentation or specification.
 │   ├── ./kitty-specs/007-agentic-cad-dashboard
 │   │   ├── ./kitty-specs/007-agentic-cad-dashboard/data-model.md # Markdown documentation or specification.
 │   │   ├── ./kitty-specs/007-agentic-cad-dashboard/meta.json # JSON data or configuration.
@@ -375,7 +363,6 @@
 │   └── ./scripts/throwaway/reproduce_async_error.py # Python source code.
 ├── ./shared # Code shared between Controller and Worker.
 │   ├── ./shared/assets # Static assets, schemas, and templates.
-│   │   ├── ./shared/assets/cots_descriptions.json # JSON data or configuration.
 │   │   ├── ./shared/assets/schemas
 │   │   │   └── ./shared/assets/schemas/mjcf
 │   │   │   ├── ./shared/assets/schemas/mjcf/attribute_types
@@ -409,16 +396,6 @@
 │   │   └── ./shared/assets/template_repos/engineer/solution_script.py # Python source code.
 │   ├── ./shared/cli
 │   │   └── ./shared/cli/benchmark.py # Python source code.
-│   ├── ./shared/cots # Commercial Off-The-Shelf parts logic.
-│   │   ├── ./shared/cots/agent.py # Python source code.
-│   │   ├── ./shared/cots/database
-│   │   │   ├── ./shared/cots/database/__init__.py # Package initialization file.
-│   │   │   ├── ./shared/cots/database/init.py # Python source code.
-│   │   │   └── ./shared/cots/database/models.py # Python source code.
-│   │   ├── ./shared/cots/indexer.py # Python source code.
-│   │   ├── ./shared/cots/__init__.py # Package initialization file.
-│   │   ├── ./shared/cots/models.py # Python source code.
-│   │   └── ./shared/cots/runtime.py # Python source code.
 │   ├── ./shared/enums.py # Python source code.
 │   ├── ./shared/git_utils.py # Python source code.
 │   ├── ./shared/__init__.py # Package initialization file.
@@ -454,10 +431,6 @@
 │   │   ├── ./tests/controller/test_agent_graph.py # Test file.
 │   │   ├── ./tests/controller/test_clients_worker.py # Test file.
 │   │   └── ./tests/controller/test_prompts.py # Test file.
-│   ├── ./tests/cots # Test file.
-│   │   ├── ./tests/cots/test_indexer.py # Test file.
-│   │   ├── ./tests/cots/test_search_agent.py # Test file.
-│   │   └── ./tests/cots/test_search.py # Test file.
 │   ├── ./tests/e2e # Test file.
 │   │   ├── ./tests/e2e/test_benchmark_generation.py # Test file.
 │   │   └── ./tests/e2e/test_simulation_engine.py # Test file.
@@ -480,7 +453,6 @@
 │   ├── ./tests/test_controller_api_extended.py # Test file.
 │   ├── ./tests/test_controller_persistence.py # Test file.
 │   ├── ./tests/test_controller_tasks.py # Test file.
-│   ├── ./tests/test_cots_foundation.py # Test file.
 │   ├── ./tests/test_dashboard_api.py # Test file.
 │   ├── ./tests/test_env_config.py # Test file.
 │   ├── ./tests/test_episodes_api.py # Test file.

@@ -16,7 +16,7 @@ Do not mock project/runtime boundaries in integration tests; only unavoidable th
 
 Additionally:
 
-1. `kitty-specs/desired_architecture.md` is the central source of truth for the application; all integration tests should be relevant to it and reviewed against it before implementation. Every added test must map to an `INT-xxx` or `INT-NEG-###` ID in the integration-test list.
+1. `specs/desired_architecture.md` is the central source of truth for the application; all integration tests should be relevant to it and reviewed against it before implementation. Every added test must map to an `INT-xxx` or `INT-NEG-###` ID in the integration-test list.
 2. Prefer black-box integration (compose services + real boundaries); avoid heavy mocks except where unavoidable.
 3. Include both happy-path and required fail-path assertions (especially gating/validation/refusal/event emission).
 4. Do not silently drop existing integration coverage; replacements must preserve or improve mapped coverage.

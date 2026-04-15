@@ -11,13 +11,13 @@ The acceptance-criteria files linked from this index should prefer `References` 
 | Artifact | Typical roles | Main gate |
 | -- | -- | -- |
 | `benchmark_plan.md` | benchmark planners, benchmark plan reviewers | Benchmark-stage heading schema, exact identifiers, cross-file consistency |
-| `engineering_plan.md` | engineering and electronics planners, plan reviewers, downstream coders | Engineering-stage proof sections, exact identifiers, and cross-file consistency |
+| `engineering_plan.md` | engineering planners, plan reviewers, downstream coders | Engineering-stage proof sections, exact identifiers, and cross-file consistency |
 | `plan.md` | legacy compatibility alias only | Historical replay bundles; prefer the split filenames for new seeds |
 | `todo.md` | planners, coders, reviewers | Checkbox integrity and stage-correct completion state |
 | `journal.md` | planners, coders, reviewers | Concrete attempt logging with blockers, observations, and next steps |
 | `benchmark_definition.yaml` | benchmark flow, downstream engineer intake | Strict objective geometry, randomization, benchmark-owned fixture metadata, and cap derivation agreement |
 | `benchmark_assembly_definition.yaml` | benchmark planner/reviewer, engineer intake | Read-only benchmark fixture/motion contract, full `AssemblyDefinition` shape, and motion visibility agreement |
-| `assembly_definition.yaml` | engineering and electronics planners/coders | Costing inputs, `final_assembly`, totals, motion metadata, and solution-source agreement |
+| `assembly_definition.yaml` | engineering planners/coders | Costing inputs, `final_assembly`, totals, motion metadata, and solution-source agreement |
 | `benchmark_plan_evidence_script.py` | benchmark planner | Legible benchmark evidence scene that preserves inventory labels and quantities |
 | `solution_plan_evidence_script.py` | engineering planner | Draft engineering evidence scene that matches the proposed assembly |
 | `benchmark_script.py` | benchmark coder, benchmark reviewer, engineer intake | Approved benchmark geometry source and read-only downstream context |
@@ -32,11 +32,10 @@ The acceptance-criteria files linked from this index should prefer `References` 
 | `reviews/benchmark-execution-review-*.yaml` | benchmark execution review | `benchmark_execution_review_yaml_acceptance_criteria.md` |
 | `reviews/engineering-plan-review-*.yaml` | engineering plan review | `engineering_plan_review_yaml_acceptance_criteria.md` |
 | `reviews/engineering-execution-review-*.yaml` | engineering execution review | `engineering_execution_review_yaml_acceptance_criteria.md` |
-| `reviews/electronics-review-*.yaml` | electronics review | `electronics_review_yaml_acceptance_criteria.md` |
 | `renders/**` | any role with visual inspection | `renders_acceptance_criteria.md` and `inspect_media(...)` on the latest revision's actual media |
 | `scene.json` | benchmark coder, selected downstream seed workflows | Serialized scene snapshot that must match the authored source and evidence |
 | `workbench_report.md` | execution-review flows | Short outcome summary consistent with validation/simulation |
-| `role_input_index.md` | all roles | Per-role input bundles, conditional drafting companions, and current corpus row shapes |
+| `role_input_index.md` | all roles | Per-role input bundles and current corpus row shapes |
 
 ## Canonical Validation Path
 

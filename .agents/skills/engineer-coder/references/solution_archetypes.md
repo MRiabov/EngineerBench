@@ -5,7 +5,7 @@
 1. [How to choose](#how-to-choose)
 2. [Passive transfer](#passive-transfer)
 3. [Actuated solutions](#actuated-solutions)
-4. [Electronics-backed solutions](#electronics-backed-solutions)
+4. [Specialist-backed solutions](#specialist-backed-solutions)
 5. [Render history and point-pick](#render-history-and-point-pick)
 6. [Convergence heuristics](#convergence-heuristics)
 
@@ -15,7 +15,7 @@ Choose the smallest mechanism family that can satisfy the objective under runtim
 
 - If gravity and geometry are enough, use a passive transfer family.
 - If the task needs timing, reset, or sequencing, add only the minimum actuation needed.
-- If the handoff explicitly includes electronics, keep the logical circuit and the physical routing consistent.
+- If the handoff explicitly includes a specialist routed or powered subsystem, keep the logical contract and the physical routing consistent.
 
 When in doubt, start with the simplest family that can plausibly solve the problem and only escalate after a concrete failure explains why.
 
@@ -91,26 +91,26 @@ First response:
 - Add clear stops and path constraints.
 - Reconcile the motion path with the surrounding geometry.
 
-## Electronics-backed solutions
+## Specialist-backed solutions
 
-Use only when the approved handoff explicitly requires electronics or the benchmark declares electronics requirements.
+Use only when the approved handoff explicitly requires a specialist routed or powered subsystem.
 
 Rules:
 
-- Keep the logical circuit and the physical routing consistent.
-- Validate the circuit before physics concerns.
-- Route wires with clearance and tension in mind.
-- Do not invent electronics because a mechanism has a motor.
+- Keep the logical contract and the physical routing consistent.
+- Validate the contract before physics concerns.
+- Route any required conductors or routed subsystems with clearance and tension in mind.
+- Do not invent powered behavior because a mechanism has a motor.
 
 Typical failure modes:
 
-- The circuit is valid on paper but impossible in the geometry.
-- The wire path collides with the mechanism.
+- The subsystem is valid on paper but impossible in the geometry.
+- The routed path collides with the mechanism.
 - The design silently assumes power, control, or switching behavior that was never declared.
 
 First response:
 
-- Separate netlist issues from routing issues.
+- Separate contract issues from routing issues.
 - Fix the logical contract first, then the physical path.
 
 ## Render history and point-pick

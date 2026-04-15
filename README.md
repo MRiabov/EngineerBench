@@ -30,7 +30,6 @@ The system utilizes **LangGraph** for orchestration and DSPy-based agent reasoni
 2. **Engineer Agent Graph:**
    - **Planner (Lead Engineer):** Architecting solutions under strict cost/weight budgets.
    - **Implementer (CAD Coder):** Generates `build123d` code to solve the objective.
-   - **COTS Search Subagent:** Queries a SQL-backed catalog for off-the-shelf components (motors, fasteners, bearings).
    - **Reviewer (Critic):** Scrutinizes stability, efficiency, and reliability of the proposed design.
 
 ### 2.2 Distributed Execution Plane
@@ -47,7 +46,6 @@ The system utilizes **LangGraph** for orchestration and DSPy-based agent reasoni
 Agents interact with a specialized `build123d` environment. Unlike standard CAD, the framework enforces:
 
 - **Rigid Joint Constraints:** Forcing the use of fasteners (`bd-warehouse`) for assembly.
-- **COTS Integration:** Mandatory use of verified off-the-shelf parts for mechatronic elements.
 - **Geometric Invariants:** Validating that engineer designs do not violate environment boundaries or "forbid zones."
 
 ### 3.2 Design for Manufacturability (DFM)

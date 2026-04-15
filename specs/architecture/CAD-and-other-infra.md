@@ -10,23 +10,22 @@
 
 ### Part metadata
 
-Parts and Assemblies have metadata, e.g. `cots_id` for COTS parts, `material_id` for material parts, and others; e.g. `fixed: bool` for usage during benchmark generation.
+Parts and assemblies have metadata, e.g. `material_id` for material parts and `fixed: bool` for benchmark-owned fixtures, plus other supported fields.
 
-Define a classes `PartMetadata` and `CompoundMetadata` that can store all properties related to them. Without these mandatory fields, validation will fail.
+Define classes `PartMetadata` and `CompoundMetadata` that can store all properties related to them. Without these mandatory fields, validation will fail.
 
 Metadata validation is ownership-sensitive:
 
 1. Engineer-created manufactured parts and planner-declared manufactured parts must carry the manufacturing/workbench metadata required for manufacturability validation and pricing.
 2. Benchmark-owned environment geometry, benchmark input objects, and benchmark objective markers are not treated as manufactured outputs.
-3. Benchmark-owned COTS fixtures such as motors or bearings remain benchmark fixtures even when they carry `cots_id`; they are excluded from engineer manufacturability validation and engineer pricing.
-4. Those benchmark-owned read-only fixtures may carry physics/render metadata, but they are excluded from manufacturability validation and pricing.
-5. Missing `manufacturing_method` / `material_id` is therefore a hard validation failure only for engineer-owned manufactured parts (and planner-owned manufactured-part definitions), not for benchmark fixtures.
+3. Benchmark-owned read-only fixtures may carry physics/render metadata, but they are excluded from manufacturability validation and pricing.
+4. Missing `manufacturing_method` / `material_id` is therefore a hard validation failure only for engineer-owned manufactured parts (and planner-owned manufactured-part definitions), not for benchmark fixtures.
 
 Benchmark definitions also carry a declarative benchmark-side fixture metadata layer in `benchmark_definition.yaml`.
 
 The rule is:
 
-1. `benchmark_definition.yaml` may declare benchmark-owned fixture metadata such as `fixed`, `material_id`, and `cots_id` under `benchmark_parts`.
+1. `benchmark_definition.yaml` may declare benchmark-owned fixture metadata such as `fixed` and `material_id` under `benchmark_parts`.
 2. That YAML metadata is the benchmark contract for planning/handover, not the runtime CAD instance metadata used by simulation/export.
 3. The actual built geometry still needs runtime `.metadata` on CAD parts/assemblies for exporter, validation, and rendering behavior.
 4. Engineer-owned solution metadata remains outside `benchmark_definition.yaml`; it belongs in `assembly_definition.yaml` and the authored CAD result.
@@ -169,12 +168,6 @@ The workbench validation (as well as other util infrastructure are read-only in 
 3D printing, CNC and injection molding are supported.
 
 <!-- In the future, it's very interesting to support topology optimization, but that's a separate project. -->
-
-### Off-the-shelf parts (COTS)
-
-COTS search remains the job of the COTS Search subagent. Class resolution and proxy-provider contracts are defined in [COTS geometry import](./cots-geometry-import.md).
-
-The only CAD rule that stays here is metadata ownership: imported COTS geometry must still carry `PartMetadata.cots_id` and must remain benchmark-owned or engineer-owned according to the assembly context, not according to the provider implementation.
 
 <!-- Future work: commented class-instantiation hints may later be generated into starter benchmark and solution scripts, but that is a template concern, not a runtime concern. -->
 

@@ -42,7 +42,6 @@
 
 | Role | Responsibility | Detailed Sheet |
 | -- | -- | -- |
-| `COTS Search` | Returns exact catalog-backed part candidates from a single request string. | [cots-search.md](./roles-detailed/cots-search.md) |
 | `Journalling Agent` | Compresses the run into `journal.md`. | [journalling-agent.md](./roles-detailed/journalling-agent.md) |
 | `Skill Agent` | Stages skill deltas into `suggested_skills/`. | [skill-agent.md](./roles-detailed/skill-agent.md) |
 | `Git Agent` | Handles repository plumbing and is not a model-facing workflow role. | [git-agent.md](./roles-detailed/git-agent.md) |
@@ -55,7 +54,7 @@
 - The runtime helpers that belong in authored scripts or supporting probes.
 - The evidence inspection rule for the current revision.
 - The submission gate that closes the role.
-- Any special contract, such as COTS identity, motion proof, or verification.
+- Any special contract, such as motion proof or verification.
 
 ## Detailed Sheets
 

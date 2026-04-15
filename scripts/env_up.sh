@@ -297,7 +297,7 @@ check_runtime_alive "Controller" "$CONTROLLER_PID" || FAIL=1
 wait_for_health "Worker Light" "http://127.0.0.1:${WORKER_LIGHT_HOST_PORT}/health" || FAIL=1
 wait_for_health "Worker Renderer" "http://127.0.0.1:${WORKER_RENDERER_HOST_PORT}/health" || FAIL=1
 wait_for_health "Worker Heavy" "http://127.0.0.1:${WORKER_HEAVY_HOST_PORT}/health" || FAIL=1
-wait_for_health "Controller" "http://127.0.0.1:${CONTROLLER_HOST_PORT}/health" || FAIL=1
+wait_for_health "Controller" "http://127.0.0.1:${CONTROLLER_HOST_PORT}/api/health" || FAIL=1
 
 if [ "$FRONTEND_STARTED" = true ]; then
   sleep 2

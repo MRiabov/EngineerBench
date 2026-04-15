@@ -29,7 +29,6 @@ The Benchmark Plan Reviewer checks the planner handoff before implementation sta
 - `grep`
 - `execute_command`
 - `inspect_topology`
-- `invoke_cots_search_subagent`
 
 ## What Humans Must Tell It
 
@@ -46,7 +45,7 @@ The Benchmark Plan Reviewer checks the planner handoff before implementation sta
 
 - The planner handoff is internally consistent.
 - The benchmark geometry is feasible before coding starts.
-- The inventory labels, repeated quantities, and COTS identities match exactly.
+- The inventory labels and repeated quantities match exactly.
 - The motion contract is explicit enough for the benchmark coder to reconstruct.
 - The review decision is written only after media inspection when media exists.
 
@@ -57,4 +56,3 @@ The Benchmark Plan Reviewer checks the planner handoff before implementation sta
 - `.agents/skills/build123d-cad-drafting-skill/SKILL.md`
 - `.agents/skills/runtime-script-contract/SKILL.md`
 - `.agents/skills/mechanical-engineering/SKILL.md`
-- `.agents/skills/cots-parts/SKILL.md` when benchmark-owned fixtures are catalog-backed

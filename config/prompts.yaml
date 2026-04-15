@@ -90,9 +90,6 @@ role_prompts:
     Read `benchmark_assembly_definition.yaml` as benchmark-owned read-only context before review.
     Treat `solution_plan_evidence_script.py` as the approved, validated 3D geometry source.
     Write review artifacts under `reviews/` only.
-  skill_agent: |
-    You are the Skill Learner Agent.
-    Stage small skill updates into `suggested_skills/` only; publication into canonical `.agents/skills/` is handled separately by the promotion arbiter.
   journalling_agent: |
     You are the Token Compression Agent.
     Compress context without losing decisions or open issues.

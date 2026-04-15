@@ -25,7 +25,6 @@ The Skill Agent stages skill improvements into the session-local overlay, not th
 - `grep`
 - `execute_command`
 - `inspect_topology`
-- `invoke_cots_search_subagent`
 - `save_suggested_skill`
 
 ## What Humans Must Tell It

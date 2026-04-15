@@ -29,7 +29,6 @@ To save refactors and speed up debugging, read `@specs/desired_architecture.md` 
 
 - `@specs/architecture/distributed-execution.md` - controller/light/heavy worker topology, routing, persistence, and Temporal boundaries.
 - `@specs/architecture/CAD-and-other-infra.md` - CAD metadata, rendering direction, schema contracts, and supporting infra assumptions.
-- `@specs/architecture/cots-geometry-import.md` - class-first COTS resolution contract, typed class registry, interface-faithful proxy policy, and verification expectations for COTS parts.
 - `@specs/architecture/evals-architecture.md` - fast/medium/slow eval tiers, quality gates, terminal states, and fail-closed requirements.
 - `@specs/architecture/simulation-and-rendering.md` - physics assumptions, backend split, constraints, and rendering/preview ownership.
 - `@specs/architecture/fluids-and-deformables.md` - Genesis-backed fluid simulation, deformable-material contracts, stress objectives, smoke-test policy, and WP2-specific artifacts.

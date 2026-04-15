@@ -35,9 +35,8 @@ Use explicit IDs and link all observability data to them:
 1. `user_session_id`: one user conversation/session.
 2. `episode_id`: one agent workflow execution attempt within a user session.
 3. `simulation_run_id`: one simulation invocation within an episode.
-4. `cots_query_id`: one COTS query invocation within an episode.
-5. `review_id`: one reviewer decision artifact.
-6. `trace_id`: one observability trace record (with optional `langfuse_trace_id` linkage).
+4. `review_id`: one reviewer decision artifact.
+5. `trace_id`: one observability trace record (with optional `langfuse_trace_id` linkage).
 
 Current implementation note (explicit bug):
 
@@ -96,57 +95,55 @@ We track the following structured domain events to compute the evaluation metric
     - Simulation time elapsed
     - Computing time
 
-10. COTS search (engineer/planner?)
+10. Plan submission (benchmark)
 
-11. Plan submission (benchmark)
+11. Plan submission (Engineer)
 
-12. Plan submission (Engineer)
+12. Price/weight failure escalation request (Engineering Coder)
 
-13. Price/weight failure escalation request (Engineering Coder)
+13. Price/weight failure escalation decision (reviewer)
 
-14. Price/weight failure escalation decision (reviewer)
+14. Lint failure - code
 
-15. Lint failure - code
+15. Lint failure - Markdown/YAML
 
-16. Lint failure - Markdown/YAML
+16. Logic/constraint failure - YAML
 
-17. Logic/constraint failure - YAML
+17. Skill edit (skill editing agent)
 
-18. Skill edit (skill editing agent)
+18. Skill file read (any agent) (note: track reading of skills or even particular files or even lines may link to success rates.)
 
-19. Skill file read (any agent) (note: track reading of skills or even particular files or even lines may link to success rates.)
+19. Instability in the simulation (if an agent produced an instable solution, or a NaN somehow and we didn't catch it)
 
-20. Instability in the simulation (if an agent produced an instable solution, or a NaN somehow and we didn't catch it)
-
-21. Submission attempt without creating all necessary files.
+20. Submission attempt without creating all necessary files.
 
     - if planner tried submitting the result without `benchmark_plan.md`, `benchmark_definition.yaml`, or benchmark-owned `benchmark_assembly_definition.yaml`, or if they were left equal to their templates (don't allow submission), and note an event.
 
-22. Submission from reviewers - Review decision events for every reviewer stage (Benchmark Plan Reviewer, Benchmark Reviewer, Engineering Plan Reviewer, Engineering Execution Reviewer) with decision, reason category, reviewer manifest filename, persisted review decision filepath, persisted review comments filepath, and evidence used (images viewed count, video viewed, files checked).
+21. Submission from reviewers - Review decision events for every reviewer stage (Benchmark Plan Reviewer, Benchmark Reviewer, Engineering Plan Reviewer, Engineering Execution Reviewer) with decision, reason category, reviewer manifest filename, persisted review decision filepath, persisted review comments filepath, and evidence used (images viewed count, video viewed, files checked).
 
-23. Plan refusal events with explicit refusal reasons (array), `agent_role`, and proof-of-impossibility evidence from `plan_refusal.md`
+22. Plan refusal events with explicit refusal reasons (array), `agent_role`, and proof-of-impossibility evidence from `plan_refusal.md`
 
-24. Forbidden joint creation/adding logic.
+23. Forbidden joint creation/adding logic.
 
-25. `conversation_length_exceeded` event with compaction metadata (threshold and before/after conversation size).
+24. `conversation_length_exceeded` event with compaction metadata (threshold and before/after conversation size).
 
-26. Plan-reviewer deterministic validator execution (`plan_review_validation_run`) with reviewer stage, input artifact revision, validator status, and mismatch reasons when rejected.
+25. Plan-reviewer deterministic validator execution (`plan_review_validation_run`) with reviewer stage, input artifact revision, validator status, and mismatch reasons when rejected.
 
-27. Reviewer manifest gate failures (`reviewer_manifest_gate_failed`) with reviewer stage, manifest filename, failure class (`missing`, `stale`, `invalid_schema`, `revision_mismatch`), and blocked node id.
+26. Reviewer manifest gate failures (`reviewer_manifest_gate_failed`) with reviewer stage, manifest filename, failure class (`missing`, `stale`, `invalid_schema`, `revision_mismatch`), and blocked node id.
 
-28. Preview render request (`preview_render_requested`) with requested modalities, normalized orbit angles, requested view count, selected preview backend, and render purpose (`benchmark_preview`, `engineer_preview`, or `final_preview`). If the job is queued, include queue position or estimated wait where available.
+27. Preview render request (`preview_render_requested`) with requested modalities, normalized orbit angles, requested view count, selected preview backend, and render purpose (`benchmark_preview`, `engineer_preview`, or `final_preview`). If the job is queued, include queue position or estimated wait where available.
 
-29. Preview render completion (`preview_render_complete`) with preview backend, modalities, view count, image count, elapsed render time, and artifact paths. Streaming view-ready updates remain trace-visible through the same episode/session trace even when they are not promoted to a separate event family.
+28. Preview render completion (`preview_render_complete`) with preview backend, modalities, view count, image count, elapsed render time, and artifact paths. Streaming view-ready updates remain trace-visible through the same episode/session trace even when they are not promoted to a separate event family.
 
-30. Media inspection event (`media_inspection`) for every agent media-view action, with node/reviewer stage, requested path, resolved artifact path, media kind (`image`, `video_frames`), attached image/frame count, and attach result (`attached`, `missing`, `unsupported_format`, `failed`).
+29. Media inspection event (`media_inspection`) for every agent media-view action, with node/reviewer stage, requested path, resolved artifact path, media kind (`image`, `video_frames`), attached image/frame count, and attach result (`attached`, `missing`, `unsupported_format`, `failed`).
 
-31. LLM media attachment event (`llm_media_attached`) whenever a model request includes media parts, with node name, provider/model, attachment count, media kinds, and source artifact paths.
+30. LLM media attachment event (`llm_media_attached`) whenever a model request includes media parts, with node name, provider/model, attachment count, media kinds, and source artifact paths.
 
-32. CLI-provider skill-loop self-reflection event (`skill_self_reflection`) with the follow-up prompt path, output path, trigger reason, simulation/verification outcome, and the captured reflection text.
+31. CLI-provider skill-loop self-reflection event (`skill_self_reflection`) with the follow-up prompt path, output path, trigger reason, simulation/verification outcome, and the captured reflection text.
 
-33. CLI-provider skill-loop skill-update event (`skill_update`) with the follow-up prompt path, output path, trigger reason, updated skill paths, simulation/verification outcome, and the captured skill-update text.
+32. CLI-provider skill-loop skill-update event (`skill_update`) with the follow-up prompt path, output path, trigger reason, updated skill paths, simulation/verification outcome, and the captured skill-update text.
 
-34. CLI-provider skill-loop skill-promotion event (`skill_promotion`) with the active overlay path, approved base commit, target repo or branch, merge strategy, outcome (`published`, `conflict`, `escalated`, `rejected`), PR or commit metadata, and any conflicting skill paths.
+33. CLI-provider skill-loop skill-promotion event (`skill_promotion`) with the active overlay path, approved base commit, target repo or branch, merge strategy, outcome (`published`, `conflict`, `escalated`, `rejected`), PR or commit metadata, and any conflicting skill paths.
 
 Submission helpers also snapshot the workspace in git on submission attempts that changed substantive workspace files, including rejected attempts that mutated the workspace. Runtime scratch files such as submission logs or local cache directories do not force a commit by themselves. This history is part of the reproducibility record and is intentionally separate from the stage manifests, which remain the routing source of truth.
 
@@ -174,7 +171,7 @@ We persist lineage fields in episode metadata and DB for both benchmark generati
 - `seed_id`: canonical source item id.
 - `seed_dataset`: dataset/source path or identifier.
 - `seed_match_method`: enum describing linkage strategy (`runtime_explicit`, `exact_task`, `no_exact_task_match`, `ambiguous_exact_task`).
-- `generation_kind`: enum describing run origin (`seeded`, `derived`, `seeded_eval`, `integration_test`, `COTS Search`, `Skill Agent`).
+- `generation_kind`: enum describing run origin (`seeded`, `derived`, `seeded_eval`, `integration_test`, `Skill Agent`).
 - `parent_seed_id`: direct lineage parent (for derived runs).
 
 Integration/test tagging is part of the same metadata contract:

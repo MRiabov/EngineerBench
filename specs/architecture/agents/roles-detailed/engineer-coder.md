@@ -43,7 +43,6 @@ The Engineering Coder turns the approved engineering handoff into `solution_scri
 - `grep`
 - `execute_command`
 - `inspect_topology`
-- `invoke_cots_search_subagent`
 
 ## Runtime Helpers To Use From Scripts
 
@@ -54,7 +53,7 @@ The Engineering Coder turns the approved engineering handoff into `solution_scri
 
 - The approved plan package is the binding contract.
 - `assembly_definition.yaml`, `benchmark_definition.yaml`, `benchmark_assembly_definition.yaml`, and the planner evidence scripts are read-only context after plan approval.
-- The coder preserves the exact labels, repeated quantities, COTS identities, budgets, and geometry relationships in the handoff.
+- The coder preserves the exact labels, repeated quantities, budgets, and geometry relationships in the handoff.
 - Validate and simulate the latest revision with `validate_engineering()` / `simulate_engineering()` before requesting review, then call `submit_solution_for_review()`.
 - Inspect render or video evidence when it exists; do not rely on text-only summaries.
 - If bug-report mode is enabled and runtime plumbing blocks progress, write `bug_report.md` at the workspace root, keep `journal.md` for task-facing notes, and continue working unless the task is genuinely blocked.
@@ -75,6 +74,5 @@ The Engineering Coder turns the approved engineering handoff into `solution_scri
 - `.agents/skills/runtime-script-contract/SKILL.md`
 - `.agents/skills/build123d-cad-drafting-skill/SKILL.md`
 - `.agents/skills/mechanical-engineering/SKILL.md`
-- `.agents/skills/cots-parts/SKILL.md`
 - `.agents/skills/manufacturing-knowledge/SKILL.md`
 - `.agents/skills/render-evidence/SKILL.md`

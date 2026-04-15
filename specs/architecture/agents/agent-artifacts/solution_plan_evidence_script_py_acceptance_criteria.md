@@ -11,7 +11,7 @@ It is worth being a dedicated artifact because the engineering planner needs a p
 - The script is consistent with `assembly_definition.yaml`.
 - The script stays solution-side and does not rewrite benchmark-owned context.
 - The script does not author or duplicate the benchmark payload; that context is injected by the runtime environment.
-- The script does not use exploded-layout presentation; if presentation needs that treatment, it belongs in `solution_plan_technical_drawing_script.py`.
+- The script does not use exploded-layout presentation; if presentation needs that treatment, it belongs in a separate presentation artifact.
 - The script is legible enough for downstream review and visual inspection.
 
 ## Quality Criteria

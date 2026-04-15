@@ -47,10 +47,10 @@ The agent-specific workspace surface is role-scoped.
 Representative examples:
 
 - Engineering Planner:
-  - read: `.agents/skills/**`, `utils/**`, `benchmark_definition.yaml`, `benchmark_assembly_definition.yaml`, `benchmark_script.py`, `benchmark_plan_evidence_script.py`, `benchmark_plan_technical_drawing_script.py`, `solution_plan_evidence_script.py`, `solution_plan_technical_drawing_script.py`, `engineering_plan.md`, `todo.md`, `journal.md`, `renders/benchmark_renders/**`, `renders/engineer_plan_renders/**`, `renders/current-episode/**`
-  - write: `engineering_plan.md`, `todo.md`, `journal.md`, `assembly_definition.yaml`, `benchmark_definition.yaml`, `solution_plan_evidence_script.py`, `solution_plan_technical_drawing_script.py`, `renders/current-episode/**`
+  - read: `.agents/skills/**`, `utils/**`, `benchmark_definition.yaml`, `benchmark_assembly_definition.yaml`, `benchmark_script.py`, `benchmark_plan_evidence_script.py`, `solution_plan_evidence_script.py`, `engineering_plan.md`, `todo.md`, `journal.md`, `renders/benchmark_renders/**`, `renders/engineer_plan_renders/**`, `renders/current-episode/**`
+  - write: `engineering_plan.md`, `todo.md`, `journal.md`, `assembly_definition.yaml`, `benchmark_definition.yaml`, `solution_plan_evidence_script.py`, `renders/current-episode/**`
 - Engineering Coder:
-  - read: `.agents/skills/**`, `utils/**`, `benchmark_script.py`, `benchmark_plan_evidence_script.py`, `benchmark_plan_technical_drawing_script.py`, `solution_plan_evidence_script.py`, `solution_plan_technical_drawing_script.py`, `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, `assembly_definition.yaml`, `reviews/**`, `renders/benchmark_renders/**`, `renders/engineer_plan_renders/**`, `renders/current-episode/**`
+  - read: `.agents/skills/**`, `utils/**`, `benchmark_script.py`, `benchmark_plan_evidence_script.py`, `solution_plan_evidence_script.py`, `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, `assembly_definition.yaml`, `reviews/**`, `renders/benchmark_renders/**`, `renders/engineer_plan_renders/**`, `renders/current-episode/**`
   - write: `solution_script.py`, additional `*.py` implementation files, `todo.md`, `journal.md`, `renders/current-episode/**`, `plan_refusal.md`
 - Benchmark Planner:
   - read: `.agents/skills/**`, `utils/**`, `benchmark_plan_evidence_script.py`, `benchmark_plan.md`, `todo.md`, `journal.md`, `renders/benchmark_renders/**`, `renders/current-episode/**`
@@ -64,9 +64,6 @@ Representative examples:
     - Engineering Plan Reviewer: `renders/benchmark_renders/**`, `renders/engineer_plan_renders/**`, `renders/final_solution_submission_renders/**`, `renders/current-episode/**`
     - Engineering Execution Reviewer: `renders/benchmark_renders/**`, `renders/final_solution_submission_renders/**`, `renders/current-episode/**`
   - write: stage-scoped `reviews/*.yaml` files only; when a reviewer calls `render_cad(...)`, the scratch preview is written into `renders/current-episode/**`
-- COTS Search subagent:
-  - read: `parts.db`, COTS query helpers/CLI, and the caller-provided request string
-  - write: structured COTS result payload returned to the caller
 
 Render-bucket policy: `renders/current-episode/` is the only agent-writable render tree. `renders/benchmark_renders/`, `renders/engineer_plan_renders/`, and `renders/final_solution_submission_renders/` are backend-owned read-only bundles.
 
@@ -92,8 +89,6 @@ Manifest ownership summary:
 Scratch preview files in `renders/current-episode/` are not published bundles and do not create entries in `renders/render_index.jsonl`.
 
 Published render bundles may also contain bundle-local `preview_scene.json` snapshots and, for video-backed evidence, `frames.jsonl` and `objects.parquet` sidecars. These files are backend-owned bundle contents and follow the render artifact contract in [renders acceptance criteria](./agent-artifacts/renders_acceptance_criteria.md).
-
-<!-- FIXME: consider moving render metadata manifests into `.manifests/` in a future refactor so render metadata and handoff metadata share one backend-owned manifest bucket. The root renders/render_manifest.json path stays a compatibility alias only. -->
 
 | Benchmark plan-review manifest | backend runtime utility invoked by `submit_benchmark_plan()` | Successful `Benchmark Planner` `submit_benchmark_plan()` | `.manifests/benchmark_plan_review_manifest.json` |
 | Engineering plan-review manifest | backend runtime utility invoked by `submit_engineering_plan()` | Successful `Engineering Planner` `submit_engineering_plan()` | `.manifests/engineering_plan_review_manifest.json` |

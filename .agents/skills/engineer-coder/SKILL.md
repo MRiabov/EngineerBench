@@ -65,7 +65,7 @@ from utils.preview import (
 
 - Benchmark-owned geometry or benchmark-owned fixture logic.
 - Planner/reviewer contracts or reviewer output schemas.
-- Deep CAD syntax, manufacturing formulas, or electronics topology details. Those belong in specialist skills and references.
+- Deep CAD syntax, manufacturing formulas, or specialist subsystem details. Those belong in specialist skills and references.
 
 ## Required Read Set
 
@@ -103,7 +103,6 @@ Then load specialist knowledge only as needed:
 - [build123d-cad-drafting-skill](../build123d-cad-drafting-skill/SKILL.md)
 - [mechanical-engineering](../mechanical-engineering/SKILL.md)
 - [manufacturing-knowledge](../manufacturing-knowledge/SKILL.md)
-- [electronics-engineering](../electronics-engineering/SKILL.md) only when the approved handoff explicitly requires electronics
 - [specs/architecture/agents/agent-artifacts/README.md](../../../specs/architecture/agents/agent-artifacts/README.md) when you need file-level acceptance criteria for `solution_script.py`, `assembly_definition.yaml`, validation, simulation, `scene.json`, `payload_trajectory_definition.yaml`, `plan_refusal.md`, or render evidence.
 - [solution archetypes](references/solution_archetypes.md) after the likely mechanism family is known
 - [failure modes](references/failure_modes.md) when debugging or interpreting reviewer feedback
@@ -143,7 +142,7 @@ Do not invent fallback behavior to bridge contradictions. If the handoff is inco
 07. Keep top-level authored labels unique and avoid reserved names such as `environment` and `zone_...`.
 08. Place parts with `Location(...)` or equivalent explicit placement.
 09. Keep imported components intact when provenance or exact part identity matters.
-10. Keep electronics separate from mechanical guessing; only load electronics logic when the handoff explicitly demands it.
+10. Keep specialist subsystems separate from mechanical guessing; only load specialist logic when the handoff explicitly demands it.
 11. Treat cost, weight, and manufacturability as design constraints, not afterthoughts.
 12. When multiple viable implementations satisfy the handoff, prefer the more stable, cheaper, simpler, and more manufacturable one.
 13. When the approved handoff uses the engineering planner template, keep every declared inventory label grounded by an exact identifier mention in `engineering_plan.md`, and preserve planner-authored assumptions, calculations, operating-envelope limits, and collision-validated layout geometry without renaming, resizing, or re-spacing them.

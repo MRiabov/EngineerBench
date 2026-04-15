@@ -170,7 +170,7 @@ uv run dataset/evals/run_evals.py --agent engineer_planner --task-id '[id-1,id-2
 
 ```bash
 uv run dataset/evals/run_evals.py \
-  --agent skill_agent \
+  --agent <agent_name> \
   --task-id sk-001-sidecar-skill \
   --limit 1 \
   --concurrency 1

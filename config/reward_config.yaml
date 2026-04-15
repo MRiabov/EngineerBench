@@ -654,38 +654,3 @@ engineer:
         description: >
           Rejections include specific, file-referenced fix suggestions.
           Acceptances: full credit automatically.
-
-# ---------------------------------------------------------------------------
-# Shared subagents
-# ---------------------------------------------------------------------------
-shared:
-  # ── Skill Creator Subagent ───────────────────────────────────────────────
-  skill_agent:
-    description: >
-      Scores the skill creator's ability to produce reusable, correct skills
-      that improve downstream agent performance.
-    milestones:
-      # Gate 1 — skill file is valid markdown with required sections
-      skill_file_valid:
-        weight: 0.15
-        description: >
-          SKILL.md contains required YAML frontmatter (name, description)
-          and at least one instruction section.
-
-      # Gate 2 — skill is adopted (read by at least one subsequent agent)
-      skill_adopted:
-        weight: 0.35
-        description: >
-          The skill file is read (skill_file_read event) by at least one
-          subsequent agent run within the same episode.
-
-      # Gate 3 — skill improves downstream success rate (post-hoc)
-      skill_improves_success:
-        weight: 0.50
-        description: >
-          Episodes that read this skill have a higher simulation_result score
-          than the baseline (computed over a rolling window of 10 episodes).
-          Partial: delta_score / 0.10 clamped to [0, 1]. A 10% improvement
-          → full credit.
-        partial: true
-        formula: "min(1.0, delta_success_rate / 0.10)"

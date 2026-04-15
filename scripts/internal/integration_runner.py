@@ -2342,7 +2342,7 @@ def _run_integration_command(
             HealthCheck(
                 name="controller",
                 kind="http",
-                target="http://127.0.0.1:18000/health",
+                target="http://127.0.0.1:18000/api/health",
                 contains="healthy",
             ),
             HealthCheck(

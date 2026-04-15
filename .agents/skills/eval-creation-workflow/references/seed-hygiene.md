@@ -29,12 +29,12 @@ Use these rules when repairing or extending eval seeds for Problemologist.
 - `benchmark_reviewer`: seed `benchmark_plan.md`, `todo.md`, `benchmark_definition.yaml`, `journal.md`, `script.py`, `validation_results.json`, `simulation_result.json`, `.manifests/benchmark_review_manifest.json`.
 - `engineering_planner`: usually prompt-only or seeded with `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, `assembly_definition.yaml`, and `benchmark_assembly_definition.yaml`.
 - `engineering_*` roles: seed `engineering_plan.md` plus the role-appropriate downstream artifacts from the active handoff.
-- Engineering and electronics roles: follow `specs/architecture/agents/handover-contracts.md` exactly.
+- Engineering roles: follow `specs/architecture/agents/handover-contracts.md` exactly.
 
 ## Practical Check
 
 When a seed is close but still failing, inspect the current failure mode and patch the source contract directly:
 
 - missing or stale render bundle manifests
-- benchmark drafting scripts that drift beyond the benchmark-owned fixture
+- benchmark evidence scripts that drift beyond the benchmark-owned fixture
 - plan text that omits a required exact identifier mention

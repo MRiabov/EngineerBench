@@ -38,7 +38,6 @@ The Benchmark Planner turns a problem brief into a benchmark handoff package. It
 - `grep`
 - `execute_command`
 - `inspect_topology`
-- `invoke_cots_search_subagent`
 - `submit_benchmark_plan`
 
 ## Runtime Helpers To Use From Scripts
@@ -56,14 +55,13 @@ The Benchmark Planner turns a problem brief into a benchmark handoff package. It
 - If bug-report mode is enabled and runtime plumbing blocks progress, write `bug_report.md` at the workspace root and keep working unless the task is genuinely blocked.
 - If render images already exist for the current revision, inspect them with `inspect_media()` before submission.
 - Do not expect `benchmark_script.py` in the workspace until after plan approval.
-- `invoke_cots_search_subagent` is for engineer-side candidate parts, not for benchmark-owned fixtures.
 - `submit_benchmark_plan()` is the only completion gate; do not hand off before the package is internally consistent.
 
 ## Acceptance Checklist
 
 - The benchmark is a valid problem instance for the engineering graph.
 - The geometry is valid and the objective bodies do not overlap the forbidden or spawn regions.
-- The planner scripts preserve the same labels, repeated quantities, and COTS identities as the plan.
+- The planner scripts preserve the same labels and repeated quantities as the plan.
 - The planner wrote realistic estimated cost and weight values before submission.
 
 ## Related Skills
@@ -73,5 +71,4 @@ The Benchmark Planner turns a problem brief into a benchmark handoff package. It
 - `.agents/skills/runtime-script-contract/SKILL.md`
 - `.agents/skills/mechanical-engineering/SKILL.md`
 - `.agents/skills/manufacturing-knowledge/SKILL.md`
-- `.agents/skills/cots-parts/SKILL.md`
 - `.agents/skills/render-evidence/SKILL.md`

@@ -541,7 +541,7 @@ The checklist below is the execution order for this prune.
 
 ##### COTS prune checklist
 
-- [ ] Remove the COTS runtime and controller entrypoints that still advertise
+- [x] Remove the COTS runtime and controller entrypoints that still advertise
   or resolve catalog-backed parts, including `shared/cots/**` if it still
   exists, `controller/api/routes/cots.py`, the COTS router wiring in
   `controller/api/main.py`, `controller/agent/nodes/cots_search.py`, the COTS
@@ -550,14 +550,14 @@ The checklist below is the execution order for this prune.
   `controller/agent/node_entry_validation.py`, `controller/agent/tools.py`,
   `controller/agent/benchmark/tools.py`, `controller/agent/prompt_manager.py`,
   `controller/agent/dspy_utils.py`, and `controller/middleware/remote_fs.py`.
-- [ ] Remove the COTS schema and payload contracts from
+- [x] Remove the COTS schema and payload contracts from
   `shared/models/schemas.py`, especially `BenchmarkPartMetadata.cots_id`,
   `PartMetadata.cots_id`, `COTSMetadata`, `CotsPartEstimate`,
   `AssemblyPartConfig.cots_id`, and `AssemblyDefinition.cots_parts`, then
   update any seed, fixture, or mock-response YAML that still serializes
   `cots_parts`, `cots_id`, `M3_BOLT`, `ServoMotor_DS3218`, or any other
   catalog-backed ID.
-- [ ] Remove the `cots_search` prompt role from the prompt source and role
+- [x] Remove the `cots_search` prompt role from the prompt source and role
   docs, including `config/prompts.yaml`, `specs/architecture/agents/roles.md`,
   `specs/architecture/agents/roles-detailed/cots-search.md`,
   `specs/architecture/agents/tools.md`, and
@@ -566,7 +566,7 @@ The checklist below is the execution order for this prune.
   `tests/integration/architecture_p0/test_codex_runner_mode.py` and
   `tests/integration/architecture_p0/test_int_190_benchmark_coder_permissions.py`
   so they no longer treat COTS as a first-class role.
-- [ ] Delete the positive-path COTS fixtures and regression coverage:
+- [x] Delete the positive-path COTS fixtures and regression coverage:
   `dataset/data/seed/role_based/cots_search.json`,
   `tests/integration/mock_responses/INT-014.yaml`,
   `tests/integration/mock_responses/INT-014/**`,
@@ -577,7 +577,7 @@ The checklist below is the execution order for this prune.
   assertions, `tests/integration/architecture_p0/test_cots_reviewer.py`,
   `tests/integration/architecture_p1/test_cots_geometry_import.py`, and
   `tests/worker_heavy/simulation/test_builder_cots.py`.
-- [ ] Finish with a repo-wide search for `cots`, `COTS`, `cots_search`,
+- [x] Finish with a repo-wide search for `cots`, `COTS`, `cots_search`,
   `cots_parts`, `cots_id`, `M3_BOLT`, `ServoMotor_DS3218`,
   `invoke_cots_search_subagent`, and `search_cots_catalog`; only archival
   migration text should still mention them.
@@ -642,29 +642,29 @@ minimal EDA subset:
 The current seed tree has no populated fluids/FEM or steerability rows, so the
 prune list below only names electromechanical seeds.
 
-- [ ] Benchmark coder: prune `bc-012-raised-shelf-motor`.
-- [ ] Benchmark plan reviewer: prune `bpr-001-raised-shelf`,
+- [x] Benchmark coder: prune `bc-012-raised-shelf-motor`.
+- [x] Benchmark plan reviewer: prune `bpr-001-raised-shelf`,
   `bpr-004-timed-gate`, `bpr-009-fast-transfer`,
   `bpr-011-raised-shelf-goal-obstruction`,
   `bpr-014-timed-gate-clearance-budget`, and
   `bpr-019-fast-transfer-hidden-brake-axis`.
-- [ ] Benchmark reviewer: prune `br-014-timed-gate-cots-review` and
+- [x] Benchmark reviewer: prune `br-014-timed-gate-cots-review` and
   `br-015-fast-transfer-hidden-brake-axis-review`.
-- [ ] Engineer planner: prune `ep-001-raised-shelf`, `ep-004-timed-gate`,
+- [x] Engineer planner: prune `ep-001-raised-shelf`, `ep-004-timed-gate`,
   and `ep-009-fast-transfer`.
-- [ ] Engineer plan reviewer: prune `epr-001-sideways-transfer`,
+- [x] Engineer plan reviewer: prune `epr-001-sideways-transfer`,
   `epr-003-timed-gate-chute`, `epr-004-raised-shelf-lift`,
   `epr-010-diverter-gate-wiring`,
   `epr-011-sideways-transfer-budget-overrun`, and
   `epr-012-sideways-transfer-fake-cots`.
-- [ ] Engineer coder: prune `ec-001`, `ec-003`, `ec-004`, `ec-011`,
+- [x] Engineer coder: prune `ec-001`, `ec-003`, `ec-004`, `ec-011`,
   `ec-012`, `ec-013`, and `ec-014`.
-- [ ] Engineer execution reviewer: prune `eer-001-sideways-transfer`,
+- [x] Engineer execution reviewer: prune `eer-001-sideways-transfer`,
   `eer-003-timed-gate-chute`, `eer-004-raised-shelf-lift`,
   `eer-010-diverter-gate-wiring`,
   `eer-011-sideways-transfer-budget-overrun`, and
   `eer-012-sideways-transfer-fake-cots`.
-- [ ] Benchmark coder orphan workspace: prune
+- [x] Benchmark coder orphan workspace: prune
   `dataset/data/seed/artifacts/benchmark_coder/bc-014-raised-shelf-lift/` if
   it is still present in the seed tree.
 
@@ -879,23 +879,23 @@ The fixture stays in the publication bundle as if it had never been removed.
 Use this checklist to restore the implementation and then cancel out the older
 prune language without deleting the canonical scenario corpus.
 
-- [ ] Restore `controller/agent/mock_llm.py` with `MockDSPyLM`,
+- [x] Restore `controller/agent/mock_llm.py` with `MockDSPyLM`,
   `_cached_integration_mock_scenarios`, strict scenario lookup,
   transcript/native-tool handling, and loop protection.
-- [ ] Restore `controller/agent/mock_scenarios.py` with the typed transcript
+- [x] Restore `controller/agent/mock_scenarios.py` with the typed transcript
   schema, file-ref expansion, strict scenario validation, and directory
   loader.
-- [ ] Restore `controller/agent/config.py::build_dspy_lm()` so integration
+- [x] Restore `controller/agent/config.py::build_dspy_lm()` so integration
   mode returns `MockDSPyLM(session_id=session_id, node_type=agent_role)`.
-- [ ] Keep `tests/integration/mock_responses/**` as the canonical
+- [x] Keep `tests/integration/mock_responses/**` as the canonical
   deterministic scenario corpus for the integration fixture, including
   `README.md`, `_render_manifest.py`, and all per-entry payload trees, and
   revert any delete/rename operations against that tree so the file set
   matches `main` again.
-- [ ] Keep the `MockDSPyLM` references in `specs/integration-test-rules.md`
+- [x] Keep the `MockDSPyLM` references in `specs/integration-test-rules.md`
   and `specs/integration-test-list.md` aligned with the restored fixture
   contract.
-- [ ] Cancel out the prune-list entries in this migration that would otherwise
+- [x] Cancel out the prune-list entries in this migration that would otherwise
   remove the fixture, but leave the non-paper scenario deletions and the rest
   of the publication-pruning plan intact.
 
@@ -937,6 +937,8 @@ prune language without deleting the canonical scenario corpus.
 - [x] Remove `worker_light/agent_files/.admin/clear_env.py`.
 - [x] Remove `controller/agent/nodes/{electronics_planner.py,electronics_reviewer.py,skills.py,summarizer.py}` and prune the corresponding engineer, benchmark, and top-level graph resolver routes that reached those sidecars.
 - [x] Remove the benchmark-side skill and journalling node implementations from `controller/agent/benchmark/nodes.py` so the deleted loop is no longer present as dead code.
+- [x] Remove the render-only preview compatibility wrappers and collapse the canonical export surface to `render_cad` by updating `shared/utils/agent/__init__.py`, `utils/__init__.py`, and `worker_heavy/utils/__init__.py`, while deleting the orphan wrapper modules `utils/preview.py`, `utils/visualize.py`, `worker_heavy/utils/build123d_rendering.py`, and `worker_heavy/utils/preview.py` in favor of `worker_heavy/utils/render_cad.py`.
+- [x] Remove the remaining technical-drawing residue from the publication docs and test catalog by deleting the stale technical-drawing script references from `specs/architecture/agents/artifacts-and-filesystem.md`, dropping the old technical-drawing read-set entries from the benchmark and engineering execution reviewer docs, and removing the obsolete `.manifests/electronics_review_manifest.json` examples from `specs/integration-test-list.md`.
 - [x] Audit `specs/architecture/` for out-of-bundle references and stage the remaining prune work as a checklist because the affected doc surface is too broad for a safe one-pass edit.
 - [x] Remove the steerability runtime plumbing from the controller API, agent node inputs, persistence model, and generated OpenAPI snapshots.
 - [x] Remove the Genesis particle-system / deformable rendering branches so the backend no longer carries soft-body-specific code paths.
@@ -991,7 +993,7 @@ This pass is too broad to finish safely in one sweep. Track the remaining
 includes the corresponding `specs/architecture/agents/agent-artifacts/` files
 whenever they still mention one of these families.
 
-- [ ] Technical drawing references:
+- [x] Technical drawing references:
   `specs/architecture/agents/engineering-planner-technical-drawings.md`,
   `specs/architecture/agents/agent-harness.md`,
   `specs/architecture/agents/prompt-management.md`,
@@ -1001,7 +1003,7 @@ whenever they still mention one of these families.
   `specs/architecture/agents/roles.md`,
   `specs/architecture/agents/roles-detailed/*.md`, and
   `specs/architecture/agents/agent-artifacts/*technical_drawing*`.
-- [ ] Electronics and electromechanics references:
+- [x] Electronics and electromechanics references:
   `specs/architecture/electronics-and-electromechanics.md`,
   `specs/architecture/agents/overview.md`,
   `specs/architecture/agents/roles.md`,
@@ -1016,7 +1018,7 @@ whenever they still mention one of these families.
   `specs/architecture/observability.md`,
   `specs/architecture/cots-geometry-import.md`, and
   `specs/architecture/auxillary/simulation-optimization-attempts.md`.
-- [ ] Fluids, FEM, and stress references:
+- [x] Fluids, FEM, and stress references:
   `specs/architecture/fluids-and-deformables.md`,
   `specs/architecture/simulation-and-rendering.md`,
   `specs/architecture/CAD-and-other-infra.md`,
@@ -1024,7 +1026,7 @@ whenever they still mention one of these families.
   `specs/architecture/agents/handover-contracts.md`,
   `specs/architecture/observability.md`, and
   `specs/architecture/auxillary/simulation-optimization-attempts.md`.
-- [ ] Temporal and devops references:
+- [x] Temporal and devops references:
   `specs/architecture/distributed-execution.md`,
   `specs/architecture/agents/agent-harness.md`,
   `specs/architecture/agents/tools.md`,
@@ -1032,14 +1034,14 @@ whenever they still mention one of these families.
   `specs/architecture/agents/handover-contracts.md`,
   `specs/architecture/agents/artifacts-and-filesystem.md`,
   `specs/architecture/evals-architecture.md`.
-- [ ] Steerability references:
+- [x] Steerability references:
   `specs/architecture/agents/handover-contracts.md`,
   `specs/architecture/agents/overview.md`,
   `specs/architecture/agents/roles.md`,
   `specs/architecture/agents/roles-detailed/README.md`,
   `specs/architecture/distributed-execution.md`, and
   `specs/architecture/observability.md`.
-- [ ] Advanced visualization references:
+- [x] Advanced visualization references:
   `specs/architecture/simulation-and-rendering.md`,
   `specs/architecture/agents/overview.md`, and
   `specs/architecture/observability.md`.
@@ -1176,10 +1178,10 @@ The safe order is:
 
 ### Paper artifacts
 
-- [ ] Collapse `docs/academic-submission/` to one canonical paper source and
+- [x] Collapse `docs/academic-submission/` to one canonical paper source and
   the minimal reproducibility inputs it needs.
-- [ ] Remove duplicate drafts, exported PDFs, logs, and alternate formats.
-- [ ] Archive any unused alternate paper notes or matrix files.
+- [x] Remove duplicate drafts, exported PDFs, logs, and alternate formats.
+- [x] Archive any unused alternate paper notes or matrix files.
 
 ### Runtime bundle trim
 
@@ -1636,7 +1638,7 @@ passes.
   `specs/architecture/agents/handover-contracts.md`,
   `specs/migrations/minor/cots-geometry-import-runtime-and-motor-mvp.md`,
   `evals/logic/codex_workspace.py`, and `evals/logic/workspace.py`.
-- [ ] Fluids, FEM, and stress traces still exist in simulation and
+- [x] Fluids, FEM, and stress traces still exist in simulation and
   manufacturing surfaces:
   `worker_heavy/simulation/genesis_backend.py`,
   `worker_heavy/simulation/verification.py`,
@@ -1644,7 +1646,7 @@ passes.
   `shared/workers/workbench_models.py`,
   `.agents/skills/mechanical-engineering/references/fea_principles.md`, and
   `.agents/skills/mechanical-engineering/references/fluid_dynamics.md`.
-- [ ] Temporal and devops traces still remain in the runtime and eval stack:
+- [x] Temporal and devops traces still remain in the runtime and eval stack:
   `shared/ops/workflows.py`, `evals/logic/stack_profiles.py`,
   `evals/logic/cli_provider.py`, `evals/logic/skill_training.py`,
   `controller/agent/mock_llm.py`, and `controller/agent/mock_scenarios.py`.
@@ -1666,7 +1668,7 @@ passes.
   `.agents/skills/render-evidence/SKILL.md`,
   `.agents/skills/mechanical-engineering/SKILL.md`,
   `.agents/skills/eval-creation-workflow/SKILL.md`.
-- [ ] Dataset and eval bulk still carries publication-outside families:
+- [x] Dataset and eval bulk still carries publication-outside families:
   `dataset/data/seed/**`, `tests/integration/mock_responses/**`,
   `tests/integration/architecture_p0/test_codex_runner_mode.py`,
   `tests/integration/architecture_p1/test_benchmark_workflow.py`, and
@@ -1688,23 +1690,24 @@ surface.
 Reward is explicitly out of scope for pruning here; keep the reward surface
 unless a separate migration says otherwise.
 
-- [ ] Collapse compatibility and mirror-layer code that only preserves older
+- [x] Collapse compatibility and mirror-layer code that only preserves older
   publication layouts:
-  `controller/api/main.py` still mounts the same routers twice via the prefixed
-  and unprefixed paths; `controller/api/routes/episodes.py` still carries
+  `controller/api/main.py` no longer mounts the same routers twice via prefixed
+  and unprefixed paths; `controller/api/routes/episodes.py` no longer carries
   `_normalize_plan_markdown`, `_select_latest_replay_assets`,
   `_asset_looks_like_review_manifest`, `_artifact_kind_from_path`,
   `_artifact_path_matches`, `_review_decision_events_from_episode`,
-  `_manifest_expected_revision`, and `_validate_manifest_session`;
-  `controller/api/routes/datasets.py` still carries `_select_latest_assets`
-  and `_archive_members`; `controller/api/routes/script_tools.py` still keeps
-  `_script_log_context` and the ad hoc script-proxy route surface.
-- [ ] Remove the remaining render-manifest and agent-tool compatibility shims
+  `_manifest_expected_revision`, or `_validate_manifest_session`;
+  `controller/api/routes/datasets.py` no longer carries `_select_latest_assets`,
+  `_archive_members`, or the legacy episode-export mirror route;
+  `controller/api/routes/script_tools.py` no longer keeps `_script_log_context`
+  or the ad hoc script-proxy route surface.
+- [x] Remove the remaining render-manifest and agent-tool compatibility shims
   in `controller/agent/tools.py` (`_rewrite_render_bundle_path`,
   `_rewrite_render_siblings`, `preview()`), and prune the `drafting` flag
   plumbing in `worker_renderer/utils/rendering.py` if it still exists only to
   preserve the publication bundle shape.
-- [ ] Remove the remaining drafting and technical-drawing residue from docs,
+- [x] Remove the remaining drafting and technical-drawing residue from docs,
   fixtures, and render-manifest plumbing:
   `specs/integration-test-list.md` (INT-033 and INT-034),
   `specs/architecture/agents/artifacts-and-filesystem.md`,
@@ -1714,11 +1717,11 @@ unless a separate migration says otherwise.
   `tests/integration/mock_responses/INT-181/engineer_planner/entry_01/05__assembly_definition.yaml`,
   `tests/integration/mock_responses/INT-183.yaml`, and
   `tests/integration/mock_responses/INT-184/engineer_planner/entry_01/02__todo.md`.
-- [ ] Remove the remaining steerability and wire-routing residue from
+- [x] Remove the remaining steerability and wire-routing residue from
   `specs/integration-test-rules.md`, the INT-034 manifest references in
   `specs/integration-test-list.md`, `tests/integration/mock_responses/INT-183.yaml`,
   and `tests/integration/mock_responses/INT-184/engineer_planner/entry_01/02__todo.md`.
-- [ ] Remove remaining legacy-role mock scenarios and scenario files if those
+- [x] Remove remaining legacy-role mock scenarios and scenario files if those
   roles are not part of the publication bundle:
   `tests/integration/mock_responses/INT-043.yaml`,
   `tests/integration/mock_responses/INT-167.yaml`,
@@ -1730,7 +1733,7 @@ unless a separate migration says otherwise.
   `tests/integration/mock_responses/INT-183.yaml`,
   `tests/integration/mock_responses/INT-185.yaml`,
   and `tests/integration/mock_responses/INT-186.yaml`.
-- [ ] Strip the remaining drafting assertions and drafting-shaped fields from
+- [x] Strip the remaining drafting assertions and drafting-shaped fields from
   integration coverage:
   `tests/integration/architecture_p0/test_planner_gates.py`,
   `specs/integration-test-list.md`,
@@ -1738,12 +1741,12 @@ unless a separate migration says otherwise.
   `tests/integration/mock_responses/INT-183/engineer_planner/entry_01/04__assembly_definition.yaml`,
   `tests/integration/mock_responses/INT-185/engineer_planner/entry_01/03__assembly_definition.yaml`,
   and `tests/integration/mock_responses/INT-186/engineer_planner/entry_01/03__assembly_definition.yaml`.
-- [ ] Keep observability as core plumbing, but trim only the feature-specific
+- [x] Keep observability as core plumbing, but trim only the feature-specific
   or dead tails that remain tied to removed publication-bundle surfaces:
   `shared/observability/schemas.py` should keep the skill/reward/core review
   and trace events, but it should not retain drafting-preview, electronics,
   steerability, COTS, or other dead-tail event families; `evals/logic/stack_profiles.py`
   remains on the cleanup list for the Temporal profile remnants.
-- [ ] Finish with a repo-wide search for `drafting`, `technical_drawing`,
+- [x] Finish with a repo-wide search for `drafting`, `technical_drawing`,
   `cots`, `electronics`, `steerability`, `skill_agent`, `engineer_reviewer`,
   and `git_agent`; only archival migration text should still mention them.

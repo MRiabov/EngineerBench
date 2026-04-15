@@ -39,7 +39,6 @@ The Benchmark Coder turns an approved benchmark handoff into `benchmark_script.p
 - `grep`
 - `execute_command`
 - `inspect_topology`
-- `invoke_cots_search_subagent`
 
 ## Runtime Helpers To Use From Scripts
 
@@ -49,7 +48,7 @@ The Benchmark Coder turns an approved benchmark handoff into `benchmark_script.p
 ## What Humans Must Tell It
 
 - `benchmark_definition.yaml` and `benchmark_assembly_definition.yaml` are read-only context after plan approval.
-- The benchmark coder preserves the approved labels, repeated quantities, and COTS identities exactly.
+- The benchmark coder preserves the approved labels and repeated quantities exactly.
 - `benchmark_plan_evidence_script.py` is the inspectable source of the approved geometry; do not reinterpret it.
 - The coder should validate and simulate the latest revision with `validate_benchmark()` / `simulate_benchmark()` before any review handoff, where `simulate_benchmark()` is a stability/evidence pass rather than a goal-reaching pass, then call `submit_benchmark_for_review()`.
 - If render images or simulation video exist, the coder must inspect them before finishing.
@@ -70,5 +69,4 @@ The Benchmark Coder turns an approved benchmark handoff into `benchmark_script.p
 - `.agents/skills/runtime-script-contract/SKILL.md`
 - `.agents/skills/build123d-cad-drafting-skill/SKILL.md`
 - `.agents/skills/mechanical-engineering/SKILL.md`
-- `.agents/skills/cots-parts/SKILL.md`
 - `.agents/skills/render-evidence/SKILL.md`

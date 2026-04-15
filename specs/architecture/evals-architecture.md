@@ -80,8 +80,8 @@ We should be able to test evaluations on multiple tiers, specifically:
 04. Given a successful simulation result, the Execution Reviewer flags over-actuated solutions (excessive moving axes/parts) in at least 80% of seeded over-actuation cases.
 05. Manufacturability awareness: the Execution Reviewer reports only changes appropriate to the manufacturing method in 97% of cases.
 06. Given a viewed model, the Execution Reviewer requests cheaper/lighter improvements where feasible in at least 15% of cases.
-07. Toolkit usage and diversity; the model will use the mechanically relevant tools needed for the benchmark family, including COTS search when catalog-backed hardware is required.
-08. The model would be able to execute a search (or use a subagent) in COTS
+07. Toolkit usage and diversity; the model will use the mechanically relevant tools needed for the benchmark family, including specialized part lookup when that data is required.
+08. The model would be able to execute a search or use a helper when specialized part data is required.
 09. If render evidence exists, approval is valid only when the reviewer used the dedicated media-inspection tool rather than text-only file inspection.
 10. The Execution Reviewer writes a stage-canonical checklist in the reviewer comments YAML, and the checklist keys/values match the seeded ground truth in at least 95% of cases.
 

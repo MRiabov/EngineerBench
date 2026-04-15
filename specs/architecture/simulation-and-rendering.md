@@ -225,7 +225,7 @@ Benchmark-owned moving fixtures are reviewed under an explicit-motion contract.
 The rule is:
 
 1. benchmark fixtures may be moving only when the benchmark contract explicitly requires that behavior,
-2. benchmark fixtures may use motors, bearings, and other COTS parts as read-only environment components when their identity is explicit, and they are not treated as manufacturable engineer outputs,
+2. benchmark fixtures may use motors, bearings, and other read-only environment components when their identity is explicit, and they are not treated as manufacturable engineer outputs,
 3. benchmark handoff artifacts must explicitly document the fixture motion contract, including stable identity, motion kind/topology, axis/path or equivalent reference, bounds or operating envelope, trigger mode, and whether the engineer may rely on that motion,
 4. reviewers validate the declared motion against simulation evidence and reject missing, contradictory, unsupported, or non-deterministic motion,
 5. benchmark fixtures are validation setup, not engineer-owned solution parts, so manufacturability checks do not apply to them.
@@ -404,7 +404,7 @@ For position-based control (servos, steppers), we use **MuJoCo's native `<positi
 ```xml
 <actuator>
   <position name="servo1" joint="arm_hinge" 
-            kp="{kp_from_COTS}" kv="{kv_from_COTS}"
+            kp="{kp_from_catalog}" kv="{kv_from_catalog}"
             forcerange="-{max_torque_nm} {max_torque_nm}"/>
 </actuator>
 ```
@@ -431,7 +431,7 @@ For position-based control (servos, steppers), we use **MuJoCo's native `<positi
 
 """
 
-Notably, we have a set of COTS motors in COTS section below. We need to assume/research COTS actuator strength and parameters.
+Notably, we have a set of catalog-backed motors in the actuator section below. We need to assume/research actuator strength and parameters.
 
 ### Actuator force limits (forcerange)
 
@@ -448,7 +448,7 @@ MuJoCo's `forcerange` attribute clamps the actuator output to realistic torque l
 - Motor "struggles" realistically when overloaded (can't reach target)
 - Simulation does NOT fail from clamping alone (see below for failure logic)
 
-**Source of values**: `forcerange` comes from COTS servo catalog (`max_torque_nm` field).
+**Source of values**: `forcerange` comes from the motor catalog (`max_torque_nm` field).
 
 ### Motor overload failure
 

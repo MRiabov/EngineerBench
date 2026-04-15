@@ -94,7 +94,6 @@ Load sibling skill guidance only when it changes the implementation outcome:
 - [build123d-cad-drafting-skill](../build123d-cad-drafting-skill/SKILL.md)
 - [mechanical-engineering](../mechanical-engineering/SKILL.md)
 - [manufacturing-knowledge](../manufacturing-knowledge/SKILL.md) when cost or weight constraints drive the design.
-- [electronics-engineering](../electronics-engineering/SKILL.md) only when the approved benchmark explicitly requires electronics.
 - [specs/architecture/agents/agent-artifacts/README.md](../../../specs/architecture/agents/agent-artifacts/README.md) when you need file-level acceptance criteria for `benchmark_script.py`, validation, simulation, `scene.json`, `plan_refusal.md`, or render evidence.
 
 ## Source Hierarchy

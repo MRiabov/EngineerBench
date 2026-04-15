@@ -20,10 +20,8 @@ The Engineering Execution Reviewer decides whether the implemented solution is r
 - `benchmark_assembly_definition.yaml`
 - `benchmark_script.py` when it exists
 - `benchmark_plan_evidence_script.py` when it exists
-- `benchmark_plan_technical_drawing_script.py` when it exists
 - `plan_refusal.md` when present
 - `solution_plan_evidence_script.py` when it exists
-- `solution_plan_technical_drawing_script.py` when it exists
 - `validation_results.json`
 - `simulation_result.json`
 - `scene.json`
@@ -41,7 +39,6 @@ The Engineering Execution Reviewer decides whether the implemented solution is r
 - `grep`
 - `execute_command`
 - `inspect_topology`
-- `invoke_cots_search_subagent`
 
 ## What Humans Must Tell It
 
@@ -67,4 +64,3 @@ The Engineering Execution Reviewer decides whether the implemented solution is r
 - `.agents/skills/render-evidence/SKILL.md`
 - `.agents/skills/mechanical-engineering/SKILL.md`
 - `.agents/skills/runtime-script-contract/SKILL.md`
-- `.agents/skills/cots-parts/SKILL.md` when catalog-backed parts drive the solution

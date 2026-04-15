@@ -39,7 +39,6 @@ The Engineering Planner turns benchmark context into an implementation-ready eng
 - `inspect_topology`
 - `write_file`
 - `edit_file`
-- `invoke_cots_search_subagent`
 - `validate_costing_and_price`
 - `submit_engineering_plan`
 
@@ -72,5 +71,4 @@ The Engineering Planner turns benchmark context into an implementation-ready eng
 - `.agents/skills/runtime-script-contract/SKILL.md`
 - `.agents/skills/mechanical-engineering/SKILL.md`
 - `.agents/skills/manufacturing-knowledge/SKILL.md`
-- `.agents/skills/cots-parts/SKILL.md`
 - `.agents/skills/render-evidence/SKILL.md`

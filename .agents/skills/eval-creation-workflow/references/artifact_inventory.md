@@ -44,7 +44,6 @@ The canonical per-file acceptance criteria now live in `specs/architecture/agent
 | Benchmark execution-review manifest | `.manifests/benchmark_review_manifest.json` | `reviewer_manifest_acceptance_criteria.md` | covered |
 | Engineering plan-review manifest | `.manifests/engineering_plan_review_manifest.json` | `reviewer_manifest_acceptance_criteria.md` | covered |
 | Engineering execution handoff manifest | `.manifests/engineering_execution_handoff_manifest.json` | `reviewer_manifest_acceptance_criteria.md` | covered, but see note |
-| Electronics review manifest | `.manifests/electronics_review_manifest.json` | `reviewer_manifest_acceptance_criteria.md` | covered |
 | Benchmark plan review decision | `reviews/benchmark-plan-review-decision-round-<n>.yaml` | `benchmark_plan_review_yaml_acceptance_criteria.md` | covered |
 | Benchmark plan review comments | `reviews/benchmark-plan-review-comments-round-<n>.yaml` | `benchmark_plan_review_yaml_acceptance_criteria.md` | covered |
 | Benchmark execution review decision | `reviews/benchmark-execution-review-decision-round-<n>.yaml` | `benchmark_execution_review_yaml_acceptance_criteria.md` | covered |
@@ -53,8 +52,6 @@ The canonical per-file acceptance criteria now live in `specs/architecture/agent
 | Engineering plan review comments | `reviews/engineering-plan-review-comments-round-<n>.yaml` | `engineering_plan_review_yaml_acceptance_criteria.md` | covered |
 | Engineering execution review decision | `reviews/engineering-execution-review-decision-round-<n>.yaml` | `engineering_execution_review_yaml_acceptance_criteria.md` | covered |
 | Engineering execution review comments | `reviews/engineering-execution-review-comments-round-<n>.yaml` | `engineering_execution_review_yaml_acceptance_criteria.md` | covered |
-| Electronics review decision | `reviews/electronics-review-decision-round-<n>.yaml` | `electronics_review_yaml_acceptance_criteria.md` | covered |
-| Electronics review comments | `reviews/electronics-review-comments-round-<n>.yaml` | `electronics_review_yaml_acceptance_criteria.md` | covered |
 
 ### Note on the engineer execution manifest name
 

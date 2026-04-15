@@ -39,7 +39,6 @@ The Engineering Plan Reviewer checks the plan before engineering implementation 
 - `execute_command`
 - `inspect_topology`
 - `verify`
-- `invoke_cots_search_subagent`
 
 ## What Humans Must Tell It
 
@@ -66,5 +65,4 @@ The Engineering Plan Reviewer checks the plan before engineering implementation 
 - `.agents/skills/engineer-plan-reviewer/SKILL.md`
 - `.agents/skills/render-evidence/SKILL.md`
 - `.agents/skills/mechanical-engineering/SKILL.md`
-- `.agents/skills/cots-parts/SKILL.md`
 - `.agents/skills/runtime-script-contract/SKILL.md`
