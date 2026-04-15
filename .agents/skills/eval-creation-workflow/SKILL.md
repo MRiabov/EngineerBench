@@ -1,6 +1,6 @@
 ---
 name: eval-creation-workflow
-description: Create or repair Problemologist eval seeds by adding role-based dataset rows plus stage-correct seeded workspace artifacts with exact deterministic fields, then verify them with minimal-scope runs through dataset/evals/run_evals.py. Use this when asked to add benchmark, engineer, or reviewer evals, or when a role-based eval dataset looks structurally invalid.
+description: Create or repair Problemologist eval seeds by adding role-based dataset rows plus stage-correct seeded workspace artifacts, including template/starter files for agent-editable outputs, with exact deterministic fields, then verify them with minimal-scope runs through dataset/evals/run_evals.py. Use this when asked to add benchmark, engineer, or reviewer evals, or when a role-based eval dataset looks structurally invalid.
 ---
 
 # Eval Creation Workflow
@@ -52,7 +52,7 @@ Open only what you need, but default to these after the role skills above:
 ## Non-negotiable rules
 
 01. Planner-style entrypoints may be prompt-only.
-02. Coder, reviewer, and downstream role evals must be seeded with the files that role is supposed to receive at entry.
+02. Coder, reviewer, and downstream role evals must be seeded with the files that role is supposed to receive at entry. Any file the evaluated agent is expected to edit must be seeded as the template/starter version of that same path, not as a pre-solved output.
 03. Do not invent alternate filenames for handoff artifacts or reviewer manifests.
 04. Prefer `seed_artifact_dir` over large inline `seed_files`.
 05. Use `seed_files` only for tiny cases or one-off overrides.
@@ -158,7 +158,7 @@ The canonical files in that library use the same basenames as the workspace arti
 2. Determine whether the target role is an initial role or a seeded downstream role.
 3. Add or edit the JSON row in `dataset/data/seed/role_based/<agent>.json`.
 4. If seeded, create `dataset/data/seed/artifacts/<agent>/<task-id>/`.
-5. Materialize the exact files that the role should see on disk at entry.
+5. Materialize the exact files that the role should see on disk at entry. For editable files, use the template/starter content for those same filenames so the agent begins from the intended scaffold.
 6. If a manifest references file hashes, compute the real hash and patch the manifest.
 7. Run the seeded-entry validator for that one task.
 8. Only after the validator passes, run a minimal eval for that one task.

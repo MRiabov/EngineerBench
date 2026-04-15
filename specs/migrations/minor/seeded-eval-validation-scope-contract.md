@@ -1,6 +1,6 @@
 ---
 title: Seeded Eval Validation Scope Contract
-status: migration
+status: implemented
 agents_affected:
   - benchmark_planner
   - benchmark_plan_reviewer
@@ -15,7 +15,7 @@ added_at: '2026-04-15T14:23:40Z'
 
 # Seeded Eval Validation Scope Contract
 
-<!-- Migration spec. No behavior change yet. -->
+<!-- Migration spec. Should be already implemented. -->
 
 ## Purpose
 
@@ -257,76 +257,76 @@ enforce the new contract:
 ### Contract plumbing
 
 - [ ] Add a closed `validation_scope` enum with `current-node`,
-      `current-and-previous-nodes`, and
-      `current-and-previous-nodes-with-heavy-simulation`.
+  `current-and-previous-nodes`, and
+  `current-and-previous-nodes-with-heavy-simulation`.
 - [ ] Add `--validation-scope` to `scripts/validate_eval_seed.py`.
 - [ ] Default `--validation-scope` to `current-and-previous-nodes` in the
-      seed validator.
+  seed validator.
 - [ ] Keep unknown scope values fail-closed.
 - [ ] Keep prompt-only rows bypassed exactly as they are today.
 
 ### Shared preflight seam
 
 - [ ] Thread `validation_scope` through
-      `evals/logic/workspace.py::preflight_seeded_entry_contract(...)`.
+  `evals/logic/workspace.py::preflight_seeded_entry_contract(...)`.
 - [ ] Keep the current-node entry contract as the base layer.
 - [ ] Keep the base layer composed of `evaluate_node_entry_contract(...)` and
-      `validate_seeded_workspace_handoff_artifacts(...)`.
+  `validate_seeded_workspace_handoff_artifacts(...)`.
 - [ ] Make `current-node` stop after the base layer.
 - [ ] Make `current-and-previous-nodes` add predecessor-gate replay on top of
-      the base layer.
+  the base layer.
 - [ ] Make `current-and-previous-nodes-with-heavy-simulation` add
-      heavy-simulation replay on top of `current-and-previous-nodes`.
+  heavy-simulation replay on top of `current-and-previous-nodes`.
 - [ ] Keep `evals/logic/runner.py` and `evals/logic/runner_execution.py` on
-      `current-node` behavior unless explicitly passed a deeper scope.
+  `current-node` behavior unless explicitly passed a deeper scope.
 
 ### Predecessor-gate replay
 
 - [ ] Add a chain-aware predecessor helper in
-      `controller/agent/node_entry_validation.py`.
+  `controller/agent/node_entry_validation.py`.
 - [ ] Stop relying only on the one-step `PREVIOUS_NODE_MAPS` lookup for the
-      seed validator.
+  seed validator.
 - [ ] Reuse the benchmark planner and benchmark coder gate helpers for
-      benchmark-side descendants.
+  benchmark-side descendants.
 - [ ] Reuse the planner submission and review handoff helpers for planner and
-      reviewer descendants.
+  reviewer descendants.
 - [ ] Reuse the engineering validation and simulation helpers for
-      engineering-side descendants.
+  engineering-side descendants.
 - [ ] Reuse existing helpers from
-      `controller/agent/benchmark_handover_validation.py` and
-      `controller/agent/review_handover.py` instead of copying gate logic into
-      the CLI.
+  `controller/agent/benchmark_handover_validation.py` and
+  `controller/agent/review_handover.py` instead of copying gate logic into
+  the CLI.
 
 ### Heavy simulation replay
 
 - [ ] Make scope 3 trigger `simulate_benchmark()` where benchmark-chain
-      validation depends on simulation evidence.
+  validation depends on simulation evidence.
 - [ ] Make scope 3 trigger `simulate_engineering()` where engineer-chain
-      validation depends on simulation evidence.
+  validation depends on simulation evidence.
 - [ ] Keep scope 3 opt-in and do not make it the seed-validator default.
 - [ ] Fail closed if the requested simulation gate cannot be replayed.
 
 ### Regression coverage
 
 - [ ] Add the `ec-002` false-negative regression where the current validator
-      passes but `validate_benchmark()` fails.
+  passes but `validate_benchmark()` fails.
 - [ ] Add a regression proving `current-and-previous-nodes` is the default
-      seed-validation mode.
+  seed-validation mode.
 - [ ] Add a regression proving `current-node` remains available as the smoke
-      mode.
+  mode.
 - [ ] Add a regression proving
-      `current-and-previous-nodes-with-heavy-simulation` reaches the heavy
-      simulation gate.
+  `current-and-previous-nodes-with-heavy-simulation` reaches the heavy
+  simulation gate.
 - [ ] Add a regression proving invalid `--validation-scope` values are
-      rejected.
+  rejected.
 
 ### Docs and rollout
 
 - [ ] Update `specs/devtools.md` with the three scopes and the seed-validator
-      default.
+  default.
 - [ ] Update `specs/architecture/evals-architecture.md` with the depth-
-      selectable, fail-closed seed contract.
+  selectable, fail-closed seed contract.
 - [ ] Verify the new strict path with the narrowest integration slice first.
 - [ ] Widen verification only if a regression points at another layer.
 - [ ] Keep the normal eval runtime narrow unless a caller explicitly opts in
-      to a deeper scope.
+  to a deeper scope.
