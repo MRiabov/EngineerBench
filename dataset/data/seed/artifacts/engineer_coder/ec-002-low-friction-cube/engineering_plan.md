@@ -2,7 +2,7 @@
 
 ## 1. Solution Overview
 
-Use a passive low-angle chute with tall guide walls and a shaped bypass around the central forbid block to move the low-friction ABS cube into the goal zone. The geometry avoids relying on friction and instead constrains the cube with continuous walls and gentle transitions. The `low_friction_route` assembly captures the entire guide path on a freestanding aluminum base.
+Use a passive low-angle chute with tall guide walls and a shaped bypass around the central forbid block to move the low-friction ABS cube into the goal zone. The geometry avoids relying on friction and instead constrains the cube with continuous walls and gentle transitions. The read-only `slider_cube` payload enters the `entry_box` and is then guided by the `low_friction_route` assembly on a freestanding aluminum base.
 
 ## 2. Parts List
 

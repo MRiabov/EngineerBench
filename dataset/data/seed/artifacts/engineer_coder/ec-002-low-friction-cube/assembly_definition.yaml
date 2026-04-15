@@ -91,6 +91,18 @@ manufactured_parts:
 final_assembly:
 - name: low_friction_route
   config:
+- name: slide_base
+  config:
+- name: entry_box
+  config:
+- name: guide_wall_left
+  config:
+- name: guide_wall_right
+  config:
+- name: blocker_bypass_panel
+  config:
+- name: goal_pocket
+  config:
 totals:
   estimated_unit_cost_usd: 39.5
   estimated_weight_g: 315.11
