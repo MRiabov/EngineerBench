@@ -3843,7 +3843,7 @@ def test_validate_eval_seed_skip_env_up_fails_while_exclusive_eval_lock_is_held(
 
 @pytest.mark.integration_p0
 @pytest.mark.int_id("INT-276")
-def test_validate_eval_seed_default_scope_rejects_ec002():
+def test_validate_eval_seed_default_scope_passes_ec002():
     completed = _run_validate_eval_seed(
         "--skip-env-up",
         "--agent",
@@ -3859,10 +3859,9 @@ def test_validate_eval_seed_default_scope_rejects_ec002():
         part for part in (completed.stdout, completed.stderr) if part
     )
 
-    assert completed.returncode == 1, combined_output
-    assert "Validated 1 row(s): 0 passed, 1 failed." in combined_output, combined_output
-    assert "benchmark coder validation" in combined_output, combined_output
-    assert "FAIL engineer_coder ec-002:" in completed.stdout, completed.stdout
+    assert completed.returncode == 0, combined_output
+    assert "Validated 1 row(s): all passed." in completed.stdout, completed.stdout
+    assert "PASS engineer_coder ec-002:" in completed.stdout, completed.stdout
 
 
 @pytest.mark.integration_p0

@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from shared.enums import AgentName
+from shared.eval_artifacts import seed_starter_template_files_for_agent
 
 AGENT_TEMPLATES_ROOT = Path(__file__).resolve().parent
 COMMON_TEMPLATES_ROOT = AGENT_TEMPLATES_ROOT / "common"
@@ -22,7 +23,6 @@ ROLE_TEMPLATE_FILES: dict[AgentName, tuple[str, ...]] = {
         "engineering_plan.md",
         "todo.md",
         "assembly_definition.yaml",
-        "benchmark_plan_evidence_script.py",
         "solution_plan_evidence_script.py",
     ),
 }
@@ -106,6 +106,47 @@ def load_role_template_files(agent_name: AgentName) -> dict[str, str]:
             raise FileNotFoundError(f"Template file not found: {src_path}")
         loaded[rel_path] = src_path.read_text(encoding="utf-8")
     return loaded
+
+
+def load_seed_starter_template_files(agent_name: AgentName) -> dict[str, str]:
+    """Load starter files that seeded downstream roles are expected to edit."""
+    common_templates = load_common_template_files()
+    starter_files: dict[str, str] = {}
+
+    if agent_name in {
+        AgentName.BENCHMARK_PLANNER,
+        AgentName.ENGINEER_PLANNER,
+    }:
+        starter_files.update(load_role_template_files(agent_name))
+    elif agent_name == AgentName.BENCHMARK_CODER:
+        benchmark_templates = load_template_repo_files("benchmark_generator")
+        starter_files["benchmark_script.py"] = benchmark_templates[
+            "benchmark_script.py"
+        ]
+    elif agent_name == AgentName.ENGINEER_CODER:
+        starter_files["solution_script.py"] = common_templates["solution_script.py"]
+
+    if agent_name in {
+        AgentName.BENCHMARK_CODER,
+        AgentName.BENCHMARK_REVIEWER,
+        AgentName.BENCHMARK_PLAN_REVIEWER,
+        AgentName.ENGINEER_CODER,
+        AgentName.ENGINEER_PLAN_REVIEWER,
+        AgentName.ENGINEER_EXECUTION_REVIEWER,
+    }:
+        starter_files["todo.md"] = common_templates["todo.md"]
+        starter_files["journal.md"] = common_templates["journal.md"]
+
+    expected_paths = seed_starter_template_files_for_agent(agent_name)
+    if expected_paths and set(starter_files) != set(expected_paths):
+        expected = ", ".join(expected_paths)
+        actual = ", ".join(sorted(starter_files))
+        raise RuntimeError(
+            "Seed starter template loader mismatch for "
+            f"{agent_name.value}: expected {{{expected}}}, got {{{actual}}}"
+        )
+
+    return starter_files
 
 
 def load_codex_template_files() -> dict[str, str]:

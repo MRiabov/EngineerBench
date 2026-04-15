@@ -167,6 +167,16 @@ YAML templates are schema-validated when they are materialized into a
 workspace, so starter drift is caught at source rather than after a node has
 already started.
 
+Any seed-backed row with writable authored files must preserve the starter
+snapshot for the files the agent is expected to edit. For planner workspaces,
+that starter snapshot includes the role-owned authored plan files and planner
+evidence script. For coder workspaces, that starter snapshot includes the
+role-owned authored source file plus `todo.md` and `journal.md`. For reviewer
+workspaces, that starter snapshot includes the writable note files the
+reviewer is expected to edit. Seed validation fails closed if those writable
+paths already contain a pre-solved output instead of the checked-in starter
+content.
+
 ## `agents_config.yaml` (path permissions policy)
 
 To prevent permission drift between the static file contract and runtime behavior, we define a centralized policy file at `config/agents_config.yaml`.

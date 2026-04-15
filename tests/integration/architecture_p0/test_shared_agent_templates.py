@@ -5,6 +5,7 @@ import pytest
 from shared.agent_templates import (
     load_common_template_files,
     load_role_template_files,
+    load_seed_starter_template_files,
     load_template_text,
 )
 from shared.current_role import parse_current_role_manifest
@@ -41,7 +42,7 @@ def test_common_agent_templates_load_from_shared_templates():
 
 
 @pytest.mark.integration_p0
-def test_planner_agent_templates_include_retained_evidence_scripts():
+def test_planner_agent_templates_match_planner_starter_files():
     benchmark_templates = load_role_template_files(AgentName.BENCHMARK_PLANNER)
     engineer_templates = load_role_template_files(AgentName.ENGINEER_PLANNER)
 
@@ -56,8 +57,50 @@ def test_planner_agent_templates_include_retained_evidence_scripts():
         "engineering_plan.md",
         "todo.md",
         "assembly_definition.yaml",
-        "benchmark_plan_evidence_script.py",
         "solution_plan_evidence_script.py",
+    }
+
+
+@pytest.mark.integration_p0
+def test_seed_starter_templates_cover_all_seeded_roles():
+    assert set(load_seed_starter_template_files(AgentName.BENCHMARK_PLANNER)) == {
+        "benchmark_plan.md",
+        "todo.md",
+        "benchmark_definition.yaml",
+        "benchmark_assembly_definition.yaml",
+        "benchmark_plan_evidence_script.py",
+    }
+    assert set(load_seed_starter_template_files(AgentName.ENGINEER_PLANNER)) == {
+        "engineering_plan.md",
+        "todo.md",
+        "assembly_definition.yaml",
+        "solution_plan_evidence_script.py",
+    }
+    assert set(load_seed_starter_template_files(AgentName.BENCHMARK_CODER)) == {
+        "benchmark_script.py",
+        "todo.md",
+        "journal.md",
+    }
+    assert set(load_seed_starter_template_files(AgentName.ENGINEER_CODER)) == {
+        "solution_script.py",
+        "todo.md",
+        "journal.md",
+    }
+    assert set(load_seed_starter_template_files(AgentName.BENCHMARK_REVIEWER)) == {
+        "todo.md",
+        "journal.md",
+    }
+    assert set(load_seed_starter_template_files(AgentName.BENCHMARK_PLAN_REVIEWER)) == {
+        "todo.md",
+        "journal.md",
+    }
+    assert set(load_seed_starter_template_files(AgentName.ENGINEER_PLAN_REVIEWER)) == {
+        "todo.md",
+        "journal.md",
+    }
+    assert set(load_seed_starter_template_files(AgentName.ENGINEER_EXECUTION_REVIEWER)) == {
+        "todo.md",
+        "journal.md",
     }
 
 

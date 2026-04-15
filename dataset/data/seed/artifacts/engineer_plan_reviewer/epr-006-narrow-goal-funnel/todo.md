@@ -1,7 +1,7 @@
-# TODO
+# TODO List
 
-- [x] Planner handoff approved
-- [ ] Implement `funnel_base` and `wide_entry` in `solution_script.py`
-- [ ] Implement the long narrowing funnel and final throat insert
-- [ ] Implement the narrow goal pocket precisely on the seeded goal centerline
-- [ ] Record any taper-angle or throat-width tuning in `journal.md`
+- [ ] Confirm the active role and current stage before editing
+- [ ] Review the seeded handoff artifacts that apply to this workspace
+- [ ] Update the role-owned authored source file for the current revision
+- [ ] Run the required validation or preview checks for this stage
+- [ ] Submit only after the workspace artifacts are internally consistent

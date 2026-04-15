@@ -1,4 +1,7 @@
-- [x] Keep the direct-drop dead zone aligned across the planner artifacts.
-- [x] Declare the deflector and lower bin consistently with the goal-zone geometry.
-- [x] Preserve a fully static benchmark.
-- [x] Keep benchmark-local cost and weight within the declared caps.
+# TODO List
+
+- [ ] Confirm the active role and current stage before editing
+- [ ] Review the seeded handoff artifacts that apply to this workspace
+- [ ] Update the role-owned authored source file for the current revision
+- [ ] Run the required validation or preview checks for this stage
+- [ ] Submit only after the workspace artifacts are internally consistent

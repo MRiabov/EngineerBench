@@ -165,7 +165,8 @@ def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Validate seeded eval entry contracts, including planner inventory "
-            "exactness and plan grounding without running full evals."
+            "exactness, writable starter-baseline alignment, and plan "
+            "grounding without running full evals."
         )
     )
     parser.add_argument(
@@ -227,7 +228,8 @@ def _parse_args() -> argparse.Namespace:
         help=(
             "Repair deterministic seed-manifest drift before validation "
             "(default: enabled). Seed validation still fails closed on "
-            "inventory exactness or plan-grounding mismatches."
+            "inventory exactness, starter-template drift, or plan-grounding "
+            "mismatches."
         ),
     )
     parser.add_argument(

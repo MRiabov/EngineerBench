@@ -1,7 +1,7 @@
-# TODO
+# TODO List
 
-- [x] Planner handoff approved
-- [ ] Implement `support_column` and `catch_plate` in `solution_script.py`
-- [ ] Implement the deflection walls and curved turn lip away from `direct_drop_dead_zone`
-- [ ] Implement the lower-bin funnel overlapping the seeded goal zone
-- [ ] Record any intercept-height or lip-angle tuning in `journal.md`
+- [ ] Confirm the active role and current stage before editing
+- [ ] Review the seeded handoff artifacts that apply to this workspace
+- [ ] Update the role-owned authored source file for the current revision
+- [ ] Run the required validation or preview checks for this stage
+- [ ] Submit only after the workspace artifacts are internally consistent

@@ -184,8 +184,10 @@ The validation helpers are developer tooling, not product behavior.
 - This script validates seeded eval entry contracts without running the full eval loop.
 - It seeds the local workspace through the real helper path and validates the row against the current contract set.
 - The seeded-validation depth contract is documented in [Seeded Eval Validation Scope Contract](./migrations/minor/seeded-eval-validation-scope-contract.md); `--validation-scope` selects `current-node`, `current-and-previous-nodes`, or `current-and-previous-nodes-with-heavy-simulation`, `current-and-previous-nodes` is the default, and unknown values fail closed.
+- For any seed-backed row with writable authored files, the seeded workspace must still expose the writable starter files for that row. The validator fails closed if those paths already contain a pre-solved output instead of the checked-in starter baseline.
 - For role-based rows, that contract includes the current-role manifest as the authoritative role marker for the seeded workspace.
 - For planner rows, that contract includes exact inventory preservation, exact identifier mention coverage in `benchmark_plan.md` or `engineering_plan.md`, and the latest handoff cross-contract checks from the controller validation path.
+- `scripts/update_eval_seed_templates.py` refreshes the checked-in starter files in the seed corpus from the shared template registry, and `scripts/update_eval_seed_renders.py` continues to own deterministic render regeneration.
 - It can refresh deterministic seed manifests when asked; render bundles are handled by `scripts/update_eval_seed_renders.py`.
 - It can optionally run the eval runner in judge mode after validation.
 - `--judge-provider` selects the CLI provider for that judge follow-up; the default is `qwen`, and the choice is orthogonal to `--runner-backend`.

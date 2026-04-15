@@ -1,4 +1,7 @@
-- [x] Keep the benchmark fully freestanding with no external-contact assumptions.
-- [x] Declare the ballast base and counterweight fin consistently across artifacts.
-- [x] Preserve passive benchmark geometry.
-- [x] Keep benchmark-local cost and weight within the customer caps.
+# TODO List
+
+- [ ] Confirm the active role and current stage before editing
+- [ ] Review the seeded handoff artifacts that apply to this workspace
+- [ ] Update the role-owned authored source file for the current revision
+- [ ] Run the required validation or preview checks for this stage
+- [ ] Submit only after the workspace artifacts are internally consistent

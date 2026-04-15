@@ -1,8 +1,7 @@
-# TODO
+# TODO List
 
-- [x] Planner handoff seeded
-- [ ] Implement tunnel shell and floor in `benchmark_script.py`
-- [ ] Implement ball spawn and metadata
-- [ ] Preserve `benchmark_plan_evidence_script.py` as read-only context
-- [ ] Keep `benchmark_script.py` import-safe with a pure `build()` module contract
-- [ ] Use external shell self-checks for validate/simulate/review submission, not in-module calls
+- [ ] Confirm the active role and current stage before editing
+- [ ] Review the seeded handoff artifacts that apply to this workspace
+- [ ] Update the role-owned authored source file for the current revision
+- [ ] Run the required validation or preview checks for this stage
+- [ ] Submit only after the workspace artifacts are internally consistent

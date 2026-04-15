@@ -1,7 +1,7 @@
-# TODO
+# TODO List
 
-- [x] Seed the lower-bin redirection benchmark handoff
-- [x] Preserve the dead-zone shield and redirected capture contract
-- [x] Keep the objective and simulation evidence aligned
-- [x] Seed validation and simulation artifacts
-- [ ] Review the path plausibility against the seeded render bundle
+- [ ] Confirm the active role and current stage before editing
+- [ ] Review the seeded handoff artifacts that apply to this workspace
+- [ ] Update the role-owned authored source file for the current revision
+- [ ] Run the required validation or preview checks for this stage
+- [ ] Submit only after the workspace artifacts are internally consistent

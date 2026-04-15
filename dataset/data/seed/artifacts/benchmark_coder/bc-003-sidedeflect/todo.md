@@ -1,12 +1,7 @@
-# TODO
+# TODO List
 
-- [x] Planner handoff seeded
-- [ ] Implement environment geometry in `benchmark_script.py`
-  - [ ] `base_plate`: 300×200×10 mm floor plate at [0, 0, 5]
-  - [ ] `deflector_ramp`: 120×160×15 mm angled ramp at 30°, centered at [40, 0, 60]
-  - [ ] `side_goal_wall`: vertical wall at goal zone near [170, 0, 50]
-  - [ ] `catch_bin`: goal bin floor at [170, 0, 5], 60×70×5 mm
-- [ ] Construct the payload from `benchmark_definition.yaml` contract
-- [ ] Preserve `benchmark_plan_evidence_script.py` as read-only context
-- [ ] Keep `benchmark_script.py` import-safe with a pure `build()` module contract
-- [ ] Use external shell self-checks for validate/simulate/review submission, not in-module calls
+- [ ] Confirm the active role and current stage before editing
+- [ ] Review the seeded handoff artifacts that apply to this workspace
+- [ ] Update the role-owned authored source file for the current revision
+- [ ] Run the required validation or preview checks for this stage
+- [ ] Submit only after the workspace artifacts are internally consistent

@@ -1,7 +1,7 @@
-# TODO
+# TODO List
 
-- [x] Planner handoff approved
-- [ ] Implement `slide_base` and `entry_box` in `solution_script.py`
-- [ ] Implement the low-friction routed guide walls around the central block
-- [ ] Implement the closed goal pocket so the cube cannot skate through the target
-- [ ] Record any wall-offset or pocket-depth tuning in `journal.md`
+- [ ] Confirm the active role and current stage before editing
+- [ ] Review the seeded handoff artifacts that apply to this workspace
+- [ ] Update the role-owned authored source file for the current revision
+- [ ] Run the required validation or preview checks for this stage
+- [ ] Submit only after the workspace artifacts are internally consistent

@@ -1,4 +1,7 @@
-- [x] Keep the central blocker geometry aligned between `benchmark_plan.md` and `benchmark_definition.yaml`.
-- [x] Declare both upper and lower route walls as static benchmark-owned fixtures.
-- [x] Preserve a blocker-free approach into the goal tray.
-- [x] Keep the benchmark-local assembly fully static with no undeclared motion.
+# TODO List
+
+- [ ] Confirm the active role and current stage before editing
+- [ ] Review the seeded handoff artifacts that apply to this workspace
+- [ ] Update the role-owned authored source file for the current revision
+- [ ] Run the required validation or preview checks for this stage
+- [ ] Submit only after the workspace artifacts are internally consistent

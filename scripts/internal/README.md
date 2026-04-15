@@ -22,6 +22,8 @@ Current modules:
 - `eval_seed_renders.py`: deterministic seed render regeneration helpers used
   by `scripts/update_eval_seed_renders.py` and the compatibility alias in
   `scripts/validate_eval_seed.py --update-renders`.
+- `eval_seed_selection.py`: dataset selection helpers shared by the seed
+  validation and seed-maintenance CLIs.
 
 Examples:
 
