@@ -2,7 +2,12 @@
 
 ## 1. Solution Overview
 
-Use a passive low-angle chute with tall guide walls and a shaped bypass around the central forbid block to move the low-friction ABS cube into the goal zone. The geometry avoids relying on friction and instead constrains the cube with continuous walls and gentle transitions. The read-only `slider_cube` payload enters the `entry_box` and is then guided by the `low_friction_route` assembly on a freestanding aluminum base.
+Use a passive low-angle chute with tall guide walls and a shaped bypass around the
+central forbid block to move the low-friction ABS cube into the goal zone. The
+geometry avoids relying on friction and instead constrains the cube with
+continuous walls and gentle transitions. The read-only `slider_cube` payload
+enters the `entry_box` and is then guided by the `low_friction_route` assembly
+on the fixed `environment_fixture` reference plane.
 
 ## 2. Parts List
 
@@ -22,9 +27,28 @@ Use a passive low-angle chute with tall guide walls and a shaped bypass around t
 
 The `low_friction_route` assembly is built on the `slide_base` as the root part:
 
-1. Mount `entry_box` on `slide_base` so the jittered cube is captured before it reaches the routed section.
-2. Mount the two guide walls and `blocker_bypass_panel` to create a smooth, continuous path around the seeded forbid zone.
-3. Mount `goal_pocket` overlapping the seeded goal zone so the cube cannot skate through the target.
+1. Mount `slide_base` on the `environment_fixture` so the route has a stable,
+   low-friction foundation.
+2. Place `entry_box` at the left end of the base so the jittered cube is
+   captured before it reaches the routed section.
+3. Mount `guide_wall_left` and `guide_wall_right` as continuous rails along the
+   chute edges, then place `blocker_bypass_panel` on the positive-Y side of the
+   central keepout to force the bypass.
+4. Mount `goal_pocket` overlapping the seeded goal zone so the cube settles
+   inside the target instead of skating through it.
+5. Keep the layout compact enough that the route remains legible in the plan
+   preview and in the seeded engineer render bundle.
+
+### Placement Notes
+
+- `slide_base`: centered at `(20.0, 0.0, 9.0)` with its long axis aligned to X.
+- `entry_box`: centered at `(-225.0, 0.0, 33.0)` on the left capture end.
+- `guide_wall_left`: centered at `(-40.0, -66.0, 35.0)` as the lower rail.
+- `guide_wall_right`: centered at `(0.0, 66.0, 35.0)` as the upper rail.
+- `blocker_bypass_panel`: centered at `(145.0, 42.0, 46.5)` to lift the route
+  around the blocker on the positive-Y side.
+- `goal_pocket`: centered at `(315.0, 0.0, 30.0)` so its mouth overlaps the
+  goal zone.
 
 ## 4. Assumption Register
 
@@ -125,6 +149,7 @@ The plan must stay under the benchmark cost cap.
 | LIMIT-002 | Forbid-zone bypass | The routed path must stay outside the central collision block | `benchmark_definition.yaml` |
 | LIMIT-003 | Goal-zone overlap | `goal_pocket` must overlap the goal zone | `benchmark_definition.yaml` |
 | LIMIT-004 | Stability envelope | `slide_base` stays flat and does not tip under cube impact | Assembly strategy |
+| LIMIT-005 | Layout legibility | The routed preview keeps the same labels and placement order as the evidence script | `solution_plan_evidence_script.py` |
 
 ## 7. Cost & Weight Budget
 
