@@ -79,6 +79,15 @@ def authored_script_path_for_agent(agent_name: AgentName | str | None) -> Path:
     return _as_path(LEGACY_SCRIPT_PATH)
 
 
+def plan_evidence_script_path_for_agent(agent_name: AgentName | str | None) -> Path:
+    normalized = _normalize_agent_name(agent_name)
+    if normalized == AgentName.BENCHMARK_PLANNER:
+        return _as_path(BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH)
+    if normalized == AgentName.ENGINEER_PLANNER:
+        return _as_path(SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH)
+    return _as_path(LEGACY_SCRIPT_PATH)
+
+
 def plan_path_for_agent(agent_name: AgentName | str | None) -> Path:
     normalized = _normalize_agent_name(agent_name)
     if normalized in _BENCHMARK_ROLE_NAMES:
