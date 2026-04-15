@@ -8,7 +8,6 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
-
 BACKUP_REF = "refs/codex/pre-commit-backups/latest"
 COMMITTER_NAME = "Codex Pre-commit Backup"
 COMMITTER_EMAIL = "codex@local"
@@ -43,7 +42,9 @@ def create_snapshot(repo_root: Path) -> str:
     now = datetime.now(timezone.utc)
     stamp = now.strftime("%Y%m%dT%H%M%SZ")
 
-    with tempfile.NamedTemporaryFile(prefix="precommit-backup-index-", delete=False) as tmp:
+    with tempfile.NamedTemporaryFile(
+        prefix="precommit-backup-index-", delete=False
+    ) as tmp:
         index_path = tmp.name
 
     env = os.environ.copy()
