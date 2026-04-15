@@ -2,7 +2,7 @@
 
 ## 1. Solution Overview
 
-Use a passive catch-and-deflect chute that intercepts the projectile ball below its elevated start point, steers it around the seeded direct-drop dead zone, and drops it into the lower bin goal zone. The mechanism relies on fixed geometry only and keeps the ball away from the central dead-zone volume.
+Use a passive catch-and-deflect chute that intercepts the projectile ball below its elevated start point, steers it around the seeded direct-drop dead zone, and drops it into the lower bin goal zone. The mechanism relies on fixed geometry only and keeps the ball away from the central dead-zone volume. The engineer-owned assembly is named `lower_bin_redirector`, and it is designed against the read-only benchmark reference plane from `environment_fixture`.
 
 ## 2. Parts List
 
@@ -29,8 +29,9 @@ Use a passive catch-and-deflect chute that intercepts the projectile ball below 
 | ID | Assumption | Source | Used By |
 | -- | -- | -- | -- |
 | ASSUMP-001 | `aluminum_6061` and `hdpe` use the repository densities in `manufacturing_config.yaml`. | `worker_heavy/workbenches/manufacturing_config.yaml` | CALC-001 |
-| ASSUMP-002 | The catch plate stays above the dead zone and the lower funnel stays inside the goal zone. | `benchmark_definition.yaml` | CALC-001 |
-| ASSUMP-003 | The deflection path remains passive and does not rely on any actuation. | `benchmark_definition.yaml` | CALC-002 |
+| ASSUMP-002 | The benchmark-owned `environment_fixture` remains fixed and provides the aluminum reference plane for the build zone. | `benchmark_definition.yaml` | CALC-001 |
+| ASSUMP-003 | The catch plate stays above the dead zone and the lower funnel stays inside the goal zone. | `benchmark_definition.yaml` | CALC-001 |
+| ASSUMP-004 | The deflection path remains passive and does not rely on any actuation. | `benchmark_definition.yaml` | CALC-002 |
 
 ## 5. Detailed Calculations
 
@@ -60,6 +61,10 @@ The engineer-owned assembly weight must match the deterministic catalog and dens
 - `support_column`: `140.40 g`
 - Total: `458.50 g`
 
+#### Worst-Case Check
+
+- The total remains below the 1050 g cap even with the tall support column and aluminum catch plate.
+
 #### Result
 
 - The declared total weight is `458.50 g`.
@@ -67,10 +72,6 @@ The engineer-owned assembly weight must match the deterministic catalog and dens
 #### Design Impact
 
 - The catch-and-deflect chute remains comfortably under the benchmark cap.
-
-#### Worst-Case Check
-
-- The total remains below the 1050 g cap even with the tall support column and aluminum catch plate.
 
 #### Cross-References
 
@@ -83,6 +84,10 @@ The engineer-owned assembly weight must match the deterministic catalog and dens
 
 The plan must stay under the benchmark cost cap.
 
+#### Assumptions
+
+- The listed unit costs are the deterministic manufacturing estimates for each part.
+
 #### Derivation
 
 - `catch_plate`: `$12.50`
@@ -93,6 +98,10 @@ The plan must stay under the benchmark cost cap.
 - `support_column`: `$10.00`
 - Total: `$43.75`
 
+#### Worst-Case Check
+
+- The declared cost remains at `$43.75`, which is below the `$57.00` cap.
+
 #### Result
 
 - The declared total cost is `$43.75`.
@@ -100,14 +109,6 @@ The plan must stay under the benchmark cost cap.
 #### Design Impact
 
 - The support column can stay tall enough to catch the elevated ball.
-
-#### Assumptions
-
-- The listed unit costs are the deterministic manufacturing estimates for each part.
-
-#### Worst-Case Check
-
-- The declared cost remains at `$43.75`, which is below the `$57.00` cap.
 
 #### Cross-References
 

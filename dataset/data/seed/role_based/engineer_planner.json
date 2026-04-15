@@ -1,12 +1,5 @@
 [
   {
-    "id": "ep-001",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a stable bridge or guided transfer that carries the low-friction cube across the central gap into the far goal zone. Keep the design inside the build zone, account for the gap forbid zone, and produce planner artifacts that an engineer coder can implement without re-planning.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-001-gap-launch",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts define a realistic cube gap-crossing mechanism, keep all budgets under the benchmark caps, and provide implementation-ready costing and TODO steps."
-  },
-  {
     "id": "ep-002",
     "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a route that gets the projectile ball around the central forbid zone and into the goal zone. The design must absorb the listed spawn jitter instead of depending on lucky bounces, and the final assembly should avoid unnecessary moving elements.",
     "complexity_level": 0,
@@ -19,13 +12,6 @@
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-003-gap-bridge-transfer",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts describe a manufacturable passive mechanism, avoid unsupported external support assumptions, and keep costs and weight under the seeded benchmark caps."
-  },
-  {
-    "id": "ep-004",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a solution for the low-friction cube. The cube must avoid the seeded forbid zone and still reach the goal reliably, so the plan should account for low-friction slip and guide geometry instead of assuming ideal sticking contact.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-004-low-friction-cube",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts select geometry appropriate for a low-friction cube, account for the forbid zone, and produce consistent costed parts plus implementation-ready TODO items."
   },
   {
     "id": "ep-006",

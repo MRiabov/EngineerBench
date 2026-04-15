@@ -54,8 +54,8 @@
 - Use simple CSG primitives for the benchmark environment: slabs for the floor and walls, a large block for the central blocker obstacle.
 - Keep the geometry readable and aligned to world axes so the gravity path and blocker geometry are obvious to the reviewer.
 - The payload is materialized from `benchmark_definition.yaml` using the declared shape (sphere), radius range, and start position.
-- Objective overlays (goal zone, forbid zones, build zone) are reconstructed through `objectives_geometry()` for preview rendering.
-- Materialize a compact drawing package for the passive fixture and inspect it with `preview_drawing()` before submission.
+- Objective overlays (goal zone, forbid zones, build zone) are reconstructed through `objectives_geometry()` for preview evidence.
+- Materialize preview evidence for the passive fixture and inspect it before submission.
 
 ## 8. Cost & Weight Envelope
 

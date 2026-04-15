@@ -63,6 +63,10 @@ The engineer-owned assembly weight must match the deterministic catalog and dens
 - `goal_pocket`: `110 x 90 x 32 mm` stock, `19000 mm3` part volume, `18.05 g`
 - Total: `315.11 g`
 
+#### Worst-Case Check
+
+- The guide still stays well below the 1800 g cap even at the deterministic declared weight of `315.11 g`.
+
 #### Result
 
 - The declared total weight is `315.11 g`.
@@ -70,10 +74,6 @@ The engineer-owned assembly weight must match the deterministic catalog and dens
 #### Design Impact
 
 - The low-friction guide remains comfortably under the 1800 g planner target.
-
-#### Worst-Case Check
-
-- The guide still stays well below the 1800 g cap even at the deterministic declared weight of `315.11 g`.
 
 #### Cross-References
 
@@ -86,6 +86,10 @@ The engineer-owned assembly weight must match the deterministic catalog and dens
 
 The plan must stay under the benchmark cost cap.
 
+#### Assumptions
+
+- The listed unit costs are the deterministic manufacturing estimates for each part.
+
 #### Derivation
 
 - `slide_base`: `$14.50`
@@ -96,6 +100,10 @@ The plan must stay under the benchmark cost cap.
 - `goal_pocket`: `$4.50`
 - Total: `$39.50`
 
+#### Worst-Case Check
+
+- The declared cost remains at `$39.50`, which is below the `$100.00` planner target.
+
 #### Result
 
 - The declared total cost is `$39.50`.
@@ -103,14 +111,6 @@ The plan must stay under the benchmark cost cap.
 #### Design Impact
 
 - The funnel can stay wide enough to tolerate the cube jitter envelope.
-
-#### Assumptions
-
-- The listed unit costs are the deterministic manufacturing estimates for each part.
-
-#### Worst-Case Check
-
-- The declared cost remains at `$39.50`, which is below the `$100.00` planner target.
 
 #### Cross-References
 

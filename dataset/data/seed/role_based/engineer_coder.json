@@ -1,24 +1,10 @@
 [
   {
-    "id": "ec-001",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the passive gap-bridge transfer in `solution_script.py`. Keep the planner files semantically consistent, and update `todo.md` and `journal.md` during implementation.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-001-gap-bridge-transfer",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed passive handoff package, implements the gap-crossing solution in `solution_script.py`, and preserves the seeded planner contract while updating execution progress."
-  },
-  {
     "id": "ec-002",
     "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the low-friction cube guide in `solution_script.py`. Preserve the reviewed planner artifacts, keep the guide geometry matched to the low-friction slip assumptions, and update `todo.md` and `journal.md` as execution progresses.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-002-low-friction-cube",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins from a reviewed low-friction cube package, implements the guide geometry in `solution_script.py`, and preserves the planner contract and seeded routing assumptions."
-  },
-  {
-    "id": "ec-004",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the narrow-goal funnel solution in `solution_script.py`. Preserve the reviewed planner files, keep the precision-guidance geometry consistent with the seeded tolerance assumptions, and update `todo.md` and `journal.md` during execution.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-004-narrow-goal-funnel",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins from a reviewed narrow-goal handoff package, implements the precision funnel in `solution_script.py`, and preserves the planner contract and seeded budget assumptions."
   },
   {
     "id": "ec-005",

@@ -4,13 +4,13 @@
     "task": "Use the seeded benchmark planner artifacts in the workspace to implement the tunnel benchmark in `benchmark_script.py`. Keep `benchmark_plan.md`, `todo.md`, and `benchmark_definition.yaml` consistent, preserve `benchmark_plan_evidence_script.py` as read-only planner context, update `journal.md`, and keep `benchmark_script.py` import-safe with no `__main__` block or in-module review submission call.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_coder/bc-002-tunnel",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_coder` and the seeded workspace to match that role. Implements geometry and goal artifacts without planner-file regressions while preserving the seeded benchmark drafting context."
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_coder` and the seeded workspace to match that role. Implements geometry and goal artifacts without planner-file regressions while preserving the seeded benchmark context."
   },
   {
     "id": "bc-003",
     "task": "Use the seeded benchmark planner artifacts in the workspace to implement the side-deflect ramp benchmark in `benchmark_script.py`. The benchmark drops an ABS sphere from [0, 0, 120] mm onto a 30° angled deflector ramp that must redirect the ball into a side goal bin while avoiding a forbid zone below the spawn. Keep `benchmark_plan.md`, `todo.md`, and `benchmark_definition.yaml` consistent, preserve `benchmark_plan_evidence_script.py` as read-only planner context, update `journal.md`, and keep `benchmark_script.py` import-safe with no `__main__` block or in-module review submission call.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_coder/bc-003-sidedeflect",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_coder` and the seeded workspace to match that role. Writes benchmark implementation artifacts for a gravity-driven ball-deflection benchmark with `base_plate`, `deflector_ramp`, `side_goal_wall`, and `catch_bin` geometry that preserves the seeded benchmark drafting context and handles the payload contract correctly."
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_coder` and the seeded workspace to match that role. Writes benchmark implementation artifacts for a gravity-driven ball-deflection benchmark with `base_plate`, `deflector_ramp`, `side_goal_wall`, and `catch_bin` geometry that preserves the seeded benchmark context and handles the payload contract correctly."
   }
 ]

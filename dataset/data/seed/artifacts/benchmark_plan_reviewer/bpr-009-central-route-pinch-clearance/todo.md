@@ -1,4 +1,0 @@
-- [x] Keep the central blocker geometry aligned between `benchmark_plan.md` and `benchmark_definition.yaml`.
-- [x] Declare both upper and lower route walls as static benchmark-owned fixtures.
-- [x] Preserve a blocker-free approach into the goal tray.
-- [x] Keep the benchmark-local assembly fully static with no undeclared motion.
