@@ -172,15 +172,15 @@ layer and therefore can drift.
 
 ## Design Notes
 
-01. The shared validation kernel is the canonical source of truth.
-02. The shared scene-builder constructor is the source of benchmark payload
-    geometry for validation and preview.
-03. Deterministic regeneration is preferred to hand-editing derived seeds.
-04. Stage-specific evidence layers on top of the shared kernel; it does not
-    replace it.
-05. Missing or ambiguous inputs fail closed.
-06. The seed-maintenance workflow should treat generated artifacts as
-    disposable outputs that can be recreated from source contracts.
+1. The shared validation kernel is the canonical source of truth.
+2. The shared scene-builder constructor is the source of benchmark payload
+   geometry for validation and preview.
+3. Deterministic regeneration is preferred to hand-editing derived seeds.
+4. Stage-specific evidence layers on top of the shared kernel; it does not
+   replace it.
+5. Missing or ambiguous inputs fail closed.
+6. The seed-maintenance workflow should treat generated artifacts as
+   disposable outputs that can be recreated from source contracts.
 
 ## Geometry Validation Core
 

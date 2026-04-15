@@ -82,29 +82,29 @@ contract is surfaced.
 
 ## Proposed Target State
 
-1. Any integration fixture that represents a file uses an external file asset or
-   shared template as its canonical source of truth.
-2. Inline stringified file bodies are no longer the authoring form for
-   maintainable integration file contracts.
-3. The same shared file-contract core validates both the mock-response corpus
-   and the active test's declared setup files.
-4. `tests/integration/mock_responses/` remains corpus-local, but its preflight
-   uses the same file-contract semantics as the per-test setup validator.
-5. `@pytest.mark.int_id(...)` is the ownership source of truth for file-backed
-   integration setups. The active test setup and helper code derive from that
-   marker, not from caller-supplied ids or test names.
-6. Intentional file-validation failures are expressed through
-   `@pytest.mark.expect_file_validation_errors(...)` with explicit file paths
-   and expected edited files.
-7. `@pytest.mark.allow_backend_errors(...)` remains a backend-noise escape
-   hatch only and does not represent the file contract.
-8. File references stay within their allowed roots: scenario-local payloads stay
-   adjacent to the scenario, and reusable payloads live under
-   `shared/agent_templates/`.
-9. The migration fails closed when a file reference is missing, escapes its
-   allowed root, mixes inline and file-backed declarations, or diverges from an
-   expected edit list, or when the declared `int_id` disagrees with the test
-   function name.
+01. Any integration fixture that represents a file uses an external file asset or
+    shared template as its canonical source of truth.
+02. Inline stringified file bodies are no longer the authoring form for
+    maintainable integration file contracts.
+03. The same shared file-contract core validates both the mock-response corpus
+    and the active test's declared setup files.
+04. `tests/integration/mock_responses/` remains corpus-local, but its preflight
+    uses the same file-contract semantics as the per-test setup validator.
+05. `@pytest.mark.int_id(...)` is the ownership source of truth for file-backed
+    integration setups. The active test setup and helper code derive from that
+    marker, not from caller-supplied ids or test names.
+06. Intentional file-validation failures are expressed through
+    `@pytest.mark.expect_file_validation_errors(...)` with explicit file paths
+    and expected edited files.
+07. `@pytest.mark.allow_backend_errors(...)` remains a backend-noise escape
+    hatch only and does not represent the file contract.
+08. File references stay within their allowed roots: scenario-local payloads stay
+    adjacent to the scenario, and reusable payloads live under
+    `shared/agent_templates/`.
+09. The migration fails closed when a file reference is missing, escapes its
+    allowed root, mixes inline and file-backed declarations, or diverges from an
+    expected edit list, or when the declared `int_id` disagrees with the test
+    function name.
 10. The integration file contract is validated by a function-scoped autouse
     fixture for the active test setup, so invalid test fixtures fail before
     that test body runs.
@@ -208,21 +208,21 @@ contract is surfaced.
 
 ## Acceptance Criteria
 
-1. No integration test or mock response uses inline stringified file bodies as
-   the canonical payload form.
-2. File references resolve only within their allowed roots.
-3. `@pytest.mark.int_id(...)` is the sole ownership source of truth for
-   file-backed integration setups, and the declared id matches the test
-   function name.
-4. Intentional file-validation failures have an explicit marker and path list.
-5. `scripts/validate_integration_mock_response_preflight.py` stays corpus-local
-   and still passes.
-6. Backend-error suppression remains separate from file validation.
-7. Shared template expansion remains covered by integration tests.
-8. Invalid file-backed test setups fail at test start rather than midway
-   through that test execution.
-9. The AST guardrail applies only to test source, not to external fixture
-   assets.
+01. No integration test or mock response uses inline stringified file bodies as
+    the canonical payload form.
+02. File references resolve only within their allowed roots.
+03. `@pytest.mark.int_id(...)` is the sole ownership source of truth for
+    file-backed integration setups, and the declared id matches the test
+    function name.
+04. Intentional file-validation failures have an explicit marker and path list.
+05. `scripts/validate_integration_mock_response_preflight.py` stays corpus-local
+    and still passes.
+06. Backend-error suppression remains separate from file validation.
+07. Shared template expansion remains covered by integration tests.
+08. Invalid file-backed test setups fail at test start rather than midway
+    through that test execution.
+09. The AST guardrail applies only to test source, not to external fixture
+    assets.
 10. The suite does not need a global pre-execution pass over every test setup to
     catch file-contract failures.
 
@@ -232,7 +232,7 @@ contract is surfaced.
 
 - [ ] Define the shared file-contract core and the marker contract.
 - [ ] Wire the core into mock-response preflight and the active test setup
-      validator.
+  validator.
 
 ### Authoring and Fixtures
 
@@ -242,7 +242,7 @@ contract is surfaced.
 ### Regression Coverage
 
 - [ ] Add regression coverage for missing files, escaped paths, mixed inline
-      declarations, and unexpected edits.
+  declarations, and unexpected edits.
 - [ ] Verify that `allow_backend_errors` remains unrelated to file validation.
 - [ ] Add regression coverage for the source-only AST string-length guardrail.
 
