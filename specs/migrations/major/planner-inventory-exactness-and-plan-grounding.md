@@ -31,6 +31,11 @@ can be audited before handoff. The Detailed Calculations section is a summary
 index table plus matching `CALC-*` proof subsections, and the calculation IDs
 are required anchors rather than optional labels.
 
+The COTS carve-out is narrow: it removes catalog-backed `part_id` plumbing
+only. The rest of the inventory contract stays intact, so non-COTS labels and
+repeated quantities must still match exactly across the approved inventory,
+`plan.md`, and the planner-authored evidence artifacts.
+
 This migration also treats two validator gaps as bugs: deterministic weight
 exactness and drafting geometry validity must be fixed, not parked as future
 work.
@@ -40,6 +45,66 @@ The target contract is defined in:
 - [Agent handovers](../../architecture/agents/handover-contracts.md)
 - [Roles](../../architecture/agents/roles.md)
 - [COTS geometry import](../../architecture/cots-geometry-import.md)
+
+Related migration specs that stay in force alongside this one:
+
+- [Publication Shape Repository Pruning](./publication-shape-repository-pruning.md)
+- [Planner Motion Forecast Build and Goal Anchor Contract](../minor/planner-motion-forecast-build-and-goal-anchor-contract.md)
+- [Payload Trajectory Rotation Envelope and Swept Clearance Migration](./payload-trajectory-rotation-envelope-and-swept-clearance-migration.md)
+- [Payload Trajectory Runtime Fail-Fast Monitoring](./payload-trajectory-runtime-fail-fast-monitoring.md)
+- [Planner Contract Retention and Restore Implementation](../minor/planner-contract-retention-and-restore-implementation.md)
+
+The pruning migration only removes the technical-drawing companion path. The
+payload-trajectory migrations define the retained path proof and runtime
+monitor contracts.
+
+### Related migration restore checklists
+
+If any of these related migration contracts gets pruned or partially reverted
+again, restore the exact boundary below before changing inventory semantics.
+
+#### [Publication Shape Repository Pruning](./publication-shape-repository-pruning.md)
+
+- [ ] Keep the prune boundary limited to the separate `_technical_drawing.py`
+  scripts and their preview rendering.
+- [ ] Keep `benchmark_plan_evidence_script.py` and
+  `solution_plan_evidence_script.py` mandatory at node entry with the same
+  layout validation already enforced on `main`, not a presence-only check.
+- [ ] Keep the coarse `motion_forecast` in `assembly_definition.yaml`,
+  `payload_trajectory_definition.yaml`, and payload-path validation intact.
+- [ ] Keep the runtime fail-fast monitoring contract, dedicated failure
+  reason, and observability payload untouched.
+- [ ] Keep the docs, seed fixtures, and integration tests aligned with the
+  retained boundary so the prune does not widen again by accident.
+
+#### [Payload Trajectory Rotation Envelope and Swept Clearance Migration](./payload-trajectory-rotation-envelope-and-swept-clearance-migration.md)
+
+- [ ] Keep explicit `rot_deg` values or an explicit admissible rotation
+  envelope on every payload-path step.
+- [ ] Keep `payload_trajectory_definition.yaml` as the high-resolution path
+  proof that refines the coarse `motion_forecast` instead of replacing it.
+- [ ] Keep `validate_payload_trajectory_definition_yaml()` as the submit-time
+  gate and `validate_payload_trajectory_swept_clearance()` as the swept-
+  clearance proof.
+- [ ] Keep the node-entry mirror in `controller/agent/node_entry_validation.py`
+  so the same payload-path failure blocks seeded workspaces before execution.
+- [ ] Keep the prompt policy, seed fixtures, and integration coverage aligned
+  so planners are told that payload rotation must stay explicit and
+  fail-closed.
+
+#### [Payload Trajectory Runtime Fail-Fast Monitoring](./payload-trajectory-runtime-fail-fast-monitoring.md)
+
+- [ ] Keep `worker_heavy/simulation/payload_trajectory_monitor.py` and the
+  simulation-loop wiring that enforces the live payload-path stop condition.
+- [ ] Keep the runtime monitor policy in `config/agents_config.yaml`
+  explicit about sampling stride, anchor tolerances, and
+  `consecutive_miss_count`.
+- [ ] Keep the dedicated failure reason and structured stop payload in the
+  shared simulation and observability models.
+- [ ] Keep the documentation, role guidance, and regressions aligned so the
+  runtime monitor stays a concrete contract instead of a vague execution note.
+- [ ] Keep the static validation path separate; the runtime monitor consumes
+  the approved payload proof and does not replace it.
 
 This migration applies to both benchmark and engineering flows.
 

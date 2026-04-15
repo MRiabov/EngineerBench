@@ -204,6 +204,13 @@ Control-file ownership split:
 10. `payload_trajectory_definition.yaml` owns engineer-coder higher-resolution payload trajectory and contact proof; it refines the coarse planner forecast, must not contradict it, must declare explicit rotation on every step, and must preserve the approved build-zone start and goal-zone finish semantics while remaining swept-clearance safe against fixed geometry.
 11. We do not duplicate engineer solution metadata into `benchmark_definition.yaml`.
 
+The publication prune for technical drawing removes only the companion
+`*_technical_drawing.py` scripts and preview rendering. It does not change the
+read-only status of `benchmark_plan_evidence_script.py` or
+`solution_plan_evidence_script.py`, and it does not remove the coarse
+`motion_forecast` in `assembly_definition.yaml`, `payload_trajectory_definition.yaml`,
+or their validation paths.
+
 ## File updates
 
 Files are written directly to the worker container and persisted to the observability database, not to the controller filesystem.

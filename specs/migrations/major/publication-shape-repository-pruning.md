@@ -44,8 +44,8 @@ The hard cutoff is Epic 7 in `_bmad-output/planning-artifacts/epics.md`.
 Anything whose first meaningful claim appears in Epic 8 or later is
 out-of-bundle for the conference submission, even if the repository currently
 implements it, documents it, or tests it. That includes the technical-drawing
-contract, the electromechanical stack, fluids/FEM/stress branches, steerability,
-and advanced UI visualization.
+companion path, the electromechanical stack, fluids/FEM/stress branches,
+steerability, and advanced UI visualization.
 
 The same cutoff excludes benchmark-side motion and environment attachment/
 drilling logic. Those motion capabilities begin at Epic 9 and later, so they
@@ -56,9 +56,12 @@ COTS search, COTS geometry import, and the supporting pricing, validation,
 and agent plumbing do not belong in the publication bundle. The release keeps
 only pure rigid-body behavior.
 
-The only retained drawing behavior is the ordinary full geometric-plan path
-already needed to reproduce Epic 7. Off/minimal drafting variants and
-preview-only companions are not publication surfaces.
+The only thing removed from the technical-drawing branch is the separate
+companion drawing path: the `_technical_drawing.py` scripts and their preview
+rendering. Planner evidence scripts stay in the bundle, the coarse
+`motion_forecast` in `assembly_definition.yaml` stays with them, and
+payload-path validation stays with them. Off/minimal drafting variants that
+exist only to exercise that companion path are not publication surfaces.
 
 This migration trims feature-specific branches and devops shells. It does not
 trim useful rendering, CLI-provider, physics-backend, or handoff/validation
@@ -83,14 +86,15 @@ final paper explicitly uses them as evaluated claims:
     including Temporal/devops coverage and the majority of unsupported
     INT-001 through INT-180 cases.
 11. Later-epic physics and product branches, including electronics,
-    fluids/FEM, technical drawing, advanced visualization, and benchmark-side
+    fluids/FEM, technical-drawing companion scripts/rendering, advanced
+    visualization, and benchmark-side
     motion and environment attachment/drilling plumbing, plus the COTS-backed
     parts and search stack. Pure rigid-body is the only retained mechanics
     family.
 12. Internal documentation that explains the development tree rather than the
     conference artifact.
-13. The technical-drawing contract, drafting-mode gates, and display-only
-    companion scripts.
+13. The technical-drawing companion scripts, drafting-mode gates, and
+    display-only preview rendering.
 14. Any agent, helper, or test family whose only real claim is Epic 8 or later
     in `_bmad-output/planning-artifacts/epics.md`.
 15. Non-local devops stacks, Temporal orchestration helpers, and old-style
@@ -302,17 +306,17 @@ Remove or collapse:
   - skill prose that teaches the removed tool surface instead of the
     script-backed workflow
 
-### Technical-drawing contract plumbing
+### Technical-drawing companion plumbing
 
-The technical-drawing contract is not publication-worthy for this submission
-and should be removed end-to-end rather than left dormant behind `off` mode.
+The technical-drawing prune in this submission removes only the separate
+companion drawing path: the `_technical_drawing.py` scripts, the preview
+rendering they drive, and the mode gates that only exist to exercise that
+preview path. It does not remove planner evidence scripts or payload-path
+validation. Those remain part of the retained handoff and validation surface.
 The publication bundle keeps the ordinary full geometric-plan path already
-used by Epic 7 as the default geometry contract; it does not keep the
-off/minimal drafting matrix or the preview-only companion scripts. The trim
-needs to hit the runtime helpers, the config gates, the prompt text, the seed
-materializers, and the preview renderer together.
-In this bundle, "drawing" means the planner must produce a valid geometric
-plan that will work; it is not a separate drafting product.
+used by Epic 7 as the default geometry contract.
+In this bundle, "drawing" means the preview-only companion path, not the
+planner evidence scripts or the payload-trajectory proof.
 
 Remove the drafting-mode surface and its helper functions:
 
@@ -367,6 +371,87 @@ Remove the drafting-mode surface and its helper functions:
   - benchmark and engineering template entries that point at drafting scripts
 - `shared/agent_templates/codex/scripts/submit_plan.py`
   - drafting-mode role detection and submission gating
+
+Retain the planner-evidence, coarse motion-forecast, payload-path proof, and
+runtime fail-fast monitoring surfaces:
+
+- `benchmark_plan_evidence_script.py`
+- `solution_plan_evidence_script.py`
+- the coarse `motion_forecast` in `assembly_definition.yaml`
+- `payload_trajectory_definition.yaml`
+- the runtime fail-fast monitoring contract from
+  `specs/migrations/major/payload-trajectory-runtime-fail-fast-monitoring.md`,
+  including the monitor stop path, dedicated failure reason, observability
+  payload, and the docs/tests that already enforce it
+- the `render_cad(..., payload_path=True)` overlay and validation path that
+  consumes the payload trajectory when present
+
+### Payload-path planning and evidence-script restore checklist
+
+If this branch ever restores the payload-only path-planning contract from
+`specs/migrations/major/payload-trajectory-rotation-envelope-and-swept-clearance-migration.md`,
+do it in this order so the runtime gates, fixtures, docs, and validation move
+together. This checklist does not bring back
+`benchmark_plan_technical_drawing_script.py`,
+`solution_plan_technical_drawing_script.py`, or any `_technical_drawing.py`
+scripts; those stay pruned. It also does not alter the retained runtime
+fail-fast monitor from `payload-trajectory-runtime-fail-fast-monitoring.md`;
+that contract stays in force exactly as already implemented.
+
+- [ ] Restore the payload-path schema contract in `shared/models/schemas.py`,
+  especially `MotionForecastAnchor`, `PayloadTrajectoryDefinition`, and
+  `AssemblyDefinition.motion_forecast`, so explicit `rot_deg` values,
+  `rotation_tolerance_deg` envelopes, and the coarse planner forecast remain
+  part of the authored contract.
+- [ ] Restore the submit-time payload validator in
+  `worker_heavy/utils/file_validation.py::validate_payload_trajectory_definition_yaml()`
+  so it rejects missing orientation metadata, enforces coarse-to-precise
+  moving-part parity, applies the stride budgets, and calls the clearance
+  gate only when the schema checks pass.
+- [ ] Restore the swept-clearance checker in
+  `worker_heavy/utils/payload_trajectory_validation.py::validate_payload_trajectory_swept_clearance()`
+  and its supporting helpers (`RotationCell`, `_anchor_sample_points()`,
+  `_pose_sphere_is_obviously_clear()`, `model_anchor_for_cell()`), along with
+  the geometry-loading path that reads `benchmark_script.py` and
+  `solution_script.py` from the seeded workspace and the geometry helpers in
+  `worker_heavy/utils/validation.py::_shape_volume` and
+  `worker_heavy/workbenches/analysis_utils.py::part_to_trimesh()`.
+- [ ] Restore the node-entry mirror in
+  `controller/agent/node_entry_validation.py` so
+  `payload_trajectory_definition.yaml` fails at the same boundary during
+  seeded-workspace validation, not only at submit time.
+- [ ] Restore the path-contract helpers in `worker_heavy/utils/file_validation.py`
+  (`_validate_motion_forecast_budget()`, `_validate_motion_endpoint_positions()`,
+  and `_validate_motion_path_contract()`) so the payload validator keeps the
+  coarse-stride budget, endpoint proof, and coarse-to-precise matching rules
+  that the migration expects.
+- [ ] Restore the planner prompt policy in `shared/agents/config.py`,
+  `config/agents_config.yaml`, and `config/prompts.yaml` so planners are told
+  that payload rotation must be explicit, swept-clearance safe, and bounded
+  by the coarse `motion_forecast`.
+- [ ] Keep the geometry-plan evidence scripts as the retained planner-evidence
+  surfaces: `benchmark_plan_evidence_script.py` and
+  `solution_plan_evidence_script.py` stay wired through
+  `shared/script_contracts.py`, `shared/agent_templates/__init__.py`,
+  `specs/architecture/agents/handover-contracts.md`, and
+  `specs/architecture/agents/artifacts-and-filesystem.md`, and keep them
+  mandatory at node entry for the relevant planner handoff nodes, with the
+  same validation semantics already enforced on `main` rather than a
+  presence-only check.
+- [ ] Restore any seed, fixture, or mock-response rows that exercise the
+  payload-path contract using `assembly_definition.yaml` plus
+  `payload_trajectory_definition.yaml`, and do not reintroduce the technical
+  drawing companion scripts for those rows.
+- [ ] Validate the restored branch with `scripts/validate_eval_seed.py` on a
+  payload-trajectory seed family, then run the narrow
+  `./scripts/run_integration_tests.sh` slice that covers payload-trajectory
+  validation.
+- [ ] Finish with a repo-wide search for `payload_trajectory_definition.yaml`,
+  `validate_payload_trajectory_definition_yaml`,
+  `validate_payload_trajectory_swept_clearance`, and
+  `benchmark_plan_evidence_script.py` / `solution_plan_evidence_script.py`
+  to confirm the payload-path contract is back while `_technical_drawing.py`
+  remains absent.
 
 Remove the drafting fixture families and any seed rows that only exist to
 materialize or validate technical drawing mode:
@@ -485,8 +570,8 @@ The canonical `MockDSPyLM` corpus in `tests/integration/mock_responses/` is
 retained; only the non-paper subset is pruned.
 
 The `drawing-*` benchmark and engineer fixture families are also out of
-bundle, because they only exist to exercise the technical-drawing contract that
-this migration removes.
+bundle, because they only exist to exercise the technical-drawing companion
+path that this migration removes.
 
 Retain only the paper-critical integration coverage, such as the benchmark
 workflow, engineering loop, handover validation, render validation,
@@ -499,7 +584,7 @@ The publication bundle stops at Epic 7. Any branch whose first meaningful
 claim appears in Epic 8 or later is removed wholesale. Do not keep partial
 branches, dormant config flags, or compatibility aliases for those families.
 
-The technical-drawing contract is already trimmed in the section above. The
+The technical-drawing companion path is already trimmed in the section above. The
 remaining late-epic families that must disappear are electromechanics, fluids
 and FEM, steerability, and advanced visualization. The COTS branch also
 disappears entirely, leaving only pure rigid-body behavior.
@@ -912,8 +997,10 @@ prune language without deleting the canonical scenario corpus.
    providers, and legacy compatibility wrappers are not part of the conference
    artifact.
 6. The only retained drawing behavior is the default full geometric-plan path;
-   the off/minimal drafting matrix and technical-drawing companion are gone.
-7. Technical drawing, COTS, electromechanical, fluids/FEM, steerability, and
+   the off/minimal drafting matrix and technical-drawing companion scripts/
+   rendering are gone.
+7. Technical-drawing companion scripts/rendering, COTS, electromechanical,
+   fluids/FEM, steerability, and
    non-local devops branches are removed completely because they only become
    justified after Epic 7. The release bundle keeps only pure rigid-body
    mechanics.
@@ -938,7 +1025,7 @@ prune language without deleting the canonical scenario corpus.
 - [x] Remove `controller/agent/nodes/{electronics_planner.py,electronics_reviewer.py,skills.py,summarizer.py}` and prune the corresponding engineer, benchmark, and top-level graph resolver routes that reached those sidecars.
 - [x] Remove the benchmark-side skill and journalling node implementations from `controller/agent/benchmark/nodes.py` so the deleted loop is no longer present as dead code.
 - [x] Remove the render-only preview compatibility wrappers and collapse the canonical export surface to `render_cad` by updating `shared/utils/agent/__init__.py`, `utils/__init__.py`, and `worker_heavy/utils/__init__.py`, while deleting the orphan wrapper modules `utils/preview.py`, `utils/visualize.py`, `worker_heavy/utils/build123d_rendering.py`, and `worker_heavy/utils/preview.py` in favor of `worker_heavy/utils/render_cad.py`.
-- [x] Remove the remaining technical-drawing residue from the publication docs and test catalog by deleting the stale technical-drawing script references from `specs/architecture/agents/artifacts-and-filesystem.md`, dropping the old technical-drawing read-set entries from the benchmark and engineering execution reviewer docs, and removing the obsolete `.manifests/electronics_review_manifest.json` examples from `specs/integration-test-list.md`.
+- [x] Remove the remaining technical-drawing residue from the publication docs and test catalog by deleting the stale technical-drawing companion-script references from `specs/architecture/agents/artifacts-and-filesystem.md`, dropping the old technical-drawing-only read-set entries from the benchmark and engineering execution reviewer docs while keeping the planner evidence scripts in those read sets, and removing the obsolete `.manifests/electronics_review_manifest.json` examples from `specs/integration-test-list.md`.
 - [x] Audit `specs/architecture/` for out-of-bundle references and stage the remaining prune work as a checklist because the affected doc surface is too broad for a safe one-pass edit.
 - [x] Remove the steerability runtime plumbing from the controller API, agent node inputs, persistence model, and generated OpenAPI snapshots.
 - [x] Remove the Genesis particle-system / deformable rendering branches so the backend no longer carries soft-body-specific code paths.
@@ -1095,7 +1182,8 @@ whenever they still mention one of these families.
 
 ### 8. Collapse late-epic branches
 
-- Remove the technical-drawing contract, drafting mode, and preview plumbing.
+- Remove the technical-drawing companion path, drafting mode, and preview
+  plumbing.
 - Remove the electronics/electromechanical branch end-to-end.
 - Remove the fluids, FEM, and stress branch end-to-end.
 - Remove steerability end-to-end.
@@ -1622,8 +1710,7 @@ This is the live checklist for the pruning audit. It captures the feature
 families that still have traces in the repo and should be revisited in later
 passes.
 
-- [x] Technical drawing and drafting traces were removed from seeded artifacts and
-  integration fixtures:
+- [x] Technical-drawing companion and drafting traces were removed from seeded artifacts and integration fixtures:
   `dataset/data/seed/artifacts/**/assembly_definition.yaml`,
   `dataset/data/seed/artifacts/**/benchmark_assembly_definition.yaml`,
   `dataset/data/seed/artifacts/**/benchmark_plan_technical_drawing_script.py`,

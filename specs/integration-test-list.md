@@ -18,7 +18,7 @@ geometry are invalid until seed and node-entry validation can see
 `benchmark_script.py`. Preview tests must compose benchmark assembly from
 `build()` and source objective overlays through `utils.objectives_geometry()`.
 
-### P0: Architecture parity baseline
+### P0: High-risk and high-importance tests; release gates
 
 This section is the smallest must-pass set. Keep it narrowly scoped, deterministic, and directly release-blocking.
 
@@ -83,15 +83,76 @@ This section is the smallest must-pass set. Keep it narrowly scoped, determinist
 | INT-059 | Langfuse trace linkage in live runs | With valid `LANGFUSE_PUBLIC_KEY`/`LANGFUSE_SECRET_KEY`, live episode execution emits trace records linked by non-empty `langfuse_trace_id`; tool/LLM/event traces are correlated to the same run-level trace identity. |
 | INT-060 | Langfuse feedback forwarding contract | `POST /episodes/{episode_id}/traces/{trace_id}/feedback` forwards score/comment to Langfuse and persists local feedback fields; missing Langfuse client returns `503`, missing `langfuse_trace_id` returns `400`. |
 | INT-217 | Solution motor backend parity | A solution-authored moving part declared once in `assembly_definition.yaml` materializes as a validated controllable actuator on both MuJoCo and Genesis; unresolved or unsupported motor mappings fail closed before simulation can report success; `get_all_actuator_names()` and `get_actuator_state()` expose the same solution motor identity and force limits used by power gating and overload monitoring. |
+| INT-218 | Materialized benchmark planner workspace submits | Role-specific workspaces materialize expected files and prompt fragments, `submit_benchmark_plan.sh` returns a success JSON result, and the expected manifest is present. |
+| INT-219 | Materialized engineer planner workspace submits | Role-specific workspaces materialize expected files and prompt fragments, `submit_engineering_plan.sh` returns a success JSON result, and the expected manifest is present. |
+| INT-222 | Eval profile ignores outer integration env | `run_evals.py --skip-env-up --runner-backend cli` exits 0 under `IS_INTEGRATION_TEST=true`, logs start/finish, and does not use controller-based integration setup. |
+| INT-223 | Seed workspace materialization ignores outer integration env | Workspace materialization succeeds, creates the output directory, logs the workspace path, and does not emit the integration-test setup message. |
+| INT-228 | Seed stage continues after closing open CLI UI terminal | `run_e2e_seed._run_stage(...)` materializes the workspace, opens the UI, then returns success after the terminal closes. |
+| INT-237 | Open CLI UI uses new terminal when requested | `open_cli_ui(...)` launches the UI through a terminal wrapper, preserves the workspace cwd, and forwards `--wait`/title/working-directory flags. |
+| INT-242 | Judge path skips reviewers without flag | `_run_cli_eval(...)` succeeds, updates benchmark coder stats, and never calls the reviewer chain when `run_reviewers_with_judge=False`. |
+| INT-243 | Codex skill-loop flag enables loop backend | `_run_cli_eval(...)` succeeds with `enable_codex_skill_loop=True` and returns a successful benchmark coder run. |
+| INT-244 | Codex skill loop resumes the same session twice | `_run_skill_loop(...)` resumes the same Codex session twice, records self-reflection and skill-update events, and preserves the updated trace. |
+| INT-245 | Codex skill loop falls back to the primary session when trace is missing | `_run_skill_loop(...)` uses the primary session id for both resume turns when no trace artifact is available. |
+| INT-248 | CLI-provider env isolates home and workspace Python path | `build_cli_env(...)` sets `HOME`, `CODEX_HOME`, `PYTHONPATH`, `PROBLEMOLOGIST_REPO_ROOT`, and `PYTHON_BIN` correctly and preserves auth/config state. |
+| INT-250 | Codex env supports repo-root imports | A workspace script can import `shared.models.schemas.PartMetadata` and run under the Codex env. |
+| INT-253 | VTK preview renders headlessly | Rendering succeeds with `DISPLAY`/`XAUTHORITY` unset, produces a non-empty preview image, and leaves the ambient display unset. |
+| INT-254 | Preview scene bundle carries current role manifest | The preview bundle retains `.manifests/current_role.json` and the extracted manifest parses as the current agent role. |
+| INT-255 | Submit helper imports workspace script from cwd | `scripts/submit_solution_for_review.sh` runs from the materialized workspace without `No module named 'script'` or load-stage fallback output. |
+| INT-256 | Submit helper forces headless rendering env | The helper clears GUI env vars, sets headless/EGL vars, and preserves the repo-root Python path. |
+| INT-260 | Prompt manager unified render uses shared source model | API and CLI renders share the same prompt source, preserve workspace-relative guidance, and keep the runtime-specific appendix ordering. |
+| INT-265 | Seed workspace materialization is role-specific and deterministic | Planner/reviewer/coder seeds produce the expected file sets and prompt fragments, and mirrored workspaces remain deterministic. |
 
 ### P1 negative integration tests (`INT-NEG-###`)
 
 | ID | Test | Required assertions |
 | -- | -- | -- |
 
-### P2: Multi-episode and evaluation architecture tests
+### P2: Support and tooling contracts
 
-No P2 rows are retained after publication pruning.
+These runner, bootstrap, and seed-maintenance contracts are useful regression coverage, but they do not block release on their own.
+
+| ID | Test | Required assertions |
+| -- | -- | -- |
+| INT-220 | `run_evals --help` exposes CLI backend | Help exits 0 and includes `--runner-backend`, `--call-paid-api`, `--level`, smoke-test defaults, and `cli`. |
+| INT-221 | `skill_training --help` exposes retained bundle CLI | Help exits 0 and includes the retained session metadata/log-root flags. |
+| INT-224 | `materialize_seed_workspace` requires explicit yolo choice | The CLI exits 2 when neither `--yolo` nor `--no-yolo` is supplied. |
+| INT-225 | `materialize_seed_workspace` uses generic CLI flag names | The parser accepts `--launch-cli-exec` and `--open-cli-ui` with the generic destination names. |
+| INT-226 | `materialize_seed_workspace` defaults provider to qwen | The parser defaults `provider` to `qwen` when unset. |
+| INT-227 | `materialize_seed_workspace` forwards new-terminal flag | `--new-terminal` is threaded through to `open_cli_ui(...)`. |
+| INT-229 | `run_e2e_seed` resume-from-dir uses checkpoint | Resume planning derives the next stage from the saved checkpoint and sets the correct resume label. |
+| INT-230 | `run_e2e_seed` resume-from-dir requires checkpoint | Building a resume plan without saved state fails closed with `Resume state missing`. |
+| INT-231 | `run_e2e_seed` resume-from-agent handle uses stage dir | Resume planning from an agent handle selects the corresponding stage directory and advances one stage. |
+| INT-232 | `run_e2e_seed` resume-from-agent handle uses checkpoint chain | Resume planning follows the saved checkpoint chain for the agent handle and keeps the completed predecessor list intact. |
+| INT-233 | `run_e2e_seed` resume-from-agent handle requires predecessor | Resume planning fails closed when the requested agent handle has no completed predecessor. |
+| INT-234 | Seed workspace artifacts skip Git metadata | Collected seed artifact paths omit `.git/` entries from both the static listing and the materialized workspace snapshot. |
+| INT-235 | CLI provider registry supports qwen | `get_cli_provider("qwen")` returns the qwen provider and preserves its home/runtime command contract. |
+| INT-236 | CLI-provider invocation supports prompt flag transport | Prompt-flag transport runs the prompt through `--prompt` and preserves the qwen home env. |
+| INT-238 | Skill training preserves legacy provider metadata | Loading a retained skill-training session keeps `provider_name` omitted from metadata and still reports the seeded skills dir. |
+| INT-239 | `codex exec --help` exposes workspace-write sandbox | CLI help exits 0 and mentions `workspace-write` plus `--sandbox`. |
+| INT-240 | Resume Codex exec uses the provider resume command | Resume execution builds `codex exec resume <session_id>` with `--full-auto` and without `--cd`. |
+| INT-241 | Runner parser smoke defaults | Default parser values are `benchmark_planner`, `limit=1`, `concurrency=1`, and unset `level`. |
+| INT-246 | Readable logs mirror imported transcript | Imported transcript text is copied into both readable-log locations with `SESSION_META`, message, and tool-call content preserved. |
+| INT-247 | Level filter parser accepts combined values | `_parse_level_filters` accepts repeated, bracketed, and `or`-separated values and returns the unique integer set. |
+| INT-249 | CLI-provider reasoning-effort translation hook is used | A custom provider remaps `xhigh` to `ultra` in the generated Codex config. |
+| INT-251 | Codex env uses role reasoning effort and can disable | Planner configs emit `xhigh`, coder configs emit `high`, and the global toggle removes the field when disabled. |
+| INT-252 | `build_dspy_lm` uses configured reasoning effort and toggle | The builder passes `xhigh` for planner roles, omits it when disabled, and preserves node/session identity. |
+| INT-257 | Launch Codex exec uses expected sandbox policy | `--no-yolo` maps to `--full-auto`, `--yolo` maps to the bypass flags, and the opposite flag is absent. |
+| INT-258 | Launch Codex exec allows host loopback when requested | Host-loopback opt-in switches the launcher to the bypass sandbox path without forcing `--full-auto`. |
+| INT-259 | Prompt source role prompts follow runtime order | Prompt source keys are ordered by role family and include the CLI appendix providers. |
+| INT-261 | Prompt manager appends CLI-provider-specific appendix | The qwen appendix is appended in CLI mode and the codex-specific appendix is absent. |
+| INT-262 | Prompt manager injects bug-reporting appendix only when enabled | Bug-report mode appears only when the config flag is enabled. |
+| INT-263 | Materialize seed workspace threads the CLI-provider appendix | The qwen appendix is threaded into the materialized prompt and the codex-specific appendix is absent. |
+| INT-264 | Role-scoped planner wrapper rejects mismatched role | Submitting the benchmark-plan helper from an engineer-planner workspace fails closed and reports the role mismatch. |
+| INT-266 | `clear_env` re-materializes a seeded workspace in place | Dirty workspace files are reset to the original snapshot and the benchmark definition is restored exactly. |
+| INT-267 | Curated seed validation preserves redundancy metadata | `validate_eval_seed.py` passes representative curated rows and the generated manifests retain accepted/rejected counts plus lineage/drop metadata. |
+| INT-268 | Seed validator removes preview bundles from seed artifacts | Validation strips transient `current-episode` and `tmp` directories from seeded artifacts. |
+| INT-269 | Seed validator filters by complexity level | `--level 0` filters the validation run to the requested row and still passes. |
+| INT-270 | `errors-only` suppresses pass output | `--errors-only` succeeds without printing pass lines or the all-passed summary. |
+| INT-271 | Skip-env-up can join a shared eval lock | Validation runs under a shared eval lock and cleans up state. |
+| INT-272 | Skip-env-up fails while exclusive eval lock is held | Validation exits 1 with the lock-held error and leaves no state file. |
+| INT-273 | `run_evals` skip-env-up can join a shared eval lock | `run_evals.py --skip-env-up` succeeds under a shared lock and tears down cleanly. |
+| INT-274 | `update_eval_seed_renders` skip-env-up can join a shared eval lock | Render updates fail closed with the lock-held state and report the missing task id. |
+| INT-275 | Manifest hash refresh fixes drift | Dry-run reports stale hashes, fix mode rewrites them from file contents, and the updated manifest hash matches the payload. |
 
 ### Negative integration tests (`INT-NEG-###`)
 
@@ -163,7 +224,7 @@ benchmark geometry is exposed via `benchmark_script.py`, engineer code lives in
 ## Recommended suite organization
 
 - `tests/integration/smoke/`: INT-001..INT-004 (fast baseline).
-- `tests/integration/architecture_p0/`: INT-005..INT-021, INT-024..INT-030, INT-053, INT-055, INT-061..INT-063, INT-070..INT-073, INT-101, INT-114, INT-187.
+- `tests/integration/architecture_p0/`: INT-005..INT-021, INT-024..INT-030, INT-053, INT-055, INT-061..INT-063, INT-070..INT-073, INT-101, INT-114, INT-187, INT-218..INT-275.
 - `tests/integration/architecture_p1/`: INT-031..INT-040, INT-058..INT-060, INT-210, INT-211, INT-217.
 - `tests/integration/architecture_p2/`: none retained after publication pruning.
 

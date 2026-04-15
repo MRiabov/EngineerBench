@@ -285,7 +285,8 @@ Engineer sends the planner handoff files to the coder agent who has to implement
 5. A `payload_trajectory_definition.yaml` file when the implementation needs a higher-resolution payload trajectory/contact proof; it refines the coarse `motion_forecast` rather than replacing it and must keep the same explicit-orientation contract while proving swept clearance.
 6. A `solution_plan_evidence_script.py` file that captures the build123d planning evidence for the proposed solution geometry.
 
-The planner forecast is intentionally coarse and config-driven, while the engineer-coder may materialize `payload_trajectory_definition.yaml` during implementation for backend-specific precision. The coder-owned precise path must remain consistent with the approved coarse forecast, including the same moving parts and a denser cadence that does not loosen the approved endpoint proof.
+The planner forecast in `assembly_definition.yaml` is intentionally coarse and config-driven, while the engineer-coder may materialize `payload_trajectory_definition.yaml` during implementation for backend-specific precision. The coder-owned precise path must remain consistent with the approved coarse forecast, including the same moving parts and a denser cadence that does not loosen the approved endpoint proof. That coarse forecast is retained; the publication prune only removes the technical-drawing companion scripts and preview rendering.
+This planner-evidence and payload-path contract remains in force even though the publication prune removes the separate technical-drawing companion scripts and preview rendering.
 
 Planner gate requirements (`Engineering Plan Reviewer` / coder entry contract):
 

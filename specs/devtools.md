@@ -186,7 +186,8 @@ The validation helpers are developer tooling, not product behavior.
 - For role-based rows, that contract includes the current-role manifest as the authoritative role marker for the seeded workspace.
 - For planner rows, that contract includes exact inventory preservation, exact identifier mention coverage in `benchmark_plan.md` or `engineering_plan.md`, and the latest handoff cross-contract checks from the controller validation path.
 - It can refresh deterministic seed manifests when asked; render bundles are handled by `scripts/update_eval_seed_renders.py`.
-- It can optionally run the eval runner in judge mode after validation, using the local CLI-provider backend by default.
+- It can optionally run the eval runner in judge mode after validation.
+- `--judge-provider` selects the CLI provider for that judge follow-up; the default is `qwen`, and the choice is orthogonal to `--runner-backend`.
 - Validation-only `--skip-env-up` runs join the shared validation lock so multiple seed checks can proceed in parallel while still preventing eval teardown during an active validation consumer.
 - The script keeps the lock exclusive only while bootstrapping the eval stack, then downgrades to the shared validation lock before health checks and validation work continue.
 - If `--run-judge` is requested for more than 10 selected seed rows, the script requires `-y` before it will launch the expensive judge pass.
