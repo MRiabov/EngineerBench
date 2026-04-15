@@ -15,13 +15,13 @@ manufactured_parts:
   manufacturing_method: CNC
   material_id: aluminum_6061
   quantity: 1
-  part_volume_mm3: 118000.0
+  part_volume_mm3: 86800.0
   stock_bbox_mm:
     x: 620.0
     y: 140.0
     z: 10.0
   stock_volume_mm3: 868000.0
-  removed_volume_mm3: 750000.0
+  removed_volume_mm3: 781200.0
   estimated_unit_cost_usd: 14.5
 - part_name: entry_box
   part_id: entry_box
@@ -93,5 +93,5 @@ final_assembly:
   config:
 totals:
   estimated_unit_cost_usd: 39.5
-  estimated_weight_g: 399.35
+  estimated_weight_g: 315.11
   estimate_confidence: high

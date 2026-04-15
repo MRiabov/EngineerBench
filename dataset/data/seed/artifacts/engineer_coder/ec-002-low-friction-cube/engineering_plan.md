@@ -2,7 +2,7 @@
 
 ## 1. Solution Overview
 
-Use a passive low-angle chute with tall guide walls and a shaped bypass around the central forbid block to move the low-friction cube into the goal zone. The geometry avoids relying on friction and instead constrains the cube with continuous walls and gentle transitions. The `low_friction_route` assembly captures the entire guide path on a freestanding aluminum base.
+Use a passive low-angle chute with tall guide walls and a shaped bypass around the central forbid block to move the low-friction ABS cube into the goal zone. The geometry avoids relying on friction and instead constrains the cube with continuous walls and gentle transitions. The `low_friction_route` assembly captures the entire guide path on a freestanding aluminum base.
 
 ## 2. Parts List
 
@@ -15,7 +15,7 @@ Use a passive low-angle chute with tall guide walls and a shaped bypass around t
 | blocker_bypass_panel | 200 x 18 x 65 | hdpe | Panel that keeps the cube from sliding into the central forbid block |
 | goal_pocket | 110 x 90 x 32 | hdpe | Final pocket settling the cube in the goal zone |
 
-**Estimated Total Weight**: 399.35 g
+**Estimated Total Weight**: 315.11 g
 **Estimated Total Cost**: $39.50
 
 ## 3. Assembly Strategy
@@ -39,8 +39,8 @@ The `low_friction_route` assembly is built on the `slide_base` as the root part:
 
 | ID | Problem / Decision | Result | Impact |
 | -- | -- | -- | -- |
-| CALC-001 | Deterministic declared weight rollup | `318.60 + 19.95 + 15.20 + 14.25 + 13.30 + 18.05 = 399.35 g` | The assembly stays below the 1800 g planner target |
-| CALC-002 | Deterministic declared cost rollup | `14.50 + 5.00 + 5.75 + 5.25 + 4.50 + 4.50 = 39.50 USD` | The plan stays below the 100 USD planner target |
+| CALC-001 | Deterministic declared weight rollup | `234.36 + 19.95 + 15.20 + 14.25 + 13.30 + 18.05 = 315.11 g` | The assembly stays below the 980 g planner target |
+| CALC-002 | Deterministic declared cost rollup | `14.50 + 5.00 + 5.75 + 5.25 + 4.50 + 4.50 = 39.50 USD` | The plan stays below the 50 USD planner target |
 
 ### CALC-001: Deterministic declared weight rollup
 
@@ -55,17 +55,17 @@ The engineer-owned assembly weight must match the deterministic catalog and dens
 
 #### Derivation
 
-- `slide_base`: `620 x 140 x 10 mm` stock, `86800 mm3` part volume, `234.36 g`
-- `entry_box`: `160 x 120 x 38 mm` stock, `21000 mm3` part volume, `19.95 g`
-- `guide_wall_left`: `420 x 18 x 42 mm` stock, `16000 mm3` part volume, `15.20 g`
-- `guide_wall_right`: `390 x 18 x 42 mm` stock, `15000 mm3` part volume, `14.25 g`
-- `blocker_bypass_panel`: `200 x 18 x 65 mm` stock, `14000 mm3` part volume, `13.30 g`
-- `goal_pocket`: `110 x 90 x 32 mm` stock, `19000 mm3` part volume, `18.05 g`
+- `slide_base`: `620 x 140 x 10 mm` stock, `86800 mm3` finished volume, `234.36 g`
+- `entry_box`: `160 x 120 x 38 mm` stock, `21000 mm3` finished volume, `19.95 g`
+- `guide_wall_left`: `420 x 18 x 42 mm` stock, `16000 mm3` finished volume, `15.20 g`
+- `guide_wall_right`: `390 x 18 x 42 mm` stock, `15000 mm3` finished volume, `14.25 g`
+- `blocker_bypass_panel`: `200 x 18 x 65 mm` stock, `14000 mm3` finished volume, `13.30 g`
+- `goal_pocket`: `110 x 90 x 32 mm` stock, `19000 mm3` finished volume, `18.05 g`
 - Total: `315.11 g`
 
 #### Worst-Case Check
 
-- The guide still stays well below the 1800 g cap even at the deterministic declared weight of `315.11 g`.
+- The guide still stays well below the 980 g cap even at the deterministic declared weight of `315.11 g`.
 
 #### Result
 
@@ -73,7 +73,7 @@ The engineer-owned assembly weight must match the deterministic catalog and dens
 
 #### Design Impact
 
-- The low-friction guide remains comfortably under the 1800 g planner target.
+- The low-friction guide remains comfortably under the 980 g planner target.
 
 #### Cross-References
 
@@ -102,7 +102,7 @@ The plan must stay under the benchmark cost cap.
 
 #### Worst-Case Check
 
-- The declared cost remains at `$39.50`, which is below the `$100.00` planner target.
+- The declared cost remains at `$39.50`, which is below the `$50.00` planner target.
 
 #### Result
 
@@ -138,7 +138,7 @@ The plan must stay under the benchmark cost cap.
 | goal_pocket | 18.05 | 4.50 |
 | **TOTAL** | **315.11** | **39.50** |
 
-**Budget Margin**: 60% cost headroom and 82% weight headroom versus the planner target.
+**Budget Margin**: 21% cost headroom and 68% weight headroom versus the planner target.
 
 ## 8. Risk Assessment
 

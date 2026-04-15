@@ -7,10 +7,10 @@ from utils.metadata import CompoundMetadata, PartMetadata
 
 
 def _load_moved_object() -> dict:
-    """Load the moved-object contract from the planner handoff."""
+    """Load moved_object contract from planner handoff."""
     with open("benchmark_definition.yaml", encoding="utf-8") as fh:
-        payload_data = yaml.safe_load(fh) or {}
-    moved = payload_data.get("payload") or payload_data.get("moved_object", {})
+        payload = yaml.safe_load(fh) or {}
+    moved = payload.get("payload") or payload.get("moved_object", {})
     return moved if isinstance(moved, dict) else {}
 
 
