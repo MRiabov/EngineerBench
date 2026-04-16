@@ -12,21 +12,29 @@
   },
   "lsp": {
     "pyrefly": {
+      "binary": {
+        "path": "/home/maksym/Work/proj/Problemologist/EngineerBench/scripts/pyrefly-zed",
+        "arguments": [
+          "lsp"
+        ]
+      },
       "settings": {
         "python": {
-          "pythonPath": ".venv/bin/python"
+          "pythonPath": "/home/maksym/Work/proj/Problemologist/EngineerBench/.venv/bin/python"
         },
         "pyrefly": {
           "project_includes": [
-            "src/**/*.py",
-            "tests/**/*.py"
+            "**/*.py"
           ],
           "project_excludes": [
             "**/.[!/.]*",
-            "**/*venv/**"
+            "**/.venv/**",
+            "**/*venv/**",
+            "**/__pycache__/**",
+            "**/node_modules/**"
           ],
           "search_path": [
-            "src"
+            "."
           ],
           "ignore_errors_in_generated_code": true
         }
