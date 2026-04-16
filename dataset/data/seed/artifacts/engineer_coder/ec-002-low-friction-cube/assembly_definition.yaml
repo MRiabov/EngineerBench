@@ -108,7 +108,7 @@ coarse_payload_trajectory:
   payload_part_names:
     - solution_assembly
   reference_frame: world
-  sample_stride_s: 0.5
+  sample_stride_s: 0.25
   anchors:
     - t_s: 0.0
       reference_point: build_zone_start
@@ -118,18 +118,30 @@ coarse_payload_trajectory:
       rotation_tolerance_deg: [0.1, 0.1, 5.0]
       build_zone_valid: true
     - t_s: 1.5
+      reference_point: left_capture_lane
+      pos_mm: [-240.0, 0.0, 24.0]
+      rot_deg: [0.0, 0.0, 0.0]
+      position_tolerance_mm: [1.2, 1.2, 1.2]
+      rotation_tolerance_deg: [0.1, 0.1, 5.0]
+    - t_s: 2.4
       reference_point: bypass_corner
+      pos_mm: [-240.0, 110.0, 24.0]
+      rot_deg: [0.0, 0.0, 0.0]
+      position_tolerance_mm: [1.2, 1.2, 1.2]
+      rotation_tolerance_deg: [0.1, 0.1, 5.0]
+    - t_s: 3.6
+      reference_point: goal_lane_entry
       pos_mm: [-40.0, 110.0, 24.0]
       rot_deg: [0.0, 0.0, 0.0]
       position_tolerance_mm: [1.2, 1.2, 1.2]
       rotation_tolerance_deg: [0.1, 0.1, 5.0]
-    - t_s: 3.0
-      reference_point: goal_entry
+    - t_s: 4.8
+      reference_point: goal_approach
       pos_mm: [240.0, 110.0, 24.0]
       rot_deg: [0.0, 0.0, 0.0]
       position_tolerance_mm: [1.2, 1.2, 1.2]
       rotation_tolerance_deg: [0.1, 0.1, 5.0]
-    - t_s: 4.5
+    - t_s: 6.0
       reference_point: goal_zone_contact
       pos_mm: [315.0, 0.0, 57.0]
       rot_deg: [0.0, 0.0, 0.0]

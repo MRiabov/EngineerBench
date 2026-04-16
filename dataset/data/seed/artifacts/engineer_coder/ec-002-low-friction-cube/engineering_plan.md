@@ -68,6 +68,7 @@ The `low_friction_route` assembly is built on the `slide_base` as the root part:
 | -- | -- | -- | -- |
 | CALC-001 | Deterministic declared weight rollup | `234.36 + 19.95 + 15.20 + 14.25 + 13.30 + 18.05 = 315.11 g` | The assembly stays below the 980 g planner target |
 | CALC-002 | Deterministic declared cost rollup | `14.50 + 5.00 + 5.75 + 5.25 + 4.50 + 4.50 = 39.50 USD` | The plan stays below the 50 USD planner target |
+| CALC-003 | Path proof envelope | `solution_assembly` follows a 6-anchor corridor from the build-zone start to the goal-zone contact with a 0.25 s sampling stride | `assembly_definition.yaml.coarse_payload_trajectory`, `payload_trajectory_definition.yaml` |
 
 ### CALC-001: Deterministic declared weight rollup
 
@@ -143,6 +144,61 @@ The plan must stay under the benchmark cost cap.
 
 - `assembly_definition.yaml`
 - `benchmark_definition.yaml`
+
+### CALC-003: Path proof envelope
+
+#### Problem Statement
+
+The engineer-coder starter must carry a concrete waypoint sequence so the coarse
+forecast and refined payload proof are both inspectable before coding starts.
+
+#### Assumptions
+
+- `solution_assembly` is the payload-proof label used by the starter geometry.
+- The path stays within the seeded build zone at the first anchor and ends with
+  explicit goal-zone contact at the final anchor.
+- The waypoint corridor is summarized as an average-segment envelope, not a
+  measured runtime trace.
+
+#### Derivation
+
+- Start: `(-280.0, 0.0, 24.0)` at `t = 0.0 s`
+- Left capture lane: `(-240.0, 0.0, 24.0)` at `t = 1.2 s`
+- Bypass corner: `(-240.0, 110.0, 24.0)` at `t = 2.4 s`
+- Goal lane entry: `(-40.0, 110.0, 24.0)` at `t = 3.6 s`
+- Goal approach: `(240.0, 110.0, 24.0)` at `t = 4.8 s`
+- Goal contact: `(315.0, 0.0, 57.0)` at `t = 6.0 s`
+- Sample stride: `0.25 s`
+
+Segment lengths and average speeds:
+
+- `40.0 mm / 1.2 s = 33.3 mm/s`
+- `110.0 mm / 1.2 s = 91.7 mm/s`
+- `200.0 mm / 1.2 s = 166.7 mm/s`
+- `280.0 mm / 1.2 s = 233.3 mm/s`
+- `137.2 mm / 1.2 s = 114.3 mm/s`
+- Corridor average: `767.2 mm / 6.0 s = 127.9 mm/s`
+
+#### Worst-Case Check
+
+- The first point stays inside the build zone, the corridor remains above the
+  central forbid block, and the terminal point lands inside the goal zone.
+
+#### Result
+
+- The payload proof is explicit enough for render inspection and for the
+  engineer coder to refine without re-planning.
+
+#### Design Impact
+
+- The starter plan now exposes a concrete waypoint story instead of a blank
+  trajectory scaffold.
+
+#### Cross-References
+
+- `assembly_definition.yaml`
+- `payload_trajectory_definition.yaml`
+- `solution_script.py`
 
 ## 6. Critical Constraints / Operating Envelope
 

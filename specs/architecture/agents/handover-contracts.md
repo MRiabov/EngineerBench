@@ -293,6 +293,7 @@ Engineer sends the planner handoff files to the coder agent who has to implement
 2. A stripped down `benchmark_definition.yaml` file, except the max price and weight are set by the planner now and remain under the benchmark/customer caps.
 3. A `todo.md` TODO-list.
 4. A `assembly_definition.yaml` file with per-part pricing inputs, `final_assembly` structure, assembly totals produced by `validate_costing_and_price.py`, and a planner-authored `motion_forecast` section for the engineering handoff. That forecast describes the payload trajectory: it must start build-zone valid, name explicit `rot_deg` orientation on every anchor, and end with an explicit goal-zone proof. `motion_forecast` is the historical field name for the planner-owned coarse payload trajectory; in prose, `coarse_payload_trajectory` is the clearer alias for the same low-resolution contract.
+   - `payload_part_names` is the exact list of payload solid labels covered by that coarse trajectory. A one-part payload still uses a one-item list, and the list must match the solid labels in the authored geometry, not a generic payload count.
 5. A `payload_trajectory_definition.yaml` file. It is required for every engineer handoff, refines the coarse `motion_forecast` rather than replacing it, and must keep the same explicit-orientation contract while proving swept clearance.
 6. A `solution_plan_evidence_script.py` file that captures the build123d planning evidence for the proposed solution geometry.
 

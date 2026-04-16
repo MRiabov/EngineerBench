@@ -47,9 +47,9 @@
       "object_type": "part",
       "object_id": 1,
       "pos": [
-        -225.0,
         0.0,
-        33.0
+        0.0,
+        0.0
       ],
       "euler": [
         -0.0,
@@ -230,12 +230,50 @@
       "include_in_segmentation": true
     },
     {
+      "label": "solution_assembly",
+      "semantic_label": "solution_assembly",
+      "instance_id": "solution_assembly",
+      "instance_name": "solution_assembly",
+      "object_type": "part",
+      "object_id": 6,
+      "pos": [
+        -280.0,
+        0.0,
+        24.0
+      ],
+      "euler": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/solution_assembly.obj"
+      ],
+      "box_size": null,
+      "material_id": "abs",
+      "body_name": "solution_assembly",
+      "geom_name": "solution_assembly",
+      "zone_type": null,
+      "color_rgba": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        103,
+        59,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
       "label": "slider_cube",
       "semantic_label": "slider_cube",
       "instance_id": "slider_cube",
       "instance_name": "slider_cube",
       "object_type": "part",
-      "object_id": 6,
+      "object_id": 7,
       "pos": [
         -280.0,
         0.0,
@@ -261,9 +299,9 @@
         1.0
       ],
       "segmentation_color_rgb": [
-        103,
-        59,
-        235
+        66,
+        235,
+        59
       ],
       "include_in_segmentation": true
     },
@@ -273,7 +311,7 @@
       "instance_id": "zone_goal",
       "instance_name": "zone_goal",
       "object_type": "zone",
-      "object_id": 7,
+      "object_id": 8,
       "pos": [
         325.0,
         0.0,
@@ -301,9 +339,9 @@
         0.22
       ],
       "segmentation_color_rgb": [
-        66,
         235,
-        59
+        59,
+        117
       ],
       "include_in_segmentation": false
     },
@@ -313,7 +351,7 @@
       "instance_id": "zone_forbid_0_center_collision_block",
       "instance_name": "zone_forbid_0_center_collision_block",
       "object_type": "zone",
-      "object_id": 8,
+      "object_id": 9,
       "pos": [
         165.0,
         0.0,
@@ -341,9 +379,9 @@
         0.2
       ],
       "segmentation_color_rgb": [
-        235,
         59,
-        117
+        169,
+        235
       ],
       "include_in_segmentation": false
     },
@@ -353,7 +391,7 @@
       "instance_id": "zone_build",
       "instance_name": "zone_build",
       "object_type": "zone",
-      "object_id": 9,
+      "object_id": 10,
       "pos": [
         30.0,
         0.0,
@@ -381,9 +419,9 @@
         0.14
       ],
       "segmentation_color_rgb": [
-        59,
-        169,
-        235
+        220,
+        235,
+        59
       ],
       "include_in_segmentation": false
     }

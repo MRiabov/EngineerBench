@@ -11,7 +11,7 @@ It is worth being a dedicated artifact because reviewers need a strict motion pr
 - The file schema-validates and parses cleanly.
 - The file contains no template placeholders or empty stub values.
 - `backend` and `initial_pose` are present and consistent with the implementation backend.
-- `payload_names` match the approved coarse motion forecast.
+- `payload_part_names` match the approved coarse motion forecast and therefore match the exact solid labels used for the payload geometry.
 - `sample_stride_s` does not exceed the coarse motion forecast stride and stays within the motion cadence budget from `config/agents_config.yaml`.
 - Ordered motion anchors include explicit positions, explicit `rot_deg` orientation, and tolerance data when an envelope is intentional.
 - The first anchor lies within `benchmark_definition.objectives.build_zone` and explicitly sets `build_zone_valid: true`.

@@ -369,7 +369,9 @@ def _exact_pose_checks(
     require_goal_zone_overlap: bool,
     sample_point_label: str,
 ) -> list[str]:
-    moved = moving_component.move(transform)
+    # Sample each pose from a fresh transformed copy so repeated checks do not
+    # accumulate translation/rotation across anchors.
+    moved = moving_component.moved(transform)
     moved_min, moved_max = _shape_bbox(moved)
     sim_min, sim_max = _shape_bbox(
         _zone_body_from_bounds(benchmark_definition.simulation_bounds)
