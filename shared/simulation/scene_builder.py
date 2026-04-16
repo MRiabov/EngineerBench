@@ -25,7 +25,7 @@ from shared.enums import ZoneType
 
 logger = structlog.get_logger(__name__)
 
-MOVED_OBJECT_SCENE_PREFIX = "benchmark_moved_object__"
+PAYLOAD_SCENE_PREFIX = "benchmark_payload__"
 
 
 def normalize_preview_label(label: Any) -> str:
@@ -38,17 +38,17 @@ def normalize_preview_label(label: Any) -> str:
     return cleaned
 
 
-def moved_object_scene_name(label: str) -> str:
+def payload_scene_name(label: str) -> str:
     """Return a namespaced scene identifier for the benchmark payload."""
     clean_label = str(label).strip()
     if not clean_label:
         raise ValueError("payload label must be non-empty")
-    return f"{MOVED_OBJECT_SCENE_PREFIX}{clean_label}"
+    return f"{PAYLOAD_SCENE_PREFIX}{clean_label}"
 
 
-def is_moved_object_scene_name(name: str) -> bool:
+def is_payload_scene_name(name: str) -> bool:
     """Return True when a scene name belongs to the benchmark payload."""
-    return str(name).startswith(MOVED_OBJECT_SCENE_PREFIX)
+    return str(name).startswith(PAYLOAD_SCENE_PREFIX)
 
 
 class PreviewEntity(BaseModel):
@@ -88,7 +88,7 @@ class PreviewScene(BaseModel):
     diagonal: float
 
 
-class MaterializedMovedObject(BaseModel):
+class MaterializedPayload(BaseModel):
     """Typed record for the benchmark payload geometry and scene naming."""
 
     model_config = ConfigDict(arbitrary_types_allowed=True, extra="forbid")
@@ -123,10 +123,12 @@ class AssemblyPartData(BaseModel):
     weld_target: str | None = None
 
 
-def build_moved_object_geometry(moved: Any):
+def build_payload_geometry(payload: Any):
     """Build the authored payload geometry from its declared shape."""
-    shape = str(getattr(moved, "shape", "sphere")).strip().lower()
-    radius_range = getattr(getattr(moved, "static_randomization", None), "radius", None)
+    shape = str(getattr(payload, "shape", "sphere")).strip().lower()
+    radius_range = getattr(
+        getattr(payload, "static_randomization", None), "radius", None
+    )
     radius = float(max(radius_range)) if radius_range else None
 
     if shape == "sphere":
@@ -156,30 +158,30 @@ def build_moved_object_geometry(moved: Any):
     )
 
 
-def materialize_moved_object(moved: Any) -> MaterializedMovedObject:
+def materialize_payload(payload: Any) -> MaterializedPayload:
     """Materialize the benchmark payload geometry and its scene name."""
-    label = str(getattr(moved, "label", "")).strip()
+    label = str(getattr(payload, "label", "")).strip()
     if not label:
         raise ValueError("payload label must be non-empty")
 
-    geometry = build_moved_object_geometry(moved)
+    geometry = build_payload_geometry(payload)
     with contextlib.suppress(Exception):
         geometry.label = label
 
-    start_position = tuple(float(value) for value in getattr(moved, "start_position"))
-    material_id = str(getattr(moved, "material_id"))
-    return MaterializedMovedObject(
+    start_position = tuple(float(value) for value in getattr(payload, "start_position"))
+    material_id = str(getattr(payload, "material_id"))
+    return MaterializedPayload(
         label=label,
-        scene_name=moved_object_scene_name(label),
+        scene_name=payload_scene_name(label),
         geometry=geometry,
         start_position=start_position,
         material_id=material_id,
     )
 
 
-def build_moved_object_start_geometry(moved: Any):
+def build_payload_start_geometry(payload: Any):
     """Materialize the benchmark payload at its declared startup pose."""
-    return materialize_moved_object(moved).start_geometry()
+    return materialize_payload(payload).start_geometry()
 
 
 class CommonAssemblyTraverser:
@@ -501,15 +503,23 @@ class MeshProcessor:
 __all__ = [
     "AssemblyPartData",
     "CommonAssemblyTraverser",
-    "MaterializedMovedObject",
+    "MaterializedPayload",
     "MeshProcessor",
-    "MOVED_OBJECT_SCENE_PREFIX",
+    "PAYLOAD_SCENE_PREFIX",
     "PreviewEntity",
     "PreviewScene",
-    "build_moved_object_geometry",
-    "build_moved_object_start_geometry",
-    "is_moved_object_scene_name",
-    "materialize_moved_object",
-    "moved_object_scene_name",
+    "build_payload_geometry",
+    "build_payload_start_geometry",
+    "is_payload_scene_name",
+    "materialize_payload",
+    "payload_scene_name",
     "normalize_preview_label",
 ]
+
+MOVED_OBJECT_SCENE_PREFIX = PAYLOAD_SCENE_PREFIX
+MaterializedMovedObject = MaterializedPayload
+build_moved_object_geometry = build_payload_geometry
+build_moved_object_start_geometry = build_payload_start_geometry
+is_moved_object_scene_name = is_payload_scene_name
+materialize_moved_object = materialize_payload
+moved_object_scene_name = payload_scene_name
