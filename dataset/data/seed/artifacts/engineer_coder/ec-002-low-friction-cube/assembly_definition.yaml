@@ -89,20 +89,53 @@ manufactured_parts:
   removed_volume_mm3: 297800.0
   estimated_unit_cost_usd: 4.5
 final_assembly:
-- name: low_friction_route
-  config:
-- name: slide_base
-  config:
-- name: entry_box
-  config:
-- name: guide_wall_left
-  config:
-- name: guide_wall_right
-  config:
-- name: blocker_bypass_panel
-  config:
-- name: goal_pocket
-  config:
+  - name: low_friction_route
+    config:
+  - name: slide_base
+    config:
+  - name: entry_box
+    config:
+  - name: guide_wall_left
+    config:
+  - name: guide_wall_right
+    config:
+  - name: blocker_bypass_panel
+    config:
+  - name: goal_pocket
+    config:
+
+motion_forecast:
+  moving_part_names:
+    - solution_assembly
+  reference_frame: world
+  sample_stride_s: 0.5
+  anchors:
+    - t_s: 0.0
+      reference_point: build_zone_start
+      pos_mm: [-280.0, 0.0, 24.0]
+      rot_deg: [0.0, 0.0, 0.0]
+      position_tolerance_mm: [1.2, 1.2, 1.2]
+      rotation_tolerance_deg: [0.1, 0.1, 5.0]
+      build_zone_valid: true
+    - t_s: 1.5
+      reference_point: bypass_corner
+      pos_mm: [-40.0, 110.0, 24.0]
+      rot_deg: [0.0, 0.0, 0.0]
+      position_tolerance_mm: [1.2, 1.2, 1.2]
+      rotation_tolerance_deg: [0.1, 0.1, 5.0]
+    - t_s: 3.0
+      reference_point: goal_entry
+      pos_mm: [240.0, 110.0, 24.0]
+      rot_deg: [0.0, 0.0, 0.0]
+      position_tolerance_mm: [1.2, 1.2, 1.2]
+      rotation_tolerance_deg: [0.1, 0.1, 5.0]
+    - t_s: 4.5
+      reference_point: goal_zone_contact
+      pos_mm: [315.0, 0.0, 57.0]
+      rot_deg: [0.0, 0.0, 0.0]
+      position_tolerance_mm: [1.2, 1.2, 1.2]
+      rotation_tolerance_deg: [0.1, 0.1, 5.0]
+      goal_zone_contact: true
 totals:
   estimated_unit_cost_usd: 39.5
   estimated_weight_g: 315.11

@@ -38,6 +38,9 @@ The `low_friction_route` assembly is built on the `slide_base` as the root part:
    inside the target instead of skating through it.
 5. Keep the layout compact enough that the route remains legible in the plan
    preview and in the seeded engineer render bundle.
+6. Preserve the motion-proof scaffold on the starter `solution_assembly`
+   label so the required path trace can detour around the central forbid block
+   without changing the inventory labels used by the seeded handoff package.
 
 ### Placement Notes
 
@@ -150,6 +153,7 @@ The plan must stay under the benchmark cost cap.
 | LIMIT-003 | Goal-zone overlap | `goal_pocket` must overlap the goal zone | `benchmark_definition.yaml` |
 | LIMIT-004 | Stability envelope | `slide_base` stays flat and does not tip under cube impact | Assembly strategy |
 | LIMIT-005 | Layout legibility | The routed preview keeps the same labels and placement order as the evidence script | `solution_plan_evidence_script.py` |
+| LIMIT-006 | Path proof | The engineer-coder path proof keeps the starter `solution_assembly` label stable while routing above the center collision block | `assembly_definition.yaml.motion_forecast` |
 
 ## 7. Cost & Weight Budget
 

@@ -1,7 +1,7 @@
 {
   "artifact_hashes": {
-    "assembly_definition.yaml": "dd1849f55a0b7ad3fd6072fe781e2f905a952724334d856588f29e905176ec93",
-    "engineering_plan.md": "fa0d9f8efab43afc4c0d381215b208f084c001301e596a46707253bf46cf7751",
+    "assembly_definition.yaml": "40e64a880e67282b3e214ab64a6e186363ab0ead44cf6b0dac3b2f853f34da33",
+    "engineering_plan.md": "57b09c2e2d54f526418020f29f7033b503e8712c06ed67ace5b9b80c6eb855b3",
     "solution_plan_evidence_script.py": "2385cdb7f3430bd4c260e1c6b79e3f8d8b344697b530ec63cfe9cf203f04d0d6",
     "todo.md": "48bedf1e34b37e41cd188d38c5f11791cd94a7ac21b0ac199537feb7c9396c3a"
   },
