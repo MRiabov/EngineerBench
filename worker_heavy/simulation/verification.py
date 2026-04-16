@@ -27,8 +27,8 @@ from shared.simulation.backends import SimulationScene
 from shared.simulation.schemas import SimulatorBackendType
 from worker_heavy.simulation.evaluator import SuccessEvaluator
 from worker_heavy.simulation.naming import (
-    is_moved_object_scene_name,
-    moved_object_scene_name,
+    is_payload_scene_name,
+    payload_scene_name,
 )
 
 logger = structlog.get_logger(__name__)
@@ -52,7 +52,7 @@ def _identify_target_body_name(
         return explicit_target_body_name
 
     if explicit_target_body_name:
-        namespaced_target = moved_object_scene_name(explicit_target_body_name)
+        namespaced_target = payload_scene_name(explicit_target_body_name)
         if namespaced_target in body_names:
             return namespaced_target
 
@@ -62,7 +62,7 @@ def _identify_target_body_name(
             return name
 
     for name in body_names:
-        if is_moved_object_scene_name(name):
+        if is_payload_scene_name(name):
             return name
 
     for name in body_names:

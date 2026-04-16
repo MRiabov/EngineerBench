@@ -9,7 +9,10 @@ import yaml
 
 from shared.agents.config import PayloadTrajectoryMonitorPolicy, load_agents_config
 from shared.enums import FailureReason
-from shared.models.schemas import MotionForecastAnchor, PayloadTrajectoryDefinition
+from shared.models.schemas import (
+    PayloadTrajectoryAnchor,
+    PayloadTrajectoryDefinition,
+)
 from shared.models.simulation import (
     PayloadTrajectoryMonitorState,
     SimulationFailure,
@@ -65,7 +68,7 @@ def _resolve_body_names(
 
 
 def _flatten_first_contacts(
-    anchors: Sequence[MotionForecastAnchor],
+    anchors: Sequence[PayloadTrajectoryAnchor],
 ) -> list[str]:
     ordered: list[str] = []
     seen: set[str] = set()
@@ -146,7 +149,7 @@ class PayloadTrajectoryMonitor:
             self.policy.consecutive_miss_count
         )
         self.tracked_body_names = _resolve_body_names(
-            self.backend, self.payload_definition.moving_part_names
+            self.backend, self.payload_definition.payload_part_names
         )
         self._last_state = self._build_state()
 
@@ -186,7 +189,7 @@ class PayloadTrajectoryMonitor:
 
     def _anchor_is_within_tolerance(
         self,
-        anchor: MotionForecastAnchor,
+        anchor: PayloadTrajectoryAnchor,
         observed_pos_mm: tuple[float, float, float],
         observed_rot_deg: tuple[float, float, float] | None,
     ) -> tuple[bool, tuple[float, float, float], tuple[float, float, float] | None]:

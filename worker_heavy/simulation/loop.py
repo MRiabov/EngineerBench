@@ -30,7 +30,7 @@ from worker_heavy.simulation.factory import get_physics_backend
 from worker_heavy.simulation.frame_stream import SimulationFrameStreamPublisher
 from worker_heavy.simulation.media import MediaRecorder
 from worker_heavy.simulation.metrics import MetricCollector
-from worker_heavy.simulation.naming import moved_object_scene_name
+from worker_heavy.simulation.naming import payload_scene_name
 from worker_heavy.simulation.object_pose import write_object_pose_parquet
 from worker_heavy.simulation.payload_trajectory_monitor import (
     PayloadTrajectoryMonitor,
@@ -652,7 +652,7 @@ class SimulationLoop:
         # Priority 1: Check objectives for payload label
         if self.objectives and self.objectives.payload:
             label = str(self.objectives.payload.label).strip()
-            namespaced_label = moved_object_scene_name(label)
+            namespaced_label = payload_scene_name(label)
             if namespaced_label in all_bodies:
                 return namespaced_label
             if label in all_bodies:

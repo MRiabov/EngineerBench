@@ -15,7 +15,7 @@ from build123d import Compound, Solid, export_stl
 from shared.enums import ZoneType
 from shared.simulation.scene_builder import (
     CommonAssemblyTraverser,
-    materialize_moved_object,
+    materialize_payload,
 )
 
 # YACV removed in favor of custom trimesh-based export capable of preserving topology
@@ -25,7 +25,7 @@ from shared.simulation.scene_builder import (
 #     export_all = None
 
 if TYPE_CHECKING:
-    from shared.models.schemas import BenchmarkDefinition, MovingPart
+    from shared.models.schemas import BenchmarkDefinition, PayloadPart
 
 
 logger = structlog.get_logger(__name__)
@@ -484,7 +484,7 @@ class SimulationBuilderBase(ABC):
         self,
         assembly: Compound,
         objectives: BenchmarkDefinition | None = None,
-        moving_parts: list["MovingPart"] | None = None,
+        moving_parts: list["PayloadPart"] | None = None,
         smoke_test_mode: bool = False,
     ) -> Path:
         """Converts an assembly of parts into a simulation scene."""
@@ -502,7 +502,7 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
         self,
         assembly: Compound,
         objectives: BenchmarkDefinition | None = None,
-        moving_parts: list["MovingPart"] | None = None,
+        moving_parts: list["PayloadPart"] | None = None,
         smoke_test_mode: bool = False,
     ) -> Path:
         """Converts an assembly of parts into a MuJoCo scene.xml and associated STLs."""
@@ -635,9 +635,9 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
         # 3. Add the benchmark-mandated payload as a dynamic body.
         if objectives and getattr(objectives, "payload", None):
             moved = objectives.payload
-            moved_object = materialize_moved_object(moved)
-            moved_part = moved_object.geometry
-            moved_body_name = moved_object.scene_name
+            payload_object = materialize_payload(moved)
+            moved_part = payload_object.geometry
+            moved_body_name = payload_object.scene_name
 
             mesh_path_base = self.assets_dir / moved_body_name
             tolerance = 1.0 if smoke_test_mode else 0.1
@@ -714,7 +714,7 @@ class GenesisSimulationBuilder(SimulationBuilderBase):
         self,
         assembly: Compound,
         objectives: BenchmarkDefinition | None = None,
-        moving_parts: list["MovingPart"] | None = None,
+        moving_parts: list["PayloadPart"] | None = None,
         smoke_test_mode: bool = False,
     ) -> Path:
         """Converts an assembly of parts into a Genesis scene descriptor (JSON)."""
