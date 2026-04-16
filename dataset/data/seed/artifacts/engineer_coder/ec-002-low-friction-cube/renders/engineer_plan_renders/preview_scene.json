@@ -2,50 +2,12 @@
   "component_label": "low_friction_route",
   "entities": [
     {
-      "label": "slide_base",
-      "semantic_label": "slide_base",
-      "instance_id": "slide_base",
-      "instance_name": "slide_base",
+      "label": "guide_rail",
+      "semantic_label": "guide_rail",
+      "instance_id": "guide_rail",
+      "instance_name": "guide_rail",
       "object_type": "part",
       "object_id": 0,
-      "pos": [
-        20.0,
-        0.0,
-        9.0
-      ],
-      "euler": [
-        -0.0,
-        0.0,
-        -0.0
-      ],
-      "mesh_paths": [
-        "meshes/slide_base.obj"
-      ],
-      "box_size": null,
-      "material_id": "aluminum_6061",
-      "body_name": "slide_base",
-      "geom_name": "slide_base",
-      "zone_type": null,
-      "color_rgba": [
-        0.7529411764705882,
-        0.7529411764705882,
-        0.7529411764705882,
-        1.0
-      ],
-      "segmentation_color_rgb": [
-        235,
-        59,
-        59
-      ],
-      "include_in_segmentation": true
-    },
-    {
-      "label": "entry_box",
-      "semantic_label": "entry_box",
-      "instance_id": "entry_box",
-      "instance_name": "entry_box",
-      "object_type": "part",
-      "object_id": 1,
       "pos": [
         0.0,
         0.0,
@@ -57,12 +19,12 @@
         -0.0
       ],
       "mesh_paths": [
-        "meshes/entry_box.obj"
+        "meshes/guide_rail.obj"
       ],
       "box_size": null,
       "material_id": "hdpe",
-      "body_name": "entry_box",
-      "geom_name": "entry_box",
+      "body_name": "guide_rail",
+      "geom_name": "guide_rail",
       "zone_type": null,
       "color_rgba": [
         0.9450980392156862,
@@ -71,199 +33,9 @@
         1.0
       ],
       "segmentation_color_rgb": [
-        59,
-        110,
-        235
-      ],
-      "include_in_segmentation": true
-    },
-    {
-      "label": "guide_wall_left",
-      "semantic_label": "guide_wall_left",
-      "instance_id": "guide_wall_left",
-      "instance_name": "guide_wall_left",
-      "object_type": "part",
-      "object_id": 2,
-      "pos": [
-        -40.0,
-        -66.0,
-        35.0
-      ],
-      "euler": [
-        -0.0,
-        0.0,
-        -0.0
-      ],
-      "mesh_paths": [
-        "meshes/guide_wall_left.obj"
-      ],
-      "box_size": null,
-      "material_id": "hdpe",
-      "body_name": "guide_wall_left",
-      "geom_name": "guide_wall_left",
-      "zone_type": null,
-      "color_rgba": [
-        0.9450980392156862,
-        0.9607843137254902,
-        0.9764705882352941,
-        1.0
-      ],
-      "segmentation_color_rgb": [
-        161,
         235,
+        59,
         59
-      ],
-      "include_in_segmentation": true
-    },
-    {
-      "label": "guide_wall_right",
-      "semantic_label": "guide_wall_right",
-      "instance_id": "guide_wall_right",
-      "instance_name": "guide_wall_right",
-      "object_type": "part",
-      "object_id": 3,
-      "pos": [
-        0.0,
-        66.0,
-        35.0
-      ],
-      "euler": [
-        -0.0,
-        0.0,
-        -0.0
-      ],
-      "mesh_paths": [
-        "meshes/guide_wall_right.obj"
-      ],
-      "box_size": null,
-      "material_id": "hdpe",
-      "body_name": "guide_wall_right",
-      "geom_name": "guide_wall_right",
-      "zone_type": null,
-      "color_rgba": [
-        0.9450980392156862,
-        0.9607843137254902,
-        0.9764705882352941,
-        1.0
-      ],
-      "segmentation_color_rgb": [
-        235,
-        59,
-        213
-      ],
-      "include_in_segmentation": true
-    },
-    {
-      "label": "blocker_bypass_panel",
-      "semantic_label": "blocker_bypass_panel",
-      "instance_id": "blocker_bypass_panel",
-      "instance_name": "blocker_bypass_panel",
-      "object_type": "part",
-      "object_id": 4,
-      "pos": [
-        145.0,
-        42.0,
-        46.5
-      ],
-      "euler": [
-        -0.0,
-        0.0,
-        -0.0
-      ],
-      "mesh_paths": [
-        "meshes/blocker_bypass_panel.obj"
-      ],
-      "box_size": null,
-      "material_id": "hdpe",
-      "body_name": "blocker_bypass_panel",
-      "geom_name": "blocker_bypass_panel",
-      "zone_type": null,
-      "color_rgba": [
-        0.9450980392156862,
-        0.9607843137254902,
-        0.9764705882352941,
-        1.0
-      ],
-      "segmentation_color_rgb": [
-        59,
-        235,
-        205
-      ],
-      "include_in_segmentation": true
-    },
-    {
-      "label": "goal_pocket",
-      "semantic_label": "goal_pocket",
-      "instance_id": "goal_pocket",
-      "instance_name": "goal_pocket",
-      "object_type": "part",
-      "object_id": 5,
-      "pos": [
-        315.0,
-        0.0,
-        30.0
-      ],
-      "euler": [
-        -0.0,
-        0.0,
-        -0.0
-      ],
-      "mesh_paths": [
-        "meshes/goal_pocket.obj"
-      ],
-      "box_size": null,
-      "material_id": "hdpe",
-      "body_name": "goal_pocket",
-      "geom_name": "goal_pocket",
-      "zone_type": null,
-      "color_rgba": [
-        0.9450980392156862,
-        0.9607843137254902,
-        0.9764705882352941,
-        1.0
-      ],
-      "segmentation_color_rgb": [
-        235,
-        154,
-        59
-      ],
-      "include_in_segmentation": true
-    },
-    {
-      "label": "solution_assembly",
-      "semantic_label": "solution_assembly",
-      "instance_id": "solution_assembly",
-      "instance_name": "solution_assembly",
-      "object_type": "part",
-      "object_id": 6,
-      "pos": [
-        -280.0,
-        0.0,
-        24.0
-      ],
-      "euler": [
-        -0.0,
-        0.0,
-        -0.0
-      ],
-      "mesh_paths": [
-        "meshes/solution_assembly.obj"
-      ],
-      "box_size": null,
-      "material_id": "abs",
-      "body_name": "solution_assembly",
-      "geom_name": "solution_assembly",
-      "zone_type": null,
-      "color_rgba": [
-        1.0,
-        1.0,
-        1.0,
-        1.0
-      ],
-      "segmentation_color_rgb": [
-        103,
-        59,
-        235
       ],
       "include_in_segmentation": true
     },
@@ -273,7 +45,7 @@
       "instance_id": "slider_cube",
       "instance_name": "slider_cube",
       "object_type": "part",
-      "object_id": 7,
+      "object_id": 1,
       "pos": [
         -280.0,
         0.0,
@@ -299,9 +71,9 @@
         1.0
       ],
       "segmentation_color_rgb": [
-        66,
-        235,
-        59
+        59,
+        110,
+        235
       ],
       "include_in_segmentation": true
     },
@@ -311,7 +83,7 @@
       "instance_id": "zone_goal",
       "instance_name": "zone_goal",
       "object_type": "zone",
-      "object_id": 8,
+      "object_id": 2,
       "pos": [
         325.0,
         0.0,
@@ -339,9 +111,9 @@
         0.22
       ],
       "segmentation_color_rgb": [
+        161,
         235,
-        59,
-        117
+        59
       ],
       "include_in_segmentation": false
     },
@@ -351,7 +123,7 @@
       "instance_id": "zone_forbid_0_center_collision_block",
       "instance_name": "zone_forbid_0_center_collision_block",
       "object_type": "zone",
-      "object_id": 9,
+      "object_id": 3,
       "pos": [
         165.0,
         0.0,
@@ -379,9 +151,9 @@
         0.2
       ],
       "segmentation_color_rgb": [
+        235,
         59,
-        169,
-        235
+        213
       ],
       "include_in_segmentation": false
     },
@@ -391,7 +163,7 @@
       "instance_id": "zone_build",
       "instance_name": "zone_build",
       "object_type": "zone",
-      "object_id": 10,
+      "object_id": 4,
       "pos": [
         30.0,
         0.0,
@@ -419,9 +191,9 @@
         0.14
       ],
       "segmentation_color_rgb": [
-        220,
+        59,
         235,
-        59
+        205
       ],
       "include_in_segmentation": false
     }

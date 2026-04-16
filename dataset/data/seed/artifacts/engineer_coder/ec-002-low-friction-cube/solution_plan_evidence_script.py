@@ -1,78 +1,35 @@
-from build123d import Align, Box, Compound, Location
+from build123d import Axis, BuildLine, BuildPart, BuildSketch, Compound, Plane, Polyline, Rectangle, sweep
 
 from utils.metadata import CompoundMetadata, PartMetadata
 
 
-def _make_box(
-    label: str,
-    size: tuple[float, float, float],
-    center: tuple[float, float, float],
-    material_id: str,
-):
-    part = Box(*size, align=(Align.CENTER, Align.CENTER, Align.CENTER)).move(
-        Location(center)
-    )
-    part.label = label
-    part.metadata = PartMetadata(material_id=material_id, fixed=True)
-    return part
+def _make_fixed_rail() -> Compound:
+    rail_path_points = [
+        (-280.0, 0.0, 140.0),
+        (-240.0, 0.0, 128.0),
+        (-240.0, 110.0, 110.0),
+        (-40.0, 110.0, 86.0),
+        (240.0, 110.0, 50.0),
+        (315.0, 0.0, 17.0),
+    ]
+
+    with BuildLine() as route_line:
+        Polyline(rail_path_points)
+
+    with BuildSketch(Plane(origin=rail_path_points[0])) as route_section:
+        Rectangle(12.0, 6.0)
+
+    with BuildPart() as route:
+        sweep(route_section.sketch, path=route_line.line)
+
+    rail = route.part
+    rail.label = "guide_rail"
+    rail.metadata = PartMetadata(material_id="hdpe", fixed=True)
+    return rail
 
 
 def build() -> Compound:
-    entry_box = _make_box(
-        "entry_box",
-        (160.0, 120.0, 38.0),
-        (-225.0, 0.0, 33.0),
-        "hdpe",
-    )
-    entry_box = entry_box - Box(
-        152.0,
-        120.0,
-        30.0,
-        align=(Align.CENTER, Align.CENTER, Align.CENTER),
-    ).move(Location((-225.0, 0.0, 33.0)))
-    entry_box.label = "entry_box"
-    entry_box.metadata = PartMetadata(material_id="hdpe", fixed=True)
-
-    parts = [
-        _make_box(
-            "slide_base",
-            (620.0, 140.0, 10.0),
-            (20.0, 0.0, 9.0),
-            "aluminum_6061",
-        ),
-        entry_box,
-        _make_box(
-            "guide_wall_left",
-            (420.0, 18.0, 42.0),
-            (-40.0, -66.0, 35.0),
-            "hdpe",
-        ),
-        _make_box(
-            "guide_wall_right",
-            (390.0, 18.0, 42.0),
-            (0.0, 66.0, 35.0),
-            "hdpe",
-        ),
-        _make_box(
-            "blocker_bypass_panel",
-            (200.0, 18.0, 65.0),
-            (145.0, 42.0, 46.5),
-            "hdpe",
-        ),
-        _make_box(
-            "goal_pocket",
-            (110.0, 90.0, 32.0),
-            (315.0, 0.0, 30.0),
-            "hdpe",
-        ),
-        _make_box(
-            "solution_assembly",
-            (10.0, 10.0, 10.0),
-            (-280.0, 0.0, 24.0),
-            "abs",
-        ),
-    ]
-    assembly = Compound(children=parts)
+    assembly = Compound(children=[_make_fixed_rail()])
     assembly.label = "low_friction_route"
     assembly.metadata = CompoundMetadata()
     return assembly

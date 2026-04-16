@@ -10,145 +10,68 @@ constraints:
   planner_target_max_unit_cost_usd: 50.0
   planner_target_max_weight_g: 980.0
 manufactured_parts:
-- part_name: slide_base
-  part_id: slide_base
+- part_name: guide_rail
+  part_id: guide_rail
   manufacturing_method: CNC
-  material_id: aluminum_6061
+  material_id: hdpe
   quantity: 1
-  part_volume_mm3: 86800.0
+  part_volume_mm3: 55238.4
   stock_bbox_mm:
     x: 620.0
-    y: 140.0
-    z: 10.0
-  stock_volume_mm3: 868000.0
-  removed_volume_mm3: 781200.0
-  estimated_unit_cost_usd: 14.5
-- part_name: entry_box
-  part_id: entry_box
-  manufacturing_method: CNC
-  material_id: hdpe
-  quantity: 1
-  part_volume_mm3: 21000.0
-  stock_bbox_mm:
-    x: 160.0
     y: 120.0
-    z: 38.0
-  stock_volume_mm3: 729600.0
-  removed_volume_mm3: 708600.0
-  estimated_unit_cost_usd: 5.0
-- part_name: guide_wall_left
-  part_id: guide_wall_left
-  manufacturing_method: CNC
-  material_id: hdpe
-  quantity: 1
-  part_volume_mm3: 16000.0
-  stock_bbox_mm:
-    x: 420.0
-    y: 18.0
-    z: 42.0
-  stock_volume_mm3: 317520.0
-  removed_volume_mm3: 301520.0
-  estimated_unit_cost_usd: 5.75
-- part_name: guide_wall_right
-  part_id: guide_wall_right
-  manufacturing_method: CNC
-  material_id: hdpe
-  quantity: 1
-  part_volume_mm3: 15000.0
-  stock_bbox_mm:
-    x: 390.0
-    y: 18.0
-    z: 42.0
-  stock_volume_mm3: 294840.0
-  removed_volume_mm3: 279840.0
-  estimated_unit_cost_usd: 5.25
-- part_name: blocker_bypass_panel
-  part_id: blocker_bypass_panel
-  manufacturing_method: CNC
-  material_id: hdpe
-  quantity: 1
-  part_volume_mm3: 14000.0
-  stock_bbox_mm:
-    x: 200.0
-    y: 18.0
-    z: 65.0
-  stock_volume_mm3: 234000.0
-  removed_volume_mm3: 220000.0
-  estimated_unit_cost_usd: 4.5
-- part_name: goal_pocket
-  part_id: goal_pocket
-  manufacturing_method: CNC
-  material_id: hdpe
-  quantity: 1
-  part_volume_mm3: 19000.0
-  stock_bbox_mm:
-    x: 110.0
-    y: 90.0
-    z: 32.0
-  stock_volume_mm3: 316800.0
-  removed_volume_mm3: 297800.0
-  estimated_unit_cost_usd: 4.5
+    z: 50.0
+  stock_volume_mm3: 3720000.0
+  removed_volume_mm3: 3664761.6
+  estimated_unit_cost_usd: 8.0
 final_assembly:
   - name: low_friction_route
     config:
-  - name: slide_base
-    config:
-  - name: entry_box
-    config:
-  - name: guide_wall_left
-    config:
-  - name: guide_wall_right
-    config:
-  - name: blocker_bypass_panel
-    config:
-  - name: goal_pocket
-    config:
-
+totals:
+  estimated_unit_cost_usd: 8.0
+  estimated_weight_g: 52.48
+  estimate_confidence: high
 coarse_payload_trajectory:
   payload_part_names:
-    - solution_assembly
+    - guide_rail
   reference_frame: world
   sample_stride_s: 0.25
   anchors:
     - t_s: 0.0
       reference_point: build_zone_start
-      pos_mm: [-280.0, 0.0, 24.0]
+      pos_mm: [-280.0, 0.0, 160.0]
       rot_deg: [0.0, 0.0, 0.0]
       position_tolerance_mm: [1.2, 1.2, 1.2]
       rotation_tolerance_deg: [0.1, 0.1, 5.0]
       build_zone_valid: true
     - t_s: 1.5
       reference_point: left_capture_lane
-      pos_mm: [-240.0, 0.0, 24.0]
+      pos_mm: [-240.0, 0.0, 148.0]
       rot_deg: [0.0, 0.0, 0.0]
       position_tolerance_mm: [1.2, 1.2, 1.2]
       rotation_tolerance_deg: [0.1, 0.1, 5.0]
     - t_s: 2.4
       reference_point: bypass_corner
-      pos_mm: [-240.0, 110.0, 24.0]
+      pos_mm: [-240.0, 110.0, 130.0]
       rot_deg: [0.0, 0.0, 0.0]
       position_tolerance_mm: [1.2, 1.2, 1.2]
       rotation_tolerance_deg: [0.1, 0.1, 5.0]
     - t_s: 3.6
       reference_point: goal_lane_entry
-      pos_mm: [-40.0, 110.0, 24.0]
+      pos_mm: [-40.0, 110.0, 106.0]
       rot_deg: [0.0, 0.0, 0.0]
       position_tolerance_mm: [1.2, 1.2, 1.2]
       rotation_tolerance_deg: [0.1, 0.1, 5.0]
     - t_s: 4.8
       reference_point: goal_approach
-      pos_mm: [240.0, 110.0, 24.0]
+      pos_mm: [240.0, 110.0, 70.0]
       rot_deg: [0.0, 0.0, 0.0]
       position_tolerance_mm: [1.2, 1.2, 1.2]
       rotation_tolerance_deg: [0.1, 0.1, 5.0]
     - t_s: 6.0
       reference_point: goal_zone_contact
-      pos_mm: [315.0, 0.0, 57.0]
+      pos_mm: [315.0, 0.0, 37.0]
       rot_deg: [0.0, 0.0, 0.0]
       position_tolerance_mm: [1.2, 1.2, 1.2]
       rotation_tolerance_deg: [0.1, 0.1, 5.0]
       goal_zone_contact: true
-totals:
-  estimated_unit_cost_usd: 39.5
-  estimated_weight_g: 315.11
-  estimate_confidence: high
+dfm_suggestions: []

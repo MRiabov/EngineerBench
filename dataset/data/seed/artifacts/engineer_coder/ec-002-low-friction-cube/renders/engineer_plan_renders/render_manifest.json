@@ -1,14 +1,14 @@
 {
   "version": "1.0",
-  "bundle_id": "0bcf5545-55c7-525f-8935-327cf6f17320",
-  "created_at": "2026-04-16T18:45:48.985939+00:00",
+  "bundle_id": "c96211cd-2a2e-5a32-aa81-e387150e7e4f",
+  "created_at": "2026-04-16T19:45:11.075073+00:00",
   "episode_id": "ae9c889e-5dd8-5a38-a748-52a29dcbbde7",
   "worker_session_id": "ec-002-low-friction-cube",
-  "revision": "b5d8ee3a2209c65a8c874b55746206dfd7d4c3fc",
-  "scene_hash": "bc89cb43408097b21bfe25f1d779c8ae0daa85c84d64b769bb1a2762c9bd5e03",
+  "revision": "742cd5a9f8c93a5c49125fa42657b58cb67f9605",
+  "scene_hash": "5d3fd771ecfef4407fe6a21338f5d0586ec35cc79e9c8533b0d80f665deadc46",
   "bundle_path": "renders/engineer_plan_renders",
-  "environment_version": "1.0",
-  "source_script_sha256": null,
+  "environment_version": null,
+  "source_script_sha256": "25b48ba9415710a1c59187079661ea310f6534f92a1afba3ae420685200b23fd",
   "preview_evidence_paths": [
     "renders/engineer_plan_renders/low_friction_route_render_e15_a0.png",
     "renders/engineer_plan_renders/low_friction_route_render_e15_a135.png",
@@ -46,6 +46,42 @@
         "rgb": "renders/engineer_plan_renders/low_friction_route_render_e15_a0.png",
         "depth": "renders/engineer_plan_renders/low_friction_route_render_e15_a0_depth.png",
         "segmentation": "renders/engineer_plan_renders/low_friction_route_render_e15_a0_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/low_friction_route_render_e15_a45.png": {
+      "modality": "rgb",
+      "group_key": "low_friction_route_render_e15_a45",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/low_friction_route_render_e15_a45.png",
+        "depth": "renders/engineer_plan_renders/low_friction_route_render_e15_a45_depth.png",
+        "segmentation": "renders/engineer_plan_renders/low_friction_route_render_e15_a45_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/low_friction_route_render_e15_a90.png": {
+      "modality": "rgb",
+      "group_key": "low_friction_route_render_e15_a90",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/low_friction_route_render_e15_a90.png",
+        "depth": "renders/engineer_plan_renders/low_friction_route_render_e15_a90_depth.png",
+        "segmentation": "renders/engineer_plan_renders/low_friction_route_render_e15_a90_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -144,42 +180,6 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/engineer_plan_renders/low_friction_route_render_e15_a45.png": {
-      "modality": "rgb",
-      "group_key": "low_friction_route_render_e15_a45",
-      "view_index": null,
-      "orbit_pitch": null,
-      "orbit_yaw": null,
-      "siblings": {
-        "rgb": "renders/engineer_plan_renders/low_friction_route_render_e15_a45.png",
-        "depth": "renders/engineer_plan_renders/low_friction_route_render_e15_a45_depth.png",
-        "segmentation": "renders/engineer_plan_renders/low_friction_route_render_e15_a45_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": []
-    },
-    "renders/engineer_plan_renders/low_friction_route_render_e15_a90.png": {
-      "modality": "rgb",
-      "group_key": "low_friction_route_render_e15_a90",
-      "view_index": null,
-      "orbit_pitch": null,
-      "orbit_yaw": null,
-      "siblings": {
-        "rgb": "renders/engineer_plan_renders/low_friction_route_render_e15_a90.png",
-        "depth": "renders/engineer_plan_renders/low_friction_route_render_e15_a90_depth.png",
-        "segmentation": "renders/engineer_plan_renders/low_friction_route_render_e15_a90_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": []
-    },
     "renders/engineer_plan_renders/low_friction_route_render_e45_a0.png": {
       "modality": "rgb",
       "group_key": "low_friction_route_render_e45_a0",
@@ -190,6 +190,42 @@
         "rgb": "renders/engineer_plan_renders/low_friction_route_render_e45_a0.png",
         "depth": "renders/engineer_plan_renders/low_friction_route_render_e45_a0_depth.png",
         "segmentation": "renders/engineer_plan_renders/low_friction_route_render_e45_a0_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/low_friction_route_render_e45_a45.png": {
+      "modality": "rgb",
+      "group_key": "low_friction_route_render_e45_a45",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/low_friction_route_render_e45_a45.png",
+        "depth": "renders/engineer_plan_renders/low_friction_route_render_e45_a45_depth.png",
+        "segmentation": "renders/engineer_plan_renders/low_friction_route_render_e45_a45_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/low_friction_route_render_e45_a90.png": {
+      "modality": "rgb",
+      "group_key": "low_friction_route_render_e45_a90",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/low_friction_route_render_e45_a90.png",
+        "depth": "renders/engineer_plan_renders/low_friction_route_render_e45_a90_depth.png",
+        "segmentation": "renders/engineer_plan_renders/low_friction_route_render_e45_a90_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -288,42 +324,6 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/engineer_plan_renders/low_friction_route_render_e45_a45.png": {
-      "modality": "rgb",
-      "group_key": "low_friction_route_render_e45_a45",
-      "view_index": null,
-      "orbit_pitch": null,
-      "orbit_yaw": null,
-      "siblings": {
-        "rgb": "renders/engineer_plan_renders/low_friction_route_render_e45_a45.png",
-        "depth": "renders/engineer_plan_renders/low_friction_route_render_e45_a45_depth.png",
-        "segmentation": "renders/engineer_plan_renders/low_friction_route_render_e45_a45_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": []
-    },
-    "renders/engineer_plan_renders/low_friction_route_render_e45_a90.png": {
-      "modality": "rgb",
-      "group_key": "low_friction_route_render_e45_a90",
-      "view_index": null,
-      "orbit_pitch": null,
-      "orbit_yaw": null,
-      "siblings": {
-        "rgb": "renders/engineer_plan_renders/low_friction_route_render_e45_a90.png",
-        "depth": "renders/engineer_plan_renders/low_friction_route_render_e45_a90_depth.png",
-        "segmentation": "renders/engineer_plan_renders/low_friction_route_render_e45_a90_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": []
-    },
     "renders/engineer_plan_renders/low_friction_route_render_e75_a0.png": {
       "modality": "rgb",
       "group_key": "low_friction_route_render_e75_a0",
@@ -334,6 +334,42 @@
         "rgb": "renders/engineer_plan_renders/low_friction_route_render_e75_a0.png",
         "depth": "renders/engineer_plan_renders/low_friction_route_render_e75_a0_depth.png",
         "segmentation": "renders/engineer_plan_renders/low_friction_route_render_e75_a0_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/low_friction_route_render_e75_a45.png": {
+      "modality": "rgb",
+      "group_key": "low_friction_route_render_e75_a45",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/low_friction_route_render_e75_a45.png",
+        "depth": "renders/engineer_plan_renders/low_friction_route_render_e75_a45_depth.png",
+        "segmentation": "renders/engineer_plan_renders/low_friction_route_render_e75_a45_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/low_friction_route_render_e75_a90.png": {
+      "modality": "rgb",
+      "group_key": "low_friction_route_render_e75_a90",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/low_friction_route_render_e75_a90.png",
+        "depth": "renders/engineer_plan_renders/low_friction_route_render_e75_a90_depth.png",
+        "segmentation": "renders/engineer_plan_renders/low_friction_route_render_e75_a90_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -424,42 +460,6 @@
         "rgb": "renders/engineer_plan_renders/low_friction_route_render_e75_a315.png",
         "depth": "renders/engineer_plan_renders/low_friction_route_render_e75_a315_depth.png",
         "segmentation": "renders/engineer_plan_renders/low_friction_route_render_e75_a315_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": []
-    },
-    "renders/engineer_plan_renders/low_friction_route_render_e75_a45.png": {
-      "modality": "rgb",
-      "group_key": "low_friction_route_render_e75_a45",
-      "view_index": null,
-      "orbit_pitch": null,
-      "orbit_yaw": null,
-      "siblings": {
-        "rgb": "renders/engineer_plan_renders/low_friction_route_render_e75_a45.png",
-        "depth": "renders/engineer_plan_renders/low_friction_route_render_e75_a45_depth.png",
-        "segmentation": "renders/engineer_plan_renders/low_friction_route_render_e75_a45_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": []
-    },
-    "renders/engineer_plan_renders/low_friction_route_render_e75_a90.png": {
-      "modality": "rgb",
-      "group_key": "low_friction_route_render_e75_a90",
-      "view_index": null,
-      "orbit_pitch": null,
-      "orbit_yaw": null,
-      "siblings": {
-        "rgb": "renders/engineer_plan_renders/low_friction_route_render_e75_a90.png",
-        "depth": "renders/engineer_plan_renders/low_friction_route_render_e75_a90_depth.png",
-        "segmentation": "renders/engineer_plan_renders/low_friction_route_render_e75_a90_segmentation.png",
         "svg": null,
         "dxf": null
       },
