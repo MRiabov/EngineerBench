@@ -105,7 +105,6 @@ def tetrahedralize(
         raise FileNotFoundError(f"Input mesh not found: {input_path}")
 
     max_retries = 1
-    repaired = False
 
     for attempt in range(max_retries + 1):
         try:
@@ -129,7 +128,6 @@ def tetrahedralize(
                     # Create a temporary repaired file to avoid overwriting original input if needed,
                     # but here we'll just overwrite it for simplicity in the pipeline
                     repair_mesh_file(input_path, input_path, session_id=session_id)
-                    repaired = True
                     continue
                 except Exception as repair_error:
                     logger.error(

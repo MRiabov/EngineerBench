@@ -2228,8 +2228,6 @@ def _run_integration_command(
     cleanup_target_pids: list[int] = []
 
     try:
-        pythonpath = os.environ.get("PYTHONPATH", "")
-        combined_pythonpath = f"{pythonpath}:." if pythonpath else "."
         session_log_root = log_dir / "sessions"
         os.environ["WORKER_RENDERER_LOG_DIR"] = str(log_dir)
         _start_worker_renderer_container(

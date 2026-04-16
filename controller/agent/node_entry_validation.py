@@ -64,8 +64,8 @@ from shared.models.simulation import SimulationResult
 from shared.script_contracts import (
     BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
     BENCHMARK_SCRIPT_PATH,
+    PAYLOAD_TRAJECTORY_DEFINITION_PATH,
     SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
-    SOLUTION_SCRIPT_PATH,
     authored_script_path_for_agent,
     authored_script_path_for_reviewer_stage,
     plan_path_for_agent,
@@ -90,7 +90,6 @@ from worker_heavy.utils.file_validation import (
     validate_assembly_definition_yaml,
     validate_benchmark_assembly_motion_contract,
     validate_benchmark_definition_yaml,
-    validate_payload_trajectory_definition_yaml,
     validate_plan_md_structure,
     validate_plan_refusal,
     validate_planner_evidence_script_layout_contract,
@@ -995,7 +994,7 @@ async def _materialize_reviewer_handover(
             raise last_exc
         raise RuntimeError(f"{operation_name} failed without exception")
 
-    script_path = authored_script_path_for_reviewer_stage(reviewer_stage)
+    script_path = authored_script_path_for_reviewer_stage(reviewer_stage).as_posix()
     if not await client.exists(script_path):
         return f"{script_path} missing; cannot materialize review handover."
 
@@ -1832,7 +1831,6 @@ async def validate_seeded_workspace_handoff_artifacts(
     errors: list[NodeEntryValidationError] = []
     contents: dict[str, str] = {}
     benchmark_definition_model: BenchmarkDefinition | None = None
-    assembly_definition_model: AssemblyDefinition | None = None
     benchmark_assembly_definition_model: AssemblyDefinition | None = None
     manufacturing_config_model = None
 
@@ -1989,36 +1987,7 @@ async def validate_seeded_workspace_handoff_artifacts(
                         for message in motion_errors
                     )
                 else:
-                    assembly_definition_model = assembly_result
-            continue
-
-        if rel_path == "payload_trajectory_definition.yaml":
-            is_valid, precise_result = validate_payload_trajectory_definition_yaml(
-                content,
-                benchmark_definition=benchmark_definition_model,
-                coarse_motion_forecast=(
-                    assembly_definition_model.motion_forecast
-                    if assembly_definition_model is not None
-                    else None
-                ),
-                expected_moving_part_names=(
-                    [part.part_name for part in assembly_definition_model.moving_parts]
-                    if assembly_definition_model is not None
-                    else None
-                ),
-                assembly_definition=assembly_definition_model,
-                benchmark_assembly_definition=benchmark_assembly_definition_model,
-                validate_clearance=False,
-                session_id=worker_client.session_id,
-            )
-            if not is_valid and isinstance(precise_result, list):
-                errors.extend(
-                    _seeded_schema_error(
-                        message=message,
-                        artifact_path=rel_path,
-                    )
-                    for message in precise_result
-                )
+                    pass
             continue
 
         try:
@@ -2119,12 +2088,22 @@ async def validate_seeded_workspace_handoff_artifacts(
             )
 
     if (
-        "payload_trajectory_definition.yaml" in present_paths
+        target_node
+        in {
+            AgentName.ENGINEER_CODER,
+            AgentName.ENGINEER_EXECUTION_REVIEWER,
+        }
         and benchmark_definition_model is not None
-        and assembly_definition_model is not None
+        and PAYLOAD_TRAJECTORY_DEFINITION_PATH not in present_paths
     ):
-        errors.extend(
-            await _validate_payload_trajectory_clearance_on_worker(worker_client)
+        errors.append(
+            _seeded_schema_error(
+                message=(
+                    "payload_trajectory_definition.yaml missing; every benchmark-"
+                    "backed workspace must define the payload trajectory"
+                ),
+                artifact_path=PAYLOAD_TRAJECTORY_DEFINITION_PATH,
+            )
         )
 
     render_error = await validate_render_images_non_black(

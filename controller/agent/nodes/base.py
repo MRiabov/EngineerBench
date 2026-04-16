@@ -44,7 +44,7 @@ from controller.observability.langfuse import (
     init_tracing,
     report_usage_to_current_observation,
 )
-from controller.observability.tracing import record_worker_events
+from controller.observability.tracing import record_worker_events, sync_asset
 from controller.persistence.db import get_sessionmaker
 from controller.persistence.models import Asset, Trace
 from controller.utils import EpisodeIdentity, resolve_episode_id
@@ -257,6 +257,10 @@ class BaseNode:
                         manifest_path, bypass_agent_permissions=True
                     )
                     render_manifest = RenderManifest.model_validate_json(manifest_raw)
+                    with suppress(Exception):
+                        await sync_asset(
+                            self.ctx.episode_id, manifest_path, manifest_raw
+                        )
                 except Exception:
                     continue
                 preview_paths = [
@@ -292,6 +296,8 @@ class BaseNode:
                     candidate, bypass_agent_permissions=True
                 )
                 render_manifest = RenderManifest.model_validate_json(manifest_raw)
+                with suppress(Exception):
+                    await sync_asset(self.ctx.episode_id, candidate, manifest_raw)
             except Exception:
                 continue
 
@@ -318,7 +324,9 @@ class BaseNode:
 
         return []
 
-    async def _ensure_current_revision_render_inspection(self) -> list[str]:
+    async def _ensure_current_revision_render_inspection(
+        self, node_type: AgentName
+    ) -> list[str]:
         """
         Deterministically inspect at least one current-revision render when present.
 
@@ -336,7 +344,27 @@ class BaseNode:
             except Exception as exc:
                 db_callback.record_tool_end_sync(trace_id, str(exc), is_error=True)
                 raise
-            self._record_tool_usage("inspect_media", result)
+            with suppress(Exception):
+                attachment_urls = list(result.data_urls or [])
+                if not attachment_urls and result.data_url:
+                    attachment_urls = [result.data_url]
+                if attachment_urls:
+                    future = asyncio.run_coroutine_threadsafe(
+                        record_worker_events(
+                            episode_id=self.ctx.episode_id,
+                            events=[
+                                LlmMediaAttachedEvent(
+                                    path=result.path,
+                                    mime_type=result.mime_type,
+                                    media_kind=result.media_kind,
+                                    node_name=node_type,
+                                    attached_media_count=len(attachment_urls),
+                                )
+                            ],
+                        ),
+                        self.ctx.main_loop,
+                    )
+                    future.result(timeout=5.0)
             db_callback.record_tool_end_sync(
                 trace_id, self._serialize_tool_observation(result)
             )
@@ -357,7 +385,27 @@ class BaseNode:
             except Exception as exc:
                 db_callback.record_tool_end_sync(trace_id, str(exc), is_error=True)
                 raise
-            self._record_tool_usage("inspect_media", result)
+            with suppress(Exception):
+                attachment_urls = list(result.data_urls or [])
+                if not attachment_urls and result.data_url:
+                    attachment_urls = [result.data_url]
+                if attachment_urls:
+                    future = asyncio.run_coroutine_threadsafe(
+                        record_worker_events(
+                            episode_id=self.ctx.episode_id,
+                            events=[
+                                LlmMediaAttachedEvent(
+                                    path=result.path,
+                                    mime_type=result.mime_type,
+                                    media_kind=result.media_kind,
+                                    node_name=node_type,
+                                    attached_media_count=len(attachment_urls),
+                                )
+                            ],
+                        ),
+                        self.ctx.main_loop,
+                    )
+                    future.result(timeout=5.0)
             db_callback.record_tool_end_sync(
                 trace_id, self._serialize_tool_observation(result)
             )
@@ -374,6 +422,8 @@ class BaseNode:
         with suppress(Exception):
             content = await self.ctx.worker_client.read_file_optional(path)
             if content is not None:
+                with suppress(Exception):
+                    await sync_asset(self.ctx.episode_id, path, content)
                 return content
         return missing_text
 
@@ -382,6 +432,8 @@ class BaseNode:
         content = await self.ctx.worker_client.read_file_optional(path)
         if content is None:
             raise ValueError(f"required workspace file missing: {path}")
+        with suppress(Exception):
+            await sync_asset(self.ctx.episode_id, path, content)
         return content
 
     async def _next_review_round(self, review_slug: str) -> int:

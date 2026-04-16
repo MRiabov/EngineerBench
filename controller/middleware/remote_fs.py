@@ -16,6 +16,7 @@ from controller.observability.middleware_helper import (
     record_events,
     record_simulation_result,
 )
+from controller.observability.tracing import sync_asset
 from controller.persistence.db import get_sessionmaker
 from controller.persistence.models import Asset
 from shared.agents.config import resolve_agents_config_path
@@ -380,7 +381,9 @@ class RemoteFilesystemMiddleware:
                 continue
             seen_paths.add(candidate_path)
             try:
-                binary = await self.client.read_file_binary(candidate_path)
+                binary = await self.client.read_file_binary(
+                    candidate_path, bypass_agent_permissions=True
+                )
                 render_metadata = await self._load_render_metadata(candidate_path)
                 path_str = candidate_path
                 break
@@ -479,6 +482,12 @@ class RemoteFilesystemMiddleware:
             data_urls=data_urls,
         )
 
+        with suppress(Exception):
+            if media_kind in {"image", "video_frames"}:
+                await sync_asset(self.episode_id, result.path)
+
+        review_stage = str(getattr(self.agent_role, "value", self.agent_role))
+
         await record_events(
             episode_id=self.episode_id,
             events=[
@@ -495,7 +504,7 @@ class RemoteFilesystemMiddleware:
                     media_kind=result.media_kind,
                     attached_to_model=result.attached_to_model,
                     attached_media_count=result.attached_media_count,
-                    review_stage=str(self.agent_role.value),
+                    review_stage=review_stage,
                 ),
             ],
         )

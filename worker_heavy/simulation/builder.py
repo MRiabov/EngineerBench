@@ -583,7 +583,6 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
 
         # 2. Add parts from assembly
         parts_data = CommonAssemblyTraverser.traverse(assembly)
-        parts_by_name = {d.label: d for d in parts_data}
 
         for data in parts_data:
             if data.weld_target:
@@ -777,9 +776,9 @@ class GenesisSimulationBuilder(SimulationBuilderBase):
 
         custom_cfg_path = self.output_dir / "manufacturing_config.yaml"
         if custom_cfg_path.exists():
-            mfg_config = load_merged_config(custom_cfg_path)
+            load_merged_config(custom_cfg_path)
         else:
-            mfg_config = load_config()
+            load_config()
 
         for data in parts_data:
             mesh_path_base = self.assets_dir / data.label

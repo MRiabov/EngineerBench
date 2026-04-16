@@ -103,7 +103,6 @@ def render(output: Path):
 
     title_font = load_font(FONT, 38)
     subtitle_font = load_font(FONT, 23)
-    header_font = load_font(FONT, 23)
     node_title_font = load_font(FONT, 24)
     node_enum_font = load_font(MONO, 18)
     small_font = load_font(FONT, 18)
