@@ -4,7 +4,7 @@
   "created_at": "2026-04-15T18:13:00.387622+00:00",
   "episode_id": "584bb03a-71f0-56cb-a01b-80fe3b5de05d",
   "worker_session_id": "seed-renders-br-001-sideways-ball-review-791cd819",
-  "revision": "0abb58bcd946bcae1cd5f5ed13048b88fb43c45b",
+  "revision": "0bbfd3e782a8ccd48cb13ca101233a558806dae1",
   "scene_hash": "7ca3f7efcc3b2941cf9511e35ebf942cb5bfa5923a20122c2dc3b795bb8fb4af",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",
