@@ -13,16 +13,13 @@ from pathlib import Path
 
 import numpy as np
 import structlog
-import yaml
 from build123d import Compound
 from PIL import Image
 
 from shared.agents import get_image_render_resolution
 from shared.enums import ZoneType
 from shared.models.schemas import (
-    AssemblyDefinition,
     BenchmarkDefinition,
-    PayloadTrajectoryDefinition,
 )
 from shared.models.simulation import RendererCapabilities, RenderMode
 from shared.rendering import (
@@ -85,107 +82,6 @@ class PreviewRenderResult:
     saved_paths: list[str]
     legend_by_path: dict[str, list[SegmentationLegendEntry]]
     depth_ranges_by_path: dict[str, tuple[float, float]]
-
-
-def _as_point3(value: object) -> tuple[float, float, float] | None:
-    if not isinstance(value, (list, tuple)) or len(value) != 3:
-        return None
-    try:
-        return (float(value[0]), float(value[1]), float(value[2]))
-    except Exception:
-        return None
-
-
-def resolve_payload_path_points(
-    workspace_root: Path,
-    *,
-    benchmark_definition: BenchmarkDefinition | None = None,
-) -> list[tuple[float, float, float]] | None:
-    """Resolve the best available payload-path polyline for overlay rendering."""
-
-    candidate_files = (
-        workspace_root / "payload_trajectory_definition.yaml",
-        workspace_root / "assembly_definition.yaml",
-        workspace_root / "benchmark_definition.yaml",
-    )
-
-    for candidate in candidate_files:
-        if not candidate.exists() or not candidate.is_file():
-            continue
-        try:
-            raw_payload = yaml.safe_load(candidate.read_text(encoding="utf-8")) or {}
-        except Exception:
-            continue
-        if not isinstance(raw_payload, dict):
-            continue
-
-        if candidate.name == "payload_trajectory_definition.yaml":
-            try:
-                definition = PayloadTrajectoryDefinition.model_validate(raw_payload)
-            except Exception:
-                continue
-            points: list[tuple[float, float, float]] = []
-            initial_point = _as_point3(definition.initial_pose.pos_mm)
-            if initial_point is not None:
-                points.append(initial_point)
-            for anchor in definition.anchors:
-                point = _as_point3(anchor.pos_mm)
-                if point is not None:
-                    points.append(point)
-            if len(points) >= 2:
-                return points
-            continue
-
-        if candidate.name == "assembly_definition.yaml":
-            try:
-                definition = AssemblyDefinition.model_validate(raw_payload)
-            except Exception:
-                continue
-            motion_forecast = definition.motion_forecast
-            if motion_forecast is None:
-                continue
-            points = [
-                point
-                for point in (
-                    _as_point3(anchor.pos_mm) for anchor in motion_forecast.anchors
-                )
-                if point is not None
-            ]
-            if len(points) >= 2:
-                return points
-            continue
-
-        if candidate.name == "benchmark_definition.yaml":
-            try:
-                definition = BenchmarkDefinition.model_validate(raw_payload)
-            except Exception:
-                continue
-            start_point = _as_point3(definition.payload.start_position)
-            goal = definition.objectives.goal_zone
-            goal_center = (
-                (float(goal.min[0]) + float(goal.max[0])) / 2.0,
-                (float(goal.min[1]) + float(goal.max[1])) / 2.0,
-                (float(goal.min[2]) + float(goal.max[2])) / 2.0,
-            )
-            points = [
-                point for point in (start_point, goal_center) if point is not None
-            ]
-            if len(points) >= 2:
-                return points
-
-    if benchmark_definition is not None:
-        start_point = _as_point3(benchmark_definition.payload.start_position)
-        goal = benchmark_definition.objectives.goal_zone
-        goal_center = (
-            (float(goal.min[0]) + float(goal.max[0])) / 2.0,
-            (float(goal.min[1]) + float(goal.max[1])) / 2.0,
-            (float(goal.min[2]) + float(goal.max[2])) / 2.0,
-        )
-        points = [point for point in (start_point, goal_center) if point is not None]
-        if len(points) >= 2:
-            return points
-
-    return None
 
 
 def _rgba_from_hex(color: str, alpha: float = 1.0) -> tuple[float, float, float, float]:

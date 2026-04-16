@@ -1241,7 +1241,12 @@ def validate_planner_handoff_cross_contract(
 
     moving_part_names = [part.part_name for part in assembly_definition.moving_parts]
     motion_forecast = assembly_definition.motion_forecast
-    if motion_forecast is not None:
+    if is_engineer_planner and motion_forecast is None:
+        errors.append(
+            "assembly_definition.motion_forecast is required for engineer handoffs"
+        )
+    elif motion_forecast is not None:
+        expected_moving_part_names = moving_part_names if moving_part_names else None
         errors.extend(
             _validate_motion_path_contract(
                 artifact_name="assembly_definition.yaml.motion_forecast",
@@ -1251,13 +1256,8 @@ def validate_planner_handoff_cross_contract(
                 anchors=motion_forecast.anchors,
                 terminal_event=motion_forecast.terminal_event,
                 budget_role=_motion_forecast_policy_role_for_stage(planner_node_type),
-                expected_moving_part_names=moving_part_names,
+                expected_moving_part_names=expected_moving_part_names,
             )
-        )
-    elif is_engineer_planner and moving_part_names:
-        errors.append(
-            "assembly_definition.motion_forecast is required when final_assembly "
-            "contains moving engineer-owned parts"
         )
 
     errors.extend(
@@ -1646,10 +1646,10 @@ def validate_node_output(
     benchmark_assembly_definition_model = assembly_definition_models.get(
         "benchmark_assembly_definition.yaml"
     )
-    if (
-        payload_trajectory_definition_content is not None
-        and node_enum == AgentName.ENGINEER_CODER
-    ):
+    if payload_trajectory_definition_content is not None and node_enum in {
+        AgentName.ENGINEER_PLANNER,
+        AgentName.ENGINEER_CODER,
+    }:
         is_valid, precise_result = validate_payload_trajectory_definition_yaml(
             payload_trajectory_definition_content,
             benchmark_definition=benchmark_definition_model,

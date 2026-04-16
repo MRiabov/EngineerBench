@@ -270,7 +270,7 @@ class MotionForecastTerminalEvent(StrictContractModel):
 
 
 class MotionForecast(StrictContractModel):
-    """Sparse planner-authored coarse motion contract for engineer-owned parts."""
+    """Sparse planner-authored coarse payload trajectory contract."""
 
     moving_part_names: list[str] = Field(default_factory=list)
     reference_frame: Literal["world"] = "world"

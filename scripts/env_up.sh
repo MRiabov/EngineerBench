@@ -179,10 +179,8 @@ echo "Worker Light started (PID: $WORKER_LIGHT_PID)"
 # Start Worker Renderer in Docker (port 18003)
 export WORKER_RENDERER_LOG_DIR="$LOG_DIR"
 WORKER_RENDERER_COMPOSE_CMD=(docker compose -p "$COMPOSE_PROJECT_NAME" -f docker-compose.yml)
-if ! docker image inspect problemologist-ai-worker-renderer:latest >/dev/null 2>&1; then
-  echo "Building Worker Renderer image..."
-  docker build -f worker_renderer/Dockerfile -t problemologist-ai-worker-renderer:latest .
-fi
+echo "Building Worker Renderer image..."
+docker build -f worker_renderer/Dockerfile -t problemologist-ai-worker-renderer:latest .
 echo "Starting Worker Renderer container..."
 "${WORKER_RENDERER_COMPOSE_CMD[@]}" up -d --no-deps worker-renderer > "$LOG_DIR/worker_renderer.log" 2>&1
 WORKER_RENDERER_CONTAINER_ID=$("${WORKER_RENDERER_COMPOSE_CMD[@]}" ps -q worker-renderer | tr -d '\r')
@@ -219,14 +217,18 @@ PY
 then
   echo "Frontend port ${FRONTEND_PORT} is already in use; skipping npm dev server startup."
 elif [ "$STACK_START_FRONTEND" = "1" ]; then
-  echo "Starting Frontend dev server on port ${FRONTEND_PORT}..."
-  (
-    cd frontend
-    FRONTEND_PID=$(start_detached_service "../$LOG_DIR/frontend.log" npm run dev)
-    echo "$FRONTEND_PID" > "$STACK_PID_DIR/frontend.pid"
-  )
-  FRONTEND_STARTED=true
-  echo "Frontend dev server started (PID: $(cat "$STACK_PID_DIR/frontend.pid"))"
+  if [ -d frontend ]; then
+    echo "Starting Frontend dev server on port ${FRONTEND_PORT}..."
+    (
+      cd frontend
+      FRONTEND_PID=$(start_detached_service "../$LOG_DIR/frontend.log" npm run dev)
+      echo "$FRONTEND_PID" > "$STACK_PID_DIR/frontend.pid"
+    )
+    FRONTEND_STARTED=true
+    echo "Frontend dev server started (PID: $(cat "$STACK_PID_DIR/frontend.pid"))"
+  else
+    echo "Frontend directory is missing; skipping frontend dev server startup."
+  fi
 else
   echo "Skipping Frontend dev server startup for profile '$STACK_PROFILE'."
 fi
