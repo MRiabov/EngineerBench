@@ -67,7 +67,7 @@ async def test_benchmark_planner_cad_reviewer_path():
             prompt="INT-005: Create a simple path planning benchmark with a wall and a goal.",
             backend=SimulatorBackendType.GENESIS,
         )
-        resp = await client.post("/benchmark/generate", json=request.model_dump())
+        resp = await client.post("/api/benchmark/generate", json=request.model_dump())
         assert resp.status_code in [
             200,
             202,
@@ -91,7 +91,7 @@ async def test_benchmark_planner_cad_reviewer_path():
         if initial_episode.status == EpisodeStatus.PLANNED:
             # WP08: Call confirm to continue from planning to execution
             confirm_resp = await client.post(
-                f"/benchmark/{session_id}/confirm",
+                f"/api/benchmark/{session_id}/confirm",
                 json=ConfirmRequest(comment="Looks good").model_dump(),
             )
             assert confirm_resp.status_code in [200, 202]
@@ -312,7 +312,7 @@ async def test_benchmark_request_validation_rejects_invalid_objectives():
     """The benchmark API must reject invalid deterministic objective values."""
     async with AsyncClient(base_url=CONTROLLER_URL, timeout=300.0) as client:
         invalid_generate = await client.post(
-            "/benchmark/generate",
+            "/api/benchmark/generate",
             json={
                 "prompt": "Create a benchmark",
                 "max_cost": -1,
@@ -321,7 +321,7 @@ async def test_benchmark_request_validation_rejects_invalid_objectives():
         assert invalid_generate.status_code == 422
 
         invalid_update = await client.post(
-            f"/benchmark/{uuid.uuid4()}/objectives",
+            f"/api/benchmark/{uuid.uuid4()}/objectives",
             json={
                 "max_cost": 0,
                 "max_weight": -5,

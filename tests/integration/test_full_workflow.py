@@ -28,7 +28,7 @@ async def _wait_for_benchmark_completion(
     confirmed = False
 
     for _ in range(max_attempts):
-        status_resp = await client.get(f"/benchmark/{session_id}")
+        status_resp = await client.get(f"/api/benchmark/{session_id}")
         if status_resp.status_code == 404:
             await asyncio.sleep(1)
             continue
@@ -38,7 +38,7 @@ async def _wait_for_benchmark_completion(
 
         if latest.status == EpisodeStatus.PLANNED and not confirmed:
             confirm_resp = await client.post(
-                f"/benchmark/{session_id}/confirm",
+                f"/api/benchmark/{session_id}/confirm",
                 json=ConfirmRequest(comment="Proceed").model_dump(),
             )
             assert confirm_resp.status_code in {200, 202}, confirm_resp.text
@@ -99,7 +99,7 @@ async def test_full_workflow_end_to_end():
         # 1. Trigger Benchmark Generation
         prompt = "Create a simple box stacking benchmark."
         req = BenchmarkGenerateRequest(prompt=prompt)
-        resp = await client.post("/benchmark/generate", json=req.model_dump())
+        resp = await client.post("/api/benchmark/generate", json=req.model_dump())
         assert resp.status_code == 200, f"Failed to trigger benchmark: {resp.text}"
         benchmark_resp = BenchmarkGenerateResponse.model_validate(resp.json())
         session_id = benchmark_resp.session_id

@@ -991,7 +991,7 @@ async def run_single_eval(
                         worker_light_url=worker_light_url,
                         logger=logger,
                     )
-                    url = f"{controller_url}/benchmark/generate"
+                    url = f"{controller_url}/api/benchmark/generate"
                     payload = {
                         "prompt": task_description,
                         "session_id": session_id,
@@ -1000,7 +1000,9 @@ async def run_single_eval(
                         "seed_dataset": lineage.seed_dataset,
                         "generation_kind": lineage.generation_kind,
                     }
-                    status_url_template = f"{controller_url}/benchmark/{{session_id}}"
+                    status_url_template = (
+                        f"{controller_url}/api/benchmark/{{session_id}}"
+                    )
                     episode_id_key = "episode_id"
                     session_id_key = "session_id"
                 else:
@@ -1250,7 +1252,7 @@ async def run_single_eval(
                                     and not _requires_expected_review_decision(spec)
                                 ):
                                     log.info("eval_planned_confirming")
-                                    confirm_url = f"{controller_url}/benchmark/{session_id}/confirm"
+                                    confirm_url = f"{controller_url}/api/benchmark/{session_id}/confirm"
                                     confirm_resp = await client.post(
                                         confirm_url, json={}
                                     )

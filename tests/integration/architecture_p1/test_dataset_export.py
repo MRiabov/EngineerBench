@@ -74,7 +74,7 @@ async def _wait_for_benchmark_completion(
 
     if planned_episode.status == EpisodeStatus.PLANNED:
         confirm_resp = await client.post(
-            f"/benchmark/{session_id}/confirm",
+            f"/api/benchmark/{session_id}/confirm",
             json=ConfirmRequest(comment="Proceed").model_dump(),
         )
         assert confirm_resp.status_code == 200, confirm_resp.text
@@ -147,7 +147,7 @@ async def test_dataset_export_benchmark_row_round_trip():
             backend=SimulatorBackendType.GENESIS,
         )
         resp = await client.post(
-            "/benchmark/generate", json=benchmark_request.model_dump()
+            "/api/benchmark/generate", json=benchmark_request.model_dump()
         )
         assert resp.status_code in (200, 202), resp.text
         benchmark_session_id = str(
@@ -235,7 +235,7 @@ async def test_dataset_export_solution_row_round_trip():
             backend=SimulatorBackendType.GENESIS,
         )
         resp = await client.post(
-            "/benchmark/generate", json=benchmark_request.model_dump()
+            "/api/benchmark/generate", json=benchmark_request.model_dump()
         )
         assert resp.status_code in (200, 202), resp.text
         benchmark_session_id = str(

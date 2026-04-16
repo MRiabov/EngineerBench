@@ -9,7 +9,7 @@
 | Session header | Most worker and controller-to-worker calls use `X-Session-ID` |
 | Worker filesystem bypass | Internal/system-only escape hatch; requires both a payload flag and `X-System-FS-Bypass: 1` |
 | Backup protection | `/api/ops/backup` requires `X-Backup-Secret` |
-| Controller compatibility | Controller routes are available both under `/api/...` and legacy unprefixed paths for backward compatibility |
+| Controller compatibility | Controller routes are served under `/api/...` |
 
 ## Controller API
 
@@ -174,7 +174,7 @@ curl -X POST http://127.0.0.1:18002/benchmark/validate \
 
 ## Compatibility Notes
 
-- The controller mounts the main route groups under both `/api/...` and the legacy unprefixed paths so older clients and integration tests keep working.
+- The controller mounts the main route groups under `/api/...`; callers should not rely on legacy unprefixed paths.
 - `POST /api/test/episodes` and `/test/episodes` are only available when `IS_INTEGRATION_TEST=true`.
 - `POST /api/agent/run` and `/agent/run` create a run directly, while the episode and benchmark routes are the preferred higher-level entry points for most workflows.
 - `GET /ready` on worker-heavy is the admission gate for heavy compute work; a `503 WORKER_BUSY` response means the instance is already busy with another job.

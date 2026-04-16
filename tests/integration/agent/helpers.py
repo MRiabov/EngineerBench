@@ -88,7 +88,7 @@ async def _fetch_benchmark_session(
     client: httpx.AsyncClient,
     session_id: str,
 ) -> EpisodeResponse | None:
-    response = await client.get(f"{CONTROLLER_URL}/benchmark/{session_id}")
+    response = await client.get(f"{CONTROLLER_URL}/api/benchmark/{session_id}")
     if response.status_code == 404:
         return None
     assert response.status_code == 200, response.text
@@ -1110,7 +1110,7 @@ async def wait_for_benchmark_state(
 ) -> dict:
     return await _wait_for_resource_state(
         fetch_resource=lambda: _fetch_benchmark_session(client, session_id),
-        ws_path=f"/benchmark/{session_id}/ws",
+        ws_path=f"/api/benchmark/{session_id}/ws",
         timeout_s=timeout_s,
         poll_s=poll_s,
         terminal_statuses=terminal_statuses,

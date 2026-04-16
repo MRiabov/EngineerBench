@@ -45,7 +45,7 @@ async def test_benchmark_to_engineer_handoff():
             prompt="Create a benchmark with a moving platform.",
             backend=SimulatorBackendType.GENESIS,
         )
-        resp = await client.post("/benchmark/generate", json=request.model_dump())
+        resp = await client.post("/api/benchmark/generate", json=request.model_dump())
         assert resp.status_code in [
             200,
             202,
@@ -68,7 +68,7 @@ async def test_benchmark_to_engineer_handoff():
         )
         if last_episode.status == EpisodeStatus.PLANNED:
             await client.post(
-                f"/benchmark/{session_id}/confirm",
+                f"/api/benchmark/{session_id}/confirm",
                 json=ConfirmRequest(comment="Handoff confirm").model_dump(),
             )
             last_episode = EpisodeResponse.model_validate(

@@ -390,7 +390,7 @@ async def test_int_030_benchmark_interrupt_propagation():
             prompt=f"INT-030 benchmark interrupt path {uuid.uuid4()}",
         )
         resp = await client.post(
-            f"{CONTROLLER_URL}/benchmark/generate",
+            f"{CONTROLLER_URL}/api/benchmark/generate",
             json=request.model_dump(mode="json"),
         )
         assert resp.status_code in [200, 202], resp.text
@@ -399,7 +399,9 @@ async def test_int_030_benchmark_interrupt_propagation():
 
         saw_running = False
         for _ in range(40):
-            status_resp = await client.get(f"{CONTROLLER_URL}/benchmark/{episode_id}")
+            status_resp = await client.get(
+                f"{CONTROLLER_URL}/api/benchmark/{episode_id}"
+            )
             if status_resp.status_code == 200:
                 ep_data = EpisodeResponse.model_validate(status_resp.json())
                 if ep_data.status == EpisodeStatus.RUNNING:
@@ -425,7 +427,9 @@ async def test_int_030_benchmark_interrupt_propagation():
         final_status = None
         for _ in range(40):
             await asyncio.sleep(0.5)
-            status_resp = await client.get(f"{CONTROLLER_URL}/benchmark/{episode_id}")
+            status_resp = await client.get(
+                f"{CONTROLLER_URL}/api/benchmark/{episode_id}"
+            )
             assert status_resp.status_code == 200
             ep_data = EpisodeResponse.model_validate(status_resp.json())
             final_status = ep_data.status

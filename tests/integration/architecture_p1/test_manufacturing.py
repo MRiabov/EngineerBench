@@ -56,7 +56,7 @@ async def test_manufacturing_methods_and_materials():
         request = BenchmarkGenerateRequest(
             prompt="Create a benchmark for a CNC machined part."
         )
-        resp = await client.post("/benchmark/generate", json=request.model_dump())
+        resp = await client.post("/api/benchmark/generate", json=request.model_dump())
         assert resp.status_code in [
             200,
             202,
@@ -67,12 +67,12 @@ async def test_manufacturing_methods_and_materials():
         # Wait for benchmark
         confirmed = False
         for _ in range(150):
-            status_resp = await client.get(f"/benchmark/{benchmark_session_id}")
+            status_resp = await client.get(f"/api/benchmark/{benchmark_session_id}")
             if status_resp.status_code == 200:
                 bench_ep = EpisodeResponse.model_validate(status_resp.json())
                 if bench_ep.status == EpisodeStatus.PLANNED and not confirmed:
                     await client.post(
-                        f"/benchmark/{benchmark_session_id}/confirm",
+                        f"/api/benchmark/{benchmark_session_id}/confirm",
                         json=ConfirmRequest(comment="Proceed").model_dump(),
                     )
                     confirmed = True

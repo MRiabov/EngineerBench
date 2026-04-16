@@ -391,7 +391,7 @@ async def _generate_ready_benchmark_session(
 ) -> str:
     req = BenchmarkGenerateRequest(prompt=prompt, backend=SimulatorBackendType.GENESIS)
     resp = await client.post(
-        f"{CONTROLLER_URL}/benchmark/generate", json=req.model_dump(mode="json")
+        f"{CONTROLLER_URL}/api/benchmark/generate", json=req.model_dump(mode="json")
     )
     assert resp.status_code in {200, 202}, resp.text
     run_resp = BenchmarkGenerateResponse.model_validate(resp.json())
@@ -426,7 +426,7 @@ async def _generate_ready_benchmark_session(
             headers={"X-Session-ID": benchmark_session_id},
         )
         await client.post(
-            f"{CONTROLLER_URL}/benchmark/{benchmark_session_id}/confirm",
+            f"{CONTROLLER_URL}/api/benchmark/{benchmark_session_id}/confirm",
             json=ConfirmRequest(comment="Proceed").model_dump(),
         )
         final_session = EpisodeResponse.model_validate(
@@ -616,7 +616,7 @@ async def test_int_114_benchmark_planner_flow_emits_submit_benchmark_plan_trace(
             backend=SimulatorBackendType.GENESIS,
         )
         resp = await client.post(
-            f"{CONTROLLER_URL}/benchmark/generate", json=req.model_dump(mode="json")
+            f"{CONTROLLER_URL}/api/benchmark/generate", json=req.model_dump(mode="json")
         )
         assert resp.status_code in {200, 202}, resp.text
         run_resp = BenchmarkGenerateResponse.model_validate(resp.json())
