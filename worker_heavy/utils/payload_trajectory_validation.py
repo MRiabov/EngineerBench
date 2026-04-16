@@ -13,7 +13,7 @@ from shared.agents.config import PayloadTrajectoryClearanceBudget, load_agents_c
 from shared.models.schemas import (
     AssemblyDefinition,
     BenchmarkDefinition,
-    MotionForecastAnchor,
+    PayloadTrajectoryAnchor,
     PayloadTrajectoryDefinition,
 )
 from shared.script_contracts import BENCHMARK_SCRIPT_PATH, SOLUTION_SCRIPT_PATH
@@ -300,7 +300,7 @@ def _exact_pose_cache_key(
 
 
 def _anchor_sample_points(
-    anchor: MotionForecastAnchor,
+    anchor: PayloadTrajectoryAnchor,
     *,
     max_exact_checks: int,
 ) -> list[tuple[float, float, float]]:
@@ -435,7 +435,7 @@ def _exact_pose_checks(
 def _validate_cell(
     *,
     cell: RotationCell,
-    anchor: MotionForecastAnchor,
+    anchor: PayloadTrajectoryAnchor,
     initial_pose: Any,
     moving_component: Any,
     fixed_component: Any | None,
@@ -566,8 +566,8 @@ def _validate_cell(
 
 
 def model_anchor_for_cell(
-    anchor: MotionForecastAnchor, cell: RotationCell
-) -> MotionForecastAnchor:
+    anchor: PayloadTrajectoryAnchor, cell: RotationCell
+) -> PayloadTrajectoryAnchor:
     if cell.is_exact():
         return anchor
     return anchor.model_copy(
@@ -654,26 +654,26 @@ def validate_payload_trajectory_swept_clearance(
             f"workspace geometry: {duplicate_labels}"
         ]
 
-    moving_labels = set(payload_definition.moving_part_names)
-    moving_labels.update(_collect_motion_names(assembly_definition))
-    moving_labels.update(_collect_motion_names(benchmark_assembly_definition))
+    payload_labels = set(payload_definition.payload_part_names)
+    payload_labels.update(_collect_motion_names(assembly_definition))
+    payload_labels.update(_collect_motion_names(benchmark_assembly_definition))
 
     all_solids = benchmark_solids + solution_solids
-    moving_solids = [
-        solid for solid in all_solids if _shape_label(solid) in moving_labels
+    payload_solids = [
+        solid for solid in all_solids if _shape_label(solid) in payload_labels
     ]
     fixed_solids = [
-        solid for solid in all_solids if _shape_label(solid) not in moving_labels
+        solid for solid in all_solids if _shape_label(solid) not in payload_labels
     ]
 
-    if not moving_solids:
+    if not payload_solids:
         return [
             "payload_trajectory_definition.yaml: no solids match the declared "
-            "moving_part_names"
+            "payload_part_names"
         ]
     try:
         moving_component = _combine_shapes(
-            moving_solids, artifact_name="moving_payload"
+            payload_solids, artifact_name="moving_payload"
         )
         fixed_component = (
             _combine_shapes(fixed_solids, artifact_name="fixed_scene")

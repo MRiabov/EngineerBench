@@ -45,8 +45,8 @@ from shared.script_contracts import (
     role_family_for_agent,
 )
 from shared.simulation.scene_builder import (
-    MOVED_OBJECT_SCENE_PREFIX,
-    build_moved_object_start_geometry,
+    PAYLOAD_SCENE_PREFIX,
+    build_payload_start_geometry,
 )
 from shared.simulation.schemas import (
     SimulatorBackendType,
@@ -628,7 +628,7 @@ def _validate_top_level_location_contract(component: Compound) -> str | None:
     )
 
 
-def _validate_moved_object_start_clearance(
+def _validate_payload_start_clearance(
     component: Compound, objectives: BenchmarkDefinition | None
 ) -> str | None:
     """Reject benchmark fixtures that overlap the runtime-spawned payload."""
@@ -636,14 +636,14 @@ def _validate_moved_object_start_clearance(
         return None
 
     try:
-        moved_object_geometry = build_moved_object_start_geometry(objectives.payload)
+        payload_geometry = build_payload_start_geometry(objectives.payload)
     except Exception as exc:
         return f"Unable to materialize payload startup geometry: {exc}"
 
     for index, solid in enumerate(component.solids()):
         label = getattr(solid, "label", None) or f"solid_{index}"
         try:
-            intersection = moved_object_geometry.intersect(solid)
+            intersection = payload_geometry.intersect(solid)
         except Exception as exc:
             return (
                 f"Unable to evaluate payload startup clearance against {label}: {exc}"
@@ -662,7 +662,7 @@ def _validate_unique_top_level_labels(component: Compound) -> str | None:
     children = getattr(component, "children", None) or [component]
     label_counts: dict[str, int] = {}
     label_order: list[str] = []
-    reserved_prefixes = ("zone_", MOVED_OBJECT_SCENE_PREFIX)
+    reserved_prefixes = ("zone_", PAYLOAD_SCENE_PREFIX)
     reserved_exact_labels = {"environment"}
 
     for child in children:
@@ -692,7 +692,7 @@ def _validate_unique_top_level_labels(component: Compound) -> str | None:
             if normalized.startswith("zone_"):
                 reserved_namespace = "`zone_`"
             else:
-                reserved_namespace = f"`{MOVED_OBJECT_SCENE_PREFIX}`"
+                reserved_namespace = f"`{PAYLOAD_SCENE_PREFIX}`"
             return (
                 "Top-level part labels may not start with "
                 f"{reserved_namespace} because that namespace is reserved for "
@@ -1507,8 +1507,8 @@ def validate(
                     )
                     if location_contract_error:
                         return (False, location_contract_error)
-                    moved_object_clearance_error = (
-                        _validate_moved_object_start_clearance(component, obj_model)
+                    moved_object_clearance_error = _validate_payload_start_clearance(
+                        component, obj_model
                     )
                     if moved_object_clearance_error:
                         return False, moved_object_clearance_error
@@ -1548,8 +1548,8 @@ def validate(
             is_valid, payload_result = validate_payload_trajectory_definition_yaml(
                 payload_path.read_text(encoding="utf-8"),
                 benchmark_definition=benchmark_definition_model,
-                coarse_motion_forecast=(
-                    assembly_definition_model.motion_forecast
+                coarse_payload_trajectory=(
+                    assembly_definition_model.coarse_payload_trajectory
                     if assembly_definition_model is not None
                     else None
                 ),

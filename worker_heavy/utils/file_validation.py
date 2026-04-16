@@ -28,7 +28,7 @@ from shared.enums import AgentName, BenchmarkRefusalReason
 from shared.models.schemas import (
     AssemblyDefinition,
     BenchmarkDefinition,
-    MotionForecast,
+    CoarsePayloadTrajectory,
     PartConfig,
     PayloadTrajectoryDefinition,
     PayloadTrajectoryPose,
@@ -564,7 +564,7 @@ def _point_within_bounds(point: tuple[float, float, float], bounds: Any) -> bool
     )
 
 
-def _motion_forecast_policy_role_for_stage(
+def _payload_trajectory_policy_role_for_stage(
     node_type: AgentName | str | None,
 ) -> AgentName:
     node_value = (
@@ -580,7 +580,7 @@ def _motion_forecast_policy_role_for_stage(
     return AgentName.ENGINEER_PLANNER
 
 
-def _validate_motion_forecast_budget(
+def _validate_payload_trajectory_budget(
     *,
     artifact_name: str,
     budget_role: AgentName,
@@ -588,9 +588,9 @@ def _validate_motion_forecast_budget(
     anchors: list[Any],
 ) -> list[str]:
     try:
-        policy = load_agents_config().get_motion_forecast_policy(budget_role)
+        policy = load_agents_config().get_coarse_payload_trajectory_policy(budget_role)
     except Exception as exc:
-        return [f"{artifact_name}: unable to load motion forecast policy: {exc}"]
+        return [f"{artifact_name}: unable to load payload trajectory policy: {exc}"]
 
     errors: list[str] = []
     if sample_stride_s - policy.sample_stride_s > 1e-9:
@@ -611,7 +611,7 @@ def _validate_motion_forecast_budget(
         ):
             errors.append(
                 f"{artifact_name}: anchors[{anchor_index}].position_tolerance_mm "
-                "exceeds the configured motion forecast budget"
+                "exceeds the configured payload trajectory budget"
             )
         if anchor.rotation_tolerance_deg is not None and any(
             float(observed) - float(limit) > 1e-9
@@ -623,13 +623,13 @@ def _validate_motion_forecast_budget(
         ):
             errors.append(
                 f"{artifact_name}: anchors[{anchor_index}].rotation_tolerance_deg "
-                "exceeds the configured motion forecast budget"
+                "exceeds the configured payload trajectory budget"
             )
 
     return errors
 
 
-def _validate_motion_endpoint_positions(
+def _validate_payload_endpoint_positions(
     *,
     artifact_name: str,
     benchmark_definition: BenchmarkDefinition,
@@ -643,14 +643,14 @@ def _validate_motion_endpoint_positions(
 
     if not _point_within_bounds(first_anchor.pos_mm, build_zone):
         errors.append(
-            f"{artifact_name}: the first motion anchor must lie within "
+            f"{artifact_name}: the first payload trajectory anchor must lie within "
             "benchmark_definition.objectives.build_zone"
         )
 
     if last_anchor.goal_zone_contact or last_anchor.goal_zone_entry:
         if not _point_within_bounds(last_anchor.pos_mm, goal_zone):
             errors.append(
-                f"{artifact_name}: the terminal motion anchor must lie within "
+                f"{artifact_name}: the terminal payload trajectory anchor must lie within "
                 "benchmark_definition.objectives.goal_zone"
             )
     elif terminal_event is not None:
@@ -665,46 +665,46 @@ def _validate_motion_endpoint_positions(
             )
     else:
         errors.append(
-            f"{artifact_name}: motion forecast must prove the terminal goal-zone "
+            f"{artifact_name}: payload trajectory must prove the terminal goal-zone "
             "entry/contact in the last anchor or terminal_event"
         )
 
     return errors
 
 
-def _validate_motion_path_contract(
+def _validate_payload_trajectory_contract(
     *,
     artifact_name: str,
     benchmark_definition: BenchmarkDefinition,
-    moving_part_names: list[str],
+    payload_part_names: list[str],
     sample_stride_s: float,
     anchors: list[Any],
     terminal_event: Any | None,
     budget_role: AgentName,
-    expected_moving_part_names: list[str] | None = None,
+    expected_payload_part_names: list[str] | None = None,
 ) -> list[str]:
     errors: list[str] = []
 
     expected_names = sorted(
-        name.strip() for name in (expected_moving_part_names or []) if name.strip()
+        name.strip() for name in (expected_payload_part_names or []) if name.strip()
     )
     observed_names = sorted(
-        name.strip() for name in moving_part_names if str(name).strip()
+        name.strip() for name in payload_part_names if str(name).strip()
     )
-    if expected_moving_part_names is not None and observed_names != expected_names:
+    if expected_payload_part_names is not None and observed_names != expected_names:
         errors.append(
-            f"{artifact_name}: moving_part_names {observed_names} do not match "
-            f"the expected moving parts {expected_names}"
+            f"{artifact_name}: payload_part_names {observed_names} do not match "
+            f"the expected payload parts {expected_names}"
         )
-    elif expected_moving_part_names is None and not observed_names:
-        errors.append(f"{artifact_name}: moving_part_names must not be empty")
+    elif expected_payload_part_names is None and not observed_names:
+        errors.append(f"{artifact_name}: payload_part_names must not be empty")
 
     if len(anchors) < 2:
         errors.append(f"{artifact_name}: motion path must contain at least two anchors")
         return errors
 
     errors.extend(
-        _validate_motion_forecast_budget(
+        _validate_payload_trajectory_budget(
             artifact_name=artifact_name,
             budget_role=budget_role,
             sample_stride_s=sample_stride_s,
@@ -712,7 +712,7 @@ def _validate_motion_path_contract(
         )
     )
     errors.extend(
-        _validate_motion_endpoint_positions(
+        _validate_payload_endpoint_positions(
             artifact_name=artifact_name,
             benchmark_definition=benchmark_definition,
             first_anchor=anchors[0],
@@ -723,21 +723,21 @@ def _validate_motion_path_contract(
     return errors
 
 
-def _payload_trajectory_definition_from_motion_forecast(
-    motion_forecast: MotionForecast,
+def _payload_trajectory_definition_from_coarse_payload_trajectory(
+    coarse_payload_trajectory: CoarsePayloadTrajectory,
 ) -> PayloadTrajectoryDefinition:
-    first_anchor = motion_forecast.anchors[0]
+    first_anchor = coarse_payload_trajectory.anchors[0]
     return PayloadTrajectoryDefinition(
         backend=get_default_simulator_backend(),
-        moving_part_names=motion_forecast.moving_part_names,
+        payload_part_names=coarse_payload_trajectory.payload_part_names,
         initial_pose=PayloadTrajectoryPose(
             reference_point=first_anchor.reference_point,
             pos_mm=first_anchor.pos_mm,
             rot_deg=first_anchor.rot_deg,
         ),
-        sample_stride_s=motion_forecast.sample_stride_s,
-        anchors=motion_forecast.anchors,
-        terminal_event=motion_forecast.terminal_event,
+        sample_stride_s=coarse_payload_trajectory.sample_stride_s,
+        anchors=coarse_payload_trajectory.anchors,
+        terminal_event=coarse_payload_trajectory.terminal_event,
     )
 
 
@@ -758,11 +758,11 @@ def _relabel_payload_clearance_errors(
     return relabeled
 
 
-def _validate_motion_forecast_clearance_from_artifacts(
+def _validate_payload_trajectory_clearance_from_payload_definition(
     *,
     files_content_map: dict[str, str],
     benchmark_definition: BenchmarkDefinition,
-    motion_forecast: MotionForecast,
+    coarse_payload_trajectory: CoarsePayloadTrajectory,
     assembly_definition: AssemblyDefinition,
     benchmark_assembly_definition: AssemblyDefinition | None,
     session_id: str | None = None,
@@ -778,11 +778,11 @@ def _validate_motion_forecast_clearance_from_artifacts(
     ]
     if missing_scripts:
         return [
-            "assembly_definition.yaml.motion_forecast: missing required planner "
+            "assembly_definition.yaml.coarse_payload_trajectory: missing required planner "
             f"geometry artifact(s): {missing_scripts}"
         ]
 
-    with tempfile.TemporaryDirectory(prefix="motion_forecast_clearance_") as tmp:
+    with tempfile.TemporaryDirectory(prefix="payload_trajectory_clearance_") as tmp:
         workspace_root = Path(tmp)
         for script_path in required_scripts:
             (workspace_root / script_path).write_text(
@@ -790,8 +790,10 @@ def _validate_motion_forecast_clearance_from_artifacts(
                 encoding="utf-8",
             )
 
-        payload_definition = _payload_trajectory_definition_from_motion_forecast(
-            motion_forecast
+        payload_definition = (
+            _payload_trajectory_definition_from_coarse_payload_trajectory(
+                coarse_payload_trajectory
+            )
         )
         clearance_errors = validate_payload_trajectory_swept_clearance(
             workspace_root=workspace_root,
@@ -805,7 +807,7 @@ def _validate_motion_forecast_clearance_from_artifacts(
         return _relabel_payload_clearance_errors(
             clearance_errors,
             source_artifact="payload_trajectory_definition.yaml",
-            target_artifact="assembly_definition.yaml.motion_forecast",
+            target_artifact="assembly_definition.yaml.coarse_payload_trajectory",
         )
 
 
@@ -813,8 +815,8 @@ def validate_payload_trajectory_definition_yaml(
     content: str,
     *,
     benchmark_definition: BenchmarkDefinition | None = None,
-    coarse_motion_forecast: MotionForecast | None = None,
-    expected_moving_part_names: list[str] | None = None,
+    coarse_payload_trajectory: CoarsePayloadTrajectory | None = None,
+    expected_payload_part_names: list[str] | None = None,
     assembly_definition: AssemblyDefinition | None = None,
     benchmark_assembly_definition: AssemblyDefinition | None = None,
     workspace_root: Path | None = None,
@@ -856,33 +858,34 @@ def validate_payload_trajectory_definition_yaml(
         return True, precise_path
 
     coarse_names = (
-        coarse_motion_forecast.moving_part_names
-        if coarse_motion_forecast is not None
-        else expected_moving_part_names
+        coarse_payload_trajectory.payload_part_names
+        if coarse_payload_trajectory is not None
+        else expected_payload_part_names
     )
     coarse_stride = (
-        coarse_motion_forecast.sample_stride_s
-        if coarse_motion_forecast is not None
+        coarse_payload_trajectory.sample_stride_s
+        if coarse_payload_trajectory is not None
         else None
     )
     try:
-        coder_budget = load_agents_config().get_motion_forecast_policy(
+        coder_budget = load_agents_config().get_coarse_payload_trajectory_policy(
             AgentName.ENGINEER_CODER
         )
     except Exception as exc:
         return False, [
-            f"payload_trajectory_definition.yaml: unable to load motion forecast policy: {exc}"
+            "payload_trajectory_definition.yaml: unable to load payload "
+            f"trajectory policy: {exc}"
         ]
 
-    errors: list[str] = _validate_motion_path_contract(
+    errors: list[str] = _validate_payload_trajectory_contract(
         artifact_name="payload_trajectory_definition.yaml",
         benchmark_definition=benchmark_definition,
-        moving_part_names=precise_path.moving_part_names,
+        payload_part_names=precise_path.payload_part_names,
         sample_stride_s=precise_path.sample_stride_s,
         anchors=precise_path.anchors,
         terminal_event=precise_path.terminal_event,
         budget_role=AgentName.ENGINEER_CODER,
-        expected_moving_part_names=coarse_names,
+        expected_payload_part_names=coarse_names,
     )
 
     if (
@@ -892,7 +895,7 @@ def validate_payload_trajectory_definition_yaml(
         errors.append(
             "payload_trajectory_definition.yaml: sample_stride_s "
             f"({precise_path.sample_stride_s:.3f}s) must be less than or equal to "
-            "the coarse motion forecast sample_stride_s "
+            "the coarse payload trajectory sample_stride_s "
             f"({coarse_stride:.3f}s)"
         )
     if precise_path.sample_stride_s - coder_budget.sample_stride_s > 1e-9:
@@ -902,19 +905,19 @@ def validate_payload_trajectory_definition_yaml(
             f"budget ({coder_budget.sample_stride_s:.3f}s)"
         )
 
-    if coarse_motion_forecast is not None:
+    if coarse_payload_trajectory is not None:
         coarse_set = {
             name.strip()
-            for name in coarse_motion_forecast.moving_part_names
+            for name in coarse_payload_trajectory.payload_part_names
             if name.strip()
         }
         precise_set = {
-            name.strip() for name in precise_path.moving_part_names if name.strip()
+            name.strip() for name in precise_path.payload_part_names if name.strip()
         }
         if precise_set != coarse_set:
             errors.append(
-                "payload_trajectory_definition.yaml: moving_part_names must match the "
-                "approved coarse motion forecast"
+                "payload_trajectory_definition.yaml: payload_part_names must match "
+                "the approved coarse payload trajectory"
             )
 
     if errors:
@@ -1090,7 +1093,7 @@ def validate_assembly_definition_yaml(
         return False, errors
 
 
-def validate_benchmark_assembly_motion_contract(
+def validate_benchmark_assembly_payload_contract(
     *,
     benchmark_definition: BenchmarkDefinition | None,
     assembly_definition: AssemblyDefinition,
@@ -1098,48 +1101,28 @@ def validate_benchmark_assembly_motion_contract(
     todo_text: str | None = None,
     plan_refusal_text: str | None = None,
 ) -> list[str]:
-    """Validate benchmark-side moving fixtures from structured YAML only."""
+    """Validate benchmark-side payload fixtures from structured YAML only."""
     errors: list[str] = []
     if plan_refusal_text is not None:
         is_valid_refusal, _ = validate_plan_refusal(plan_refusal_text)
         if is_valid_refusal:
             return errors
 
-    if assembly_definition.motion_forecast is not None:
+    if assembly_definition.coarse_payload_trajectory is not None:
         errors.append(
             _benchmark_refusal_error(
                 BenchmarkRefusalReason.CONTRADICTORY_CONSTRAINTS,
-                "benchmark_assembly_definition.yaml must not declare motion_forecast; "
-                "benchmark motion is encoded through the benchmark fixtures instead",
+                "benchmark_assembly_definition.yaml must not declare "
+                "coarse_payload_trajectory; benchmark payload motion is encoded "
+                "through the benchmark fixtures instead",
             )
         )
     return errors
 
-    if benchmark_definition is not None:
-        static_variation_id = (
-            benchmark_definition.randomization.static_variation_id or ""
-        ).strip()
-        if static_variation_id == "bridge_trim_underbounded_v1":
-            errors.append(
-                _benchmark_refusal_error(
-                    BenchmarkRefusalReason.AMBIGUOUS_TASK,
-                    "benchmark_definition.yaml randomization.static_variation_id="
-                    "'bridge_trim_underbounded_v1' requires reviewer-visible motion "
-                    "bounds or limits, but the structured benchmark handoff does not "
-                    "declare them",
-                )
-            )
-        elif static_variation_id == "bridge_trim_unsupported_v1":
-            errors.append(
-                _benchmark_refusal_error(
-                    BenchmarkRefusalReason.UNSOLVABLE_SCENARIO,
-                    "benchmark_definition.yaml randomization.static_variation_id="
-                    "'bridge_trim_unsupported_v1' indicates unsupported benchmark "
-                    "motion",
-                )
-            )
 
-    return errors
+validate_benchmark_assembly_motion_contract = (
+    validate_benchmark_assembly_payload_contract
+)
 
 
 def validate_declared_planner_cost_contract(
@@ -1333,39 +1316,43 @@ def validate_planner_handoff_cross_contract(
                 f"{expected_label} ({expected_value:.2f})"
             )
 
-    moving_part_names = [part.part_name for part in assembly_definition.moving_parts]
-    motion_forecast = assembly_definition.motion_forecast
-    if is_engineer_planner and motion_forecast is None:
+    payload_part_names = [part.part_name for part in assembly_definition.payload_parts]
+    coarse_payload_trajectory = assembly_definition.coarse_payload_trajectory
+    if is_engineer_planner and coarse_payload_trajectory is None:
         errors.append(
-            "assembly_definition.motion_forecast is required for engineer handoffs"
+            "assembly_definition.coarse_payload_trajectory is required for "
+            "engineer handoffs"
         )
-    elif motion_forecast is not None:
-        expected_moving_part_names = moving_part_names if moving_part_names else None
+    elif coarse_payload_trajectory is not None:
+        expected_payload_part_names = payload_part_names if payload_part_names else None
         errors.extend(
-            _validate_motion_path_contract(
-                artifact_name="assembly_definition.yaml.motion_forecast",
+            _validate_payload_trajectory_contract(
+                artifact_name="assembly_definition.yaml.coarse_payload_trajectory",
                 benchmark_definition=benchmark_definition,
-                moving_part_names=motion_forecast.moving_part_names,
-                sample_stride_s=motion_forecast.sample_stride_s,
-                anchors=motion_forecast.anchors,
-                terminal_event=motion_forecast.terminal_event,
-                budget_role=_motion_forecast_policy_role_for_stage(planner_node_type),
-                expected_moving_part_names=expected_moving_part_names,
+                payload_part_names=coarse_payload_trajectory.payload_part_names,
+                sample_stride_s=coarse_payload_trajectory.sample_stride_s,
+                anchors=coarse_payload_trajectory.anchors,
+                terminal_event=coarse_payload_trajectory.terminal_event,
+                budget_role=_payload_trajectory_policy_role_for_stage(
+                    planner_node_type
+                ),
+                expected_payload_part_names=expected_payload_part_names,
             )
         )
         if is_engineer_planner_boundary:
             if files_content_map is None:
                 errors.append(
-                    "assembly_definition.yaml.motion_forecast: benchmark_script.py "
+                    "assembly_definition.yaml.coarse_payload_trajectory: "
+                    "benchmark_script.py "
                     "and solution_plan_evidence_script.py are required to validate "
                     "planner clearance"
                 )
             else:
                 errors.extend(
-                    _validate_motion_forecast_clearance_from_artifacts(
+                    _validate_payload_trajectory_clearance_from_payload_definition(
                         files_content_map=files_content_map,
                         benchmark_definition=benchmark_definition,
-                        motion_forecast=motion_forecast,
+                        coarse_payload_trajectory=coarse_payload_trajectory,
                         assembly_definition=assembly_definition,
                         benchmark_assembly_definition=None,
                         session_id=session_id,
@@ -1477,42 +1464,6 @@ def validate_plan_refusal(
         errors = [f"{err['loc']}: {err['msg']}" for err in e.errors()]
         logger.warning("plan_refusal_validation_error", errors=errors)
         return False, errors
-
-
-def _validate_payload_trajectory_clearance_from_artifacts(
-    *,
-    files_content_map: dict[str, str],
-    benchmark_definition: BenchmarkDefinition,
-    payload_definition: PayloadTrajectoryDefinition,
-    assembly_definition: AssemblyDefinition | None,
-    benchmark_assembly_definition: AssemblyDefinition | None,
-    session_id: str | None = None,
-) -> list[str]:
-    with tempfile.TemporaryDirectory(prefix="payload_trajectory_clearance_") as tmp:
-        workspace_root = Path(tmp)
-
-        benchmark_script_content = files_content_map.get("benchmark_script.py")
-        if benchmark_script_content is not None:
-            (workspace_root / "benchmark_script.py").write_text(
-                benchmark_script_content,
-                encoding="utf-8",
-            )
-
-        solution_script_content = files_content_map.get("solution_script.py")
-        if solution_script_content is not None:
-            (workspace_root / "solution_script.py").write_text(
-                solution_script_content,
-                encoding="utf-8",
-            )
-
-        return validate_payload_trajectory_swept_clearance(
-            workspace_root=workspace_root,
-            benchmark_definition=benchmark_definition,
-            payload_definition=payload_definition,
-            assembly_definition=assembly_definition,
-            benchmark_assembly_definition=benchmark_assembly_definition,
-            session_id=session_id,
-        )
 
 
 def validate_node_output(
@@ -1701,7 +1652,7 @@ def validate_node_output(
             else:
                 assembly_definition_models[filename] = asm_res
                 if filename == "benchmark_assembly_definition.yaml":
-                    motion_errors = validate_benchmark_assembly_motion_contract(
+                    motion_errors = validate_benchmark_assembly_payload_contract(
                         benchmark_definition=benchmark_definition_model,
                         assembly_definition=asm_res,
                         plan_text=plan_content,
@@ -1767,18 +1718,18 @@ def validate_node_output(
         is_valid, precise_result = validate_payload_trajectory_definition_yaml(
             payload_trajectory_definition_content,
             benchmark_definition=benchmark_definition_model,
-            coarse_motion_forecast=(
-                engineering_assembly_definition_model.motion_forecast
+            coarse_payload_trajectory=(
+                engineering_assembly_definition_model.coarse_payload_trajectory
                 if engineering_assembly_definition_model is not None
                 else None
             ),
             assembly_definition=engineering_assembly_definition_model,
             benchmark_assembly_definition=benchmark_assembly_definition_model,
             workspace_root=Path.cwd(),
-            expected_moving_part_names=(
+            expected_payload_part_names=(
                 [
                     part.part_name
-                    for part in engineering_assembly_definition_model.moving_parts
+                    for part in engineering_assembly_definition_model.payload_parts
                 ]
                 if engineering_assembly_definition_model is not None
                 else None
@@ -1795,7 +1746,7 @@ def validate_node_output(
         and benchmark_definition_model is not None
     ):
         errors.extend(
-            _validate_payload_trajectory_clearance_from_artifacts(
+            _validate_payload_trajectory_clearance_from_payload_definition(
                 files_content_map=files_content_map,
                 benchmark_definition=benchmark_definition_model,
                 payload_definition=payload_trajectory_definition_model,
