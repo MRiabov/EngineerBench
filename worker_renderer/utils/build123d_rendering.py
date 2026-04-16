@@ -30,11 +30,11 @@ from shared.rendering import (
 from shared.simulation.backends import RendererBackend
 from shared.simulation.scene_builder import (
     CommonAssemblyTraverser,
-    MaterializedMovedObject,
+    MaterializedPayload,
     MeshProcessor,
     PreviewEntity,
     PreviewScene,
-    materialize_moved_object,
+    materialize_payload,
     normalize_preview_label,
 )
 from shared.workers.bundling import bundle_directory_base64
@@ -319,7 +319,7 @@ def _build_feature_edges_mapper(
 def _combined_bounds(
     component: Compound,
     objectives: BenchmarkDefinition | None,
-    payload: MaterializedMovedObject | None = None,
+    payload: MaterializedPayload | None = None,
 ) -> tuple[tuple[float, float, float], tuple[float, float, float]]:
     bbox = component.bounding_box()
     min_x, min_y, min_z = bbox.min.X, bbox.min.Y, bbox.min.Z
@@ -514,7 +514,7 @@ def collect_preview_scene(
     objective_labels = _objective_zone_labels(objectives)
     render_entities: list[PreviewEntity] = []
     payload = (
-        materialize_moved_object(objectives.payload)
+        materialize_payload(objectives.payload)
         if objectives is not None and getattr(objectives, "payload", None) is not None
         else None
     )

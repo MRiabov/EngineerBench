@@ -19,7 +19,7 @@ def resolve_payload_path_points(
     """Resolve the best available payload-path polyline for overlay rendering.
 
     Only real motion artifacts are eligible. If the workspace does not contain
-    an engineer payload trajectory or a planner motion forecast, the renderer
+    an engineer payload trajectory or a planner coarse payload trajectory, the renderer
     returns no overlay instead of inventing a benchmark start-to-goal line.
     """
 
@@ -59,13 +59,14 @@ def resolve_payload_path_points(
             definition = AssemblyDefinition.model_validate(raw_payload)
         except Exception:
             continue
-        motion_forecast = definition.motion_forecast
-        if motion_forecast is None:
+        coarse_payload_trajectory = definition.coarse_payload_trajectory
+        if coarse_payload_trajectory is None:
             continue
         points = [
             point
             for point in (
-                _as_point3(anchor.pos_mm) for anchor in motion_forecast.anchors
+                _as_point3(anchor.pos_mm)
+                for anchor in coarse_payload_trajectory.anchors
             )
             if point is not None
         ]
