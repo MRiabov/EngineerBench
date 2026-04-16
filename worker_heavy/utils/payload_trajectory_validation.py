@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass
-from math import sqrt
+from math import ceil, sqrt
 from pathlib import Path
 from typing import Any
 
@@ -203,6 +203,70 @@ def _make_transform(
         tuple(float(value) for value in initial_pose_rot_deg),
     )
     return sample_location * initial_location.inverse()
+
+
+def _lerp_tuple3d(
+    start: tuple[float, float, float],
+    end: tuple[float, float, float],
+    fraction: float,
+) -> tuple[float, float, float]:
+    return tuple(
+        start[index] + (end[index] - start[index]) * fraction for index in range(3)
+    )
+
+
+def _segment_interval_count(
+    *,
+    duration_s: float | None = None,
+    start_pos_mm: tuple[float, float, float] | None = None,
+    end_pos_mm: tuple[float, float, float] | None = None,
+    sample_stride_s: float | None,
+    moving_radius: float | None = None,
+) -> int:
+    if duration_s is not None:
+        if duration_s <= 0.0 or sample_stride_s is None:
+            return 0
+        return max(2, int(ceil(duration_s / max(sample_stride_s, 1e-9))))
+
+    if start_pos_mm is None or end_pos_mm is None:
+        return 0
+
+    delta = tuple(end_pos_mm[index] - start_pos_mm[index] for index in range(3))
+    distance_mm = sqrt(sum(component * component for component in delta))
+    if distance_mm <= 0.0:
+        return 0
+
+    return max(2, int(ceil(distance_mm / max(moving_radius or 1.0, 1.0))))
+
+
+def _validate_sampled_pose(
+    *,
+    sample_label: str,
+    sample_pos_mm: tuple[float, float, float],
+    sample_rot_deg: tuple[float, float, float],
+    initial_pose_pos_mm: tuple[float, float, float],
+    initial_pose_rot_deg: tuple[float, float, float],
+    moving_component: Any,
+    fixed_component: Any | None,
+    benchmark_definition: BenchmarkDefinition,
+    allow_goal_zone_overlap: bool,
+    require_goal_zone_overlap: bool,
+) -> list[str]:
+    transform = _make_transform(
+        sample_pos_mm=sample_pos_mm,
+        sample_rot_deg=sample_rot_deg,
+        initial_pose_pos_mm=initial_pose_pos_mm,
+        initial_pose_rot_deg=initial_pose_rot_deg,
+    )
+    return _exact_pose_checks(
+        moving_component=moving_component,
+        transform=transform,
+        fixed_component=fixed_component,
+        benchmark_definition=benchmark_definition,
+        allow_goal_zone_overlap=allow_goal_zone_overlap,
+        require_goal_zone_overlap=require_goal_zone_overlap,
+        sample_point_label=sample_label,
+    )
 
 
 def _anchor_sample_points(
@@ -649,11 +713,113 @@ def validate_payload_trajectory_swept_clearance(
         if cell_error:
             return cell_error
 
+    for index, (start_anchor, end_anchor) in enumerate(
+        zip(payload_definition.anchors, payload_definition.anchors[1:])
+    ):
+        interval_count = _segment_interval_count(
+            duration_s=float(end_anchor.t_s) - float(start_anchor.t_s),
+            sample_stride_s=float(payload_definition.sample_stride_s),
+        )
+        if interval_count <= 0:
+            continue
+
+        start_rot = tuple(float(value) for value in start_anchor.rot_deg)
+        end_rot = tuple(float(value) for value in end_anchor.rot_deg)
+        start_pos = tuple(float(value) for value in start_anchor.pos_mm)
+        end_pos = tuple(float(value) for value in end_anchor.pos_mm)
+        start_time = float(start_anchor.t_s)
+        end_time = float(end_anchor.t_s)
+
+        for step_index in range(1, interval_count):
+            fraction = step_index / interval_count
+            sample_pos_mm = _lerp_tuple3d(start_pos, end_pos, fraction)
+            sample_rot_deg = _lerp_tuple3d(start_rot, end_rot, fraction)
+            sample_time_s = start_time + (end_time - start_time) * fraction
+            cache_key = (
+                round(sample_pos_mm[0], 6),
+                round(sample_pos_mm[1], 6),
+                round(sample_pos_mm[2], 6),
+                round(sample_rot_deg[0], 6),
+                round(sample_rot_deg[1], 6),
+                round(sample_rot_deg[2], 6),
+            )
+            if cache_key not in exact_pose_cache:
+                exact_pose_cache[cache_key] = _validate_sampled_pose(
+                    sample_label=(
+                        "payload_trajectory_definition.yaml segment["
+                        f"{index}->{index + 1}] t={sample_time_s:.3f}s"
+                    ),
+                    sample_pos_mm=sample_pos_mm,
+                    sample_rot_deg=sample_rot_deg,
+                    initial_pose_pos_mm=tuple(
+                        float(v) for v in payload_definition.initial_pose.pos_mm
+                    ),
+                    initial_pose_rot_deg=tuple(
+                        float(v) for v in payload_definition.initial_pose.rot_deg
+                    ),
+                    moving_component=moving_component,
+                    fixed_component=fixed_component,
+                    benchmark_definition=benchmark_definition,
+                    allow_goal_zone_overlap=False,
+                    require_goal_zone_overlap=False,
+                )
+            if exact_pose_cache[cache_key]:
+                return exact_pose_cache[cache_key]
+
     if payload_definition.terminal_event is not None:
+        terminal_start_anchor = payload_definition.anchors[-1]
+        terminal_end_pos = tuple(
+            float(value) for value in payload_definition.terminal_event.pos_mm
+        )
+        terminal_interval_count = _segment_interval_count(
+            start_pos_mm=tuple(float(value) for value in terminal_start_anchor.pos_mm),
+            end_pos_mm=terminal_end_pos,
+            sample_stride_s=None,
+            moving_radius=moving_radius,
+        )
+        if terminal_interval_count > 0:
+            terminal_start_pos = tuple(
+                float(value) for value in terminal_start_anchor.pos_mm
+            )
+            terminal_rot_deg = tuple(float(value) for value in terminal_start_anchor.rot_deg)
+            for step_index in range(1, terminal_interval_count):
+                fraction = step_index / terminal_interval_count
+                sample_pos_mm = _lerp_tuple3d(
+                    terminal_start_pos, terminal_end_pos, fraction
+                )
+                cache_key = (
+                    round(sample_pos_mm[0], 6),
+                    round(sample_pos_mm[1], 6),
+                    round(sample_pos_mm[2], 6),
+                    round(terminal_rot_deg[0], 6),
+                    round(terminal_rot_deg[1], 6),
+                    round(terminal_rot_deg[2], 6),
+                )
+                if cache_key not in exact_pose_cache:
+                    exact_pose_cache[cache_key] = _validate_sampled_pose(
+                        sample_label=(
+                            "payload_trajectory_definition.yaml "
+                            f"terminal_segment[{step_index}/{terminal_interval_count}]"
+                        ),
+                        sample_pos_mm=sample_pos_mm,
+                        sample_rot_deg=terminal_rot_deg,
+                        initial_pose_pos_mm=tuple(
+                            float(v) for v in payload_definition.initial_pose.pos_mm
+                        ),
+                        initial_pose_rot_deg=tuple(
+                            float(v) for v in payload_definition.initial_pose.rot_deg
+                        ),
+                        moving_component=moving_component,
+                        fixed_component=fixed_component,
+                        benchmark_definition=benchmark_definition,
+                        allow_goal_zone_overlap=False,
+                        require_goal_zone_overlap=False,
+                    )
+                if exact_pose_cache[cache_key]:
+                    return exact_pose_cache[cache_key]
+
         terminal_transform = _make_transform(
-            sample_pos_mm=tuple(
-                float(value) for value in payload_definition.terminal_event.pos_mm
-            ),
+            sample_pos_mm=terminal_end_pos,
             sample_rot_deg=tuple(
                 float(value) for value in payload_definition.anchors[-1].rot_deg
             ),
