@@ -16,7 +16,7 @@ from shared.script_contracts import plan_artifact_candidates_for_agent
 from shared.simulation.schemas import CustomObjectives, RandomizationStrategy
 from worker_heavy.utils.file_validation import (
     validate_assembly_definition_yaml,
-    validate_benchmark_assembly_motion_contract,
+    validate_benchmark_assembly_payload_contract,
     validate_benchmark_definition_yaml,
     validate_node_output,
 )
@@ -111,7 +111,7 @@ def _validate_benchmark_motion_visibility(
             "planner_semantic: benchmark_assembly_definition.yaml did not parse as AssemblyDefinition"
         ]
 
-    return validate_benchmark_assembly_motion_contract(
+    return validate_benchmark_assembly_payload_contract(
         benchmark_definition=benchmark_definition,
         assembly_definition=assembly_definition,
         plan_text=plan_text,

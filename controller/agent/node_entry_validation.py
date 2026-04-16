@@ -88,7 +88,7 @@ from shared.workers.schema import (
 from worker_heavy.utils.dfm import load_planner_manufacturing_config_from_text
 from worker_heavy.utils.file_validation import (
     validate_assembly_definition_yaml,
-    validate_benchmark_assembly_motion_contract,
+    validate_benchmark_assembly_payload_contract,
     validate_benchmark_definition_yaml,
     validate_plan_md_structure,
     validate_plan_refusal,
@@ -1972,7 +1972,7 @@ async def validate_seeded_workspace_handoff_artifacts(
             elif isinstance(assembly_result, AssemblyDefinition):
                 if rel_path == "benchmark_assembly_definition.yaml":
                     benchmark_assembly_definition_model = assembly_result
-                    motion_errors = validate_benchmark_assembly_motion_contract(
+                    motion_errors = validate_benchmark_assembly_payload_contract(
                         benchmark_definition=benchmark_definition_model,
                         assembly_definition=assembly_result,
                         plan_text=plan_content,

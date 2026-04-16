@@ -33,7 +33,7 @@ from shared.workers.schema import (
     ValidationResultRecord,
 )
 from worker_heavy.utils.file_validation import (
-    validate_benchmark_assembly_motion_contract,
+    validate_benchmark_assembly_payload_contract,
     validate_benchmark_definition_yaml,
     validate_planner_handoff_cross_contract,
 )
@@ -824,7 +824,7 @@ async def validate_planner_artifacts_cross_contract(
         plan_refusal_text = await worker_client.read_file_optional("plan_refusal.md")
         plan_text = await worker_client.read_file_optional(plan_artifact_name)
         todo_text = await worker_client.read_file_optional("todo.md")
-        motion_errors = validate_benchmark_assembly_motion_contract(
+        motion_errors = validate_benchmark_assembly_payload_contract(
             benchmark_definition=benchmark_definition,
             assembly_definition=assembly_definition,
             plan_text=plan_text,
