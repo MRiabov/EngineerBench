@@ -1446,6 +1446,12 @@ def validate(
         smoke_test_mode=smoke_test_mode,
         particle_budget=particle_budget,
     )
+    try:
+        current_role = current_role_agent_name(working_root)
+    except Exception:
+        current_role = None
+    engineering_role = role_family_for_agent(current_role) == "engineering"
+    benchmark_definition_model: BenchmarkDefinition | None = None
     label_contract_error = _validate_unique_top_level_labels(component)
     if label_contract_error:
         return False, label_contract_error
@@ -1490,6 +1496,7 @@ def validate(
                             False,
                             f"Invalid benchmark_definition.yaml: {objective_error}",
                         )
+                    benchmark_definition_model = obj_model
                     fixed_contract_error = _validate_parent_fixed_contract(
                         component, obj_model
                     )
@@ -1508,6 +1515,54 @@ def validate(
                     effective_build_zone = obj_model.objectives.build_zone.model_dump()
             except Exception:
                 pass
+
+    if engineering_role:
+        payload_path = working_root / "payload_trajectory_definition.yaml"
+        if not payload_path.exists():
+            return False, "payload_trajectory_definition.yaml is missing"
+
+        try:
+            from worker_heavy.utils.file_validation import (
+                validate_payload_trajectory_definition_yaml,
+            )
+
+            assembly_definition_model = None
+            benchmark_assembly_definition_model = None
+
+            assembly_path = _find_workspace_assembly_definition(
+                working_root, prefer_benchmark=False
+            )
+            if assembly_path is not None and assembly_path.exists():
+                assembly_definition_model = AssemblyDefinition.model_validate(
+                    yaml.safe_load(assembly_path.read_text(encoding="utf-8"))
+                )
+
+            benchmark_assembly_path = (
+                working_root / "benchmark_assembly_definition.yaml"
+            )
+            if benchmark_assembly_path.exists():
+                benchmark_assembly_definition_model = AssemblyDefinition.model_validate(
+                    yaml.safe_load(benchmark_assembly_path.read_text(encoding="utf-8"))
+                )
+
+            is_valid, payload_result = validate_payload_trajectory_definition_yaml(
+                payload_path.read_text(encoding="utf-8"),
+                benchmark_definition=benchmark_definition_model,
+                coarse_motion_forecast=(
+                    assembly_definition_model.motion_forecast
+                    if assembly_definition_model is not None
+                    else None
+                ),
+                assembly_definition=assembly_definition_model,
+                benchmark_assembly_definition=benchmark_assembly_definition_model,
+                workspace_root=working_root,
+                session_id=session_id,
+            )
+        except Exception as exc:
+            return False, f"payload_trajectory_definition.yaml invalid: {exc}"
+
+        if not is_valid:
+            return False, "; ".join(payload_result)
 
     if effective_build_zone:
         b_min = effective_build_zone.get("min", [-1000, -1000, -1000])

@@ -13,6 +13,7 @@ from controller.agent.tools import get_engineer_tools
 from shared.enums import AgentName
 from shared.script_contracts import (
     BENCHMARK_SCRIPT_PATH,
+    PAYLOAD_TRAJECTORY_DEFINITION_PATH,
     SOLUTION_SCRIPT_PATH,
 )
 from shared.type_checking import type_check
@@ -72,6 +73,9 @@ class CoderNode(BaseNode):
         benchmark_assembly_definition = await self._read_required_workspace_file(
             "benchmark_assembly_definition.yaml"
         )
+        payload_trajectory_definition = await self._read_required_workspace_file(
+            PAYLOAD_TRAJECTORY_DEFINITION_PATH
+        )
 
         inputs = {
             "task": state.task,
@@ -85,6 +89,9 @@ class CoderNode(BaseNode):
             "benchmark_assembly_definition": self._prepare_yaml_context(
                 benchmark_assembly_definition, max_chars=3500
             ),
+            "payload_trajectory_definition": self._prepare_yaml_context(
+                payload_trajectory_definition, max_chars=3500
+            ),
             "feedback": self._prepare_text_context(state.feedback, max_chars=2000),
         }
         validate_files = [
@@ -92,6 +99,7 @@ class CoderNode(BaseNode):
             "todo.md",
             "benchmark_definition.yaml",
             "assembly_definition.yaml",
+            PAYLOAD_TRAJECTORY_DEFINITION_PATH,
             BENCHMARK_SCRIPT_PATH,
             SOLUTION_SCRIPT_PATH,
             "benchmark_assembly_definition.yaml",

@@ -56,8 +56,6 @@ class PlanReviewerNode(BaseNode):
             "benchmark_assembly_definition.yaml"
         )
 
-        await self._ensure_current_revision_render_inspection()
-
         plan_refusal = ""
         with suppress(Exception):
             plan_refusal = await self._read_optional_workspace_file(

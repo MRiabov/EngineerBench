@@ -47,6 +47,9 @@ def _role_template_files(agent_name: AgentName) -> dict[str, str]:
             "engineer/benchmark_assembly_definition.yaml": (
                 "benchmark_assembly_definition.yaml"
             ),
+            "engineer/payload_trajectory_definition.yaml": (
+                "payload_trajectory_definition.yaml"
+            ),
         },
         AgentName.ENGINEER_PLAN_REVIEWER: {
             "engineer/benchmark_assembly_definition.yaml": (
@@ -56,6 +59,9 @@ def _role_template_files(agent_name: AgentName) -> dict[str, str]:
         AgentName.ENGINEER_EXECUTION_REVIEWER: {
             "engineer/benchmark_assembly_definition.yaml": (
                 "benchmark_assembly_definition.yaml"
+            ),
+            "engineer/payload_trajectory_definition.yaml": (
+                "payload_trajectory_definition.yaml"
             ),
         },
         AgentName.BENCHMARK_PLANNER: {

@@ -356,7 +356,6 @@ def _collect_component_identity_counts(
     def _visit(node: Any, *, is_root: bool) -> None:
         children = getattr(node, "children", ()) or ()
         label = getattr(node, "label", None)
-        metadata = getattr(node, "metadata", None)
 
         if not (is_root and children):
             normalized_label = (
@@ -383,7 +382,6 @@ def _collect_component_identity_pairs(
     def _visit(node: Any, *, is_root: bool) -> None:
         children = getattr(node, "children", ()) or ()
         label = getattr(node, "label", None)
-        metadata = getattr(node, "metadata", None)
 
         if not (is_root and children):
             normalized_label = (
@@ -1507,6 +1505,7 @@ def validate_node_output(
                 plan_artifact_name,
                 "todo.md",
                 "benchmark_definition.yaml",
+                "payload_trajectory_definition.yaml",
                 SOLUTION_SCRIPT_PATH,
             ],
             AgentName.BENCHMARK_CODER: [
@@ -1647,7 +1646,10 @@ def validate_node_output(
     benchmark_assembly_definition_model = assembly_definition_models.get(
         "benchmark_assembly_definition.yaml"
     )
-    if payload_trajectory_definition_content is not None:
+    if (
+        payload_trajectory_definition_content is not None
+        and node_enum == AgentName.ENGINEER_CODER
+    ):
         is_valid, precise_result = validate_payload_trajectory_definition_yaml(
             payload_trajectory_definition_content,
             benchmark_definition=benchmark_definition_model,

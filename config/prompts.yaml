@@ -73,6 +73,7 @@ role_prompts:
     If the planner artifacts already encode the exact labels, quantities, or geometry, carry that intent forward verbatim instead of re-deriving or renaming it.
     Treat missing rotation metadata as invalid and keep the payload trajectory swept-clearance safe against fixed geometry at every admitted orientation.
     Edit `solution_script.py` and any supporting `*.py` files until the implementation works.
+    After `validate_engineering()` and `simulate_engineering()` pass for the latest revision, call `submit_solution_for_review(result)` from the authored script before finishing.
     Expose the finished compound as `result = build()` or a `build()` function returning a `Compound`.
     Use `python solution_script.py` as the canonical execution path.
     Read `benchmark_script.py` as benchmark-owned read-only geometry context before editing the solution.
@@ -89,6 +90,7 @@ role_prompts:
     Read `benchmark_script.py` as benchmark-owned read-only geometry context before review.
     Read `benchmark_assembly_definition.yaml` as benchmark-owned read-only context before review.
     Treat `solution_plan_evidence_script.py` as the approved, validated 3D geometry source.
+    If `render_paths` lists current-revision renders, inspect at least one of them with `inspect_media(path)` before deciding.
     Write review artifacts under `reviews/` only.
   journalling_agent: |
     You are the Token Compression Agent.
@@ -122,7 +124,7 @@ appendices:
       Benchmark planners submit with `bash scripts/submit_benchmark_plan.sh`.
       Engineering planners submit with `bash scripts/submit_engineering_plan.sh`.
       Benchmark coders submit with `bash scripts/submit_benchmark_for_review.sh`.
-      Solution coders submit with `bash scripts/submit_solution_for_review.sh`.
+      Solution coders finish by handing off through the authored script or the role helper, depending on the runtime contract in use.
       Reviewer roles submit with `bash scripts/submit_review.sh`.
       Use `python .admin/clear_env.py` only when you intentionally want a full workspace reset and are willing to discard current edits.
       For ordinary reruns after code changes, rerun `validate_benchmark()` / `simulate_benchmark()` or `validate_engineering()` / `simulate_engineering()` instead of wiping the workspace.
@@ -131,6 +133,7 @@ appendices:
     api_based: |
       In API-backed runs, the media-inspection tool is `inspect_media(path)`.
       Use controller-managed tools and provider-native tool calls.
+      Coder roles still finish by producing an authored script that submits through the role-scoped review helper from `utils.submission`; engineering coders call `submit_solution_for_review(result)` from `solution_script.py`.
       Keep runtime context injected separately from the managed prompt sources.
   cli:
     shared: |

@@ -124,7 +124,11 @@ def load_seed_starter_template_files(agent_name: AgentName) -> dict[str, str]:
             "benchmark_script.py"
         ]
     elif agent_name == AgentName.ENGINEER_CODER:
+        engineer_templates = load_template_repo_files("engineer")
         starter_files["solution_script.py"] = common_templates["solution_script.py"]
+        starter_files["payload_trajectory_definition.yaml"] = engineer_templates[
+            "payload_trajectory_definition.yaml"
+        ]
 
     if agent_name in {
         AgentName.BENCHMARK_CODER,

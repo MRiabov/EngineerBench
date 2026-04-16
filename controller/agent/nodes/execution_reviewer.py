@@ -17,7 +17,11 @@ from shared.enums import AgentName, ReviewDecision
 from shared.models.schemas import ReviewResult
 from shared.models.simulation import SimulationResult
 from shared.observability.schemas import ReviewDecisionEvent
-from shared.script_contracts import BENCHMARK_SCRIPT_PATH, SOLUTION_SCRIPT_PATH
+from shared.script_contracts import (
+    BENCHMARK_SCRIPT_PATH,
+    PAYLOAD_TRAJECTORY_DEFINITION_PATH,
+    SOLUTION_SCRIPT_PATH,
+)
 from shared.type_checking import type_check
 
 from ..review_handover import validate_reviewer_handover
@@ -32,6 +36,7 @@ class ExecutionReviewerSignature(dspy.Signature):
     task = dspy.InputField()
     plan = dspy.InputField()
     todo = dspy.InputField()
+    render_paths = dspy.InputField(default="")
     assembly_definition = dspy.InputField()
     benchmark_assembly_definition = dspy.InputField()
     plan_refusal = dspy.InputField(default="")
@@ -99,12 +104,10 @@ class ExecutionReviewerNode(BaseNode):
 
     async def _read_validation_results_text(self) -> str:
         try:
-            content = await self.ctx.worker_client.read_file_optional(
-                "validation_results.json"
+            return await self._read_optional_workspace_file(
+                "validation_results.json",
+                "# No validation_results.json found.",
             )
-            if content is None:
-                return "# No validation_results.json found."
-            return content
         except Exception:
             return "# Failed to read validation_results.json."
 
@@ -124,6 +127,45 @@ class ExecutionReviewerNode(BaseNode):
                 )
             benchmark_assembly_definition = await self._read_required_workspace_file(
                 "benchmark_assembly_definition.yaml"
+            )
+            benchmark_plan_review_manifest = (
+                "# No benchmark_plan_review_manifest.json found."
+            )
+            with suppress(Exception):
+                if await self.ctx.worker_client.exists(
+                    ".manifests/benchmark_plan_review_manifest.json"
+                ):
+                    benchmark_plan_review_manifest = (
+                        await self._read_optional_workspace_file(
+                            ".manifests/benchmark_plan_review_manifest.json",
+                            benchmark_plan_review_manifest,
+                        )
+                    )
+            payload_trajectory_definition = (
+                "# No payload_trajectory_definition.yaml found."
+            )
+            with suppress(Exception):
+                payload_trajectory_definition = (
+                    await self._read_optional_workspace_file(
+                        PAYLOAD_TRAJECTORY_DEFINITION_PATH,
+                        payload_trajectory_definition,
+                    )
+                )
+
+            render_paths = await self._list_current_revision_render_paths()
+            if not render_paths:
+                for preview_path in (
+                    "renders/render_e45_a45.png",
+                    "renders/dof_review_preview.png",
+                ):
+                    with suppress(Exception):
+                        if await self.ctx.worker_client.exists(preview_path):
+                            render_paths.append(preview_path)
+            render_paths = list(dict.fromkeys(render_paths))
+            render_paths_text = (
+                "\n".join(render_paths)
+                if render_paths
+                else "# No current-revision renders found."
             )
 
             submit_err = await self._ensure_submit_for_review_succeeded()
@@ -155,33 +197,36 @@ class ExecutionReviewerNode(BaseNode):
             # Read objectives if possible for context
             objectives = "# No benchmark_definition.yaml found."
             with suppress(Exception):
-                if await self.ctx.worker_client.exists("benchmark_definition.yaml"):
-                    objectives = await self.ctx.worker_client.read_file(
-                        "benchmark_definition.yaml"
-                    )
+                objectives = await self._read_optional_workspace_file(
+                    "benchmark_definition.yaml",
+                    objectives,
+                )
 
             validation_results = await self._read_validation_results_text()
 
             assembly_definition = "# No assembly_definition.yaml found."
             with suppress(Exception):
-                if await self.ctx.worker_client.exists("assembly_definition.yaml"):
-                    assembly_definition = await self.ctx.worker_client.read_file(
-                        "assembly_definition.yaml"
-                    )
+                assembly_definition = await self._read_optional_workspace_file(
+                    "assembly_definition.yaml",
+                    assembly_definition,
+                )
 
             plan_refusal = ""
             with suppress(Exception):
-                if await self.ctx.worker_client.exists("plan_refusal.md"):
-                    plan_refusal = await self.ctx.worker_client.read_file(
-                        "plan_refusal.md"
-                    )
+                plan_refusal = await self._read_optional_workspace_file(
+                    "plan_refusal.md",
+                    plan_refusal,
+                )
 
             inputs = {
                 "task": state.task,
                 "plan": state.plan,
                 "todo": state.todo,
+                "render_paths": render_paths_text,
                 "assembly_definition": assembly_definition,
                 "benchmark_assembly_definition": benchmark_assembly_definition,
+                "benchmark_plan_review_manifest": benchmark_plan_review_manifest,
+                "payload_trajectory_definition": payload_trajectory_definition,
                 "plan_refusal": plan_refusal,
                 "objectives": objectives,
                 "validation_results": validation_results,
@@ -193,6 +238,7 @@ class ExecutionReviewerNode(BaseNode):
                 "simulation_result.json",
                 "validation_results.json",
                 BENCHMARK_SCRIPT_PATH,
+                PAYLOAD_TRAJECTORY_DEFINITION_PATH,
                 "assembly_definition.yaml",
                 "benchmark_assembly_definition.yaml",
             ]
@@ -226,7 +272,6 @@ class ExecutionReviewerNode(BaseNode):
                 )
 
             review = ReviewResult.model_validate(prediction.review)
-            await self._ensure_current_revision_render_inspection()
             review = await self._enforce_render_inspection_gate(review)
             try:
                 (

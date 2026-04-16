@@ -38,6 +38,7 @@ SEED_STARTER_TEMPLATE_FILES: dict[AgentName, tuple[str, ...]] = {
     ),
     AgentName.ENGINEER_CODER: (
         "solution_script.py",
+        "payload_trajectory_definition.yaml",
         "todo.md",
         "journal.md",
     ),
