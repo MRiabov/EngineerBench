@@ -20,8 +20,8 @@ from shared.models.schemas import (
     BoundingBox,
     Constraints,
     ForbidZone,
-    MovedObject,
     ObjectivesSection,
+    Payload,
     PhysicsConfig,
 )
 from shared.models.simulation import RenderMode, SimulationResult
@@ -81,7 +81,7 @@ def _zone_video_objectives() -> BenchmarkDefinition:
         simulation_bounds=BoundingBox(
             min=(-40.0, -40.0, -10.0), max=(40.0, 40.0, 40.0)
         ),
-        payload=MovedObject(
+        payload=Payload(
             label="target_ball",
             shape="sphere",
             material_id="aluminum_6061",

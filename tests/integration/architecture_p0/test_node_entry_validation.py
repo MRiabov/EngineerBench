@@ -28,12 +28,12 @@ from shared.models.schemas import (
     AssemblyDefinition,
     BenchmarkDefinition,
     BoundingBox,
+    CoarsePayloadTrajectory,
     Constraints,
     CostTotals,
-    MotionForecast,
-    MotionForecastAnchor,
-    MovedObject,
     ObjectivesSection,
+    Payload,
+    PayloadTrajectoryAnchor,
 )
 from shared.script_contracts import (
     BENCHMARK_SCRIPT_PATH,
@@ -463,7 +463,7 @@ result = build()
     payload_definition_text = yaml.safe_dump(
         {
             "backend": "GENESIS",
-            "moving_part_names": ["solution_assembly"],
+            "payload_part_names": ["solution_assembly"],
             "initial_pose": {
                 "reference_point": "build_zone_start",
                 "pos_mm": [0.0, 0.0, 0.0],
@@ -499,7 +499,7 @@ result = build()
         file_validation.validate_payload_trajectory_definition_yaml(
             payload_definition_text,
             benchmark_definition=benchmark_definition,
-            expected_moving_part_names=["solution_assembly"],
+            expected_payload_part_names=["solution_assembly"],
             workspace_root=workspace_root,
             session_id="segment-sampling-regression",
         )
@@ -532,7 +532,7 @@ def test_int_engineer_planner_payload_clearance_validation_runs(
         manufacturing_config=None,
         exact_weight=False,
     ):
-        return True, SimpleNamespace(motion_forecast=None, moving_parts=[])
+        return True, SimpleNamespace(coarse_payload_trajectory=None, payload_parts=[])
 
     monkeypatch.setattr(
         file_validation,
@@ -613,7 +613,7 @@ def test_int_engineer_planner_payload_clearance_validation_runs(
 
 @pytest.mark.integration_p0
 @pytest.mark.int_id("INT-277")
-def test_int_engineer_planner_motion_forecast_clearance_validation_runs(
+def test_int_engineer_planner_payload_trajectory_clearance_validation_runs(
     monkeypatch: pytest.MonkeyPatch,
 ):
     calls: list[dict[str, object]] = []
@@ -646,7 +646,7 @@ def test_int_engineer_planner_motion_forecast_clearance_validation_runs(
             min=(-20.0, -20.0, -20.0),
             max=(20.0, 20.0, 20.0),
         ),
-        payload=MovedObject(
+        payload=Payload(
             label="payload",
             shape="sphere",
             material_id="aluminum_6061",
@@ -655,11 +655,11 @@ def test_int_engineer_planner_motion_forecast_clearance_validation_runs(
         ),
         constraints=Constraints(max_unit_cost=50.0, max_weight_g=1000.0),
     )
-    motion_forecast = MotionForecast(
-        moving_part_names=["solution_assembly"],
+    coarse_payload_trajectory = CoarsePayloadTrajectory(
+        payload_part_names=["solution_assembly"],
         sample_stride_s=0.2,
         anchors=[
-            MotionForecastAnchor(
+            PayloadTrajectoryAnchor(
                 t_s=0.0,
                 reference_point="build_zone_start",
                 pos_mm=(0.0, 0.0, 0.0),
@@ -668,7 +668,7 @@ def test_int_engineer_planner_motion_forecast_clearance_validation_runs(
                 rotation_tolerance_deg=(0.1, 0.1, 0.1),
                 build_zone_valid=True,
             ),
-            MotionForecastAnchor(
+            PayloadTrajectoryAnchor(
                 t_s=0.5,
                 reference_point="goal_zone_entry",
                 pos_mm=(1.0, 0.0, 0.0),
@@ -686,7 +686,7 @@ def test_int_engineer_planner_motion_forecast_clearance_validation_runs(
             planner_target_max_weight_g=900.0,
         ),
         manufactured_parts=[],
-        motion_forecast=motion_forecast,
+        coarse_payload_trajectory=coarse_payload_trajectory,
         final_assembly=[],
         totals=CostTotals(
             estimated_unit_cost_usd=10.0,
@@ -712,7 +712,7 @@ def test_int_engineer_planner_motion_forecast_clearance_validation_runs(
     )
 
     assert errors == [
-        "assembly_definition.yaml.motion_forecast: planner coarse clearance violation"
+        "assembly_definition.yaml.coarse_payload_trajectory: planner coarse clearance violation"
     ], errors
     assert len(calls) == 1, calls
     assert calls[0]["moving_script_path"] == SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH, calls

@@ -28,8 +28,8 @@ from shared.models.schemas import (
     BoundingBox,
     Constraints,
     CostTotals,
-    MovedObject,
     ObjectivesSection,
+    Payload,
 )
 from shared.simulation.schemas import SimulatorBackendType
 from shared.workers.schema import (
@@ -163,7 +163,7 @@ def valid_objectives():
         simulation_bounds=BoundingBox(
             min=(-100.0, -100.0, 0.0), max=(100.0, 100.0, 100.0)
         ),
-        payload=MovedObject(
+        payload=Payload(
             label="ball",
             shape="sphere",
             material_id="aluminum_6061",

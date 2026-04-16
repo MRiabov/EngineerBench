@@ -23,7 +23,7 @@ from shared.enums import (
 )
 from shared.models.schemas import BenchmarkDefinition
 from shared.models.simulation import SimulationResult
-from shared.simulation.scene_builder import PreviewScene, moved_object_scene_name
+from shared.simulation.scene_builder import PreviewScene, payload_scene_name
 from shared.workers.schema import (
     BenchmarkToolRequest,
     BenchmarkToolResponse,
@@ -611,7 +611,7 @@ async def test_engineering_full_loop():
             for entity in final_preview_scene.entities
             if entity.label == benchmark_definition.payload.label
         )
-        assert payload_entity.body_name == moved_object_scene_name(payload_entity.label)
+        assert payload_entity.body_name == payload_scene_name(payload_entity.label)
         assert payload_entity.pos == tuple(
             float(value) for value in benchmark_definition.payload.start_position
         )

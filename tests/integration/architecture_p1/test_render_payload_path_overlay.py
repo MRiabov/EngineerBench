@@ -7,7 +7,9 @@ from worker_renderer.utils.payload_path_overlay import resolve_payload_path_poin
 ROOT = Path(__file__).resolve().parents[3]
 
 
-def test_resolve_payload_path_points_prefers_planner_motion_forecast(tmp_path: Path):
+def test_resolve_payload_path_points_prefers_planner_coarse_payload_trajectory(
+    tmp_path: Path,
+):
     workspace_root = tmp_path
 
     benchmark_definition = (
@@ -37,8 +39,8 @@ def test_resolve_payload_path_points_prefers_planner_motion_forecast(tmp_path: P
         assembly_definition
         + """
 
-motion_forecast:
-  moving_part_names:
+coarse_payload_trajectory:
+  payload_part_names:
     - bridge_deck
   reference_frame: world
   sample_stride_s: 0.5

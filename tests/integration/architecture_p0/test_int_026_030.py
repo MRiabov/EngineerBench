@@ -21,8 +21,8 @@ from shared.models.schemas import (
     BenchmarkDefinition,
     BoundingBox,
     Constraints,
-    MovedObject,
     ObjectivesSection,
+    Payload,
 )
 from shared.workers.schema import BenchmarkToolResponse, WriteFileRequest
 from tests.integration.agent.helpers import seed_benchmark_assembly_definition
@@ -184,7 +184,7 @@ async def test_int_026_mandatory_event_families(tmp_path: Path):
                 build_zone=BoundingBox(min=(0, 0, 0), max=(20, 20, 20)),
             ),
             simulation_bounds=BoundingBox(min=(-10, -10, -10), max=(30, 30, 30)),
-            payload=MovedObject(
+            payload=Payload(
                 label="test_obj",
                 shape="sphere",
                 material_id="aluminum_6061",

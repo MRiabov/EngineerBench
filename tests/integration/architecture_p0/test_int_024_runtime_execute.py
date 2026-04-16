@@ -18,8 +18,8 @@ from shared.models.schemas import (
     BenchmarkPartMetadata,
     BoundingBox,
     Constraints,
-    MovedObject,
     ObjectivesSection,
+    Payload,
     StaticRandomization,
 )
 from shared.workers.schema import ExecuteRequest, ExecuteResponse, WriteFileRequest
@@ -187,7 +187,7 @@ print(f"VALIDATE_MESSAGE={message}")
         simulation_bounds=BoundingBox(
             min=(-50.0, -50.0, -10.0), max=(50.0, 50.0, 50.0)
         ),
-        payload=MovedObject(
+        payload=Payload(
             label="target_box",
             shape="sphere",
             material_id="aluminum_6061",
@@ -207,7 +207,7 @@ print(f"VALIDATE_MESSAGE={message}")
         simulation_bounds=BoundingBox(
             min=(-50.0, -50.0, -10.0), max=(50.0, 50.0, 50.0)
         ),
-        payload=MovedObject(
+        payload=Payload(
             label="target_box",
             shape="sphere",
             material_id="aluminum_6061",
@@ -331,7 +331,7 @@ print(f"VALIDATE_MESSAGE={message}")
         simulation_bounds=BoundingBox(
             min=(-50.0, -50.0, -10.0), max=(50.0, 50.0, 50.0)
         ),
-        payload=MovedObject(
+        payload=Payload(
             label="projectile_ball",
             shape="sphere",
             material_id="abs",
@@ -493,7 +493,7 @@ print(f"VALIDATE_MESSAGE={message}")
         simulation_bounds=BoundingBox(
             min=(-50.0, -50.0, -10.0), max=(50.0, 50.0, 50.0)
         ),
-        payload=MovedObject(
+        payload=Payload(
             label="target_box",
             shape="box",
             material_id="aluminum_6061",
@@ -602,7 +602,7 @@ print(f"VALIDATE_MESSAGE={message}")
         simulation_bounds=BoundingBox(
             min=(-50.0, -50.0, -10.0), max=(50.0, 50.0, 50.0)
         ),
-        payload=MovedObject(
+        payload=Payload(
             label="target_box",
             shape="box",
             material_id="aluminum_6061",
@@ -762,7 +762,7 @@ print(f"VALIDATE_MESSAGE={message}")
         simulation_bounds=BoundingBox(
             min=(-50.0, -50.0, -10.0), max=(50.0, 50.0, 50.0)
         ),
-        payload=MovedObject(
+        payload=Payload(
             label="ground_plane",
             shape="box",
             material_id="aluminum_6061",

@@ -1,5 +1,5 @@
 backend: GENESIS
-moving_part_names:
+payload_part_names:
   - projectile_ball
 initial_pose:
   reference_point: com

@@ -20,8 +20,8 @@ from shared.models.schemas import (
     BenchmarkDefinition,
     BoundingBox,
     Constraints,
-    MovedObject,
     ObjectivesSection,
+    Payload,
     PhysicsConfig,
 )
 from shared.simulation.schemas import SimulatorBackendType
@@ -176,7 +176,7 @@ async def test_int_217_static_preview_prefers_benchmark_bucket_when_workspace_al
                 min=(-5.0, -5.0, -5.0),
                 max=(5.0, 5.0, 5.0),
             ),
-            payload=MovedObject(
+            payload=Payload(
                 label="delegate_preview_box",
                 shape="box",
                 material_id="aluminum_6061",
@@ -645,7 +645,7 @@ async def test_int_020_simulation_failure_taxonomy():
             simulation_bounds=BoundingBox(
                 min=(-20.5, -20.5, -20.5), max=(20.5, 20.5, 20.5)
             ),
-            payload=MovedObject(
+            payload=Payload(
                 label="target_box",
                 shape="sphere",
                 material_id="aluminum_6061",
@@ -799,7 +799,7 @@ async def test_int_021_runtime_randomization_robustness():
             ),
             benchmark_parts=_default_benchmark_parts(),
             simulation_bounds=BoundingBox(min=(-20, -20, -20), max=(20, 20, 20)),
-            payload=MovedObject(
+            payload=Payload(
                 label="target_box",
                 shape="sphere",
                 material_id="aluminum_6061",
@@ -934,7 +934,7 @@ def build():
             simulation_bounds=BoundingBox(
                 min=(-50.0, -50.0, -10.0), max=(50.0, 50.0, 50.0)
             ),
-            payload=MovedObject(
+            payload=Payload(
                 label="target_box",
                 shape="sphere",
                 material_id="aluminum_6061",
@@ -983,7 +983,7 @@ def build():
                         max=(20.0, 20.0, 30.0),
                     ),
                 ),
-                "payload": MovedObject(
+                "payload": Payload(
                     label="target_box",
                     shape="sphere",
                     material_id="aluminum_6061",
