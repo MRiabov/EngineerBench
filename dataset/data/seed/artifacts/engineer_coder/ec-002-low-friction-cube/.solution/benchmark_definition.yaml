@@ -1,0 +1,38 @@
+objectives:
+  goal_zone:
+    min: [290.0, -35.0, 10.0]
+    max: [360.0, 35.0, 70.0]
+  forbid_zones:
+    - name: center_collision_block
+      min: [110.0, -90.0, 0.0]
+      max: [220.0, 90.0, 120.0]
+  build_zone:
+    min: [-340.0, -140.0, 0.0]
+    max: [400.0, 140.0, 180.0]
+benchmark_parts:
+  - part_id: environment_fixture
+    label: environment_fixture
+    metadata:
+      fixed: true
+      material_id: aluminum_6061
+
+physics:
+  backend: GENESIS
+  compute_target: auto
+simulation_bounds:
+  min: [-380.0, -180.0, -10.0]
+  max: [450.0, 180.0, 220.0]
+payload:
+  label: slider_cube
+  shape: cube
+  material_id: abs
+  static_randomization:
+    radius: [13.0, 15.0]
+  start_position: [-280.0, 0.0, 180.0] # move the goal higher so that it actually has some potential energy and distance to slide.
+  runtime_jitter: [14.0, 12.0, 3.0]
+constraints:
+  max_unit_cost: 50.0
+  max_weight_g: 980.0
+randomization:
+  static_variation_id: engineer_coder_low_friction_cube_v1
+  runtime_jitter_enabled: true

@@ -1,0 +1,21 @@
+# Solution Description
+
+This snapshot captures the replaceable solution overlay for `engineer_coder/ec-002-low-friction-cube`.
+
+Construction notes:
+1. Copy the role-owned workspace files from the seed root into `.solution`.
+2. Omit backend-owned manifests, render bundles, bytecode caches, and symlinks.
+3. Use this overlay to materialize or compare the solved workspace state.
+
+Included root items:
+- `assembly_definition.yaml`
+- `benchmark_assembly_definition.yaml`
+- `benchmark_definition.yaml`
+- `benchmark_script.py`
+- `engineering_plan.md`
+- `journal.md`
+- `payload_trajectory_definition.yaml`
+- `reviews`
+- `solution_plan_evidence_script.py`
+- `solution_script.py`
+- `todo.md`
