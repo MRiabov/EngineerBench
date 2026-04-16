@@ -1,0 +1,81 @@
+objectives:
+  goal_zone:
+    min:
+    - 210.0
+    - -55.0
+    - 20.0
+    max:
+    - 310.0
+    - 55.0
+    - 110.0
+  forbid_zones: []
+  build_zone:
+    min:
+    - -320.0
+    - -180.0
+    - 0.0
+    max:
+    - 340.0
+    - 180.0
+    - 220.0
+  fluid_objectives: []
+  stress_objectives: []
+benchmark_parts:
+- part_id: ballast_base
+  label: ballast_base
+  metadata:
+    fixed: true
+    material_id: steel_cold_rolled
+- part_id: transfer_chute
+  label: transfer_chute
+  metadata:
+    fixed: true
+    material_id: hdpe
+- part_id: counterweight_fin
+  label: counterweight_fin
+  metadata:
+    fixed: true
+    material_id: steel_cold_rolled
+- part_id: goal_cradle
+  label: goal_cradle
+  metadata:
+    fixed: true
+    material_id: hdpe
+physics:
+  backend: GENESIS
+  fem_enabled: false
+  compute_target: auto
+fluids: []
+simulation_bounds:
+  min:
+  - -380.0
+  - -220.0
+  - -10.0
+  max:
+  - 400.0
+  - 220.0
+  - 280.0
+payload:
+  label: projectile_ball
+  shape: sphere
+  material_id: abs
+  static_randomization:
+    radius:
+    - 22.0
+    - 24.0
+  start_position:
+  - -250.0
+  - 0.0
+  - 70.0
+  runtime_jitter:
+  - 10.0
+  - 8.0
+  - 4.0
+constraints:
+  estimated_solution_cost_usd: 40.0
+  estimated_solution_weight_g: 666.666666666667
+  max_unit_cost: 60.0
+  max_weight_g: 1000.0
+randomization:
+  static_variation_id: benchmark_plan_reviewer_gap_bridge_transfer_v1
+  runtime_jitter_enabled: true

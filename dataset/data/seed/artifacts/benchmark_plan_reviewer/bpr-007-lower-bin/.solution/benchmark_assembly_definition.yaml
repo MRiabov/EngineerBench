@@ -1,0 +1,81 @@
+version: "1.0"
+units:
+  length: "mm"
+  volume: "mm3"
+  mass: "g"
+  currency: "USD"
+constraints:
+  benchmark_max_unit_cost_usd: 78.0
+  benchmark_max_weight_g: 1450.0
+  planner_target_max_unit_cost_usd: 60.0
+  planner_target_max_weight_g: 1180.0
+manufactured_parts:
+  - part_name: upper_start_ledge
+    part_id: upper_start_ledge
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 220000.0
+    stock_bbox_mm:
+      x: 120.0
+      y: 120.0
+      z: 24.0
+    stock_volume_mm3: 345600.0
+    removed_volume_mm3: 125600.0
+    estimated_unit_cost_usd: 8.0
+  - part_name: deflector_ramp
+    part_id: deflector_ramp
+    manufacturing_method: CNC
+    material_id: hdpe
+    quantity: 1
+    part_volume_mm3: 210000.0
+    stock_bbox_mm:
+      x: 180.0
+      y: 100.0
+      z: 90.0
+    stock_volume_mm3: 1620000.0
+    removed_volume_mm3: 1410000.0
+    estimated_unit_cost_usd: 7.0
+  - part_name: direct_drop_shield
+    part_id: direct_drop_shield
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 420000.0
+    stock_bbox_mm:
+      x: 120.0
+      y: 90.0
+      z: 130.0
+    stock_volume_mm3: 1404000.0
+    removed_volume_mm3: 984000.0
+    estimated_unit_cost_usd: 14.0
+  - part_name: lower_bin
+    part_id: lower_bin
+    manufacturing_method: CNC
+    material_id: hdpe
+    quantity: 1
+    part_volume_mm3: 180000.0
+    stock_bbox_mm:
+      x: 130.0
+      y: 110.0
+      z: 60.0
+    stock_volume_mm3: 858000.0
+    removed_volume_mm3: 678000.0
+    estimated_unit_cost_usd: 6.0
+final_assembly:
+  - name: upper_start_ledge
+    config:
+  - name: deflector_ramp
+    config:
+  - name: direct_drop_shield
+    config:
+  - name: lower_bin
+    config:
+totals:
+  estimated_unit_cost_usd: 44.0
+  estimated_weight_g: 920.0
+  estimate_confidence: high
+dfm_suggestions:
+  - Keep the dead-zone shield rectangular so the failure geometry stays obvious in review.
+  - Use one continuous deflector instead of segmented ramps to avoid ambiguity in the planner handoff.
+

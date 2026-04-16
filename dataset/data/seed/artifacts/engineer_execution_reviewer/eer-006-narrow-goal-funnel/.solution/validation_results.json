@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "message": "Validation passed.",
+  "timestamp": 1710152280,
+  "script_path": "solution_script.py",
+  "script_sha256": "791f9760e68336c6e62c53ae82ba53fa26bd1fd3b3a355654500d20366e8ddb3",
+  "verification_result": {
+    "num_scenes": 1,
+    "success_count": 1,
+    "success_rate": 1.0,
+    "is_consistent": true,
+    "individual_results": [
+      {
+        "success": true,
+        "total_time": 0.0,
+        "total_energy": 0.0,
+        "max_velocity": 0.0,
+        "max_stress": 0.0,
+        "confidence": "high",
+        "stress_summaries": [],
+        "stress_fields": {},
+        "fluid_metrics": [],
+        "events": []
+      }
+    ],
+    "fail_reasons": [],
+    "scene_build_count": 1,
+    "backend_run_count": 1,
+    "batched_execution": true
+  }
+}

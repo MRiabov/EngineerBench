@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "summary": "Goal achieved: projectile_ball reached the goal zone despite the steep redirection path.",
+  "failure_reason": null,
+  "fail_mode": null,
+  "failure": null,
+  "render_provenance": null,
+  "render_paths": [],
+  "mjcf_content": null,
+  "stress_summaries": [],
+  "stress_fields": {},
+  "fluid_metrics": [],
+  "total_cost": 35.0,
+  "total_weight_g": 920.0,
+  "confidence": "high"
+}

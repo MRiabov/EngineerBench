@@ -8,7 +8,10 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
-BACKUP_REF = "refs/codex/pre-commit-backups/latest"
+BACKUP_ROOT = "refs/codex/pre-commit-backups"
+LATEST_REF = f"{BACKUP_ROOT}/latest"
+HISTORY_PREFIX = f"{BACKUP_ROOT}/history/"
+MAX_BACKUPS = 200
 COMMITTER_NAME = "Codex Pre-commit Backup"
 COMMITTER_EMAIL = "codex@local"
 
@@ -38,7 +41,7 @@ def has_changes(repo_root: Path) -> bool:
     return bool(status)
 
 
-def create_snapshot(repo_root: Path) -> str:
+def create_snapshot(repo_root: Path) -> tuple[str, str]:
     now = datetime.now(timezone.utc)
     stamp = now.strftime("%Y%m%dT%H%M%SZ")
 
@@ -72,19 +75,50 @@ def create_snapshot(repo_root: Path) -> str:
             commit_args[2:2] = ["-p", head.stdout.strip()]
 
         commit = run_git(commit_args, cwd=repo_root, env=env)
+        history_ref = f"{HISTORY_PREFIX}{stamp}-{commit[:12]}"
         run_git(
             [
                 "update-ref",
                 "--create-reflog",
                 "-m",
                 f"pre-commit backup {stamp}",
-                BACKUP_REF,
+                history_ref,
                 commit,
             ],
             cwd=repo_root,
             env=env,
         )
-        return commit
+        run_git(
+            [
+                "update-ref",
+                "--create-reflog",
+                "-m",
+                f"pre-commit backup {stamp}",
+                LATEST_REF,
+                commit,
+            ],
+            cwd=repo_root,
+            env=env,
+        )
+        history_refs = run_git(
+            [
+                "for-each-ref",
+                "--format=%(refname)",
+                "--sort=refname",
+                HISTORY_PREFIX,
+            ],
+            cwd=repo_root,
+            env=env,
+        ).splitlines()
+        excess = len(history_refs) - MAX_BACKUPS
+        if excess > 0:
+            for refname in history_refs[:excess]:
+                run_git(
+                    ["update-ref", "-d", refname],
+                    cwd=repo_root,
+                    env=env,
+                )
+        return commit, history_ref
     finally:
         try:
             Path(index_path).unlink()
@@ -98,8 +132,11 @@ def main() -> int:
     if not has_changes(repo_root):
         return 0
 
-    commit = create_snapshot(repo_root)
-    print(f"pre-commit backup saved to {BACKUP_REF} ({commit[:12]})")
+    commit, history_ref = create_snapshot(repo_root)
+    print(
+        "pre-commit backup saved to "
+        f"{LATEST_REF} and {history_ref} ({commit[:12]})"
+    )
     return 0
 
 

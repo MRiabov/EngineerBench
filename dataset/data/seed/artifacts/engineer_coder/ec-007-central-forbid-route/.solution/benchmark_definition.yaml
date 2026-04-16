@@ -1,0 +1,42 @@
+objectives:
+  goal_zone:
+    min: [420.0, -60.0, 15.0]
+    max: [520.0, 60.0, 110.0]
+  forbid_zones:
+    - name: central_blocker
+      min: [120.0, -130.0, 0.0]
+      max: [260.0, 130.0, 150.0]
+  build_zone:
+    min: [-240.0, -180.0, 0.0]
+    max: [560.0, 180.0, 240.0]
+  fluid_objectives: []
+  stress_objectives: []
+benchmark_parts:
+  - part_id: environment_fixture
+    label: environment_fixture
+    metadata:
+      fixed: true
+      material_id: aluminum_6061
+
+physics:
+  backend: GENESIS
+  fem_enabled: false
+  compute_target: auto
+fluids: []
+simulation_bounds:
+  min: [-300.0, -220.0, -10.0]
+  max: [620.0, 220.0, 280.0]
+payload:
+  label: projectile_ball
+  shape: sphere
+  material_id: abs
+  static_randomization:
+    radius: [28.0, 30.0]
+  start_position: [-180.0, 0.0, 110.0]
+  runtime_jitter: [14.0, 10.0, 6.0]
+constraints:
+  max_unit_cost: 64.0
+  max_weight_g: 1250.0
+randomization:
+  static_variation_id: engineer_coder_forbid_route_v1
+  runtime_jitter_enabled: true

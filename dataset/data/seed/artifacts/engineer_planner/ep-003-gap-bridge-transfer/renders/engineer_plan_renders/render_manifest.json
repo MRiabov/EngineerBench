@@ -1,0 +1,472 @@
+{
+  "version": "1.0",
+  "bundle_id": "619da783-bb07-52df-9a04-4d7276423943",
+  "created_at": "2026-04-16T18:23:38.599492+00:00",
+  "episode_id": "082de939-3885-5f22-8c4e-9535f0c8048d",
+  "worker_session_id": "ep-003-gap-bridge-transfer",
+  "revision": "b5d8ee3a2209c65a8c874b55746206dfd7d4c3fc",
+  "scene_hash": "482476149ccb7ff89119227ccf300707b32d37bc4774c5b823c90e74b9537e73",
+  "bundle_path": "renders/engineer_plan_renders",
+  "environment_version": null,
+  "source_script_sha256": "375d26452d6c1060ae807cac81fa3d1cfc275ff2eff7c0e842cee783d5c1fe57",
+  "preview_evidence_paths": [
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a0.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a135.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a180.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a225.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a270.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a315.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a45.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a90.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a0.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a135.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a180.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a225.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a270.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a315.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a45.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a90.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a0.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a135.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a180.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a225.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a270.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a315.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a45.png",
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a90.png"
+  ],
+  "artifacts": {
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a0.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e15_a0",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a0.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a0_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a0_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a45.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e15_a45",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a45.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a45_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a45_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a90.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e15_a90",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a90.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a90_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a90_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a135.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e15_a135",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a135.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a135_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a135_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a180.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e15_a180",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a180.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a180_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a180_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a225.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e15_a225",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a225.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a225_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a225_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a270.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e15_a270",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a270.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a270_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a270_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a315.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e15_a315",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a315.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a315_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e15_a315_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a0.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e45_a0",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a0.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a0_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a0_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a45.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e45_a45",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a45.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a45_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a45_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a90.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e45_a90",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a90.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a90_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a90_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a135.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e45_a135",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a135.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a135_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a135_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a180.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e45_a180",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a180.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a180_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a180_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a225.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e45_a225",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a225.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a225_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a225_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a270.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e45_a270",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a270.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a270_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a270_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a315.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e45_a315",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a315.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a315_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e45_a315_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a0.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e75_a0",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a0.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a0_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a0_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a45.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e75_a45",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a45.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a45_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a45_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a90.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e75_a90",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a90.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a90_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a90_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a135.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e75_a135",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a135.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a135_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a135_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a180.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e75_a180",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a180.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a180_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a180_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a225.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e75_a225",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a225.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a225_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a225_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a270.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e75_a270",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a270.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a270_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a270_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a315.png": {
+      "modality": "rgb",
+      "group_key": "solution_plan_evidence_render_e75_a315",
+      "view_index": null,
+      "orbit_pitch": null,
+      "orbit_yaw": null,
+      "siblings": {
+        "rgb": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a315.png",
+        "depth": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a315_depth.png",
+        "segmentation": "renders/engineer_plan_renders/solution_plan_evidence_render_e75_a315_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    }
+  }
+}
