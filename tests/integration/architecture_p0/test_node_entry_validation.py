@@ -2,10 +2,12 @@ import os
 import shutil
 import uuid
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 import yaml
 
+import worker_heavy.utils.file_validation as file_validation
 from controller.agent.node_entry_validation import (
     ValidationScope,
     _run_seed_validation_engineering_gate,
@@ -340,6 +342,105 @@ async def test_int_engineer_coder_seed_requires_payload_trajectory_definition():
         and "missing" in error.message.lower()
         for error in errors
     ), errors
+
+
+@pytest.mark.integration_p0
+@pytest.mark.int_id("INT-276")
+def test_int_engineer_planner_payload_clearance_validation_runs(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    calls: list[str | None] = []
+
+    def fake_clearance(**kwargs):
+        calls.append(kwargs.get("session_id"))
+        return []
+
+    def fake_benchmark_definition_yaml(content, session_id=None):
+        return True, object()
+
+    def fake_assembly_definition_yaml(
+        content,
+        session_id=None,
+        manufacturing_config=None,
+        exact_weight=False,
+    ):
+        return True, SimpleNamespace(motion_forecast=None, moving_parts=[])
+
+    monkeypatch.setattr(
+        file_validation,
+        "validate_benchmark_definition_yaml",
+        fake_benchmark_definition_yaml,
+    )
+    monkeypatch.setattr(
+        file_validation,
+        "validate_assembly_definition_yaml",
+        fake_assembly_definition_yaml,
+    )
+    monkeypatch.setattr(
+        file_validation,
+        "validate_planner_evidence_script_layout_contract",
+        lambda **kwargs: [],
+    )
+    monkeypatch.setattr(
+        file_validation,
+        "validate_plan_md_structure",
+        lambda content, plan_type="benchmark", session_id=None, artifact_path=None: (
+            True,
+            [],
+        ),
+    )
+    monkeypatch.setattr(
+        file_validation,
+        "validate_planner_handoff_cross_contract",
+        lambda **kwargs: [],
+    )
+    monkeypatch.setattr(
+        file_validation,
+        "validate_payload_trajectory_definition_yaml",
+        lambda content, **kwargs: (True, object()),
+    )
+    monkeypatch.setattr(
+        file_validation,
+        "validate_payload_trajectory_swept_clearance",
+        fake_clearance,
+    )
+
+    ok, errors = file_validation.validate_node_output(
+        AgentName.ENGINEER_PLANNER,
+        {
+            "engineering_plan.md": (
+                "# Engineering Plan\n\n"
+                "## 1. Solution Overview\n"
+                "- Outline\n\n"
+                "## 2. Parts List\n"
+                "- Part: payload_carrier\n\n"
+                "## 3. Assembly Strategy\n"
+                "- Assemble the payload carrier.\n\n"
+                "## 4. Assumption Register\n"
+                "- Assumption: none.\n\n"
+                "## 5. Detailed Calculations\n"
+                "- CALC-001\n\n"
+                "## 6. Critical Constraints / Operating Envelope\n"
+                "- Constraint: stay within bounds.\n\n"
+                "## 7. Cost & Weight Budget\n"
+                "- Budget: nominal.\n\n"
+                "## 8. Risk Assessment\n"
+                "- Risk: low.\n"
+            ),
+            "todo.md": "# TODO List\n\n- [ ] Build the handoff package\n",
+            "benchmark_definition.yaml": "benchmark: true\n",
+            "assembly_definition.yaml": "assembly: true\n",
+            "solution_plan_evidence_script.py": (
+                "from build123d import Box\n\nresult = Box(1, 1, 1)\n"
+            ),
+            "payload_trajectory_definition.yaml": "backend: GENESIS\n",
+        },
+        session_id="planner-clearance-test",
+    )
+
+    assert ok, errors
+    assert errors == []
+    assert calls == ["planner-clearance-test"], calls
 
 
 @pytest.mark.integration_p0
