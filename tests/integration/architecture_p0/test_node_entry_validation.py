@@ -23,6 +23,22 @@ from scripts.internal.eval_seed_selection import load_seed_dataset
 from shared.agent_templates import load_role_template_files
 from shared.current_role import current_role_manifest_json
 from shared.enums import AgentName
+from shared.models.schemas import (
+    AssemblyConstraints,
+    AssemblyDefinition,
+    BenchmarkDefinition,
+    BoundingBox,
+    Constraints,
+    CostTotals,
+    MotionForecast,
+    MotionForecastAnchor,
+    MovedObject,
+    ObjectivesSection,
+)
+from shared.script_contracts import (
+    BENCHMARK_SCRIPT_PATH,
+    SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
+)
 from shared.utils.agent import validate_engineering
 from shared.workers.loader import load_component_from_script
 from shared.workers.schema import BenchmarkToolResponse
@@ -345,6 +361,158 @@ async def test_int_engineer_coder_seed_requires_payload_trajectory_definition():
 
 
 @pytest.mark.integration_p0
+def test_int_engineer_coder_payload_path_samples_intermediate_segment(
+    tmp_path: Path,
+):
+    workspace_root = tmp_path / "segment_sampling_workspace"
+    workspace_root.mkdir()
+
+    workspace_root.joinpath("benchmark_script.py").write_text(
+        """from build123d import Align, Box, Compound, Location
+
+from shared.models.schemas import CompoundMetadata, PartMetadata
+
+
+def build() -> Compound:
+    fixed_block = Box(
+        0.5, 0.5, 0.5, align=(Align.CENTER, Align.CENTER, Align.CENTER)
+    ).move(Location((10.25, 0.0, 0.0)))
+    fixed_block.label = "fixed_block"
+    fixed_block.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
+
+    scene = Compound(children=[fixed_block])
+    scene.label = "benchmark_scene"
+    scene.metadata = CompoundMetadata()
+    return scene
+
+
+result = build()
+""",
+        encoding="utf-8",
+    )
+
+    workspace_root.joinpath("solution_script.py").write_text(
+        """from build123d import Align, Box, Compound
+
+from shared.models.schemas import CompoundMetadata, PartMetadata
+
+
+def build() -> Compound:
+    payload = Box(
+        10, 10, 10, align=(Align.CENTER, Align.CENTER, Align.CENTER)
+    )
+    payload.label = "payload_body"
+    payload.metadata = PartMetadata(material_id="abs", fixed=False)
+
+    scene = Compound(children=[payload])
+    scene.label = "solution_assembly"
+    scene.metadata = CompoundMetadata()
+    return scene
+
+
+result = build()
+""",
+        encoding="utf-8",
+    )
+
+    benchmark_definition_text = yaml.safe_dump(
+        {
+            "objectives": {
+                "goal_zone": {"min": [40.1, -10.0, -10.0], "max": [500.0, 10.0, 10.0]},
+                "forbid_zones": [],
+                "build_zone": {
+                    "min": [-10.0, -10.0, -10.0],
+                    "max": [500.0, 10.0, 10.0],
+                },
+            },
+            "benchmark_parts": [
+                {
+                    "part_id": "environment_fixture",
+                    "label": "environment_fixture",
+                    "metadata": {"fixed": True, "material_id": "aluminum_6061"},
+                }
+            ],
+            "physics": {"backend": "GENESIS", "compute_target": "auto"},
+            "simulation_bounds": {
+                "min": [-10.0, -10.0, -10.0],
+                "max": [500.0, 10.0, 10.0],
+            },
+            "payload": {
+                "label": "payload_body",
+                "shape": "cube",
+                "material_id": "abs",
+                "static_randomization": {"radius": [0.0, 0.0]},
+                "start_position": [0.0, 0.0, 0.0],
+                "runtime_jitter": [0.0, 0.0, 0.0],
+            },
+            "constraints": {"max_unit_cost": 50.0, "max_weight_g": 980.0},
+            "randomization": {
+                "static_variation_id": "segment_sampling_regression",
+                "runtime_jitter_enabled": False,
+            },
+        },
+        sort_keys=False,
+    )
+
+    is_valid, benchmark_definition_or_errors = (
+        file_validation.validate_benchmark_definition_yaml(benchmark_definition_text)
+    )
+    assert is_valid, benchmark_definition_or_errors
+    benchmark_definition = benchmark_definition_or_errors
+
+    payload_definition_text = yaml.safe_dump(
+        {
+            "backend": "GENESIS",
+            "moving_part_names": ["solution_assembly"],
+            "initial_pose": {
+                "reference_point": "build_zone_start",
+                "pos_mm": [0.0, 0.0, 0.0],
+                "rot_deg": [0.0, 0.0, 0.0],
+            },
+            "sample_stride_s": 0.3,
+            "anchors": [
+                {
+                    "t_s": 0.0,
+                    "reference_point": "build_zone_start",
+                    "pos_mm": [0.0, 0.0, 0.0],
+                    "rot_deg": [0.0, 0.0, 0.0],
+                    "position_tolerance_mm": [0.0, 0.0, 0.0],
+                    "rotation_tolerance_deg": [0.1, 0.1, 0.1],
+                    "build_zone_valid": True,
+                },
+                {
+                    "t_s": 0.5,
+                    "reference_point": "build_zone_start",
+                    "pos_mm": [40.1, 0.0, 0.0],
+                    "rot_deg": [0.0, 0.0, 0.0],
+                    "position_tolerance_mm": [0.0, 0.0, 0.0],
+                    "rotation_tolerance_deg": [0.1, 0.1, 0.1],
+                    "goal_zone_contact": True,
+                },
+            ],
+            "terminal_event": None,
+        },
+        sort_keys=False,
+    )
+
+    is_valid, payload_result = (
+        file_validation.validate_payload_trajectory_definition_yaml(
+            payload_definition_text,
+            benchmark_definition=benchmark_definition,
+            expected_moving_part_names=["solution_assembly"],
+            workspace_root=workspace_root,
+            session_id="segment-sampling-regression",
+        )
+    )
+
+    assert not is_valid, "Expected the segment sampler to reject the crossing path."
+    assert any(
+        "fixed geometry" in error or "intersects" in error or "goal_zone" in error
+        for error in payload_result
+    ), payload_result
+
+
+@pytest.mark.integration_p0
 @pytest.mark.int_id("INT-276")
 def test_int_engineer_planner_payload_clearance_validation_runs(
     monkeypatch: pytest.MonkeyPatch,
@@ -441,6 +609,114 @@ def test_int_engineer_planner_payload_clearance_validation_runs(
     assert ok, errors
     assert errors == []
     assert calls == ["planner-clearance-test"], calls
+
+
+@pytest.mark.integration_p0
+@pytest.mark.int_id("INT-277")
+def test_int_engineer_planner_motion_forecast_clearance_validation_runs(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    calls: list[dict[str, object]] = []
+
+    def fake_clearance(**kwargs):
+        calls.append(kwargs)
+        return [
+            "payload_trajectory_definition.yaml: planner coarse clearance violation"
+        ]
+
+    monkeypatch.setattr(
+        file_validation,
+        "validate_exact_planner_cost_contract",
+        lambda **kwargs: [],
+    )
+    monkeypatch.setattr(
+        file_validation,
+        "validate_payload_trajectory_swept_clearance",
+        fake_clearance,
+    )
+
+    benchmark_definition = BenchmarkDefinition(
+        objectives=ObjectivesSection(
+            goal_zone=BoundingBox(min=(-5.0, -5.0, -5.0), max=(5.0, 5.0, 5.0)),
+            forbid_zones=[],
+            build_zone=BoundingBox(min=(-10.0, -10.0, -10.0), max=(10.0, 10.0, 10.0)),
+        ),
+        benchmark_parts=[],
+        simulation_bounds=BoundingBox(
+            min=(-20.0, -20.0, -20.0),
+            max=(20.0, 20.0, 20.0),
+        ),
+        payload=MovedObject(
+            label="payload",
+            shape="sphere",
+            material_id="aluminum_6061",
+            start_position=(0.0, 0.0, 0.0),
+            runtime_jitter=(0.0, 0.0, 0.0),
+        ),
+        constraints=Constraints(max_unit_cost=50.0, max_weight_g=1000.0),
+    )
+    motion_forecast = MotionForecast(
+        moving_part_names=["solution_assembly"],
+        sample_stride_s=0.2,
+        anchors=[
+            MotionForecastAnchor(
+                t_s=0.0,
+                reference_point="build_zone_start",
+                pos_mm=(0.0, 0.0, 0.0),
+                rot_deg=(0.0, 0.0, 0.0),
+                position_tolerance_mm=(0.0, 0.0, 0.0),
+                rotation_tolerance_deg=(0.1, 0.1, 0.1),
+                build_zone_valid=True,
+            ),
+            MotionForecastAnchor(
+                t_s=0.5,
+                reference_point="goal_zone_entry",
+                pos_mm=(1.0, 0.0, 0.0),
+                rot_deg=(0.0, 0.0, 0.0),
+                position_tolerance_mm=(0.0, 0.0, 0.0),
+                rotation_tolerance_deg=(0.1, 0.1, 0.1),
+                goal_zone_contact=True,
+            ),
+        ],
+    )
+    assembly_definition = AssemblyDefinition(
+        version="1.0",
+        constraints=AssemblyConstraints(
+            planner_target_max_unit_cost_usd=40.0,
+            planner_target_max_weight_g=900.0,
+        ),
+        manufactured_parts=[],
+        motion_forecast=motion_forecast,
+        final_assembly=[],
+        totals=CostTotals(
+            estimated_unit_cost_usd=10.0,
+            estimated_weight_g=100.0,
+            estimate_confidence="high",
+        ),
+    )
+
+    errors = file_validation.validate_planner_handoff_cross_contract(
+        benchmark_definition=benchmark_definition,
+        assembly_definition=assembly_definition,
+        manufacturing_config=SimpleNamespace(),
+        planner_node_type=AgentName.ENGINEER_PLANNER,
+        files_content_map={
+            BENCHMARK_SCRIPT_PATH: (
+                "from build123d import Box\n\nresult = Box(1, 1, 1)\n"
+            ),
+            SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH: (
+                "from build123d import Box\n\nresult = Box(1, 1, 1)\n"
+            ),
+        },
+        session_id="planner-clearance-test",
+    )
+
+    assert errors == [
+        "assembly_definition.yaml.motion_forecast: planner coarse clearance violation"
+    ], errors
+    assert len(calls) == 1, calls
+    assert calls[0]["moving_script_path"] == SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH, calls
+    assert calls[0]["session_id"] == "planner-clearance-test", calls
 
 
 @pytest.mark.integration_p0

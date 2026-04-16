@@ -26,7 +26,12 @@ def test_resolve_payload_path_points_prefers_planner_motion_forecast(tmp_path: P
     )
 
     assembly_definition = (
-        ROOT / "shared" / "assets" / "template_repos" / "engineer" / "assembly_definition.yaml"
+        ROOT
+        / "shared"
+        / "assets"
+        / "template_repos"
+        / "engineer"
+        / "assembly_definition.yaml"
     ).read_text(encoding="utf-8")
     workspace_root.joinpath("assembly_definition.yaml").write_text(
         assembly_definition
