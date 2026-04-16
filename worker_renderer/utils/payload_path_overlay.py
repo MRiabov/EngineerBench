@@ -4,7 +4,11 @@ from pathlib import Path
 
 import yaml
 
-from shared.models.schemas import AssemblyDefinition, BenchmarkDefinition, PayloadTrajectoryDefinition
+from shared.models.schemas import (
+    AssemblyDefinition,
+    BenchmarkDefinition,
+    PayloadTrajectoryDefinition,
+)
 
 
 def resolve_payload_path_points(
@@ -60,7 +64,9 @@ def resolve_payload_path_points(
             continue
         points = [
             point
-            for point in (_as_point3(anchor.pos_mm) for anchor in motion_forecast.anchors)
+            for point in (
+                _as_point3(anchor.pos_mm) for anchor in motion_forecast.anchors
+            )
             if point is not None
         ]
         if len(points) >= 2:

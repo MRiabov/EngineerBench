@@ -16,10 +16,13 @@ from shared.models.schemas import (
     MotionForecastAnchor,
     PayloadTrajectoryDefinition,
 )
+from shared.script_contracts import BENCHMARK_SCRIPT_PATH, SOLUTION_SCRIPT_PATH
 from worker_heavy.utils.validation import _shape_volume
 from worker_heavy.workbenches.analysis_utils import part_to_trimesh
 
 logger = structlog.get_logger(__name__)
+
+ExactPoseCacheKey = tuple[float, float, float, float, float, float, bool, bool]
 
 
 @dataclass(frozen=True)
@@ -80,12 +83,13 @@ def _zone_body_from_bounds(bounds: Any, *, inflation_mm: float = 0.0) -> Any:
 
 
 def _shape_list(component: Any) -> list[Any]:
-    solids = getattr(component, "solids", None)
-    if callable(solids):
-        try:
-            return list(solids())
-        except Exception:
-            pass
+    children = getattr(component, "children", None)
+    if children:
+        leaves: list[Any] = []
+        for child in children:
+            leaves.extend(_shape_list(child))
+        if leaves:
+            return leaves
     return [component]
 
 
@@ -226,7 +230,7 @@ def _segment_interval_count(
     if duration_s is not None:
         if duration_s <= 0.0 or sample_stride_s is None:
             return 0
-        return max(2, int(ceil(duration_s / max(sample_stride_s, 1e-9))))
+        return max(2, int(ceil((2.0 * duration_s) / max(sample_stride_s, 1e-9))))
 
     if start_pos_mm is None or end_pos_mm is None:
         return 0
@@ -236,7 +240,14 @@ def _segment_interval_count(
     if distance_mm <= 0.0:
         return 0
 
-    return max(2, int(ceil(distance_mm / max(moving_radius or 1.0, 1.0))))
+    return max(
+        2,
+        int(
+            ceil(
+                distance_mm / max((moving_radius or 1.0) * 0.5, 1.0),
+            )
+        ),
+    )
 
 
 def _validate_sampled_pose(
@@ -266,6 +277,25 @@ def _validate_sampled_pose(
         allow_goal_zone_overlap=allow_goal_zone_overlap,
         require_goal_zone_overlap=require_goal_zone_overlap,
         sample_point_label=sample_label,
+    )
+
+
+def _exact_pose_cache_key(
+    *,
+    sample_pos_mm: tuple[float, float, float],
+    sample_rot_deg: tuple[float, float, float],
+    allow_goal_zone_overlap: bool,
+    require_goal_zone_overlap: bool,
+) -> ExactPoseCacheKey:
+    return (
+        round(sample_pos_mm[0], 6),
+        round(sample_pos_mm[1], 6),
+        round(sample_pos_mm[2], 6),
+        round(sample_rot_deg[0], 6),
+        round(sample_rot_deg[1], 6),
+        round(sample_rot_deg[2], 6),
+        allow_goal_zone_overlap,
+        require_goal_zone_overlap,
     )
 
 
@@ -414,7 +444,7 @@ def _validate_cell(
     forbidden_bodies: list[Any],
     moving_radius: float,
     budget: PayloadTrajectoryClearanceBudget,
-    exact_pose_cache: dict[tuple[float, float, float], list[str]],
+    exact_pose_cache: dict[ExactPoseCacheKey, list[str]],
     accepted_cells: list[RotationCell],
     terminal_goal_proof: bool,
 ) -> list[str] | None:
@@ -436,13 +466,13 @@ def _validate_cell(
                 "budget exhausted before proof completed"
             ]
         for sample_rot_deg in sample_rotations:
-            cache_key = (
-                round(sample_pos_mm[0], 6),
-                round(sample_pos_mm[1], 6),
-                round(sample_pos_mm[2], 6),
-                round(sample_rot_deg[0], 6),
-                round(sample_rot_deg[1], 6),
-                round(sample_rot_deg[2], 6),
+            allow_goal_zone_overlap = terminal_goal_proof
+            require_goal_zone_overlap = terminal_goal_proof
+            cache_key = _exact_pose_cache_key(
+                sample_pos_mm=sample_pos_mm,
+                sample_rot_deg=sample_rot_deg,
+                allow_goal_zone_overlap=allow_goal_zone_overlap,
+                require_goal_zone_overlap=require_goal_zone_overlap,
             )
             if cache_key not in exact_pose_cache:
                 transform = _make_transform(
@@ -456,8 +486,8 @@ def _validate_cell(
                     transform=transform,
                     fixed_component=fixed_component,
                     benchmark_definition=benchmark_definition,
-                    allow_goal_zone_overlap=terminal_goal_proof,
-                    require_goal_zone_overlap=terminal_goal_proof,
+                    allow_goal_zone_overlap=allow_goal_zone_overlap,
+                    require_goal_zone_overlap=require_goal_zone_overlap,
                     sample_point_label=(
                         f"payload_trajectory_definition.yaml anchors[{anchor.t_s:.3f}s]"
                     ),
@@ -558,6 +588,8 @@ def validate_payload_trajectory_swept_clearance(
     payload_definition: PayloadTrajectoryDefinition,
     assembly_definition: AssemblyDefinition | None = None,
     benchmark_assembly_definition: AssemblyDefinition | None = None,
+    fixed_script_path: str | Path = BENCHMARK_SCRIPT_PATH,
+    moving_script_path: str | Path = SOLUTION_SCRIPT_PATH,
     session_id: str | None = None,
 ) -> list[str]:
     budget = load_agents_config().payload_trajectory_clearance
@@ -566,17 +598,21 @@ def validate_payload_trajectory_swept_clearance(
 
     errors: list[str] = []
     workspace_root = Path(workspace_root)
-    benchmark_script_path = workspace_root / "benchmark_script.py"
-    solution_script_path = workspace_root / "solution_script.py"
+    fixed_script_path = Path(fixed_script_path)
+    moving_script_path = Path(moving_script_path)
+    benchmark_script_path = workspace_root / fixed_script_path
+    solution_script_path = workspace_root / moving_script_path
 
     if not benchmark_script_path.exists():
         errors.append(
-            "payload_trajectory_definition.yaml: benchmark_script.py is required "
+            "payload_trajectory_definition.yaml: "
+            f"{fixed_script_path.as_posix()} is required "
             "to validate fixed geometry"
         )
     if not solution_script_path.exists():
         errors.append(
-            "payload_trajectory_definition.yaml: solution_script.py is required "
+            "payload_trajectory_definition.yaml: "
+            f"{moving_script_path.as_posix()} is required "
             "to validate moving geometry"
         )
     if errors:
@@ -600,10 +636,10 @@ def validate_payload_trajectory_swept_clearance(
         ]
 
     benchmark_solids = _labelled_solids(
-        benchmark_component, artifact_name="benchmark_script.py"
+        benchmark_component, artifact_name=fixed_script_path.as_posix()
     )
     solution_solids = _labelled_solids(
-        solution_component, artifact_name="solution_script.py"
+        solution_component, artifact_name=moving_script_path.as_posix()
     )
 
     label_counts = Counter(
@@ -661,7 +697,7 @@ def validate_payload_trajectory_swept_clearance(
     ]
 
     first_anchor = payload_definition.anchors[0]
-    exact_pose_cache: dict[tuple[float, float, float], list[str]] = {}
+    exact_pose_cache: dict[ExactPoseCacheKey, list[str]] = {}
     accepted_cells: list[RotationCell] = []
 
     if (
@@ -735,13 +771,11 @@ def validate_payload_trajectory_swept_clearance(
             sample_pos_mm = _lerp_tuple3d(start_pos, end_pos, fraction)
             sample_rot_deg = _lerp_tuple3d(start_rot, end_rot, fraction)
             sample_time_s = start_time + (end_time - start_time) * fraction
-            cache_key = (
-                round(sample_pos_mm[0], 6),
-                round(sample_pos_mm[1], 6),
-                round(sample_pos_mm[2], 6),
-                round(sample_rot_deg[0], 6),
-                round(sample_rot_deg[1], 6),
-                round(sample_rot_deg[2], 6),
+            cache_key = _exact_pose_cache_key(
+                sample_pos_mm=sample_pos_mm,
+                sample_rot_deg=sample_rot_deg,
+                allow_goal_zone_overlap=False,
+                require_goal_zone_overlap=False,
             )
             if cache_key not in exact_pose_cache:
                 exact_pose_cache[cache_key] = _validate_sampled_pose(
@@ -781,19 +815,19 @@ def validate_payload_trajectory_swept_clearance(
             terminal_start_pos = tuple(
                 float(value) for value in terminal_start_anchor.pos_mm
             )
-            terminal_rot_deg = tuple(float(value) for value in terminal_start_anchor.rot_deg)
+            terminal_rot_deg = tuple(
+                float(value) for value in terminal_start_anchor.rot_deg
+            )
             for step_index in range(1, terminal_interval_count):
                 fraction = step_index / terminal_interval_count
                 sample_pos_mm = _lerp_tuple3d(
                     terminal_start_pos, terminal_end_pos, fraction
                 )
-                cache_key = (
-                    round(sample_pos_mm[0], 6),
-                    round(sample_pos_mm[1], 6),
-                    round(sample_pos_mm[2], 6),
-                    round(terminal_rot_deg[0], 6),
-                    round(terminal_rot_deg[1], 6),
-                    round(terminal_rot_deg[2], 6),
+                cache_key = _exact_pose_cache_key(
+                    sample_pos_mm=sample_pos_mm,
+                    sample_rot_deg=terminal_rot_deg,
+                    allow_goal_zone_overlap=False,
+                    require_goal_zone_overlap=False,
                 )
                 if cache_key not in exact_pose_cache:
                     exact_pose_cache[cache_key] = _validate_sampled_pose(
