@@ -484,7 +484,7 @@ class SimulationBuilderBase(ABC):
         self,
         assembly: Compound,
         objectives: BenchmarkDefinition | None = None,
-        moving_parts: list["PayloadPart"] | None = None,
+        payload_parts: list["PayloadPart"] | None = None,
         smoke_test_mode: bool = False,
     ) -> Path:
         """Converts an assembly of parts into a simulation scene."""
@@ -502,7 +502,7 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
         self,
         assembly: Compound,
         objectives: BenchmarkDefinition | None = None,
-        moving_parts: list["PayloadPart"] | None = None,
+        payload_parts: list["PayloadPart"] | None = None,
         smoke_test_mode: bool = False,
     ) -> Path:
         """Converts an assembly of parts into a MuJoCo scene.xml and associated STLs."""
@@ -660,13 +660,15 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
             self.compiler.add_body(
                 name=moved_body_name,
                 mesh_names=mesh_names,
-                pos=[float(v) for v in moved_object.start_position],
+                pos=[float(v) for v in payload_object.start_position],
                 euler=[0.0, 0.0, 0.0],
                 is_fixed=False,
-                geom_rgba=self._resolve_geom_rgba(moved_object.material_id, mfg_config),
+                geom_rgba=self._resolve_geom_rgba(
+                    payload_object.material_id, mfg_config
+                ),
             )
             body_locations[moved_body_name] = (
-                list(moved_object.start_position),
+                list(payload_object.start_position),
                 [0.0, 0.0, 0.0],
             )
 
@@ -703,10 +705,6 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
         return f"{r:.3f} {g:.3f} {b:.3f} 1"
 
 
-# Alias for backward compatibility
-SimulationBuilder = MuJoCoSimulationBuilder
-
-
 class GenesisSimulationBuilder(SimulationBuilderBase):
     """Orchestrates the conversion of build123d assemblies to Genesis scenes."""
 
@@ -714,7 +712,7 @@ class GenesisSimulationBuilder(SimulationBuilderBase):
         self,
         assembly: Compound,
         objectives: BenchmarkDefinition | None = None,
-        moving_parts: list["PayloadPart"] | None = None,
+        payload_parts: list["PayloadPart"] | None = None,
         smoke_test_mode: bool = False,
     ) -> Path:
         """Converts an assembly of parts into a Genesis scene descriptor (JSON)."""

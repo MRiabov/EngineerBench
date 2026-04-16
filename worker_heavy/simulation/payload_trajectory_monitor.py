@@ -52,7 +52,7 @@ def _resolve_body_names(
         if name in available:
             resolved.append(name)
             continue
-        candidate = f"benchmark_moved_object__{name}"
+        candidate = f"benchmark_payload__{name}"
         if candidate in available:
             resolved.append(candidate)
             continue

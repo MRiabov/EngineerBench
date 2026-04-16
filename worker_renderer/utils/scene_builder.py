@@ -31,11 +31,3 @@ __all__ = [
     "payload_scene_name",
     "normalize_preview_label",
 ]
-
-MOVED_OBJECT_SCENE_PREFIX = PAYLOAD_SCENE_PREFIX
-MaterializedMovedObject = MaterializedPayload
-build_moved_object_geometry = build_payload_geometry
-build_moved_object_start_geometry = build_payload_start_geometry
-is_moved_object_scene_name = is_payload_scene_name
-materialize_moved_object = materialize_payload
-moved_object_scene_name = payload_scene_name

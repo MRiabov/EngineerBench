@@ -11,7 +11,6 @@ from datetime import datetime
 from typing import Annotated, Any, Literal
 
 from pydantic import (
-    AliasChoices,
     BaseModel,
     BeforeValidator,
     ConfigDict,
@@ -275,7 +274,6 @@ class CoarsePayloadTrajectory(StrictContractModel):
 
     payload_part_names: list[str] = Field(
         default_factory=list,
-        validation_alias=AliasChoices("payload_part_names", "moving_part_names"),
     )
     reference_frame: Literal["world"] = "world"
     sample_stride_s: float = Field(gt=0)
@@ -349,11 +347,6 @@ class CoarsePayloadTrajectory(StrictContractModel):
 
         return self
 
-    @property
-    def moving_part_names(self) -> list[str]:
-        """Compatibility alias for payload_part_names."""
-        return self.payload_part_names
-
 
 class PayloadTrajectoryPose(StrictContractModel):
     """Backend-specific initial pose for the engineer-owned payload trajectory."""
@@ -377,7 +370,6 @@ class PayloadTrajectoryDefinition(StrictContractModel):
     backend: SimulatorBackendType
     payload_part_names: list[str] = Field(
         default_factory=list,
-        validation_alias=AliasChoices("payload_part_names", "moving_part_names"),
     )
     initial_pose: PayloadTrajectoryPose
     sample_stride_s: float = Field(gt=0)
@@ -447,11 +439,6 @@ class PayloadTrajectoryDefinition(StrictContractModel):
                 "final anchor or terminal_event, not both"
             )
         return self
-
-    @property
-    def moving_part_names(self) -> list[str]:
-        """Compatibility alias for payload_part_names."""
-        return self.payload_part_names
 
 
 class Constraints(StrictContractModel):
@@ -1194,7 +1181,6 @@ class AssemblyDefinition(StrictContractModel):
     manufactured_parts: list[ManufacturedPartEstimate] = []
     coarse_payload_trajectory: CoarsePayloadTrajectory | None = Field(
         default=None,
-        validation_alias=AliasChoices("coarse_payload_trajectory", "motion_forecast"),
     )
     final_assembly: list[SubassemblyEstimate | PartConfig] = []
     totals: CostTotals
@@ -1209,16 +1195,6 @@ class AssemblyDefinition(StrictContractModel):
             PayloadPart(part_name=part_name)
             for part_name in self.coarse_payload_trajectory.payload_part_names
         ]
-
-    @property
-    def moving_parts(self) -> list[PayloadPart]:
-        """Compatibility alias for payload_parts."""
-        return self.payload_parts
-
-    @property
-    def motion_forecast(self) -> CoarsePayloadTrajectory | None:
-        """Compatibility alias for coarse_payload_trajectory."""
-        return self.coarse_payload_trajectory
 
     @model_validator(mode="after")
     def validate_caps(self) -> "AssemblyDefinition":
@@ -1245,14 +1221,3 @@ class AssemblyDefinition(StrictContractModel):
             )
 
         return self
-
-
-# Compatibility aliases while callers migrate to the payload-trajectory names.
-MovedObject = Payload
-MovingPart = PayloadPart
-MotionForecastContact = PayloadTrajectoryContact
-MotionForecastAnchor = PayloadTrajectoryAnchor
-MotionForecastTerminalEvent = PayloadTrajectoryTerminalEvent
-MotionForecast = CoarsePayloadTrajectory
-PrecisePathPose = PayloadTrajectoryPose
-PrecisePathDefinition = PayloadTrajectoryDefinition

@@ -11,7 +11,3 @@ __all__ = [
     "is_payload_scene_name",
     "payload_scene_name",
 ]
-
-MOVED_OBJECT_SCENE_PREFIX = PAYLOAD_SCENE_PREFIX
-is_moved_object_scene_name = is_payload_scene_name
-moved_object_scene_name = payload_scene_name

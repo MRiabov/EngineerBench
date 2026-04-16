@@ -1096,9 +1096,9 @@ def simulate(
             backend_type = SimulatorBackendType.GENESIS
 
     builder = get_simulation_builder(output_dir=working_dir, backend_type=backend_type)
-    # FIXME(mvp-release): remove the moving_parts pass-through after the MVP
+    # FIXME(mvp-release): remove the payload_parts pass-through after the MVP
     # contract is simplified and builders no longer need this temporary seam.
-    moving_parts = assembly_definition.moving_parts if assembly_definition else []
+    payload_parts = assembly_definition.payload_parts if assembly_definition else []
     manufactured_part_labels = (
         {part.part_name for part in assembly_definition.manufactured_parts}
         if assembly_definition
@@ -1108,7 +1108,7 @@ def simulate(
     scene_path = builder.build_from_assembly(
         component,
         objectives=objectives,
-        moving_parts=moving_parts,
+        payload_parts=payload_parts,
         smoke_test_mode=smoke_test_mode,
     )
 
@@ -1507,11 +1507,11 @@ def validate(
                     )
                     if location_contract_error:
                         return (False, location_contract_error)
-                    moved_object_clearance_error = _validate_payload_start_clearance(
+                    payload_clearance_error = _validate_payload_start_clearance(
                         component, obj_model
                     )
-                    if moved_object_clearance_error:
-                        return False, moved_object_clearance_error
+                    if payload_clearance_error:
+                        return False, payload_clearance_error
                     effective_build_zone = obj_model.objectives.build_zone.model_dump()
             except Exception:
                 pass

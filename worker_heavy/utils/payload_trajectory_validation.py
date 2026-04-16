@@ -171,12 +171,12 @@ def _shape_radius_from_origin(component: Any) -> float:
     )
 
 
-def _collect_motion_names(assembly_definition: AssemblyDefinition | None) -> set[str]:
+def _collect_payload_names(assembly_definition: AssemblyDefinition | None) -> set[str]:
     if assembly_definition is None:
         return set()
     return {
         part.part_name.strip()
-        for part in assembly_definition.moving_parts
+        for part in assembly_definition.payload_parts
         if part.part_name.strip()
     }
 
@@ -655,8 +655,8 @@ def validate_payload_trajectory_swept_clearance(
         ]
 
     payload_labels = set(payload_definition.payload_part_names)
-    payload_labels.update(_collect_motion_names(assembly_definition))
-    payload_labels.update(_collect_motion_names(benchmark_assembly_definition))
+    payload_labels.update(_collect_payload_names(assembly_definition))
+    payload_labels.update(_collect_payload_names(benchmark_assembly_definition))
 
     all_solids = benchmark_solids + solution_solids
     payload_solids = [

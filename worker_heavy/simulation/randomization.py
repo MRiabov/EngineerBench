@@ -56,15 +56,15 @@ def get_eligible_materials(
 
 
 def randomize_materials(
-    moving_parts: list[str],
+    payload_parts: list[str],
     materials: dict[str, Any],
     seed: int,
     whitelist: list[str] | None = None,
 ) -> dict[str, MaterialAssignment]:
-    """Assign random materials to moving parts.
+    """Assign random materials to payload parts.
 
     Args:
-        moving_parts: List of part names that have degrees of freedom.
+        payload_parts: List of part names that have degrees of freedom.
         materials: Materials config dict from manufacturing_config.yaml.
         seed: Random seed for reproducibility.
         whitelist: If provided, only these materials are considered.
@@ -81,7 +81,7 @@ def randomize_materials(
 
     assignments: dict[str, MaterialAssignment] = {}
 
-    for part_name in moving_parts:
+    for part_name in payload_parts:
         mat_id = rng.choice(eligible)
         props = materials[mat_id]
 

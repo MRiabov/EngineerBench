@@ -5,7 +5,7 @@ from typing import Literal
 
 import structlog
 import yaml
-from pydantic import AliasChoices, BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from shared.enums import AgentName
 
@@ -290,7 +290,6 @@ class AgentsConfig(BaseModel):
     bug_reports: BugReportsConfig = Field(default_factory=BugReportsConfig)
     coarse_payload_trajectory: PayloadTrajectoryPolicy = Field(
         default_factory=PayloadTrajectoryPolicy,
-        validation_alias=AliasChoices("coarse_payload_trajectory", "motion_forecast"),
     )
     payload_trajectory_monitor: PayloadTrajectoryMonitorPolicy = Field(
         default_factory=PayloadTrajectoryMonitorPolicy
@@ -341,20 +340,6 @@ class AgentsConfig(BaseModel):
             return self.coarse_payload_trajectory.engineer_coder
         return self.coarse_payload_trajectory.engineer_planner
 
-    def get_motion_forecast_policy(
-        self, planner_role: AgentName | str
-    ) -> PayloadTrajectoryBudget:
-        return self.get_coarse_payload_trajectory_policy(planner_role)
-
-    @property
-    def motion_forecast(self) -> PayloadTrajectoryPolicy:
-        """Compatibility alias for coarse_payload_trajectory."""
-        return self.coarse_payload_trajectory
-
-    @motion_forecast.setter
-    def motion_forecast(self, value: PayloadTrajectoryPolicy) -> None:
-        self.coarse_payload_trajectory = value
-
     def get_reasoning_effort(
         self,
         agent_role: AgentName | str | None,
@@ -393,15 +378,6 @@ def get_video_render_resolution(
 ) -> tuple[int, int]:
     render_config = (config or load_agents_config()).render.video_resolution
     return render_config.width, render_config.height
-
-
-# Compatibility aliases while callers migrate to the payload-trajectory names.
-MotionForecastBudget = PayloadTrajectoryBudget
-MotionForecastPolicy = PayloadTrajectoryPolicy
-
-
-# Backward-compatible alias while import sites are migrated.
-FilesystemConfig = AgentsConfig
 
 
 def resolve_agents_config_path() -> Path | None:
