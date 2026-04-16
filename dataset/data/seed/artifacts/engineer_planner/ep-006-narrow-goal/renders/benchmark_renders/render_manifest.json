@@ -4,7 +4,7 @@
   "created_at": "2026-04-08T06:37:12.023973+00:00",
   "episode_id": "2978760d-76dd-55b7-86f3-f1b0e9289427",
   "worker_session_id": "seed-renders-ep-006-narrow-goal-577f9c39",
-  "revision": "d1ff21bc04a1247fd7b2e459755899bbc78c4217",
+  "revision": "bfa7446df9b4c678fbae1571bc8a3ad4a07c2c36",
   "scene_hash": "7968f26b8361b5e5183001d8db54d5f752c3b144be7e5769b56e5c7fa64882fc",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",
