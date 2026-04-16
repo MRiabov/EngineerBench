@@ -55,9 +55,9 @@ from worker_renderer.utils.build123d_rendering import (
     camera_position_from_orbit,
     collect_preview_scene,
     render_preview_scene_bundle,
-    resolve_payload_path_points,
 )
 from worker_renderer.utils.file_validation import validate_benchmark_definition_yaml
+from worker_renderer.utils.payload_path_overlay import resolve_payload_path_points
 from worker_renderer.utils.rendering import (
     append_render_bundle_index,
     build_render_bundle_index_entry,
