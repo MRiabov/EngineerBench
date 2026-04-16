@@ -1,14 +1,14 @@
 {
   "version": "1.0",
-  "bundle_id": "03708adb-1eee-5050-8282-85c4d6d439d7",
-  "created_at": "2026-04-16T12:45:09.384036+00:00",
+  "bundle_id": "97b9b351-62a8-5dbd-847b-e5e9039e6203",
+  "created_at": "2026-04-16T13:47:05.279412+00:00",
   "episode_id": "ae9c889e-5dd8-5a38-a748-52a29dcbbde7",
   "worker_session_id": "ec-002-low-friction-cube",
   "revision": "62bc6ba2798faa9eb0ce2ae3139c0f81f6816b0a",
   "scene_hash": "bc89cb43408097b21bfe25f1d779c8ae0daa85c84d64b769bb1a2762c9bd5e03",
   "bundle_path": "renders/engineer_plan_renders",
   "environment_version": null,
-  "source_script_sha256": "055ed7e4d89d9e3354ee160a2b1b98382188c78e9b3099e574890abb0b6fa775",
+  "source_script_sha256": "d4083f98755ee454ecdcc6cea0b68318debe8814b75abf69b283593e0e4d5e29",
   "preview_evidence_paths": [
     "renders/engineer_plan_renders/low_friction_route_render_e15_a0.png",
     "renders/engineer_plan_renders/low_friction_route_render_e15_a135.png",

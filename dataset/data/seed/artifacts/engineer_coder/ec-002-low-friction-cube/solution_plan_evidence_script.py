@@ -3,7 +3,7 @@ from build123d import Align, Box, Compound, Location
 from utils.metadata import CompoundMetadata, PartMetadata
 
 
-def _make_part(
+def _make_box(
     label: str,
     size: tuple[float, float, float],
     center: tuple[float, float, float],
@@ -18,7 +18,7 @@ def _make_part(
 
 
 def build() -> Compound:
-    entry_box = _make_part(
+    entry_box = _make_box(
         "entry_box",
         (160.0, 120.0, 38.0),
         (-225.0, 0.0, 33.0),
@@ -34,38 +34,38 @@ def build() -> Compound:
     entry_box.metadata = PartMetadata(material_id="hdpe", fixed=True)
 
     parts = [
-        _make_part(
+        _make_box(
             "slide_base",
             (620.0, 140.0, 10.0),
             (20.0, 0.0, 9.0),
             "aluminum_6061",
         ),
         entry_box,
-        _make_part(
+        _make_box(
             "guide_wall_left",
             (420.0, 18.0, 42.0),
             (-40.0, -66.0, 35.0),
             "hdpe",
         ),
-        _make_part(
+        _make_box(
             "guide_wall_right",
             (390.0, 18.0, 42.0),
             (0.0, 66.0, 35.0),
             "hdpe",
         ),
-        _make_part(
+        _make_box(
             "blocker_bypass_panel",
             (200.0, 18.0, 65.0),
             (145.0, 42.0, 46.5),
             "hdpe",
         ),
-        _make_part(
+        _make_box(
             "goal_pocket",
             (110.0, 90.0, 32.0),
             (315.0, 0.0, 30.0),
             "hdpe",
         ),
-        _make_part(
+        _make_box(
             "solution_assembly",
             (10.0, 10.0, 10.0),
             (-280.0, 0.0, 24.0),
