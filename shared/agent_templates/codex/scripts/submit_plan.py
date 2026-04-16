@@ -12,6 +12,7 @@ from shared.git_utils import commit_submission_attempt, repo_revision
 from shared.models.schemas import PlannerSubmissionResult
 from shared.script_contracts import (
     BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
+    BENCHMARK_SCRIPT_PATH,
     SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
     plan_path_for_agent,
 )
@@ -213,9 +214,16 @@ def _submit_plan(workspace: Path | None = None) -> PlannerSubmissionResult:
 
     artifacts["manufacturing_config.yaml"] = manufacturing_config_text
 
+    validation_artifacts = dict(artifacts)
+    benchmark_script_path = workspace / BENCHMARK_SCRIPT_PATH
+    if benchmark_script_path.exists():
+        benchmark_script_text = benchmark_script_path.read_text(encoding="utf-8")
+        if benchmark_script_text.strip():
+            validation_artifacts[BENCHMARK_SCRIPT_PATH] = benchmark_script_text
+
     is_valid, errors = validate_node_output(
         agent_name,
-        artifacts,
+        validation_artifacts,
         session_id=session_id,
         manufacturing_config=manufacturing_config,
     )
