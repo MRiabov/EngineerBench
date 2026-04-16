@@ -11,6 +11,7 @@ from datetime import datetime
 from typing import Annotated, Any, Literal
 
 from pydantic import (
+    AliasChoices,
     BaseModel,
     BeforeValidator,
     ConfigDict,
@@ -121,8 +122,8 @@ class StaticRandomization(StrictContractModel):
     radius: CoercedTuple2D | None = None
 
 
-class MovedObject(StrictContractModel):
-    """The object that must be guided to the goal zone."""
+class Payload(StrictContractModel):
+    """The payload that must be guided to the goal zone."""
 
     label: str
     shape: str
@@ -148,8 +149,8 @@ class MovedObject(StrictContractModel):
         return material
 
 
-class MovingPart(StrictContractModel):
-    """A part name referenced by a motion forecast."""
+class PayloadPart(StrictContractModel):
+    """A part name referenced by a coarse payload trajectory."""
 
     part_name: str
 
@@ -162,8 +163,8 @@ class MovingPart(StrictContractModel):
         return text
 
 
-class MotionForecastContact(StrictContractModel):
-    """One expected first-touch surface in the planner motion forecast."""
+class PayloadTrajectoryContact(StrictContractModel):
+    """One expected first-touch surface in the coarse payload trajectory."""
 
     order: int = Field(ge=1)
     surface: str
@@ -178,7 +179,7 @@ class MotionForecastContact(StrictContractModel):
         return text
 
     @model_validator(mode="after")
-    def validate_contact_window(self) -> "MotionForecastContact":
+    def validate_contact_window(self) -> "PayloadTrajectoryContact":
         if self.first_touch_window_s is not None and (
             self.first_touch_window_s[0] > self.first_touch_window_s[1]
         ):
@@ -186,8 +187,8 @@ class MotionForecastContact(StrictContractModel):
         return self
 
 
-class MotionForecastAnchor(StrictContractModel):
-    """One coarse planner anchor in world coordinates."""
+class PayloadTrajectoryAnchor(StrictContractModel):
+    """One coarse payload-trajectory anchor in world coordinates."""
 
     t_s: float = Field(ge=0)
     reference_point: str
@@ -208,7 +209,7 @@ class MotionForecastAnchor(StrictContractModel):
         ]
         | None
     ) = None
-    first_contacts: list[MotionForecastContact] = Field(default_factory=list)
+    first_contacts: list[PayloadTrajectoryContact] = Field(default_factory=list)
     build_zone_valid: bool = False
     goal_zone_contact: bool = False
     goal_zone_entry: bool = False
@@ -222,7 +223,7 @@ class MotionForecastAnchor(StrictContractModel):
         return text
 
     @model_validator(mode="after")
-    def validate_anchor_contract(self) -> "MotionForecastAnchor":
+    def validate_anchor_contract(self) -> "PayloadTrajectoryAnchor":
         if self.first_contacts:
             orders = [contact.order for contact in self.first_contacts]
             if len(set(orders)) != len(orders):
@@ -240,8 +241,8 @@ class MotionForecastAnchor(StrictContractModel):
         return self
 
 
-class MotionForecastTerminalEvent(StrictContractModel):
-    """Equivalent structured terminal proof for a motion forecast."""
+class PayloadTrajectoryTerminalEvent(StrictContractModel):
+    """Equivalent structured terminal proof for a coarse payload trajectory."""
 
     kind: Literal["goal_zone_entry", "goal_zone_contact"]
     t_s: float = Field(ge=0)
@@ -269,50 +270,63 @@ class MotionForecastTerminalEvent(StrictContractModel):
         return cleaned
 
 
-class MotionForecast(StrictContractModel):
+class CoarsePayloadTrajectory(StrictContractModel):
     """Sparse planner-authored coarse payload trajectory contract."""
 
-    moving_part_names: list[str] = Field(default_factory=list)
+    payload_part_names: list[str] = Field(
+        default_factory=list,
+        validation_alias=AliasChoices("payload_part_names", "moving_part_names"),
+    )
     reference_frame: Literal["world"] = "world"
     sample_stride_s: float = Field(gt=0)
-    anchors: list[MotionForecastAnchor] = Field(default_factory=list)
-    terminal_event: MotionForecastTerminalEvent | None = None
+    anchors: list[PayloadTrajectoryAnchor] = Field(default_factory=list)
+    terminal_event: PayloadTrajectoryTerminalEvent | None = None
 
-    @field_validator("moving_part_names")
+    @field_validator("payload_part_names")
     @classmethod
-    def validate_moving_part_names(cls, value: list[str]) -> list[str]:
+    def validate_payload_part_names(cls, value: list[str]) -> list[str]:
         cleaned = [part_name.strip() for part_name in value if str(part_name).strip()]
         if not cleaned:
-            raise ValueError("motion_forecast must name at least one moving part")
+            raise ValueError(
+                "coarse_payload_trajectory must name at least one payload part"
+            )
         if len(set(cleaned)) != len(cleaned):
-            raise ValueError("motion_forecast must not repeat moving part names")
+            raise ValueError(
+                "coarse_payload_trajectory must not repeat payload part names"
+            )
         return cleaned
 
     @model_validator(mode="after")
-    def validate_contract(self) -> "MotionForecast":
+    def validate_contract(self) -> "CoarsePayloadTrajectory":
         if self.reference_frame != "world":
-            raise ValueError("motion_forecast.reference_frame must be world")
+            raise ValueError("coarse_payload_trajectory.reference_frame must be world")
 
         if len(self.anchors) < 2:
-            raise ValueError("motion_forecast must contain at least two anchors")
+            raise ValueError(
+                "coarse_payload_trajectory must contain at least two anchors"
+            )
 
         times = [anchor.t_s for anchor in self.anchors]
         if times != sorted(times):
-            raise ValueError("motion_forecast anchors must be ordered by t_s")
+            raise ValueError("coarse_payload_trajectory anchors must be ordered by t_s")
         if len(set(times)) != len(times):
-            raise ValueError("motion_forecast anchors must not repeat t_s values")
+            raise ValueError(
+                "coarse_payload_trajectory anchors must not repeat t_s values"
+            )
 
         first_anchor = self.anchors[0]
         last_anchor = self.anchors[-1]
         if not first_anchor.build_zone_valid:
             raise ValueError(
-                "motion_forecast first anchor must explicitly set build_zone_valid=true"
+                "coarse_payload_trajectory first anchor must explicitly set "
+                "build_zone_valid=true"
             )
 
         for anchor in self.anchors[:-1]:
             if anchor.goal_zone_contact or anchor.goal_zone_entry:
                 raise ValueError(
-                    "only the terminal motion anchor may assert goal-zone entry/contact"
+                    "only the terminal coarse payload anchor may assert goal-zone "
+                    "entry/contact"
                 )
 
         terminal_assertion_count = 0
@@ -323,16 +337,22 @@ class MotionForecast(StrictContractModel):
 
         if terminal_assertion_count == 0:
             raise ValueError(
-                "motion_forecast must prove the terminal goal-zone entry/contact "
+                "coarse_payload_trajectory must prove the terminal goal-zone "
+                "entry/contact "
                 "in the final anchor or via terminal_event"
             )
         if terminal_assertion_count > 1:
             raise ValueError(
-                "motion_forecast terminal proof must appear in the final anchor "
+                "coarse_payload_trajectory terminal proof must appear in the final anchor "
                 "or terminal_event, not both"
             )
 
         return self
+
+    @property
+    def moving_part_names(self) -> list[str]:
+        """Compatibility alias for payload_part_names."""
+        return self.payload_part_names
 
 
 class PayloadTrajectoryPose(StrictContractModel):
@@ -355,23 +375,26 @@ class PayloadTrajectoryDefinition(StrictContractModel):
     """Engineer-owned higher-resolution path/contact proof."""
 
     backend: SimulatorBackendType
-    moving_part_names: list[str] = Field(default_factory=list)
+    payload_part_names: list[str] = Field(
+        default_factory=list,
+        validation_alias=AliasChoices("payload_part_names", "moving_part_names"),
+    )
     initial_pose: PayloadTrajectoryPose
     sample_stride_s: float = Field(gt=0)
-    anchors: list[MotionForecastAnchor] = Field(default_factory=list)
-    terminal_event: MotionForecastTerminalEvent | None = None
+    anchors: list[PayloadTrajectoryAnchor] = Field(default_factory=list)
+    terminal_event: PayloadTrajectoryTerminalEvent | None = None
 
-    @field_validator("moving_part_names")
+    @field_validator("payload_part_names")
     @classmethod
-    def validate_moving_part_names(cls, value: list[str]) -> list[str]:
+    def validate_payload_part_names(cls, value: list[str]) -> list[str]:
         cleaned = [part_name.strip() for part_name in value if str(part_name).strip()]
         if not cleaned:
             raise ValueError(
-                "payload_trajectory_definition must name at least one moving part"
+                "payload_trajectory_definition must name at least one payload part"
             )
         if len(set(cleaned)) != len(cleaned):
             raise ValueError(
-                "payload_trajectory_definition must not repeat moving part names"
+                "payload_trajectory_definition must not repeat payload part names"
             )
         return cleaned
 
@@ -402,7 +425,7 @@ class PayloadTrajectoryDefinition(StrictContractModel):
         for anchor in self.anchors[:-1]:
             if anchor.goal_zone_contact or anchor.goal_zone_entry:
                 raise ValueError(
-                    "payload_trajectory_definition only the terminal motion "
+                    "payload_trajectory_definition only the terminal payload "
                     "anchor may assert goal-zone entry/contact"
                 )
 
@@ -425,10 +448,10 @@ class PayloadTrajectoryDefinition(StrictContractModel):
             )
         return self
 
-
-# Compatibility aliases while callers migrate to the payload-trajectory names.
-PrecisePathPose = PayloadTrajectoryPose
-PrecisePathDefinition = PayloadTrajectoryDefinition
+    @property
+    def moving_part_names(self) -> list[str]:
+        """Compatibility alias for payload_part_names."""
+        return self.payload_part_names
 
 
 class Constraints(StrictContractModel):
@@ -545,7 +568,7 @@ class BenchmarkDefinition(StrictContractModel):
     benchmark_parts: list[BenchmarkPartDefinition] = Field(default_factory=list)
     physics: PhysicsConfig = PhysicsConfig()
     simulation_bounds: BoundingBox
-    payload: MovedObject
+    payload: Payload
     constraints: Constraints
     randomization: RandomizationMeta = RandomizationMeta()
     assembly_totals: dict[str, float] | None = None
@@ -1169,20 +1192,33 @@ class AssemblyDefinition(StrictContractModel):
     units: AssemblyUnits = AssemblyUnits()
     constraints: AssemblyConstraints
     manufactured_parts: list[ManufacturedPartEstimate] = []
-    motion_forecast: MotionForecast | None = None
+    coarse_payload_trajectory: CoarsePayloadTrajectory | None = Field(
+        default=None,
+        validation_alias=AliasChoices("coarse_payload_trajectory", "motion_forecast"),
+    )
     final_assembly: list[SubassemblyEstimate | PartConfig] = []
     totals: CostTotals
     dfm_suggestions: list[str] = Field(default_factory=list)
 
     @property
-    def moving_parts(self) -> list[MovingPart]:
-        """Return motion-forecast part names when the assembly declares them."""
-        if self.motion_forecast is None:
+    def payload_parts(self) -> list[PayloadPart]:
+        """Return coarse payload-trajectory part names when declared."""
+        if self.coarse_payload_trajectory is None:
             return []
         return [
-            MovingPart(part_name=part_name)
-            for part_name in self.motion_forecast.moving_part_names
+            PayloadPart(part_name=part_name)
+            for part_name in self.coarse_payload_trajectory.payload_part_names
         ]
+
+    @property
+    def moving_parts(self) -> list[PayloadPart]:
+        """Compatibility alias for payload_parts."""
+        return self.payload_parts
+
+    @property
+    def motion_forecast(self) -> CoarsePayloadTrajectory | None:
+        """Compatibility alias for coarse_payload_trajectory."""
+        return self.coarse_payload_trajectory
 
     @model_validator(mode="after")
     def validate_caps(self) -> "AssemblyDefinition":
@@ -1209,3 +1245,14 @@ class AssemblyDefinition(StrictContractModel):
             )
 
         return self
+
+
+# Compatibility aliases while callers migrate to the payload-trajectory names.
+MovedObject = Payload
+MovingPart = PayloadPart
+MotionForecastContact = PayloadTrajectoryContact
+MotionForecastAnchor = PayloadTrajectoryAnchor
+MotionForecastTerminalEvent = PayloadTrajectoryTerminalEvent
+MotionForecast = CoarsePayloadTrajectory
+PrecisePathPose = PayloadTrajectoryPose
+PrecisePathDefinition = PayloadTrajectoryDefinition
