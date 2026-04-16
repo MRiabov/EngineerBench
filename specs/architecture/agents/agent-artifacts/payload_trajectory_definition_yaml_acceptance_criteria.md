@@ -11,7 +11,7 @@ It is worth being a dedicated artifact because reviewers need a strict motion pr
 - The file schema-validates and parses cleanly.
 - The file contains no template placeholders or empty stub values.
 - `backend` and `initial_pose` are present and consistent with the implementation backend.
-- `moving_part_names` match the approved coarse motion forecast.
+- `payload_names` match the approved coarse motion forecast.
 - `sample_stride_s` does not exceed the coarse motion forecast stride and stays within the motion cadence budget from `config/agents_config.yaml`.
 - Ordered motion anchors include explicit positions, explicit `rot_deg` orientation, and tolerance data when an envelope is intentional.
 - The first anchor lies within `benchmark_definition.objectives.build_zone` and explicitly sets `build_zone_valid: true`.
@@ -20,6 +20,7 @@ It is worth being a dedicated artifact because reviewers need a strict motion pr
 - If `terminal_event` is used, its `zone_name` is `goal_zone`, its `contact_surfaces` are populated, and its position lies within the goal zone.
 - The file remains swept-clearance safe against fixed geometry for every admitted rotation at each checked step.
 - The file remains consistent with `benchmark_definition.yaml`, the approved coarse forecast, and any benchmark motion evidence in the workspace.
+- Deprecated aliases such as `moving_part_names`, `moving_part`, and `moved_part` are not valid forward-contract names in this artifact.
 
 ## Quality Criteria
 
@@ -32,7 +33,7 @@ It is worth being a dedicated artifact because reviewers need a strict motion pr
 
 - The file merely copies the coarse forecast without adding the required precision or terminal proof.
 - The build-safe start or goal-contact finish semantics are contradicted or loosened.
-- The moving part names, cadence, or terminal event drift from the approved motion contract.
+- The payload names, cadence, or terminal event drift from the approved motion contract.
 - A step omits rotation metadata or leaves the swept-clearance domain under-proven.
 - The path is physically implausible, impossible, or inconsistent with the benchmark evidence.
 

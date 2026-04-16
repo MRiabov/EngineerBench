@@ -50,7 +50,7 @@ The Benchmark Planner turns a problem brief into a benchmark handoff package. It
 - The benchmark objective geometry, build zone, forbid zones, and runtime jitter are authoritative.
 - Benchmark-owned fixtures, input objects, and objective markers are read-only context, not engineer-owned deliverables.
 - The benchmark handoff must stay exact across `benchmark_plan.md`, the YAML files, and both planner scripts.
-- `moved_object.material_id` must resolve to a known material from `manufacturing_config.yaml`.
+- `payload.material_id` must resolve to a known material from `manufacturing_config.yaml`.
 - Moving benchmark-owned fixtures need explicit, reviewer-visible motion facts.
 - If bug-report mode is enabled and runtime plumbing blocks progress, write `bug_report.md` at the workspace root and keep working unless the task is genuinely blocked.
 - If render images already exist for the current revision, inspect them with `inspect_media()` before submission.

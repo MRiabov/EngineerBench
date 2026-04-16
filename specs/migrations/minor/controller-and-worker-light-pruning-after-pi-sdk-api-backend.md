@@ -248,24 +248,24 @@ pruning question never closes.
 
 - [ ] Classify controller routes and helpers as `keep`, `simplify`, or `remove`.
 - [ ] Confirm which controller duties remain required for persistence and trace
-      promotion.
+  promotion.
 - [ ] Mark the controller transport glue that can disappear after Pi parity.
 
 ### Worker-light inventory
 
 - [ ] Classify `worker-light` route families as production, compatibility-only,
-      or removable.
+  or removable.
 - [ ] Confirm which worker-light runtime helpers are still needed for local
-      debugging.
+  debugging.
 - [ ] Mark the worker-light production routes that Pi can replace natively.
 
 ### Decision gate
 
 - [ ] Define the exact parity gate that must pass before any controller or
-      worker-light pruning starts.
+  worker-light pruning starts.
 - [ ] Define the exact replay/trace requirement for GRPO and fine-tuning.
 - [ ] Confirm the remaining repo-owned control plane is the smallest safe
-      boundary.
+  boundary.
 
 ## File-Level Change Set
 

@@ -111,6 +111,17 @@ Rules:
 5. The coder and reviewer must compare the implemented model against the approved inventory and reject missing, extra, or relabeled items.
 6. Every planner-declared inventory label and selected `part_id` must appear at least once in the stage-specific plan file as an exact identifier mention. Backticks are preferred for the first mention, but the exact string match is what matters for validation.
 
+## Payload terminology contract
+
+Payload naming is canonical across planner, coder, reviewer, and schema-facing architecture docs.
+
+Rules:
+
+1. The canonical term is `payload`.
+2. Legacy names `moved_part`, `moving_part`, and `moved_object` are deprecated.
+3. New specs, examples, and newly authored machine-readable artifacts must not introduce deprecated payload aliases.
+4. Legacy aliases may exist only as temporary backwards-compatibility read paths during migration and must not be treated as the forward contract.
+
 ## Benchmark Planner and Benchmark Plan Reviewer
 
 The Benchmark Generator Planner will submit multiple files to the CAD implementing agent.
@@ -141,7 +152,7 @@ The plan will have the following bullet points. The plan will be validated for c
 
 <!-- Note: it may be interesting that the Coder could try a few "approaches" on how to reduce costs without actually editing CAD, and would get fast response for cost by just editing YAML. However, it will almost by definition deviate from the plan. -->
 
-The agent must make sure that the geometric plan is valid, the input objective does not interfere with anything (and goal objectives are not obstruted), that there is proper randomization, etc., no object coincides with each other. `moved_object.material_id` is mandatory and must reference a known material from `manufacturing_config.yaml`; empty strings or invented material IDs are invalid planner handoff.
+The agent must make sure that the geometric plan is valid, the input objective does not interfere with anything (and goal objectives are not obstruted), that there is proper randomization, etc., no object coincides with each other. `payload.material_id` is mandatory and must reference a known material from `manufacturing_config.yaml`; empty strings or invented material IDs are invalid planner handoff.
 If the user provides explicit benchmark objective overrides (for example `max_unit_cost`, `max_weight`, `target_quantity`), the planner preserves them semantically in `benchmark_definition.yaml` and must not silently mutate those constraints. Runtime may backfill corresponding estimate fields only to keep the benchmark constraint contract internally consistent.
 
 `Benchmark Plan Reviewer` gate requirements:
@@ -152,7 +163,7 @@ If the user provides explicit benchmark objective overrides (for example `max_un
   - Reject when the manifest is missing, stale for the latest planner revision, or schema-invalid.
   - Reject when planner artifacts mention benchmark objects, moving parts, joints, or zones that are not declared consistently across the planner handoff package.
   - Reject when `benchmark_plan_evidence_script.py` diverges from the declared benchmark inventory labels, quantities, or selected component identities.
-  - Reject when `moved_object.material_id` is missing, empty, or not known to `manufacturing_config.yaml`, or when `benchmark_assembly_definition.yaml` is not a schema-valid full `AssemblyDefinition` artifact.
+  - Reject when `payload.material_id` is missing, empty, or not known to `manufacturing_config.yaml`, or when `benchmark_assembly_definition.yaml` is not a schema-valid full `AssemblyDefinition` artifact.
   - Reject when moving benchmark fixtures are missing motion-visible handoff data needed by engineering intake, such as actuation mode, axis/path or equivalent reference, motion limits or operating envelope, and whether the engineer may rely on the motion.
   - Reject when benchmark-side motion is impossible, unstable, non-deterministic, or cannot be reconstructed from the handoff artifacts and evidence.
 
@@ -171,7 +182,7 @@ The Engineer agent(s) (for whom the first point of access is Engineering Planner
 
 The benchmark-owned environment, benchmark input objects, benchmark objective markers, and benchmark-owned moving fixtures are read-only task fixtures. They are validation setup, not engineer-owned deliverables: they are validated for geometry correctness, placement, randomization, and valid component identifiers/runtime metadata as a valid problem instance for the engineering graph, but they are not validated for manufacturability or priced as manufactured outputs. They follow the benchmark motion contract when the benchmark contract explicitly says so. Manufacturability validation starts at engineer-planned manufactured parts and selected imported components only.
 
-Benchmark-owned authored labels are part of that read-only contract too: `moved_object.label` and any top-level build123d object label in the benchmark handoff must be non-empty and stable, and runtime must not invent fallback labels when one is missing.
+Benchmark-owned authored labels are part of that read-only contract too: `payload.label` and any top-level build123d object label in the benchmark handoff must be non-empty and stable, and runtime must not invent fallback labels when one is missing.
 
 Additionally, the engineering agent will be supplied with render evidence when the current revision has explicitly generated renders. Treat that preview as stage-local scratch under `renders/current-episode/` while it is being authored, but only the persistent handoff bundles are promoted for downstream reuse. Benchmark handoff evidence lives under `renders/benchmark_renders/`, engineer planner handoff evidence lives under `renders/engineer_plan_renders/`, and final solution submission evidence lives under `renders/final_solution_submission_renders/`. Handover and submission collectors recurse through the selected persistent bucket directory, so nested render files and the bundle-local `render_manifest.json` survive the payload assembly step unchanged. `renders/current-episode/` is deleted at handoff and never enters the persisted bundle index. The exact role-level render consumption policy stays config-driven in `config/agents_config.yaml`.
 
@@ -376,7 +387,7 @@ The Assumption Register captures the source-backed inputs that make the plan aud
 # This file defines WHAT you must achieve and which benchmark-owned fixtures
 # and metadata are part of the task. Read it carefully before planning.
 #
-# YOUR MISSION: Guide the `moved_object` into the `goal_zone` while:
+# YOUR MISSION: Guide the `payload` into the `goal_zone` while:
 #   1. Staying WITHIN the `build_zone` (you cannot build outside it)
 #   2. AVOIDING all `forbid_zones` (contact = failure)
 #   3. Respecting runtime-derived `max_unit_cost` and `max_weight` caps
@@ -388,7 +399,7 @@ The Assumption Register captures the source-backed inputs that make the plan aud
 # =============================================================================
 
 objectives:
-  # SUCCESS: The moved_object's center enters this volume
+  # SUCCESS: The payload center enters this volume
   goal_zone:
     min: [x_min, y_min, z_min]
     max: [x_max, y_max, z_max]
@@ -422,7 +433,7 @@ simulation_bounds:
 # -----------------------------------------------------------------------------
 # This object spawns at `start_position` (with runtime jitter applied).
 # Your design must reliably guide it to the goal_zone.
-moved_object:
+payload:
   label: "projectile_ball"
   shape: "sphere"
   material_id: "abs"
@@ -457,7 +468,7 @@ randomization:
    - The benchmark planner may describe fixture motion visibility and evidence needs, but not engineer-owned manufacturability details.
 3. It does not own engineer solution metadata, part costing inputs, or engineer motion/control metadata.
 4. Engineer solution metadata stays in `assembly_definition.yaml` and runtime CAD `.metadata`.
-5. `moved_object.material_id` is mandatory and must be a known material ID from `manufacturing_config.yaml`, and for benchmark-planner handoff `constraints.estimated_solution_cost_usd` and `constraints.estimated_solution_weight_g` are planner-authored while runtime derives `max_unit_cost` and `max_weight_g` from those estimates during `submit_benchmark_plan()`.
+5. `payload.material_id` is mandatory and must be a known material ID from `manufacturing_config.yaml`, and for benchmark-planner handoff `constraints.estimated_solution_cost_usd` and `constraints.estimated_solution_weight_g` are planner-authored while runtime derives `max_unit_cost` and `max_weight_g` from those estimates during `submit_benchmark_plan()`.
 
 <!-- Note: we are using metric units and degrees. -->
 

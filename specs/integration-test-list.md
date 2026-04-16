@@ -154,6 +154,7 @@ These runner, bootstrap, and seed-maintenance contracts are useful regression co
 | INT-274 | `update_eval_seed_renders` skip-env-up can join a shared eval lock | Render updates fail closed with the lock-held state and report the missing task id. |
 | INT-275 | Manifest hash refresh fixes drift | Dry-run reports stale hashes, fix mode rewrites them from file contents, and the updated manifest hash matches the payload. |
 | INT-276 | Engineer planner payload-path swept-clearance validation | `validate_node_output()` must run `validate_payload_trajectory_swept_clearance()` for `engineer_planner` when `payload_trajectory_definition.yaml` is present, so the approved payload proof is swept-checked before planner handoff. |
+| INT-277 | Engineer planner coarse-motion swept-clearance validation | `validate_planner_handoff_cross_contract()` must run the swept-clearance proof for `assembly_definition.yaml.motion_forecast` on the planner handoff, using the planner evidence geometry and rejecting clearance drift before coder refinement. |
 
 ### Negative integration tests (`INT-NEG-###`)
 
@@ -222,11 +223,12 @@ benchmark geometry is exposed via `benchmark_script.py`, engineer code lives in
 | INT-210 | Run a MuJoCo simulation that captures video frames, assert `VideoRenderer.save()` delegates encoding to `worker-renderer`, and verify the final MP4 is materialized in the session workspace. | Keeping MP4 encoding in-process or asserting only a synthetic video stub. |
 | INT-211 | Run a Genesis-backed simulation that captures render frames and assert the same renderer-worker video path and storage contract are used for the final MP4. | Testing Genesis frame capture without verifying the render handoff or artifact persistence. |
 | INT-276 | Exercise engineer planner node-output validation with a payload proof present and assert `validate_payload_trajectory_swept_clearance()` is reached for `engineer_planner` before handoff completes. | Calling the coder-only branch or mocking only the submit-time payload validator without exercising planner node-output validation. |
+| INT-277 | Exercise engineer planner handoff validation with coarse motion metadata and planner evidence geometry present, and assert `validate_planner_handoff_cross_contract()` runs the swept-clearance proof for `assembly_definition.yaml.motion_forecast` before planner handoff completes. | Calling only the payload-proof validator or bypassing the planner handoff validator. |
 
 ## Recommended suite organization
 
 - `tests/integration/smoke/`: INT-001..INT-004 (fast baseline).
-- `tests/integration/architecture_p0/`: INT-005..INT-021, INT-024..INT-030, INT-053, INT-055, INT-061..INT-063, INT-070..INT-073, INT-101, INT-114, INT-187, INT-218..INT-276.
+- `tests/integration/architecture_p0/`: INT-005..INT-021, INT-024..INT-030, INT-053, INT-055, INT-061..INT-063, INT-070..INT-073, INT-101, INT-114, INT-187, INT-218..INT-277.
 - `tests/integration/architecture_p1/`: INT-031..INT-040, INT-058..INT-060, INT-210, INT-211, INT-217.
 - `tests/integration/architecture_p2/`: none retained after publication pruning.
 

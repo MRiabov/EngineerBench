@@ -272,9 +272,11 @@ fidelity, and runtime-monitor surfaces that should stay wired. Items marked
   `validate_seeded_workspace_handoff_artifacts()` so the seeded workspace
   fails closed on missing evidence scripts and missing
   `payload_trajectory_definition.yaml`.
-- [ ] Wire engineer-planner handoff validation so `validate_payload_trajectory_swept_clearance()`
-  also runs for the approved payload proof on `engineer_planner`, instead of
-  limiting swept-clearance checks to `engineer_coder`.
+- [ ] Wire engineer-planner handoff validation so
+  `validate_payload_trajectory_swept_clearance()` runs against
+  `assembly_definition.yaml.motion_forecast` at the `engineer_planner`
+  boundary, while `payload_trajectory_definition.yaml` remains the
+  engineer-coder refinement validated at its own boundary.
 - [/] `validate_payload_trajectory_definition_yaml()` and the
   `validate_precise_path_definition_yaml` compatibility alias already exist
   and should remain unchanged, along with
@@ -359,9 +361,11 @@ contract.
   constants in `controller/agent/handover_constants.py` so later stages carry
   the engineer-owned proof forward instead of silently dropping it.
 - [x] Keep `worker_heavy/utils/file_validation.py` and
-  `worker_heavy/utils/payload_trajectory_validation.py` aligned so the coarse
-  `motion_forecast` contract still gates the engineer-owned precise file, but
-  the precise file is only content-validated at the engineer coder boundary.
+  `worker_heavy/utils/payload_trajectory_validation.py` aligned so the
+  planner-owned coarse `motion_forecast` is clearance-validated at the
+  `engineer_planner` boundary and still gates the engineer-owned precise
+  file, while the precise file is only content-validated at the engineer
+  coder boundary.
 - [x] Make `assembly_definition.yaml.motion_forecast` mandatory for engineer
   handoffs in `worker_heavy/utils/file_validation.py` so the coarse payload
   contract fails closed instead of passing by omission.

@@ -89,7 +89,7 @@ Failure is achieved via either of:
 
 5. Any part is broken:
 
-6. The runtime-spawned moved object overlaps benchmark-owned fixture geometry at its declared start pose.
+6. The runtime-spawned payload overlaps benchmark-owned fixture geometry at its declared start pose.
 
    - This is a startup validation failure, not a physics-side collision event.
    - Reject the benchmark before the first simulation step if the spawn pose is not clear.
