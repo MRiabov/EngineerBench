@@ -14,6 +14,7 @@ import yaml
 from websockets.asyncio.client import connect as websocket_connect
 
 from controller.api.schemas import EpisodeResponse
+from controller.clients.worker import WorkerClient
 from controller.persistence.db import get_sessionmaker
 from controller.persistence.models import Episode
 from shared.enums import AgentName, EpisodeStatus, EpisodeType, TerminalReason
@@ -276,6 +277,22 @@ def _fixture_script_content(
     )
 
 
+def _benchmark_fixture_script_content(int_id: str) -> str:
+    """Return benchmark script content for seeded fixtures.
+
+    Prefer an integration-specific mock transcript or fixture file when present.
+    Fall back to the checked-in benchmark template so ad-hoc reviewer seeds can
+    still reuse this helper without a dedicated mock bundle.
+    """
+
+    try:
+        return _fixture_script_content(int_id, preferred_path="benchmark_script.py")
+    except FileNotFoundError:
+        return Path(
+            "shared/assets/template_repos/benchmark_generator/benchmark_script.py"
+        ).read_text(encoding="utf-8")
+
+
 def _fixture_entry_file_content(
     int_id: str,
     *,
@@ -289,6 +306,23 @@ def _fixture_entry_file_content(
     raise FileNotFoundError(
         f"No fixture content found for {int_id} at {entry_root} matching {filename_suffix}"
     )
+
+
+def _fixture_entry_file_content_or_default(
+    int_id: str,
+    *,
+    filename_suffix: str,
+    node: str = "engineer_planner",
+    fallback_int_id: str = "INT-033",
+) -> str:
+    try:
+        return _fixture_entry_file_content(
+            int_id, filename_suffix=filename_suffix, node=node
+        )
+    except FileNotFoundError:
+        return _fixture_entry_file_content(
+            fallback_int_id, filename_suffix=filename_suffix, node=node
+        )
 
 
 async def seed_engineer_planner_handover(
@@ -429,14 +463,11 @@ async def seed_execution_reviewer_handover(
     session_id: str,
     int_id: str,
     script_content: str | None = None,
-    render_path: str = "renders/render_e45_a45.png",
+    render_path: str = "renders/preview.png",
     seed_render_preview: bool = True,
 ) -> None:
     """Seed deterministic reviewer handoff artifacts for execution-reviewer runs."""
-    benchmark_script_content = _fixture_script_content(
-        int_id,
-        preferred_path="benchmark_script.py",
-    )
+    benchmark_script_content = _benchmark_fixture_script_content(int_id)
     script_content = script_content or _fixture_script_content(
         int_id,
         preferred_path="solution_script.py",
@@ -448,17 +479,43 @@ async def seed_execution_reviewer_handover(
     render_rgb_path = render_path
     render_depth_path = f"{render_base}_depth.png"
     render_segmentation_path = f"{render_base}_segmentation.png"
-    benchmark_definition_seed = (
-        "version: 1.0\n"
-        "constraints:\n"
-        "  benchmark_max_unit_cost_usd: 200.0\n"
-        "  benchmark_max_weight_g: 1000.0\n"
+    benchmark_definition_seed = _fixture_entry_file_content_or_default(
+        int_id,
+        filename_suffix="benchmark_definition.yaml",
+        node="engineer_planner",
     )
-    assembly_definition_seed = (
-        "version: 1.0\n"
-        "constraints:\n"
-        "  planner_target_max_unit_cost_usd: 200.0\n"
-        "  planner_target_max_weight_g: 1000.0\n"
+    assembly_definition_seed = _fixture_entry_file_content_or_default(
+        int_id,
+        filename_suffix="assembly_definition.yaml",
+        node="engineer_planner",
+    )
+    benchmark_assembly_definition_content = _benchmark_assembly_definition_content(
+        benchmark_max_unit_cost_usd=200.0,
+        benchmark_max_weight_g=1000.0,
+        planner_target_max_unit_cost_usd=200.0,
+        planner_target_max_weight_g=1000.0,
+        estimated_unit_cost_usd=0.0,
+        estimated_weight_g=0.0,
+        estimate_confidence="medium",
+    )
+    benchmark_definition_sha256 = hashlib.sha256(
+        benchmark_definition_seed.encode("utf-8")
+    ).hexdigest()
+    benchmark_assembly_definition_sha256 = hashlib.sha256(
+        benchmark_assembly_definition_content.encode("utf-8")
+    ).hexdigest()
+    benchmark_plan_review_manifest = PlanReviewManifest(
+        status="ready_for_review",
+        reviewer_stage=AgentName.BENCHMARK_PLAN_REVIEWER,
+        session_id=session_id,
+        planner_node_type=AgentName.BENCHMARK_PLANNER,
+        benchmark_revision=revision,
+        worker_session_id=session_id,
+        environment_version="integration-test",
+        artifact_hashes={
+            "benchmark_definition.yaml": benchmark_definition_sha256,
+            "benchmark_assembly_definition.yaml": benchmark_assembly_definition_sha256,
+        },
     )
 
     validation_record = ValidationResultRecord(
@@ -519,8 +576,38 @@ async def seed_execution_reviewer_handover(
     await _seed_workspace_file(
         client,
         session_id=session_id,
+        path="benchmark_definition.yaml",
+        content=benchmark_definition_seed,
+        bypass_agent_permissions=True,
+    )
+    await _seed_workspace_file(
+        client,
+        session_id=session_id,
+        path="assembly_definition.yaml",
+        content=assembly_definition_seed,
+        bypass_agent_permissions=True,
+    )
+    await _seed_workspace_file(
+        client,
+        session_id=session_id,
+        path="benchmark_assembly_definition.yaml",
+        content=benchmark_assembly_definition_content,
+        bypass_agent_permissions=True,
+    )
+    await _seed_workspace_file(
+        client,
+        session_id=session_id,
         path="solution_script.py",
         content=script_content,
+        bypass_agent_permissions=True,
+    )
+    await _seed_workspace_file(
+        client,
+        session_id=session_id,
+        path="payload_trajectory_definition.yaml",
+        content=Path(
+            "shared/assets/template_repos/engineer/payload_trajectory_definition.yaml"
+        ).read_text(encoding="utf-8"),
         bypass_agent_permissions=True,
     )
     await _seed_workspace_file(
@@ -533,8 +620,22 @@ async def seed_execution_reviewer_handover(
     await _seed_workspace_file(
         client,
         session_id=session_id,
+        path="manufacturing_config.yaml",
+        content=REPO_MANUFACTURING_CONFIG,
+        bypass_agent_permissions=True,
+    )
+    await _seed_workspace_file(
+        client,
+        session_id=session_id,
         path="simulation_result.json",
         content=simulation_result.model_dump_json(indent=2),
+        bypass_agent_permissions=True,
+    )
+    await _seed_workspace_file(
+        client,
+        session_id=session_id,
+        path=".manifests/benchmark_plan_review_manifest.json",
+        content=benchmark_plan_review_manifest.model_dump_json(indent=2),
         bypass_agent_permissions=True,
     )
     await _seed_workspace_file(
@@ -809,9 +910,8 @@ async def seed_current_revision_render_preview(
 
     revision = repo_git_revision()
     render_base = Path(render_path).with_suffix("")
-    image_name = Path(render_path).name
-    depth_name = f"{render_base.name}_depth.png"
-    segmentation_name = f"{render_base.name}_segmentation.png"
+    render_depth_path = f"{render_base}_depth.png"
+    render_segmentation_path = f"{render_base}_segmentation.png"
     svg_name = f"{render_base.name}.svg"
     dxf_name = f"{render_base.name}.dxf"
     group_key = Path(render_path).stem
@@ -868,50 +968,77 @@ async def seed_current_revision_render_preview(
             ),
         },
     )
-    code = f"""
-python3 - <<'PY'
-from pathlib import Path
 
-from PIL import Image
+    def _png_bytes(rgb: tuple[int, int, int]) -> bytes:
+        from io import BytesIO
 
-root = Path("renders")
-root.mkdir(parents=True, exist_ok=True)
-image_path = root / {image_name!r}
-depth_path = root / {depth_name!r}
-segmentation_path = root / {segmentation_name!r}
-svg_path = root / {svg_name!r}
-dxf_path = root / {dxf_name!r}
-Image.new("RGB", (640, 480), (255, 0, 0)).save(image_path)
-Image.new("RGB", (640, 480), (0, 255, 0)).save(depth_path)
-Image.new("RGB", (640, 480), (0, 0, 255)).save(segmentation_path)
-svg_path.write_text(
-    "<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480'></svg>",
-    encoding="utf-8",
-)
-dxf_path.write_text("0\\nSECTION\\n2\\nENTITIES\\n0\\nENDSEC\\n0\\nEOF\\n", encoding="utf-8")
-manifest_json = {manifest.model_dump_json(indent=2)!r}
-(root / "render_manifest.json").write_text(manifest_json, encoding="utf-8")
-for compat_dir in (
-    root / "engineer_plan_renders",
-    root / "final_solution_submission_renders",
-    root / "benchmark_renders",
-):
-    compat_dir.mkdir(parents=True, exist_ok=True)
-    (compat_dir / "render_manifest.json").write_text(
-        manifest_json, encoding="utf-8"
+        from PIL import Image
+
+        buffer = BytesIO()
+        Image.new("RGB", (640, 480), rgb).save(buffer, format="PNG")
+        return buffer.getvalue()
+
+    upload_body, upload_content_type = WorkerClient._build_multipart_request(
+        fields=[
+            ("paths", render_path),
+            ("paths", render_depth_path),
+            ("paths", render_segmentation_path),
+            ("bypass_agent_permissions", "true"),
+        ],
+        file_fields=[
+            ("files", Path(render_path).name or "blob", _png_bytes((255, 0, 0))),
+            (
+                "files",
+                Path(render_depth_path).name or "blob",
+                _png_bytes((0, 255, 0)),
+            ),
+            (
+                "files",
+                Path(render_segmentation_path).name or "blob",
+                _png_bytes((0, 0, 255)),
+            ),
+        ],
     )
-PY
-"""
-    resp = await client.post(
-        f"{WORKER_LIGHT_URL}/runtime/execute",
-        json={
-            "code": code,
-            "timeout": 30,
-            "episode_id": session_id,
+    render_upload_resp = await client.post(
+        f"{WORKER_LIGHT_URL}/fs/upload_files_binary",
+        content=upload_body,
+        headers={
+            "Content-Type": upload_content_type,
+            "X-Session-ID": session_id,
+            "X-System-FS-Bypass": "1",
         },
-        headers={"X-Session-ID": session_id},
+        timeout=60.0,
     )
-    assert resp.status_code == 200, resp.text
+    assert render_upload_resp.status_code == 200, render_upload_resp.text
+
+    manifest_json = manifest.model_dump_json(indent=2)
+    for path, content in (
+        ("renders/render_manifest.json", manifest_json),
+        (
+            f"renders/{svg_name}",
+            "<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480'></svg>",
+        ),
+        (f"renders/{dxf_name}", "0\nSECTION\n2\nENTITIES\n0\nENDSEC\n0\nEOF\n"),
+    ):
+        await _seed_workspace_file(
+            client,
+            session_id=session_id,
+            path=path,
+            content=content,
+            bypass_agent_permissions=True,
+        )
+    for compat_dir in (
+        "renders/engineer_plan_renders",
+        "renders/final_solution_submission_renders",
+        "renders/benchmark_renders",
+    ):
+        await _seed_workspace_file(
+            client,
+            session_id=session_id,
+            path=f"{compat_dir}/render_manifest.json",
+            content=manifest_json,
+            bypass_agent_permissions=True,
+        )
 
 
 async def run_agent_episode(
@@ -922,7 +1049,6 @@ async def run_agent_episode(
     agent_name: AgentName = AgentName.ENGINEER_CODER,
 ) -> tuple[str, str]:
     session_id = f"{int_id}-{uuid.uuid4().hex[:8]}"
-    workspace_session_id = integration_workspace_session_id(task, session_id)
 
     resp = await client.post(
         f"{CONTROLLER_URL}/api/agent/run",

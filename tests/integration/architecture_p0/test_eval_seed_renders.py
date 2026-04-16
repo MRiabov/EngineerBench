@@ -4,9 +4,9 @@ from types import SimpleNamespace
 
 import pytest
 
+from scripts.internal import eval_seed_renders
 from shared.current_role import current_role_manifest_json
 from shared.enums import AgentName
-from scripts.internal import eval_seed_renders
 
 
 @pytest.mark.parametrize(
@@ -39,9 +39,7 @@ def test_seed_render_bundle_prefixes_cover_all_roles(agent, expected_bundles):
     assert eval_seed_renders._seed_render_bundle_names(agent.value) == expected_bundles
 
 
-def test_engineer_plan_seed_renders_use_planner_evidence_script(
-    tmp_path, monkeypatch
-):
+def test_engineer_plan_seed_renders_use_planner_evidence_script(tmp_path, monkeypatch):
     artifact_dir = tmp_path / "engineer_coder" / "ec-test"
     artifact_dir.mkdir(parents=True)
 
@@ -116,6 +114,4 @@ def test_engineer_plan_seed_renders_use_planner_evidence_script(
     assert render_calls[0]["script_path"] == "benchmark_script.py"
     assert render_calls[1]["script_path"] == "solution_plan_evidence_script.py"
     assert render_calls[1]["agent_role"] == "engineer_coder"
-    assert (
-        artifact_dir / "renders" / "engineer_plan_renders" / "preview.png"
-    ).exists()
+    assert (artifact_dir / "renders" / "engineer_plan_renders" / "preview.png").exists()

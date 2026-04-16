@@ -1,5 +1,5 @@
-import shutil
 import os
+import shutil
 import uuid
 from pathlib import Path
 
@@ -13,13 +13,17 @@ from controller.agent.node_entry_validation import (
 )
 from controller.clients.worker import WorkerClient
 from evals.logic.models import EvalDatasetItem
-from evals.logic.workspace import materialize_seed_workspace_snapshot
-from evals.logic.workspace import InMemorySeedWorkspaceClient
+from evals.logic.workspace import (
+    InMemorySeedWorkspaceClient,
+    materialize_seed_workspace_snapshot,
+)
+from scripts.internal.eval_seed_selection import load_seed_dataset
 from shared.agent_templates import load_role_template_files
 from shared.current_role import current_role_manifest_json
 from shared.enums import AgentName
+from shared.utils.agent import validate_engineering
+from shared.workers.loader import load_component_from_script
 from shared.workers.schema import BenchmarkToolResponse
-from scripts.internal.eval_seed_selection import load_seed_dataset
 
 ROOT = Path(__file__).resolve().parents[3]
 
@@ -298,6 +302,85 @@ result = build()
         and "starter template version" in error.message.lower()
         for error in errors
     ), errors
+
+
+@pytest.mark.integration_p0
+@pytest.mark.asyncio
+async def test_int_engineer_coder_seed_requires_payload_trajectory_definition():
+    seed_item = load_seed_dataset(
+        AgentName.ENGINEER_CODER,
+        task_id="ec-002",
+        limit=1,
+        levels=None,
+    )[0]
+
+    session_id = f"INT-STARTER-{uuid.uuid4().hex[:8]}"
+    snapshot_client = InMemorySeedWorkspaceClient(session_id=session_id)
+    await materialize_seed_workspace_snapshot(
+        item=seed_item,
+        session_id=session_id,
+        agent_name=AgentName.ENGINEER_CODER,
+        root=ROOT,
+        workspace_client=snapshot_client,
+        update_manifests=True,
+    )
+
+    assert await snapshot_client.exists("payload_trajectory_definition.yaml")
+    snapshot_client._files.pop("payload_trajectory_definition.yaml", None)
+
+    errors = await validate_seeded_workspace_handoff_artifacts(
+        worker_client=snapshot_client,
+        target_node=AgentName.ENGINEER_CODER,
+        validation_scope=ValidationScope.CURRENT_NODE,
+    )
+
+    assert errors, "Expected the engineer seed to fail when the payload file is absent."
+    assert any(
+        error.artifact_path == "payload_trajectory_definition.yaml"
+        and "missing" in error.message.lower()
+        for error in errors
+    ), errors
+
+
+@pytest.mark.integration_p0
+def test_int_engineer_validate_engineering_rejects_invalid_payload_scaffold(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    seed_item = load_seed_dataset(
+        AgentName.ENGINEER_CODER,
+        task_id="ec-002",
+        limit=1,
+        levels=None,
+    )[0]
+    temp_seed_dir = tmp_path / "engineer_coder_seed"
+    shutil.copytree(seed_item.seed_artifact_dir, temp_seed_dir)
+    temp_seed_dir.joinpath("solution_script.py").write_text(
+        """from build123d import Box, BuildPart, Compound
+
+
+def build() -> Compound:
+    with BuildPart() as builder:
+        Box(10, 10, 10)
+    builder.part.label = "payload_validation_body"
+    return Compound(children=[builder.part], label="payload_validation_root")
+""",
+        encoding="utf-8",
+    )
+
+    monkeypatch.chdir(temp_seed_dir)
+    component = load_component_from_script(
+        temp_seed_dir / "solution_script.py",
+        session_root=temp_seed_dir,
+    )
+
+    validate_ok, validate_message = validate_engineering(component)
+
+    assert not validate_ok, (
+        "Expected the engineer validation helper to reject the scaffolded payload path."
+    )
+    assert validate_message is not None
+    assert "payload_trajectory_definition" in validate_message
 
 
 @pytest.mark.integration_p0

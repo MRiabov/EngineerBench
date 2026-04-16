@@ -18,6 +18,7 @@ def test_common_agent_templates_load_from_shared_templates():
     templates = load_common_template_files()
     assert set(templates) == {
         ".admin/clear_env.py",
+        ".gitignore",
         "journal.md",
         "manufacturing_config.yaml",
         "solution_script.py",
@@ -28,6 +29,9 @@ def test_common_agent_templates_load_from_shared_templates():
     assert templates[".admin/clear_env.py"] == (
         shared_root / ".admin/clear_env.py"
     ).read_text(encoding="utf-8")
+    assert templates[".gitignore"] == (shared_root / ".gitignore").read_text(
+        encoding="utf-8"
+    )
     assert templates["solution_script.py"] == (
         shared_root / "solution_script.py"
     ).read_text(encoding="utf-8")
@@ -83,6 +87,7 @@ def test_seed_starter_templates_cover_all_seeded_roles():
     }
     assert set(load_seed_starter_template_files(AgentName.ENGINEER_CODER)) == {
         "solution_script.py",
+        "payload_trajectory_definition.yaml",
         "todo.md",
         "journal.md",
     }
@@ -98,7 +103,9 @@ def test_seed_starter_templates_cover_all_seeded_roles():
         "todo.md",
         "journal.md",
     }
-    assert set(load_seed_starter_template_files(AgentName.ENGINEER_EXECUTION_REVIEWER)) == {
+    assert set(
+        load_seed_starter_template_files(AgentName.ENGINEER_EXECUTION_REVIEWER)
+    ) == {
         "todo.md",
         "journal.md",
     }

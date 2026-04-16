@@ -1,15 +1,31 @@
-version: '1.0'
+version: "1.0"
+units:
+  length: mm
+  volume: mm3
+  mass: g
+  currency: USD
 constraints:
   benchmark_max_unit_cost_usd: 220.0
   benchmark_max_weight_g: 1200.0
-  planner_target_max_unit_cost_usd: 220
-  planner_target_max_weight_g: 650
+  planner_target_max_unit_cost_usd: 220.0
+  planner_target_max_weight_g: 650.0
+manufactured_parts:
+  - part_name: solution_plan_evidence
+    part_id: solution_plan_evidence
+    manufacturing_method: 3DP
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 1000.0
+    stock_bbox_mm:
+      x: 10.0
+      y: 10.0
+      z: 10.0
+    stock_volume_mm3: 1000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 10.0
+final_assembly: []
 totals:
-  estimated_unit_cost_usd: 0.0
-  estimated_weight_g: 0
+  estimated_unit_cost_usd: 10.0
+  estimated_weight_g: 2.7
   estimate_confidence: high
-manufactured_parts: []
-final_assembly:
-  - name: review_fixture
-    config:
-      dofs: []
+dfm_suggestions: []

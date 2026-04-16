@@ -90,6 +90,14 @@ def _benchmark_plan_review_artifacts_ready(episode: EpisodeResponse) -> bool:
     )
 
 
+def _has_review_manifest_artifacts(episode: EpisodeResponse) -> bool:
+    artifact_paths = [_asset_path(asset.s3_path) for asset in (episode.assets or [])]
+    return any(
+        path == Path(".manifests/benchmark_plan_review_manifest.json")
+        for path in artifact_paths
+    ) and any(path == Path("renders/render_manifest.json") for path in artifact_paths)
+
+
 async def _wait_for_review_evidence(
     client: AsyncClient,
     *,
@@ -200,6 +208,7 @@ async def test_reviewer_evidence_completeness():
                         trace.name == "review_decision"
                         for trace in (candidate.traces or [])
                     )
+                    and _has_review_manifest_artifacts(candidate)
                 ),
             )
         )
@@ -230,6 +239,9 @@ async def test_reviewer_evidence_completeness():
         assert Path("solution_script.py") in artifact_paths, (
             f"solution_script.py missing. Artifacts: {artifact_paths}"
         )
+        assert Path("payload_trajectory_definition.yaml") in artifact_paths, (
+            f"payload_trajectory_definition.yaml missing. Artifacts: {artifact_paths}"
+        )
         solution_script_text = await _read_episode_asset_text(
             client, episode_id, "solution_script.py"
         )
@@ -238,16 +250,16 @@ async def test_reviewer_evidence_completeness():
         stage_review_paths = [
             p
             for p in artifact_paths
-            if "reviews/" in p
+            if "reviews/" in str(p)
             and (
-                "benchmark-plan-review-decision-round-" in p
-                or "benchmark-plan-review-comments-round-" in p
-                or "benchmark-execution-review-decision-round-" in p
-                or "benchmark-execution-review-comments-round-" in p
-                or "engineering-plan-review-decision-round-" in p
-                or "engineering-plan-review-comments-round-" in p
-                or "engineering-execution-review-decision-round-" in p
-                or "engineering-execution-review-comments-round-" in p
+                "benchmark-plan-review-decision-round-" in str(p)
+                or "benchmark-plan-review-comments-round-" in str(p)
+                or "benchmark-execution-review-decision-round-" in str(p)
+                or "benchmark-execution-review-comments-round-" in str(p)
+                or "engineering-plan-review-decision-round-" in str(p)
+                or "engineering-plan-review-comments-round-" in str(p)
+                or "engineering-execution-review-decision-round-" in str(p)
+                or "engineering-execution-review-comments-round-" in str(p)
             )
         ]
         if not stage_review_paths:
@@ -380,9 +392,9 @@ async def test_engineer_execution_reviewer_handover_accepts_preview_evidence_pat
         render_base = Path(render_path).with_suffix("")
         review_manifest_json = ReviewManifest(
             status="ready_for_review",
-            reviewer_stage="engineering_execution_reviewer",
+            reviewer_stage=AgentName.ENGINEER_EXECUTION_REVIEWER,
             session_id=session_id,
-            script_path="script.py",
+            script_path="solution_script.py",
             script_sha256=script_sha256,
             validation_success=True,
             validation_timestamp=0.0,
@@ -423,7 +435,7 @@ async def test_engineer_execution_reviewer_handover_accepts_preview_evidence_pat
             validation_error = await validate_reviewer_handover(
                 worker_client,
                 manifest_path=".manifests/engineering_execution_handoff_manifest.json",
-                expected_stage="engineering_execution_reviewer",
+                expected_stage=AgentName.ENGINEER_EXECUTION_REVIEWER,
             )
         finally:
             await worker_client.aclose()
@@ -435,15 +447,21 @@ async def test_engineer_execution_reviewer_handover_accepts_preview_evidence_pat
 @pytest.mark.asyncio
 async def test_reviewer_approval_requires_media_inspection():
     """
-    INT-034: reviewer approval fails closed when render artifacts exist but
+    INT-039: reviewer approval fails closed when render artifacts exist but
     inspect_media() was never called.
     """
     async with AsyncClient(base_url=CONTROLLER_URL, timeout=300.0) as client:
         session_id = f"INT-039-{uuid.uuid4().hex[:8]}"
-        await seed_benchmark_assembly_definition(client, session_id)
-        run_request = AgentRunRequest(
-            task="INT-034 reviewer media gate",
+        await seed_execution_reviewer_handover(
+            client,
             session_id=session_id,
+            int_id="INT-039",
+        )
+        run_request = AgentRunRequest(
+            task="INT-039 reviewer media gate",
+            session_id=session_id,
+            agent_name=AgentName.ENGINEER_EXECUTION_REVIEWER,
+            start_node=AgentName.ENGINEER_EXECUTION_REVIEWER,
         )
         run_resp = await client.post("/api/agent/run", json=run_request.model_dump())
         assert run_resp.status_code in [200, 202], (
@@ -561,9 +579,9 @@ async def test_engineer_execution_reviewer_handover_accepts_png_preview_evidence
         render_base = Path(render_path).with_suffix("")
         review_manifest_json = ReviewManifest(
             status="ready_for_review",
-            reviewer_stage="engineering_execution_reviewer",
+            reviewer_stage=AgentName.ENGINEER_EXECUTION_REVIEWER,
             session_id=session_id,
-            script_path="script.py",
+            script_path="solution_script.py",
             script_sha256=script_sha256,
             validation_success=True,
             validation_timestamp=0.0,
@@ -602,7 +620,7 @@ async def test_engineer_execution_reviewer_handover_accepts_png_preview_evidence
             validation_error = await validate_reviewer_handover(
                 worker_client,
                 manifest_path=".manifests/engineering_execution_handoff_manifest.json",
-                expected_stage="engineering_execution_reviewer",
+                expected_stage=AgentName.ENGINEER_EXECUTION_REVIEWER,
             )
         finally:
             await worker_client.aclose()

@@ -434,6 +434,7 @@ async def test_engineering_full_loop():
             "manufacturing_config.yaml",
             "benchmark_script.py",
             "solution_script.py",
+            "payload_trajectory_definition.yaml",
             "validation_results.json",
             "simulation_result.json",
             ".manifests/benchmark_plan_review_manifest.json",

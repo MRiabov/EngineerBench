@@ -62,6 +62,13 @@ transcript:
       required_fixes: []
 - node: engineer_coder
   steps:
+  - thought: Populate the engineer-owned payload trajectory proof before submission.
+    tool_name: write_file
+    tool_args:
+      path: payload_trajectory_definition.yaml
+      overwrite: true
+      content_file: INT-033/engineer_coder/entry_01/02__payload_trajectory_definition.yaml
+    expected_observation: success
   - thought: Implement metadata-compliant script that places projectile_ball inside
       goal zone.
     tool_name: write_file

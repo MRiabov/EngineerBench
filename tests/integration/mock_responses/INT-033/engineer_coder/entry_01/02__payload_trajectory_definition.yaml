@@ -1,0 +1,26 @@
+backend: GENESIS
+moving_part_names:
+  - projectile_ball
+initial_pose:
+  reference_point: com
+  pos_mm: [0.0, 0.0, 0.0]
+  rot_deg: [0.0, 0.0, 0.0]
+sample_stride_s: 0.3
+anchors:
+  - t_s: 0.0
+    reference_point: com
+    pos_mm: [0.0, 0.0, 0.0]
+    rot_deg: [0.0, 0.0, 0.0]
+    position_tolerance_mm: [0.6, 0.6, 0.6]
+    rotation_tolerance_deg: [0.1, 0.1, 2.0]
+    build_zone_valid: true
+    first_contacts: []
+  - t_s: 0.3
+    reference_point: com
+    pos_mm: [8.0, 0.0, 0.5]
+    rot_deg: [0.0, 0.0, 0.0]
+    position_tolerance_mm: [0.6, 0.6, 0.6]
+    rotation_tolerance_deg: [0.1, 0.1, 2.0]
+    goal_zone_entry: true
+    first_contacts: []
+terminal_event: null
