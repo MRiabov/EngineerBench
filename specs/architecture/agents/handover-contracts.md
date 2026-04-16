@@ -356,6 +356,7 @@ For each part:
 - Each index row must map to a matching `### CALC-001: <short title>` subsection below; the `CALC-*` heading is required, not optional.
 - The CALC subsections must stay in the same order as the summary-table rows. If the headings are shuffled but still complete, validation fails with an explicit order-mismatch error rather than a generic missing-heading message.
 - Each calculation subsection should include a problem statement, assumptions, derivation, worst-case check, result, design impact, and cross-reference.
+- For geometry-, volume-, weight-, or shape-derived claims, a short reproducible `build123d` script or CAD probe may provide the derivation; include the script or probe reference and the resulting numeric value in the subsection.
 ## 6. Critical Constraints / Operating Envelope
 - Derived numeric limits that the mechanism must satisfy, such as minimum slope, maximum torque, minimum current, or clearance bounds.
 - Each derived limit should be traceable back to one or more calculation IDs.
