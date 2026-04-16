@@ -29,6 +29,7 @@ Use the shared preview helpers when evidence or objective overlays are part of t
 
 - Base every size, offset, and clearance on declared geometry, declared dimensions, or an explicit formula.
 - Do not guess a number. If the handoff is missing a needed value, treat the draft as incomplete instead of inventing one.
+- If a volume, weight, or shape value needs derivation, use a short `build123d` script or CAD probe; a traceable script plus written result in `benchmark_plan.md` is sufficient proof.
 - Treat weak geometry or physics derivations as a hard failure, not a minor gap. In practice, handoffs that cannot rigorously justify the motion or placement math have repeatedly failed downstream.
 - When a fixture moves, derive its pose from the declared axis or joint frame instead of a world-coordinate guess.
 - Prefer selector-driven placement over free-form XYZ positioning. Use face/axis selectors and explicit mates/joints to constrain parts to each other and to the environment; if an absolute 3-coordinate anchor is unavoidable, keep it to one or two top-level placements at most and treat it as fragile.

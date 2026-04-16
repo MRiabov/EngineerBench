@@ -29,6 +29,7 @@ Use the shared preview helpers whenever the plan needs visual evidence:
 
 - Base every size, offset, and clearance on explicit source geometry, declared dimensions, or formulas.
 - Do not guess a number. If the handoff is missing a needed value, correct the source instead of inventing one.
+- If a volume, weight, or shape value needs derivation, use a short `build123d` script or CAD probe; a traceable script plus written result in `engineering_plan.md` is sufficient proof.
 - Treat weak geometry or physics derivations as a hard failure, not a minor gap. In practice, handoffs that cannot rigorously justify the motion or placement math have repeatedly failed downstream.
 - When a fixture moves, derive its pose from the declared axis or joint chain instead of a hand-placed coordinate.
 - Prefer selector-driven placement over free-form XYZ positioning. Use face/axis selectors, explicit mates, and joint chains to constrain parts to each other and to the environment; treat any absolute 3-coordinate anchor as an exception that needs clear justification.
