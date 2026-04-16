@@ -1125,7 +1125,7 @@ from build123d import *
 from shared.models.schemas import PartMetadata
 def build():
     p = Box(10, 10, 10)
-    p.label = "benchmark_moved_object__oops"
+    p.label = "benchmark_payload__oops"
     p.metadata = PartMetadata(material_id="aluminum-6061")
     return p
 """
@@ -1148,7 +1148,7 @@ def build():
         )
         data = BenchmarkToolResponse.model_validate(resp.json())
         assert "Top-level part labels may not start with" in data.message
-        assert "benchmark_moved_object__" in data.message
+        assert "benchmark_payload__" in data.message
 
         # 5. Unknown extra fields must fail closed (top-level and nested)
         extra_obj = valid_objectives.model_dump(mode="json")

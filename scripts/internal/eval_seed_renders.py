@@ -216,11 +216,11 @@ def _load_benchmark_assembly_definition(artifact_dir: Path) -> dict[str, object]
     return yaml.safe_load(assembly_path.read_text(encoding="utf-8")) or {}
 
 
-def _build_moved_object_component(definition: BenchmarkDefinition) -> Compound:
-    moved = definition.payload
-    radius_range = moved.static_randomization.radius
+def _build_payload_component(definition: BenchmarkDefinition) -> Compound:
+    payload = definition.payload
+    radius_range = payload.static_randomization.radius
     radius = float(max(radius_range)) if radius_range else 10.0
-    shape = moved.shape.strip().lower()
+    shape = payload.shape.strip().lower()
 
     if shape == "sphere":
         part = Sphere(radius, align=(Align.CENTER, Align.CENTER, Align.CENTER))
@@ -235,15 +235,15 @@ def _build_moved_object_component(definition: BenchmarkDefinition) -> Compound:
         )
     else:
         raise ValueError(
-            f"Unsupported payload.shape '{moved.shape}'. "
+            f"Unsupported payload.shape '{payload.shape}'. "
             "Expected sphere, box, cube, or cylinder."
         )
 
-    part = part.move(Location(tuple(moved.start_position)))
-    part.label = moved.label
-    part.metadata = PartMetadata(material_id=moved.material_id, fixed=False)
+    part = part.move(Location(tuple(payload.start_position)))
+    part.label = payload.label
+    part.metadata = PartMetadata(material_id=payload.material_id, fixed=False)
 
-    preview = Compound(label=f"{moved.label}_preview", children=[part])
+    preview = Compound(label=f"{payload.label}_preview", children=[part])
     preview.metadata = CompoundMetadata(fixed=False)
     return preview
 
@@ -260,7 +260,7 @@ def _load_preview_component(
                 f"{script_path.name} missing in {artifact_dir} for {role_name}"
             )
         return load_component_from_script(script_path, session_root=artifact_dir)
-    return _build_moved_object_component(definition)
+    return _build_payload_component(definition)
 
 
 def _role_name_for_artifact(artifact_dir: Path) -> str:

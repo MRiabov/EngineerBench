@@ -9,8 +9,8 @@ from shared.models.schemas import CompoundMetadata, JointMetadata, PartMetadata
 from worker_heavy.simulation.builder import (
     CommonAssemblyTraverser,
     MeshProcessor,
+    MuJoCoSimulationBuilder,
     SceneCompiler,
-    SimulationBuilder,
 )
 
 
@@ -61,7 +61,7 @@ def test_simulation_builder(tmp_path):
 
     assembly = Compound(children=[box1, box2])
 
-    builder = SimulationBuilder(tmp_path)
+    builder = MuJoCoSimulationBuilder(tmp_path)
     scene_path = builder.build_from_assembly(assembly)
 
     assert scene_path.exists()
@@ -107,7 +107,7 @@ def test_vhacd_decomposition(tmp_path):
 
     assembly = Compound(children=[part])
 
-    builder = SimulationBuilder(tmp_path, use_vhacd=True)
+    builder = MuJoCoSimulationBuilder(tmp_path, use_vhacd=True)
     scene_path = builder.build_from_assembly(assembly)
 
     assert scene_path.exists()
@@ -124,7 +124,7 @@ def test_simulation_builder_missing_metadata_fails(tmp_path):
     box1.label = "bad_part"
 
     assembly = Compound(children=[box1])
-    builder = SimulationBuilder(tmp_path)
+    builder = MuJoCoSimulationBuilder(tmp_path)
 
     with pytest.raises(ValueError) as excinfo:
         builder.build_from_assembly(assembly)

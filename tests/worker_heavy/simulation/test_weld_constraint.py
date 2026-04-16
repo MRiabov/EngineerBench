@@ -2,7 +2,7 @@ import mujoco
 from build123d import Box, Compound
 
 from shared.models.schemas import PartMetadata
-from worker_heavy.simulation.builder import SimulationBuilder
+from worker_heavy.simulation.builder import MuJoCoSimulationBuilder
 
 
 def test_weld_constraint_generation(tmp_path):
@@ -23,7 +23,7 @@ def test_weld_constraint_generation(tmp_path):
 
     assembly = Compound(children=[part1, part2])
 
-    builder = SimulationBuilder(tmp_path)
+    builder = MuJoCoSimulationBuilder(tmp_path)
     scene_path = builder.build_from_assembly(assembly)
 
     assert scene_path.exists()

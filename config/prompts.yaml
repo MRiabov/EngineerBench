@@ -236,7 +236,7 @@ benchmark_generator:
       - If `submit_benchmark_plan()` returns validation errors, fix the files and call `submit_benchmark_plan()` again.
       - In `benchmark_definition.yaml`, `payload.start_position` must be a top-level field under `payload`, not nested under `static_randomization`.
       - In `benchmark_definition.yaml`, every `benchmark_parts[*].part_id` and `benchmark_parts[*].label` must be unique.
-      - In authored benchmark scripts, every top-level part label must be unique and must not be `environment`, start with `zone_`, or start with `benchmark_moved_object__` because the simulator reserves those names for the scene root and generated objective bodies.
+      - In authored benchmark scripts, every top-level part label must be unique and must not be `environment`, start with `zone_`, or start with `benchmark_payload__` because the simulator reserves those names for the scene root and generated objective bodies.
       - `benchmark_assembly_definition.yaml` must be a full `AssemblyDefinition` shape and include numeric planner-target `constraints` and `totals` fields; benchmark caps are sourced from `benchmark_definition.yaml` and must not be treated as duplicated ownership in the assembly file.
       - Any benchmark-owned motion in `benchmark_assembly_definition.yaml` must be explicit in both `benchmark_plan.md` and `todo.md`; the handoff must state reviewer-visible motion bounds and controller facts.
       - Hidden, unsupported, or over-actuated benchmark motion is a rejection condition, even if the scene still looks passive at a glance.
