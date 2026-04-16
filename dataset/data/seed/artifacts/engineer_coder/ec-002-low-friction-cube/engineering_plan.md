@@ -153,7 +153,7 @@ The plan must stay under the benchmark cost cap.
 | LIMIT-003 | Goal-zone overlap | `goal_pocket` must overlap the goal zone | `benchmark_definition.yaml` |
 | LIMIT-004 | Stability envelope | `slide_base` stays flat and does not tip under cube impact | Assembly strategy |
 | LIMIT-005 | Layout legibility | The routed preview keeps the same labels and placement order as the evidence script | `solution_plan_evidence_script.py` |
-| LIMIT-006 | Path proof | The engineer-coder path proof keeps the starter `solution_assembly` label stable while routing above the center collision block | `assembly_definition.yaml.motion_forecast` |
+| LIMIT-006 | Path proof | The engineer-coder path proof keeps the starter `solution_assembly` label stable while routing above the center collision block | `assembly_definition.yaml.coarse_payload_trajectory` |
 
 ## 7. Cost & Weight Budget
 

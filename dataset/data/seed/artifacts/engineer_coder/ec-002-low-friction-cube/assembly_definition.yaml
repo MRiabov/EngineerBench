@@ -104,8 +104,8 @@ final_assembly:
   - name: goal_pocket
     config:
 
-motion_forecast:
-  moving_part_names:
+coarse_payload_trajectory:
+  payload_part_names:
     - solution_assembly
   reference_frame: world
   sample_stride_s: 0.5

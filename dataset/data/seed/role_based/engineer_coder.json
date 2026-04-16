@@ -1,10 +1,10 @@
 [
   {
     "id": "ec-002",
-  "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the low-friction cube guide in `solution_script.py`, including the mandatory `assembly_definition.yaml.motion_forecast` and `payload_trajectory_definition.yaml` path proof. Preserve the reviewed planner artifacts, keep the guide geometry matched to the low-friction slip assumptions, and update `todo.md` and `journal.md` as execution progresses.",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded engineering planner handoff package in the workspace to implement the low-friction cube guide in `solution_script.py`, including the mandatory `assembly_definition.yaml.coarse_payload_trajectory` and `payload_trajectory_definition.yaml` path proof. Preserve the reviewed planner artifacts, keep the guide geometry matched to the low-friction slip assumptions, and update `todo.md` and `journal.md` as execution progresses.",
     "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-002-low-friction-cube",
-  "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins from a reviewed low-friction cube package, implements the guide geometry in `solution_script.py`, and preserves the planner contract, the coarse `motion_forecast`, the precise `payload_trajectory_definition.yaml` path proof, and the seeded routing assumptions."
+  "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins from a reviewed low-friction cube package, implements the guide geometry in `solution_script.py`, and preserves the planner contract, the coarse `payload_trajectory`, the precise `payload_trajectory_definition.yaml` path proof, and the seeded routing assumptions."
   },
   {
     "id": "ec-005",

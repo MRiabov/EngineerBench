@@ -80,8 +80,8 @@ totals:
   estimated_weight_g: 11.9232
   estimate_confidence: high
 
-# motion_forecast:
-#   moving_part_names:
+# coarse_payload_trajectory:
+#   payload_part_names:
 #     - bridge_deck
 #   reference_frame: world
 #   sample_stride_s: 0.5
