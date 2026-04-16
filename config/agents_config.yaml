@@ -75,7 +75,7 @@ execution:
 bug_reports:
   enabled: true
   archive_root: logs/bug_reports
-motion_forecast:
+coarse_payload_trajectory:
   benchmark_planner:
     sample_stride_s: 2.0
     position_tolerance_mm: [6.0, 6.0, 6.0]

@@ -5,7 +5,7 @@ from typing import Literal
 
 import structlog
 import yaml
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import AliasChoices, BaseModel, Field, field_validator, model_validator
 
 from shared.enums import AgentName
 
@@ -30,29 +30,29 @@ class VisualInspectionPolicy(BaseModel):
     reminder_interval: int = Field(default=2, ge=1)
 
 
-class MotionForecastBudget(BaseModel):
+class PayloadTrajectoryBudget(BaseModel):
     sample_stride_s: float = Field(default=0.5, gt=0)
     position_tolerance_mm: tuple[float, float, float] = Field(default=(1.2, 1.2, 1.2))
     rotation_tolerance_deg: tuple[float, float, float] = Field(default=(0.1, 0.1, 5.0))
 
 
-class MotionForecastPolicy(BaseModel):
-    benchmark_planner: MotionForecastBudget = Field(
-        default_factory=lambda: MotionForecastBudget(
+class PayloadTrajectoryPolicy(BaseModel):
+    benchmark_planner: PayloadTrajectoryBudget = Field(
+        default_factory=lambda: PayloadTrajectoryBudget(
             sample_stride_s=2.0,
             position_tolerance_mm=(6.0, 6.0, 6.0),
             rotation_tolerance_deg=(0.1, 0.1, 15.0),
         )
     )
-    engineer_planner: MotionForecastBudget = Field(
-        default_factory=lambda: MotionForecastBudget(
+    engineer_planner: PayloadTrajectoryBudget = Field(
+        default_factory=lambda: PayloadTrajectoryBudget(
             sample_stride_s=0.5,
             position_tolerance_mm=(1.2, 1.2, 1.2),
             rotation_tolerance_deg=(0.1, 0.1, 5.0),
         )
     )
-    engineer_coder: MotionForecastBudget = Field(
-        default_factory=lambda: MotionForecastBudget(
+    engineer_coder: PayloadTrajectoryBudget = Field(
+        default_factory=lambda: PayloadTrajectoryBudget(
             sample_stride_s=0.3,
             position_tolerance_mm=(0.6, 0.6, 0.6),
             rotation_tolerance_deg=(0.1, 0.1, 2.0),
@@ -288,7 +288,10 @@ class AgentsConfig(BaseModel):
     render: RenderPolicyConfig = Field(default_factory=RenderPolicyConfig)
     execution: AgentExecutionConfig = Field(default_factory=AgentExecutionConfig)
     bug_reports: BugReportsConfig = Field(default_factory=BugReportsConfig)
-    motion_forecast: MotionForecastPolicy = Field(default_factory=MotionForecastPolicy)
+    coarse_payload_trajectory: PayloadTrajectoryPolicy = Field(
+        default_factory=PayloadTrajectoryPolicy,
+        validation_alias=AliasChoices("coarse_payload_trajectory", "motion_forecast"),
+    )
     payload_trajectory_monitor: PayloadTrajectoryMonitorPolicy = Field(
         default_factory=PayloadTrajectoryMonitorPolicy
     )
@@ -310,9 +313,9 @@ class AgentsConfig(BaseModel):
             return ()
         return tuple(policy.allowed_during_unit_eval)
 
-    def get_motion_forecast_policy(
+    def get_coarse_payload_trajectory_policy(
         self, planner_role: AgentName | str
-    ) -> MotionForecastBudget:
+    ) -> PayloadTrajectoryBudget:
         key = (
             planner_role.value
             if isinstance(planner_role, AgentName)
@@ -325,18 +328,32 @@ class AgentsConfig(BaseModel):
             AgentName.BENCHMARK_CODER.value,
             AgentName.BENCHMARK_REVIEWER.value,
         }:
-            return self.motion_forecast.benchmark_planner
+            return self.coarse_payload_trajectory.benchmark_planner
         if normalized in {
             AgentName.ENGINEER_PLANNER.value,
             AgentName.ENGINEER_PLAN_REVIEWER.value,
         }:
-            return self.motion_forecast.engineer_planner
+            return self.coarse_payload_trajectory.engineer_planner
         if normalized in {
             AgentName.ENGINEER_CODER.value,
             AgentName.ENGINEER_EXECUTION_REVIEWER.value,
         }:
-            return self.motion_forecast.engineer_coder
-        return self.motion_forecast.engineer_planner
+            return self.coarse_payload_trajectory.engineer_coder
+        return self.coarse_payload_trajectory.engineer_planner
+
+    def get_motion_forecast_policy(
+        self, planner_role: AgentName | str
+    ) -> PayloadTrajectoryBudget:
+        return self.get_coarse_payload_trajectory_policy(planner_role)
+
+    @property
+    def motion_forecast(self) -> PayloadTrajectoryPolicy:
+        """Compatibility alias for coarse_payload_trajectory."""
+        return self.coarse_payload_trajectory
+
+    @motion_forecast.setter
+    def motion_forecast(self, value: PayloadTrajectoryPolicy) -> None:
+        self.coarse_payload_trajectory = value
 
     def get_reasoning_effort(
         self,
@@ -376,6 +393,11 @@ def get_video_render_resolution(
 ) -> tuple[int, int]:
     render_config = (config or load_agents_config()).render.video_resolution
     return render_config.width, render_config.height
+
+
+# Compatibility aliases while callers migrate to the payload-trajectory names.
+MotionForecastBudget = PayloadTrajectoryBudget
+MotionForecastPolicy = PayloadTrajectoryPolicy
 
 
 # Backward-compatible alias while import sites are migrated.

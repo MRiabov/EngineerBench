@@ -1,7 +1,7 @@
 # Engineer-owned payload trajectory scaffold.
 # Replace this with the backend-specific path proof before submission.
 backend: GENESIS
-moving_part_names: []
+payload_part_names: []
 initial_pose:
   reference_point: ""
   pos_mm: [0.0, 0.0, 0.0]
