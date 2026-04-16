@@ -46,6 +46,7 @@ The current callable signatures and request shapes live in [function_signatures.
 ## Preview Contract
 
 - Use `render_cad(...)` for live scene, objective-overlay, or render-bundle render evidence.
+- In RGB handoff renders, a thin red line usually indicates the payload-path or motion-path overlay from the current motion contract. Treat it as review context, not as physical geometry; use the bundle's motion artifact source when you need to interpret it.
 
 ## Bundle Rules
 
@@ -61,6 +62,7 @@ The current callable signatures and request shapes live in [function_signatures.
 - Use depth for clearance, collision, and spatial separation.
 - Use segmentation for identity, overlap, and repeated-instance checks.
 - Inspect the actual image or video path, not a directory listing or text summary.
+- If the RGB image shows a red overlay line, do not read it as a part edge or guide rail. Verify the underlying motion source before using it as evidence about geometry.
 - For motion evidence, inspect the first useful frames before changing geometry.
 - If the view could be front or rear, confirm camera orientation before assuming a mirror flip.
 - If the task depends on exact bundle identity or revision history, resolve the bundle first and then inspect or query that bundle-local snapshot.

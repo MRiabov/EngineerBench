@@ -16,7 +16,8 @@ added_at: '2026-04-05T19:27:22Z'
 ## Purpose
 
 This migration makes payload-path grounding orientation-explicit and swept-
-clearance safe. The current contract can still leave room for an implied
+clearance safe. The payload-path contract is mandatory baseline behavior for
+every engineer handoff. The current contract can still leave room for an implied
 `(0,0,0)` orientation, which is not strong enough for downstream users when a
 nominally safe path becomes colliding at a different allowed rotation.
 
@@ -64,8 +65,8 @@ enough to prevent orientation-sensitive collisions.
 7. The check must remain fast enough for submit-time validation, which means
    static geometry caching and parallel evaluation of independent samples
    matter.
-8. Planner prompts and seed fixtures still teach a world in which the nominal
-   pose can be assumed. This feature removes that assumption.
+8. Planner prompts and seed fixtures must teach a world in which the nominal
+   pose can never be assumed. This feature removes that assumption.
 
 ## Current-State Inventory
 

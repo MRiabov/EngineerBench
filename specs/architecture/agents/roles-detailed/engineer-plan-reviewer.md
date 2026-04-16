@@ -20,7 +20,7 @@ The Engineering Plan Reviewer checks the plan before engineering implementation 
 - `assembly_definition.yaml`
 - `solution_script.py` when it exists
 - `solution_plan_evidence_script.py`
-- `payload_trajectory_definition.yaml` when present
+- `payload_trajectory_definition.yaml`
 - `plan_refusal.md` when present
 - `renders/benchmark_renders/**`
 - `renders/engineer_plan_renders/**`
@@ -56,7 +56,7 @@ The Engineering Plan Reviewer checks the plan before engineering implementation 
 
 - The plan is internally consistent.
 - The plan can be implemented without re-planning.
-- The motion forecast, if any, is explicit enough to be reconstructed.
+- The motion forecast is explicit enough to be reconstructed.
 - The budget and manufacturability claims are realistic.
 - The stage-scoped review YAML pair is the only output.
 

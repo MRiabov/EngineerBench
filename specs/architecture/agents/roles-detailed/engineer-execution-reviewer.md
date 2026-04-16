@@ -18,6 +18,7 @@ The Engineering Execution Reviewer decides whether the implemented solution is r
 - `assembly_definition.yaml`
 - `benchmark_definition.yaml`
 - `benchmark_assembly_definition.yaml`
+- `payload_trajectory_definition.yaml`
 - `benchmark_script.py` when it exists
 - `benchmark_plan_evidence_script.py` when it exists
 - `plan_refusal.md` when present
@@ -45,6 +46,7 @@ The Engineering Execution Reviewer decides whether the implemented solution is r
 - Review the latest revision only.
 - Require validation and simulation success before approval.
 - Inspect render images and simulation video when they exist.
+- If `payload_trajectory_definition.yaml` exists, review it as the fine-grained motion proof alongside `assembly_definition.yaml`.
 - Inspect the sampled `objects.parquet` sidecar when motion evidence exists.
 - Verify plan fidelity, robustness, manufacturability, cost/weight compliance, and motion plausibility.
 - If bug-report mode is enabled and runtime plumbing blocks the review, write `bug_report.md` at the workspace root and continue unless the reviewer is actually blocked.

@@ -27,8 +27,8 @@ reviewable:
 2. the terminal anchor must explicitly prove goal-zone entry or contact, either
    in the terminal anchor itself or in an equivalent structured terminal event.
 
-This migration applies only to engineer-owned moving parts. Benchmark-owned
-fixtures continue to use the benchmark motion contract in
+This migration applies to engineer-owned moving parts, and every engineering
+handoff includes them. Benchmark-owned fixtures continue to use the benchmark motion contract in
 `benchmark_definition.yaml` and `benchmark_assembly_definition.yaml`.
 
 The contact-probe boundary for this work is the existing
@@ -42,7 +42,7 @@ to refuse the plan rather than guess at the missing contact semantics. The
 reviewer is a fallback validation layer, not a substitute for a precise
 planner-facing contract.
 
-The precise payload trajectory should live in the engineer-coder path, not in
+The precise payload trajectory must live in the engineer-coder path, not in
 the planner-owned forecast. The planner sets the coarse, reviewable intent; the
 engineer-coder expands that into backend-specific payload trajectory/contact
 evidence and initial pose/orientation details. The hard consistency gate stays
@@ -52,7 +52,7 @@ later in review.
 
 In concrete terms, the planner forecast should stay coarse: fewer anchors,
 slower waypoint cadence, and wider tolerance bands. The engineer-owned path
-should live in a separate `payload_trajectory_definition.yaml` artifact for the
+lives in a separate `payload_trajectory_definition.yaml` artifact for the
 backend-specific, higher-resolution path and contact proof.
 
 Cadence and tolerance policy for the planner and coder layers is config-driven
@@ -93,8 +93,8 @@ while still leaving the start or end conditions ambiguous.
 | `shared/models/schemas.py` | `AssemblyDefinition` has typed sections for drafting and totals, but no typed motion-forecast section yet. | The new endpoint contract should be schema-backed instead of living only in free-form YAML. |
 | `shared/simulation/backends.py` and `worker_heavy/simulation/{genesis_backend.py,mujoco_backend.py}` | The shared `PhysicsBackend` protocol already exists, and both backends expose contact data through backend-specific implementations. | The migration needs to validate that a shared collision/contact seam is enough before any planner-facing contract is tightened. |
 | `config/agents_config.yaml` | Currently owns execution, render, and visual-inspection policy, but not motion cadence/tolerance budgets. | The motion-layer frequency and tolerance knobs should be centralized there instead of hardcoded. |
-| `shared/assets/template_repos/engineer/assembly_definition.yaml` | The starter engineer assembly template does not expose a `motion_forecast` section. | Seeded workspaces need a visible template slot for the new contract. |
-| `Engineer-coder` precise-path artifact (`payload_trajectory_definition.yaml`, provisional) | No separate engineer-owned precise path artifact exists yet. | The coarse planner forecast needs a distinct engineer-owned path file for higher-resolution payload trajectory proof. |
+| `shared/assets/template_repos/engineer/assembly_definition.yaml` | The starter engineer assembly template does not yet expose the required `motion_forecast` section. | Seeded workspaces need a visible template slot for the new contract. |
+| `Engineer-coder` precise-path artifact (`payload_trajectory_definition.yaml`) | The starter engineer workspace does not yet teach the always-required precise path artifact explicitly. | The coarse planner forecast needs a distinct engineer-owned path file for higher-resolution payload trajectory proof. |
 | `worker_heavy/utils/file_validation.py` | Validates `assembly_definition.yaml` and the planner cross-contract, but does not yet enforce endpoint assertions on the engineer motion forecast. | This is the main fail-closed validation seam for the contract. |
 | `controller/agent/node_entry_validation.py` | Seeded preflight validates planner handoffs and review manifests. | Seeded entry must reject endpoint-ambiguous motion forecasts before node execution continues. |
 | `controller/agent/review_handover.py` and `controller/agent/tools.py` | Route planner submission and reviewer entry through the existing handoff gates. | Their gate messaging and error propagation must reflect the new endpoint requirement. |
@@ -170,7 +170,7 @@ while still leaving the start or end conditions ambiguous.
 
 ### 1b. Define the engineer-owned payload trajectory artifact
 
-- Add a separate engineer-owned `payload_trajectory_definition.yaml` artifact for the
+- Add the engineer-owned `payload_trajectory_definition.yaml` artifact for the
   backend-specific higher-resolution payload trajectory and contact proof.
 - Treat this artifact as implementation-facing, not planner-facing: it should
   refine the coarse motion forecast rather than duplicate it.

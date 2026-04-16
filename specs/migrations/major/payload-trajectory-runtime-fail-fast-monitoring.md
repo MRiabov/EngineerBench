@@ -15,7 +15,7 @@ added_at: '2026-04-08T17:53:27Z'
 
 ## Purpose
 
-This migration makes the engineer-owned payload trajectory a runtime stop condition. The simulation loop should fail fast when the realized motion can no longer stay inside the approved trajectory corridor, satisfy the required first-contact order, or prove the terminal goal-zone state. The target behavior completes the static payload-trajectory contract already defined in `specs/migrations/major/payload-trajectory-rotation-envelope-and-swept-clearance-migration.md` and the file-level acceptance criteria in `specs/architecture/agents/agent-artifacts/payload_trajectory_definition_yaml_acceptance_criteria.md`.
+This migration makes the engineer-owned payload trajectory a mandatory runtime stop condition. The simulation loop should fail fast when the realized motion can no longer stay inside the approved trajectory corridor, satisfy the required first-contact order, or prove the terminal goal-zone state. The target behavior completes the mandatory static payload-trajectory contract already defined in `specs/migrations/major/payload-trajectory-rotation-envelope-and-swept-clearance-migration.md` and the file-level acceptance criteria in `specs/architecture/agents/agent-artifacts/payload_trajectory_definition_yaml_acceptance_criteria.md`.
 
 The runtime monitor applies only to engineer-owned motion. Benchmark-owned motion remains governed by the benchmark motion contract and does not become part of this monitor.
 
@@ -27,7 +27,7 @@ The runtime monitor, failure enum, structured state, config policy, observabilit
 
 The repository already validates the payload path statically, but the execution path does not yet enforce that path as a live runtime contract.
 
-1. `payload_trajectory_definition.yaml` can prove a build-safe start, terminal `goal_zone_entry` / `goal_zone_contact` via `terminal_event`, and swept clearance, but that proof is static.
+1. `payload_trajectory_definition.yaml` proves a build-safe start, terminal `goal_zone_entry` / `goal_zone_contact` via `terminal_event`, and swept clearance, but that proof is static and always required.
 2. `worker_heavy/simulation/loop.py` currently stops on generic simulation success and failure conditions only.
 3. A payload can drift away from the intended anchor sequence and continue running until an unrelated terminal event occurs.
 4. The current runtime does not expose a dedicated payload-trajectory failure reason or structured observability payload for the last checked anchor.

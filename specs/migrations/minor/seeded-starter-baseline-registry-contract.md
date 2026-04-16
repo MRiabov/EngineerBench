@@ -1,16 +1,18 @@
 title: Seeded Starter Baseline Registry Contract
 status: migration
 agents_affected:
-  - benchmark_planner
-  - benchmark_plan_reviewer
-  - benchmark_coder
-  - benchmark_reviewer
-  - engineer_planner
-  - engineer_plan_reviewer
-  - engineer_coder
-  - engineer_execution_reviewer
-added_at: '2026-04-15T18:02:00Z'
----
+
+- benchmark_planner
+- benchmark_plan_reviewer
+- benchmark_coder
+- benchmark_reviewer
+- engineer_planner
+- engineer_plan_reviewer
+- engineer_coder
+- engineer_execution_reviewer
+  added_at: '2026-04-15T18:02:00Z'
+
+______________________________________________________________________
 
 # Seeded Starter Baseline Registry Contract
 

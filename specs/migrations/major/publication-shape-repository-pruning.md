@@ -372,7 +372,7 @@ Remove the drafting-mode surface and its helper functions:
 - `shared/agent_templates/codex/scripts/submit_plan.py`
   - drafting-mode role detection and submission gating
 
-Retain the planner-evidence, coarse motion-forecast, payload-path proof, and
+Retain the planner-evidence, coarse motion-forecast, mandatory payload-path proof, and
 runtime fail-fast monitoring surfaces:
 
 - `benchmark_plan_evidence_script.py`
@@ -384,13 +384,13 @@ runtime fail-fast monitoring surfaces:
   including the monitor stop path, dedicated failure reason, observability
   payload, and the docs/tests that already enforce it
 - the `render_cad(..., payload_path=True)` overlay and validation path that
-  consumes the payload trajectory when present
+  consumes the payload trajectory
 
-### Payload-path planning and evidence-script restore checklist
+### Payload-path planning and evidence-script contract
 
-If this branch ever restores the payload-only path-planning contract from
-`specs/migrations/major/payload-trajectory-rotation-envelope-and-swept-clearance-migration.md`,
-do it in this order so the runtime gates, fixtures, docs, and validation move
+The payload-only path-planning contract from
+`specs/migrations/major/payload-trajectory-rotation-envelope-and-swept-clearance-migration.md`
+stays in force. Keep the runtime gates, fixtures, docs, and validation moving
 together. This checklist does not bring back
 `benchmark_plan_technical_drawing_script.py`,
 `solution_plan_technical_drawing_script.py`, or any `_technical_drawing.py`
@@ -398,17 +398,17 @@ scripts; those stay pruned. It also does not alter the retained runtime
 fail-fast monitor from `payload-trajectory-runtime-fail-fast-monitoring.md`;
 that contract stays in force exactly as already implemented.
 
-- [ ] Restore the payload-path schema contract in `shared/models/schemas.py`,
+- [ ] Keep the payload-path schema contract in `shared/models/schemas.py`,
   especially `MotionForecastAnchor`, `PayloadTrajectoryDefinition`, and
   `AssemblyDefinition.motion_forecast`, so explicit `rot_deg` values,
   `rotation_tolerance_deg` envelopes, and the coarse planner forecast remain
   part of the authored contract.
-- [ ] Restore the submit-time payload validator in
+- [ ] Keep the submit-time payload validator in
   `worker_heavy/utils/file_validation.py::validate_payload_trajectory_definition_yaml()`
   so it rejects missing orientation metadata, enforces coarse-to-precise
   moving-part parity, applies the stride budgets, and calls the clearance
   gate only when the schema checks pass.
-- [ ] Restore the swept-clearance checker in
+- [ ] Keep the swept-clearance checker in
   `worker_heavy/utils/payload_trajectory_validation.py::validate_payload_trajectory_swept_clearance()`
   and its supporting helpers (`RotationCell`, `_anchor_sample_points()`,
   `_pose_sphere_is_obviously_clear()`, `model_anchor_for_cell()`), along with
@@ -416,16 +416,16 @@ that contract stays in force exactly as already implemented.
   `solution_script.py` from the seeded workspace and the geometry helpers in
   `worker_heavy/utils/validation.py::_shape_volume` and
   `worker_heavy/workbenches/analysis_utils.py::part_to_trimesh()`.
-- [ ] Restore the node-entry mirror in
+- [ ] Keep the node-entry mirror in
   `controller/agent/node_entry_validation.py` so
   `payload_trajectory_definition.yaml` fails at the same boundary during
   seeded-workspace validation, not only at submit time.
-- [ ] Restore the path-contract helpers in `worker_heavy/utils/file_validation.py`
+- [ ] Keep the path-contract helpers in `worker_heavy/utils/file_validation.py`
   (`_validate_motion_forecast_budget()`, `_validate_motion_endpoint_positions()`,
   and `_validate_motion_path_contract()`) so the payload validator keeps the
   coarse-stride budget, endpoint proof, and coarse-to-precise matching rules
   that the migration expects.
-- [ ] Restore the planner prompt policy in `shared/agents/config.py`,
+- [ ] Keep the planner prompt policy in `shared/agents/config.py`,
   `config/agents_config.yaml`, and `config/prompts.yaml` so planners are told
   that payload rotation must be explicit, swept-clearance safe, and bounded
   by the coarse `motion_forecast`.
@@ -438,11 +438,11 @@ that contract stays in force exactly as already implemented.
   mandatory at node entry for the relevant planner handoff nodes, with the
   same validation semantics already enforced on `main` rather than a
   presence-only check.
-- [ ] Restore any seed, fixture, or mock-response rows that exercise the
+- [ ] Keep any seed, fixture, or mock-response rows that exercise the
   payload-path contract using `assembly_definition.yaml` plus
   `payload_trajectory_definition.yaml`, and do not reintroduce the technical
   drawing companion scripts for those rows.
-- [ ] Validate the restored branch with `scripts/validate_eval_seed.py` on a
+- [ ] Validate the branch with `scripts/validate_eval_seed.py` on a
   payload-trajectory seed family, then run the narrow
   `./scripts/run_integration_tests.sh` slice that covers payload-trajectory
   validation.

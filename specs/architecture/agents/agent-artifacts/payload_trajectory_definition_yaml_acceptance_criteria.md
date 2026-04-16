@@ -2,7 +2,7 @@
 
 ## Role of the File
 
-`payload_trajectory_definition.yaml` is the engineer-owned higher-resolution path and contact proof.
+`payload_trajectory_definition.yaml` is the engineer-owned higher-resolution path and contact proof required for every engineering handoff.
 It refines the coarse motion forecast rather than replacing it, and it should support backend-specific contact evidence and preview overlays.
 It is worth being a dedicated artifact because reviewers need a strict motion proof, not just a planner summary.
 

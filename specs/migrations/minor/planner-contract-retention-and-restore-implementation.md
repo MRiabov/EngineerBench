@@ -44,6 +44,11 @@ The source contracts live in:
 - [Payload Trajectory Runtime Fail-Fast Monitoring](../major/payload-trajectory-runtime-fail-fast-monitoring.md)
 - [Planner Inventory Exactness and Plan Grounding Migration](../major/planner-inventory-exactness-and-plan-grounding.md)
 
+In this repository, every task carries a payload trajectory to goal. The
+payload-path contract is therefore mandatory baseline behavior, not an
+optional refinement. The two major payload migrations above are part of that
+baseline and remain mandatory for this restore.
+
 ## Problem Statement
 
 The repository already has the shape of these contracts, but the enforcement
@@ -54,9 +59,11 @@ split.
 2. Coarse `motion_forecast` anchors must continue to prove a build-safe start
    and explicit goal-zone entry/contact at the coarse planner layer.
 3. `payload_trajectory_definition.yaml` must remain the higher-resolution
-   proof that refines the coarse `motion_forecast`.
+   proof that refines the coarse `motion_forecast`, and it is required for
+   every payload-moving handoff.
 4. The runtime monitor must keep consuming the approved payload proof instead
-   of becoming a separate, looser motion contract.
+   of becoming a separate, looser motion contract, because the proof is a
+   mandatory part of the workflow.
 5. Planner inventory exactness must continue to enforce exact mentions,
    quantity preservation, and COTS `part_id` matches, while leaving the
    technical-drawing companion path pruned.
@@ -70,11 +77,13 @@ split.
    layout and inventory checks already enforced on `main`.
 2. `MotionForecastAnchor`, `PayloadTrajectoryDefinition`, and
    `AssemblyDefinition.motion_forecast` keep the explicit payload-path
-   contract, including the coarse planner forecast and the refined
-   payload-only path proof.
+   contract, including the coarse planner forecast and the refined,
+   mandatory payload-only path proof.
 3. `validate_payload_trajectory_definition_yaml()` and
    `validate_payload_trajectory_swept_clearance()` remain the submit-time
-   and clearance-proof gates for payload-path handoffs.
+   and clearance-proof gates for payload-path handoffs, with
+   `payload_trajectory_definition.yaml` required on every engineer-side
+   payload handoff.
 4. `payload_trajectory_monitor` remains the runtime stop condition for the
    approved payload proof, with explicit failure metadata and observability.
 5. `benchmark_plan.md` and `engineering_plan.md` remain exact-mention
@@ -111,7 +120,8 @@ split.
   explicitly proves goal-zone entry/contact.
 - Keep `validate_payload_trajectory_definition_yaml()` in
   `worker_heavy/utils/file_validation.py` as the submit-time gate for
-  payload-path handoffs.
+  payload-path handoffs, and keep it wired for the always-required payload
+  proof.
 - Keep `_validate_motion_forecast_budget()`,
   `_validate_motion_endpoint_positions()`, and
   `_validate_motion_path_contract()` as the coarse-path enforcement helpers.
@@ -135,7 +145,8 @@ split.
 - Keep the motion forecast bounded by the coarse planner cadence and
   tolerance policy in `config/agents_config.yaml`.
 - Keep the coarse forecast separate from `payload_trajectory_definition.yaml`;
-  the payload artifact refines the coarse contract rather than replacing it.
+  the payload artifact refines the coarse contract rather than replacing it,
+  and both artifacts are mandatory baseline surfaces.
 - Keep `controller/agent/node_entry_validation.py`,
   `worker_heavy/utils/file_validation.py`, prompt guidance, seed fixtures, and
   integration tests aligned with the same endpoint assertions.
@@ -153,7 +164,8 @@ split.
   `specs/architecture/agents/tools.md`, and
   `specs/architecture/agents/agent-artifacts/payload_trajectory_definition_yaml_acceptance_criteria.md`.
 - Keep the runtime monitor fail-closed when payload metadata is missing,
-  ambiguous, or inconsistent with the approved proof.
+  ambiguous, or inconsistent with the approved proof, because that proof is
+  always expected.
 - Keep the runtime monitor separate from the static proof path; it consumes
   the proof and does not replace it.
 
@@ -197,7 +209,9 @@ split.
   and inventory exactness.
 - Keep the seeded rows and mock responses in parity with `main` for the
   retained contracts, and do not add technical-drawing companion scripts back
-  into those fixtures.
+  into those fixtures. Make sure the payload-path proof surfaces are present
+  in every engineer row so the seeded workspace never teaches a payload-less
+  contract.
 
 ## Restore Checklist Details
 
@@ -229,8 +243,8 @@ fidelity, and runtime-monitor surfaces that should stay wired. Items marked
   `shared/models/schemas.py`, `shared/script_contracts.py`, and
   `controller/agent/handover_constants.py` already carry the retained
   contracts and do not need edits in this restore.
-- [/] `payload_trajectory_definition.yaml` stays conditional in this restore;
-  do not promote it to a universal required artifact here.
+- [ ] `payload_trajectory_definition.yaml` becomes a universal required
+  artifact in this restore; do not gate it on a moving-parts condition.
 - [x] `controller/agent/benchmark_handover_validation.py`: stop filtering the
   missing-file error for `benchmark_plan_evidence_script.py`.
 - [x] `controller/agent/tools.py` and `controller/agent/benchmark/tools.py`:
@@ -256,8 +270,8 @@ fidelity, and runtime-monitor surfaces that should stay wired. Items marked
   caller wiring is the missing piece.
 - [ ] Wire `_validate_payload_trajectory_clearance_on_worker()` and
   `validate_seeded_workspace_handoff_artifacts()` so the seeded workspace
-  fails closed on missing evidence scripts while
-  `payload_trajectory_definition.yaml` stays conditional.
+  fails closed on missing evidence scripts and missing
+  `payload_trajectory_definition.yaml`.
 - [/] `validate_payload_trajectory_definition_yaml()` and the
   `validate_precise_path_definition_yaml` compatibility alias already exist
   and should remain unchanged, along with
@@ -312,6 +326,59 @@ fidelity, and runtime-monitor surfaces that should stay wired. Items marked
   seeded planner workflows aligned with the same evidence-fidelity and
   exactness expectations so plan text, evidence scripts, and YAML remain
   mutually reconstructable.
+
+### 11. Payload-Path Restore Handoff Checklist
+
+Use this checklist to hand off the unconditional payload-path restore to the
+next agent without re-explaining the architecture.
+The ownership split stays the same: `assembly_definition.yaml.motion_forecast`
+remains the planner-authored coarse contract, and
+`payload_trajectory_definition.yaml` remains the engineer-coder-authored
+refinement that makes the path reviewable at higher resolution. The
+`motion_forecast` name is a historical drift; when the prose needs a clearer
+term, `coarse_payload_trajectory` is the same planner-owned low-resolution
+contract.
+
+- [x] Add a checked-in `payload_trajectory_definition.yaml` scaffold to the
+  engineer starter template surface that feeds `load_seed_starter_template_files()`,
+- [x] Populate the engineer seed rows under `dataset/data/seed/artifacts/engineer_*`
+  with the same payload file, starting with `ec-002-low-friction-cube`, so
+  seeded workspaces materialize the scaffold before validation.
+- [x] Keep `controller/agent/node_entry_validation.py` fail-closed on the
+  engineer coder path for presence only: `payload_trajectory_definition.yaml`
+  must exist so the coder can edit it, while geometric completeness stays in
+  the submit-time engineer validation path.
+- [x] Thread the payload file through the engineer submit/review validation
+  surfaces by updating `controller/agent/nodes/coder.py`,
+  `controller/agent/nodes/execution_reviewer.py`, and the matching handoff
+  constants in `controller/agent/handover_constants.py` so later stages carry
+  the engineer-owned proof forward instead of silently dropping it.
+- [x] Keep `worker_heavy/utils/file_validation.py` and
+  `worker_heavy/utils/payload_trajectory_validation.py` aligned so the coarse
+  `motion_forecast` contract still gates the engineer-owned precise file, but
+  the precise file is only content-validated at the engineer coder boundary.
+- [ ] Keep `worker_heavy/simulation/payload_trajectory_monitor.py` as the
+  fail-fast consumer of the approved payload proof, and make missing payload
+  metadata, backend mismatch, or corridor drift produce explicit stop
+  metadata instead of a silent disable.
+- [x] Update `tests/integration/architecture_p0/test_node_entry_validation.py`,
+  `tests/integration/architecture_p1/test_engineering_loop.py`, and
+  `tests/integration/architecture_p1/test_reviewer_evidence.py` to cover the
+  missing-file, malformed-scaffold, and successful-handoff cases for
+  `payload_trajectory_definition.yaml`.
+- [ ] Keep the public docs in
+  `specs/architecture/agents/handover-contracts.md`,
+  `specs/architecture/agents/artifacts-and-filesystem.md`,
+  `specs/architecture/agents/agent-artifacts/README.md`,
+  `specs/architecture/agents/roles-detailed/engineer-plan-reviewer.md`,
+  `specs/architecture/simulation-and-rendering.md`,
+  `specs/architecture/agents/tools.md`,
+  `specs/architecture/agents/roles-detailed/engineer-coder.md`,
+  `specs/architecture/agents/agent-artifacts/payload_trajectory_definition_yaml_acceptance_criteria.md`,
+  `specs/migrations/major/payload-trajectory-rotation-envelope-and-swept-clearance-migration.md`,
+  and `specs/migrations/major/payload-trajectory-runtime-fail-fast-monitoring.md`
+  aligned with the same unconditional rule so the starter workspace, runtime
+  monitor, and handoff contract all describe the same artifact.
 
 ## Non-Goals
 

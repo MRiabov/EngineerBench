@@ -241,10 +241,10 @@ Engineer-owned moving solutions need a planner-authored payload trajectory contr
 The contract is:
 
 01. The forecast captures the nominal payload trajectory; the tolerance bands define the envelope around that path.
-02. The canonical location is a dedicated `motion_forecast` section inside `assembly_definition.yaml` for engineering handoffs that include moving engineer-owned parts. The first anchor must be build-zone valid, and the terminal anchor or terminal event must explicitly prove goal-zone entry/contact.
+02. The canonical location is a dedicated `motion_forecast` section inside `assembly_definition.yaml` for engineering handoffs. That field name is the historical label for the planner-owned coarse payload trajectory. The first anchor must be build-zone valid, and the terminal anchor or terminal event must explicitly prove goal-zone entry/contact.
 03. The forecast is sparse and ordered. It is not a full per-timestep replay of the physics engine.
 04. The default planner cadence is coarse, typically `0.5s`. The exact cadence and tolerance budgets for planner and coder layers are policy-driven via `config/agents_config.yaml`, not hardcoded in the schema. The benchmark planner may use an even coarser course-setting layer for benchmark-owned moving fixtures when that contract allows it.
-05. The coder may generate a denser implementation/verification trace, typically around `0.3s`, but that trace is derived evidence, not a replacement for the planner-owned contract. When required, the engineer coder's precise path lives in a separate engineer-owned `payload_trajectory_definition.yaml` artifact rather than replacing `motion_forecast`; it refines the payload trajectory and contact proof instead of reinterpreting the mechanism.
+05. The coder may generate a denser implementation/verification trace, typically around `0.3s`, but that trace is derived evidence, not a replacement for the planner-owned contract. The engineer coder's precise path lives in a separate engineer-owned `payload_trajectory_definition.yaml` artifact rather than replacing `motion_forecast`; it refines the same payload-trajectory contract and contact proof at higher resolution instead of reinterpreting the mechanism, and it is required for every engineering handoff.
 06. Each anchor must state:
     - `t_s`
     - an explicit `reference_point` such as COM, another named physical point, or a justified geometric proxy
