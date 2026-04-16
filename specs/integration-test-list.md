@@ -153,6 +153,7 @@ These runner, bootstrap, and seed-maintenance contracts are useful regression co
 | INT-273 | `run_evals` skip-env-up can join a shared eval lock | `run_evals.py --skip-env-up` succeeds under a shared lock and tears down cleanly. |
 | INT-274 | `update_eval_seed_renders` skip-env-up can join a shared eval lock | Render updates fail closed with the lock-held state and report the missing task id. |
 | INT-275 | Manifest hash refresh fixes drift | Dry-run reports stale hashes, fix mode rewrites them from file contents, and the updated manifest hash matches the payload. |
+| INT-276 | Engineer planner payload-path swept-clearance validation | `validate_node_output()` must run `validate_payload_trajectory_swept_clearance()` for `engineer_planner` when `payload_trajectory_definition.yaml` is present, so the approved payload proof is swept-checked before planner handoff. |
 
 ### Negative integration tests (`INT-NEG-###`)
 
@@ -220,11 +221,12 @@ benchmark geometry is exposed via `benchmark_script.py`, engineer code lives in
 | INT-114 | Run benchmark-planner flow over controller APIs and assert traces include `TOOL_START submit_benchmark_plan` with `node_type=benchmark_planner`; assert `.manifests/benchmark_plan_review_manifest.json` is created and benchmark plan reviewer entry is unblocked only for the latest planner revision; after plan-review approval, episode must reach `PLANNED` and not `FAILED`; benchmark planner must not receive `benchmark_script.py` before approval, because that file is introduced later by `Benchmark Coder`; missing submission must not reach success-like status. | Mocking benchmark planner internals or asserting only terminal status without planner submission trace evidence. |
 | INT-210 | Run a MuJoCo simulation that captures video frames, assert `VideoRenderer.save()` delegates encoding to `worker-renderer`, and verify the final MP4 is materialized in the session workspace. | Keeping MP4 encoding in-process or asserting only a synthetic video stub. |
 | INT-211 | Run a Genesis-backed simulation that captures render frames and assert the same renderer-worker video path and storage contract are used for the final MP4. | Testing Genesis frame capture without verifying the render handoff or artifact persistence. |
+| INT-276 | Exercise engineer planner node-output validation with a payload proof present and assert `validate_payload_trajectory_swept_clearance()` is reached for `engineer_planner` before handoff completes. | Calling the coder-only branch or mocking only the submit-time payload validator without exercising planner node-output validation. |
 
 ## Recommended suite organization
 
 - `tests/integration/smoke/`: INT-001..INT-004 (fast baseline).
-- `tests/integration/architecture_p0/`: INT-005..INT-021, INT-024..INT-030, INT-053, INT-055, INT-061..INT-063, INT-070..INT-073, INT-101, INT-114, INT-187, INT-218..INT-275.
+- `tests/integration/architecture_p0/`: INT-005..INT-021, INT-024..INT-030, INT-053, INT-055, INT-061..INT-063, INT-070..INT-073, INT-101, INT-114, INT-187, INT-218..INT-276.
 - `tests/integration/architecture_p1/`: INT-031..INT-040, INT-058..INT-060, INT-210, INT-211, INT-217.
 - `tests/integration/architecture_p2/`: none retained after publication pruning.
 

@@ -28,6 +28,17 @@ permission enforcement. If Pi exposes native filesystem or sandbox hooks, this
 migration uses them only as adapters around repo policy, not as a second source
 of truth.
 
+This migration is also a pruning investigation. If Pi's native containerization,
+runtime isolation, and observability are sufficient for production-grade agent
+workflows, the controller should shrink to the smallest repo-owned coordination
+boundary and `worker-light` should remain only where it still provides a real
+compatibility or debugging bridge. That matters because the long-term goal is a
+reliable production runtime for future GRPO and fine-tuning loops, not a larger
+local-debug harness.
+
+The controller/worker-light pruning follow-on is tracked separately in
+[Controller and Worker-Light Pruning After Pi SDK API Backend](./controller-and-worker-light-pruning-after-pi-sdk-api-backend.md).
+
 The target state is described in:
 
 - [Agent harness](../../architecture/agents/agent-harness.md)
@@ -56,6 +67,34 @@ The result is duplicated code, duplicated prompt text, and a blurry boundary
 between runtime plumbing and policy. The migration should remove the boilerplate
 without changing the repository-owned contract.
 
+## Investigation Findings
+
+The investigation supports `PiSdkApiBackend` as a backend replacement for the
+agent-session/runtime layer, not as a replacement for the repository-owned
+workflow contract.
+
+1. Pi's public docs describe it as a minimal terminal coding harness with SDK
+   and RPC modes, and say it can run in a container while extensions add
+   sandboxing, path protection, and permission gates. That is a plausible fit
+   for agent runtime isolation and tool transport.
+2. Pi's own docs also state that core Pi does not ship sub-agents, plan mode, or
+   MCP by default. That means Pi is a runtime substrate, not a full workflow or
+   orchestration replacement.
+3. The repo already treats path policy, `.manifests/`, handoff files, and
+   workspace containment as repo-owned contracts. Those remain authoritative even
+   if Pi exposes native enforcement hooks.
+4. The current controller/worker-light split is broader than the desired
+   `PiSdkApiBackend` boundary. The controller still owns orchestration,
+   persistence, trace promotion, and episode/session linkage, while
+   `worker-light` currently owns filesystem, git, runtime execute, lint,
+   validation, preview/render, and render-query routes.
+5. The most immediate prune target is duplicated tool registration and prompt
+   boilerplate. The next prune target is `worker-light` compatibility surface if
+   Pi proves it can cover the same isolated runtime contract natively.
+6. For GRPO and other fine-tuning loops, the repo still needs a reproducible
+   trace and artifact trail. That means observability and persistence stay
+   repo-owned even when the agent loop moves into Pi.
+
 ## Current-State Inventory
 
 | Area | Current behavior | Why it must change |
@@ -67,6 +106,9 @@ without changing the repository-owned contract.
 | `controller/agent/prompt_manager.py` and `config/prompts.yaml` | Still carry backend-specific prompt reminders and tool-surface wording. | Prompt text should stop re-teaching boilerplate that the backend can register directly. |
 | `config/agents_config.yaml` | Centralizes filesystem permissions, tool allowlists, and role policy. | This must remain the authoritative policy source even if Pi exposes native enforcement hooks. |
 | `controller/middleware/remote_fs.py` and `shared/workers/filesystem/policy.py` | Enforce path containment, read/write restrictions, and repo-owned workspace policy. | These checks remain the contract boundary and must not be replaced by SDK defaults. |
+| `controller/agent/graph.py`, `controller/api/*`, `controller/observability/*` | Own orchestration, persistence, and tracing around the agent workflow. | These are candidates for pruning to a thinner coordination boundary if Pi can supply containerized runtime isolation and observability natively. |
+| `worker_light/api/routes.py` | Owns workspace CRUD, git, runtime execute, lint, validation, preview/render, and render-query routes. | This is the clearest production-surface candidate for later pruning if Pi can cover the same isolated runtime contract inside its own container/session model. |
+| `worker_light/agent_files/`, `evals/logic/codex_workspace.py`, `evals/logic/runner.py` | Provide CLI-provider compatibility, workspace materialization, and local debug execution. | These should remain only if they are needed for developer debugging or as a compatibility bridge; they are not the desired production runtime shape. |
 
 ## Proposed Target State
 
@@ -85,6 +127,10 @@ without changing the repository-owned contract.
    they do not restate the full standard tool list or the permission contract.
 6. Submission helpers, review routing, manifest ownership, and workspace
    artifact names remain unchanged.
+7. If Pi supplies containerized isolation, tool execution, and observability
+   with enough reliability, the production runtime should collapse away from
+   the current controller/worker-light split and keep only the repo-owned
+   coordination, persistence, and policy boundaries that Pi cannot replace.
 
 ## Required Work
 
@@ -124,6 +170,16 @@ without changing the repository-owned contract.
 - Keep submission and review artifact behavior unchanged while the backend seam
   is introduced.
 
+### Controller and worker-light scope
+
+- Inventory the controller responsibilities that Pi can own natively and mark
+  the rest as repo-owned coordination or persistence.
+- Inventory the `worker-light` responsibilities that exist only for CLI debug
+  compatibility and separate them from the production runtime path.
+- Keep the local CLI backend path available for development while the
+  production backend is evaluated, but do not preserve duplicate runtime stacks
+  longer than necessary.
+
 ## Non-Goals
 
 - Do not replace `config/agents_config.yaml` with Pi-managed permissions.
@@ -135,6 +191,9 @@ without changing the repository-owned contract.
 - Do not introduce a new prompt source model or a second prompt manager.
 - Do not remove the current custom API backend until the Pi-backed path has
   parity on the relevant tool surfaces.
+- Do not remove the controller or `worker-light` in this migration.
+- Do not conflate the local CLI-debug backend with the production runtime
+  boundary.
 
 ## Sequencing
 
@@ -144,7 +203,10 @@ without changing the repository-owned contract.
 3. Trim prompt and boilerplate repetition once the backend is the source of
    runtime truth.
 4. Add backend parity tests for tool registration and filesystem rejection.
-5. Remove any temporary compatibility wrappers only after the parity tests pass.
+5. Prune controller or `worker-light` wrappers only after the investigation
+   proves they are redundant with Pi's native runtime boundary.
+6. Remove any temporary compatibility wrappers only after the parity tests
+   pass.
 
 ## Acceptance Criteria
 
@@ -162,6 +224,8 @@ without changing the repository-owned contract.
    workspace ownership or policy enforcement.
 7. Existing CLI-provider runs continue to work unchanged through
    `PiCliProvider`.
+8. The migration records a clear split between Pi-owned runtime concerns and
+   repo-owned policy, persistence, and handoff concerns.
 
 ## Migration Checklist
 
@@ -183,14 +247,21 @@ without changing the repository-owned contract.
 - [ ] Remove duplicated tool boilerplate from `config/prompts.yaml`.
 - [ ] Collapse the plain filesystem wrapper in `controller/tools/fs.py`.
 - [ ] Slim the controller agent tool factories so they consume backend-owned
-      registration.
+  registration.
 
 ### Validation
 
 - [ ] Add parity coverage for `CustomApiBackend` and `PiSdkApiBackend`.
 - [ ] Add a filesystem rejection test for the Pi-backed path.
 - [ ] Confirm submission and review artifacts still use the existing file
-      contract.
+  contract.
+
+### Controller and worker-light scope
+
+- [ ] Inventory which controller responsibilities Pi can own natively.
+- [ ] Inventory which `worker-light` paths are production-only versus debug-only.
+- [ ] Identify the smallest repo-owned coordination boundary that must remain
+  after the Pi-backed runtime is in place.
 
 ## File-Level Change Set
 
@@ -211,3 +282,9 @@ actually enforce the new contract:
   to avoid any collision with model-provider terminology?
 - Should Pi permission hooks be required for the backend to start, or should the
   runtime always be able to fall back to repo-owned enforcement?
+- If Pi already supplies containerized isolation and observability, which
+  controller duties are still truly required in production?
+- Can `worker-light` be reduced to a compatibility/debug bridge, or should it
+  be removed from the production runtime entirely once Pi is proven reliable?
+- Which runtime pieces are still needed specifically for GRPO/fine-tuning
+  repeatability and trace collection, even if the agent loop itself moves to Pi?

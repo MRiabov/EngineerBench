@@ -272,6 +272,9 @@ fidelity, and runtime-monitor surfaces that should stay wired. Items marked
   `validate_seeded_workspace_handoff_artifacts()` so the seeded workspace
   fails closed on missing evidence scripts and missing
   `payload_trajectory_definition.yaml`.
+- [ ] Wire engineer-planner handoff validation so `validate_payload_trajectory_swept_clearance()`
+  also runs for the approved payload proof on `engineer_planner`, instead of
+  limiting swept-clearance checks to `engineer_coder`.
 - [/] `validate_payload_trajectory_definition_yaml()` and the
   `validate_precise_path_definition_yaml` compatibility alias already exist
   and should remain unchanged, along with
@@ -281,7 +284,9 @@ fidelity, and runtime-monitor surfaces that should stay wired. Items marked
   (`RotationCell`, `_anchor_sample_points()`,
   `_pose_sphere_is_obviously_clear()`, `_exact_pose_checks()`,
   `_validate_cell()`, `model_anchor_for_cell()`) already exist and should
-  remain unchanged.
+  remain unchanged. The restore keeps the exact build123d volume-intersection
+  check between the payload and fixed geometry at checked poses, not just the
+  broad-phase envelope pruning.
 - [/] `load_payload_trajectory_definition()`, `_resolve_body_names()`,
   `_flatten_first_contacts()`, and `PayloadTrajectoryMonitor` already exist
   and should remain unchanged.
@@ -357,6 +362,9 @@ contract.
   `worker_heavy/utils/payload_trajectory_validation.py` aligned so the coarse
   `motion_forecast` contract still gates the engineer-owned precise file, but
   the precise file is only content-validated at the engineer coder boundary.
+- [x] Make `assembly_definition.yaml.motion_forecast` mandatory for engineer
+  handoffs in `worker_heavy/utils/file_validation.py` so the coarse payload
+  contract fails closed instead of passing by omission.
 - [ ] Keep `worker_heavy/simulation/payload_trajectory_monitor.py` as the
   fail-fast consumer of the approved payload proof, and make missing payload
   metadata, backend mismatch, or corridor drift produce explicit stop
