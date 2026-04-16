@@ -216,6 +216,13 @@ The validation helpers are developer tooling, not product behavior.
 - It is allowed to repair drift, but it should not alter scenario intent or narrative text.
 - It is a consistency tool for checked-in fixtures, not a benchmark for agent behavior.
 
+### `scripts/pick_preview_pixel.py`
+
+- This script resolves a screen-space pixel against a local render bundle and prints the ray-pick result as JSON.
+- It is the maintainer-facing local equivalent of the worker render-query helper and is intended for eval creation, render inspection, and bundle-debug work against the checked-out workspace.
+- It accepts an explicit workspace root so it can query bundles under the repo checkout or another materialized workspace without requiring a worker process.
+- It should fail closed when the bundle path, manifest path, or bundle id do not match the resolved bundle snapshot.
+
 ## Derived outputs
 
 These scripts own a few generated or persisted artifacts that should be treated as outputs, not hand-edited source.
