@@ -19,7 +19,7 @@ def build() -> Compound:
     # Add authored benchmark fixtures to this children list.
     # Every top-level child you add here must have a unique label, and that label
     # must not be `environment`, start with `zone_`, or start with
-    # `benchmark_moved_object__` because the simulator reserves those names for the
+    # `benchmark_payload__` because the simulator reserves those names for the
     # scene root and generated objective bodies.
     children = [_build_environment_fixture()]
     environment = Compound(children=children)

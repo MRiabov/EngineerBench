@@ -57,12 +57,12 @@
         0.0
       ],
       "mesh_paths": [
-        "meshes/benchmark_moved_object__projectile_ball.obj"
+        "meshes/benchmark_payload__projectile_ball.obj"
       ],
       "box_size": null,
       "material_id": "abs",
-      "body_name": "benchmark_moved_object__projectile_ball",
-      "geom_name": "benchmark_moved_object__projectile_ball",
+      "body_name": "benchmark_payload__projectile_ball",
+      "geom_name": "benchmark_payload__projectile_ball",
       "zone_type": null,
       "color_rgba": [
         1.0,

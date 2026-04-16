@@ -4,7 +4,7 @@
   "created_at": "2026-04-08T06:31:48.832739+00:00",
   "episode_id": "225f44e6-a722-5e0f-93de-47c9091d822c",
   "worker_session_id": "seed-renders-br-002-sideways-ball-infeasible-goal-8633866c",
-  "revision": "9349fa381fd4b3a7c9014f26d28e8ecc4e05820b",
+  "revision": "c1d5958706d4c712c4c0c881af7c220507f6a6f7",
   "scene_hash": "45ca2b84b728d296745852e6a3c8b9f7529392c30198bdbde251e2d2b3d0f514",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",
