@@ -21,7 +21,11 @@ from shared.enums import AgentName, EpisodeStatus, EpisodeType, TerminalReason
 from shared.git_utils import repo_revision
 from shared.models.schemas import AssemblyDefinition, EpisodeMetadata
 from shared.models.simulation import SimulationResult
-from shared.script_contracts import plan_path_for_reviewer_stage
+from shared.script_contracts import (
+    BENCHMARK_SCRIPT_PATH,
+    SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
+    plan_path_for_reviewer_stage,
+)
 from shared.workers.schema import (
     PlanReviewManifest,
     RenderManifest,
@@ -785,12 +789,31 @@ async def validate_planner_artifacts_cross_contract(
         plan_artifact_name,
         bypass_agent_permissions=True,
     )
+    files_content_map: dict[str, str] | None = None
+    if expected_stage == AgentName.ENGINEER_PLAN_REVIEWER:
+        files_content_map = {}
+        benchmark_script = await worker_client.read_file_optional(
+            BENCHMARK_SCRIPT_PATH,
+            bypass_agent_permissions=True,
+        )
+        if benchmark_script is not None:
+            files_content_map[BENCHMARK_SCRIPT_PATH] = benchmark_script
+        solution_plan_evidence_script = await worker_client.read_file_optional(
+            SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
+            bypass_agent_permissions=True,
+        )
+        if solution_plan_evidence_script is not None:
+            files_content_map[SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH] = (
+                solution_plan_evidence_script
+            )
     cross_contract_errors = validate_planner_handoff_cross_contract(
         benchmark_definition=benchmark_definition,
         assembly_definition=assembly_definition,
         manufacturing_config=manufacturing_config,
         planner_node_type=expected_stage,
+        files_content_map=files_content_map,
         plan_text=plan_text,
+        session_id=worker_client.session_id,
     )
     if cross_contract_errors:
         return "; ".join(cross_contract_errors)

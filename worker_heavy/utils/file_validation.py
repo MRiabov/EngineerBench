@@ -31,6 +31,7 @@ from shared.models.schemas import (
     MotionForecast,
     PartConfig,
     PayloadTrajectoryDefinition,
+    PayloadTrajectoryPose,
     PlanRefusalFrontmatter,
     ReviewFrontmatter,
     SubassemblyEstimate,
@@ -42,6 +43,7 @@ from shared.script_contracts import (
     SOLUTION_SCRIPT_PATH,
     plan_path_for_agent,
 )
+from shared.simulation.schemas import get_default_simulator_backend
 from shared.workers.workbench_models import ManufacturingConfig
 from worker_heavy.utils.dfm import (
     validate_declared_assembly_cost,
@@ -721,6 +723,92 @@ def _validate_motion_path_contract(
     return errors
 
 
+def _payload_trajectory_definition_from_motion_forecast(
+    motion_forecast: MotionForecast,
+) -> PayloadTrajectoryDefinition:
+    first_anchor = motion_forecast.anchors[0]
+    return PayloadTrajectoryDefinition(
+        backend=get_default_simulator_backend(),
+        moving_part_names=motion_forecast.moving_part_names,
+        initial_pose=PayloadTrajectoryPose(
+            reference_point=first_anchor.reference_point,
+            pos_mm=first_anchor.pos_mm,
+            rot_deg=first_anchor.rot_deg,
+        ),
+        sample_stride_s=motion_forecast.sample_stride_s,
+        anchors=motion_forecast.anchors,
+        terminal_event=motion_forecast.terminal_event,
+    )
+
+
+def _relabel_payload_clearance_errors(
+    errors: list[str],
+    *,
+    source_artifact: str,
+    target_artifact: str,
+) -> list[str]:
+    source_prefix = f"{source_artifact}:"
+    target_prefix = f"{target_artifact}:"
+    relabeled: list[str] = []
+    for error in errors:
+        if error.startswith(source_prefix):
+            relabeled.append(f"{target_prefix}{error[len(source_prefix) :]}")
+        else:
+            relabeled.append(error)
+    return relabeled
+
+
+def _validate_motion_forecast_clearance_from_artifacts(
+    *,
+    files_content_map: dict[str, str],
+    benchmark_definition: BenchmarkDefinition,
+    motion_forecast: MotionForecast,
+    assembly_definition: AssemblyDefinition,
+    benchmark_assembly_definition: AssemblyDefinition | None,
+    session_id: str | None = None,
+) -> list[str]:
+    required_scripts = (
+        BENCHMARK_SCRIPT_PATH,
+        SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
+    )
+    missing_scripts = [
+        script_path
+        for script_path in required_scripts
+        if not (files_content_map.get(script_path) or "").strip()
+    ]
+    if missing_scripts:
+        return [
+            "assembly_definition.yaml.motion_forecast: missing required planner "
+            f"geometry artifact(s): {missing_scripts}"
+        ]
+
+    with tempfile.TemporaryDirectory(prefix="motion_forecast_clearance_") as tmp:
+        workspace_root = Path(tmp)
+        for script_path in required_scripts:
+            (workspace_root / script_path).write_text(
+                files_content_map[script_path],
+                encoding="utf-8",
+            )
+
+        payload_definition = _payload_trajectory_definition_from_motion_forecast(
+            motion_forecast
+        )
+        clearance_errors = validate_payload_trajectory_swept_clearance(
+            workspace_root=workspace_root,
+            benchmark_definition=benchmark_definition,
+            payload_definition=payload_definition,
+            assembly_definition=assembly_definition,
+            benchmark_assembly_definition=benchmark_assembly_definition,
+            session_id=session_id,
+            moving_script_path=SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
+        )
+        return _relabel_payload_clearance_errors(
+            clearance_errors,
+            source_artifact="payload_trajectory_definition.yaml",
+            target_artifact="assembly_definition.yaml.motion_forecast",
+        )
+
+
 def validate_payload_trajectory_definition_yaml(
     content: str,
     *,
@@ -1100,7 +1188,9 @@ def validate_planner_handoff_cross_contract(
     assembly_definition: AssemblyDefinition,
     manufacturing_config: ManufacturingConfig,
     planner_node_type: AgentName | str | None = None,
+    files_content_map: dict[str, str] | None = None,
     plan_text: str | None = None,
+    session_id: str | None = None,
 ) -> list[str]:
     """Validate planner targets against benchmark caps and reject stale copies."""
     errors: list[str] = []
@@ -1124,6 +1214,10 @@ def validate_planner_handoff_cross_contract(
         AgentName.ENGINEER_PLAN_REVIEWER.value,
         AgentName.ENGINEER_CODER.value,
         AgentName.ENGINEER_EXECUTION_REVIEWER.value,
+    }
+    is_engineer_planner_boundary = planner_node_value in {
+        AgentName.ENGINEER_PLANNER.value,
+        AgentName.ENGINEER_PLAN_REVIEWER.value,
     }
 
     errors.extend(_validate_assembly_inventory_parity(assembly_definition))
@@ -1259,6 +1353,24 @@ def validate_planner_handoff_cross_contract(
                 expected_moving_part_names=expected_moving_part_names,
             )
         )
+        if is_engineer_planner_boundary:
+            if files_content_map is None:
+                errors.append(
+                    "assembly_definition.yaml.motion_forecast: benchmark_script.py "
+                    "and solution_plan_evidence_script.py are required to validate "
+                    "planner clearance"
+                )
+            else:
+                errors.extend(
+                    _validate_motion_forecast_clearance_from_artifacts(
+                        files_content_map=files_content_map,
+                        benchmark_definition=benchmark_definition,
+                        motion_forecast=motion_forecast,
+                        assembly_definition=assembly_definition,
+                        benchmark_assembly_definition=None,
+                        session_id=session_id,
+                    )
+                )
 
     errors.extend(
         validate_exact_planner_cost_contract(
@@ -1633,7 +1745,9 @@ def validate_node_output(
                 assembly_definition=assembly_definition_model,
                 manufacturing_config=effective_config,
                 planner_node_type=node_type,
+                files_content_map=files_content_map,
                 plan_text=plan_content,
+                session_id=session_id,
             )
             if cross_contract_errors:
                 errors.extend(

@@ -14,6 +14,7 @@ from shared.git_utils import repo_revision
 from shared.models.schemas import PlannerSubmissionResult
 from shared.observability.schemas import ToolInvocationEvent
 from shared.script_contracts import (
+    BENCHMARK_SCRIPT_PATH,
     SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
     authored_script_path_for_agent,
     plan_path_for_agent,
@@ -368,10 +369,27 @@ def get_engineer_planner_tools(
 
         artifacts["assembly_definition.yaml"] = assembly_definition_text
 
+        validation_artifacts = dict(artifacts)
+        benchmark_script_text = await fs.client.read_file_optional(
+            BENCHMARK_SCRIPT_PATH, bypass_agent_permissions=True
+        )
+        if benchmark_script_text is not None:
+            validation_artifacts[BENCHMARK_SCRIPT_PATH] = benchmark_script_text
+
+        solution_plan_evidence_text = await fs.client.read_file_optional(
+            SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
+            bypass_agent_permissions=True,
+        )
+        if solution_plan_evidence_text is not None:
+            validation_artifacts[SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH] = (
+                solution_plan_evidence_text
+            )
+
         is_valid, errors = validate_node_output(
             AgentName.ENGINEER_PLANNER,
-            artifacts,
+            validation_artifacts,
             manufacturing_config=manufacturing_config,
+            session_id=fs.client.session_id,
         )
         if is_valid:
             benchmark_is_valid, benchmark_result = validate_benchmark_definition_yaml(
