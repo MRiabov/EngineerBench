@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import random
 import re
 import runpy
@@ -20,9 +21,8 @@ import textwrap
 from collections import Counter, defaultdict
 from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import dataclass
-from io import StringIO
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, TextIO
 
 
 def bootstrap_repo_root(start: Path | None = None) -> Path:
@@ -87,16 +87,43 @@ def append_notebook_log(path: Path, line: str) -> None:
         f.write(line.rstrip() + "\n")
 
 
+class _TeeStream:
+    def __init__(self, live_stream: TextIO, log_handle: TextIO):
+        self._live_stream = live_stream
+        self._log_handle = log_handle
+
+    def write(self, text: str) -> int:
+        if not text:
+            return 0
+        self._live_stream.write(text)
+        self._log_handle.write(text)
+        self._live_stream.flush()
+        self._log_handle.flush()
+        return len(text)
+
+    def flush(self) -> None:
+        self._live_stream.flush()
+        self._log_handle.flush()
+
+    def isatty(self) -> bool:
+        return bool(getattr(self._live_stream, "isatty", lambda: False)())
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self._live_stream, name)
+
+
 class NotebookLogCapture:
     def __init__(self, path: Path):
         self.path = path
-        self._stdout = StringIO()
-        self._stderr = StringIO()
+        self._log_handle: TextIO | None = None
 
     def __enter__(self):
-        append_notebook_log(self.path, "=== notebook run start ===")
-        self._stdout_cm = redirect_stdout(self._stdout)
-        self._stderr_cm = redirect_stderr(self._stderr)
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self._log_handle = self.path.open("a", encoding="utf-8")
+        self._log_handle.write("=== notebook run start ===\n")
+        self._log_handle.flush()
+        self._stdout_cm = redirect_stdout(_TeeStream(sys.stdout, self._log_handle))
+        self._stderr_cm = redirect_stderr(_TeeStream(sys.stderr, self._log_handle))
         self._stdout_cm.__enter__()
         self._stderr_cm.__enter__()
         return self
@@ -104,20 +131,16 @@ class NotebookLogCapture:
     def __exit__(self, exc_type, exc, tb):
         self._stdout_cm.__exit__(exc_type, exc, tb)
         self._stderr_cm.__exit__(exc_type, exc, tb)
-        stdout_value = self._stdout.getvalue().strip()
-        stderr_value = self._stderr.getvalue().strip()
-        if stdout_value:
-            append_notebook_log(self.path, "--- stdout ---")
-            append_notebook_log(self.path, stdout_value)
-        if stderr_value:
-            append_notebook_log(self.path, "--- stderr ---")
-            append_notebook_log(self.path, stderr_value)
-        if exc_type is not None:
-            append_notebook_log(
-                self.path, f"=== notebook run failed: {exc_type.__name__}: {exc} ==="
-            )
-        else:
-            append_notebook_log(self.path, "=== notebook run completed ===")
+        if self._log_handle is not None:
+            if exc_type is not None:
+                self._log_handle.write(
+                    f"=== notebook run failed: {exc_type.__name__}: {exc} ===\n"
+                )
+            else:
+                self._log_handle.write("=== notebook run completed ===\n")
+            self._log_handle.flush()
+            self._log_handle.close()
+            self._log_handle = None
         return False
 
 
@@ -170,7 +193,7 @@ class PartSpec:
     euler_deg: tuple[float, float, float]
     material_id: str = "aluminum_6061"
     manufacturing_method: ManufacturingMethod = ManufacturingMethod.CNC
-    fixed: bool = True
+    is_fixed: bool = True
 
 
 @dataclass(frozen=True)
@@ -402,7 +425,7 @@ def build_box_part(spec: PartSpec):
     part.label = spec.name
     part.metadata = PartMetadata(
         material_id=spec.material_id,
-        is_fixed=spec.fixed,
+        is_fixed=spec.is_fixed,
     )
     return part
 
@@ -542,9 +565,9 @@ def normalize_benchmark_contract_dict(data: dict[str, Any]) -> dict[str, Any]:
                 "part_id": part.get("part_id"),
                 "label": part.get("label"),
                 "metadata": {
-                    "fixed": metadata.get("fixed")
-                    if metadata.get("fixed") is not None
-                    else metadata.get("is_fixed"),
+                    "is_fixed": metadata.get("is_fixed")
+                    if metadata.get("is_fixed") is not None
+                    else metadata.get("fixed"),
                     "material_id": metadata.get("material_id"),
                 },
             }
@@ -731,6 +754,8 @@ def synthetic_benchmark_definition(
     )
     benchmark_data["objectives"]["build_zone_mm"] = bbox
     benchmark_data["simulation_bounds_mm"] = bbox
+    benchmark_data["payload"]["label"] = "slider_ball"
+    benchmark_data["payload"]["shape"] = "sphere"
     benchmark_data["constraints"]["estimated_solution_cost_usd"] = None
     benchmark_data["constraints"]["estimated_solution_weight_g"] = None
     return benchmark_data
@@ -1691,6 +1716,70 @@ def render_debug_plots(
     plt.close(fig)
 
 
+def render_startup_workspace_preview(
+    *,
+    workspace_root: Path,
+    orbit_pitch_deg: float = 45.0,
+    orbit_yaw_deg: float = 45.0,
+    payload_path: bool = True,
+) -> dict[str, Any]:
+    """Render the staged notebook output and materialize the returned artifacts."""
+
+    from shared.observability.storage import S3Client, S3Config
+    from shared.rendering.renderer_client import bundle_workspace_base64, render_cad
+
+    # The local notebook runner talks to the host-exposed renderer on 28003.
+    os.environ.setdefault("WORKER_RENDERER_URL", "http://localhost:28003")
+
+    response = render_cad(
+        bundle_base64=bundle_workspace_base64(workspace_root),
+        script_path="solution_script.py",
+        orbit_pitch=orbit_pitch_deg,
+        orbit_yaw=orbit_yaw_deg,
+        rgb=True,
+        depth=False,
+        segmentation=False,
+        payload_path=payload_path,
+    )
+
+    materialized_paths: dict[str, str] = {}
+    if response.object_store_keys:
+        s3_endpoint = os.getenv("S3_ENDPOINT", "http://localhost:29000")
+        access_key = os.getenv(
+            "S3_ACCESS_KEY", os.getenv("AWS_ACCESS_KEY_ID", "minioadmin")
+        )
+        secret_key = os.getenv(
+            "S3_SECRET_KEY", os.getenv("AWS_SECRET_ACCESS_KEY", "minioadmin")
+        )
+        bucket_name = os.getenv("ASSET_S3_BUCKET", "problemologist")
+        storage = S3Client(
+            S3Config(
+                endpoint_url=s3_endpoint,
+                access_key_id=access_key,
+                secret_access_key=secret_key,
+                bucket_name=bucket_name,
+                region_name=os.getenv("AWS_REGION", "us-east-1"),
+            )
+        )
+        for rel_path, object_key in response.object_store_keys.items():
+            target = workspace_root / rel_path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            storage.download_file(object_key, target)
+            materialized_paths[rel_path] = str(target)
+
+    return {
+        "success": response.success,
+        "status_text": response.status_text,
+        "message": response.message,
+        "image_path": response.image_path,
+        "artifact_path": response.artifact_path,
+        "manifest_path": response.manifest_path,
+        "object_store_keys": response.object_store_keys,
+        "render_blobs_base64": response.render_blobs_base64,
+        "materialized_paths": materialized_paths,
+    }
+
+
 def stage_bundle_root(
     *,
     root: Path,
@@ -1840,6 +1929,7 @@ def synthesize(
         margin_mm=build_zone_margin_mm,
     )
     synthetic_benchmark = BenchmarkDefinition.model_validate(synthetic_benchmark_dict)
+    payload_body_name = payload_scene_name(synthetic_benchmark.payload.label)
     route_clearance_errors = validate_route_clearance(
         route_points=config.route_points,
         benchmark_definition=synthetic_benchmark,
@@ -1858,8 +1948,6 @@ def synthesize(
     benchmark_bundle_reviews = config.source_seed_bundle_dir / "reviews"
     scratch_root = config.scratch_root / config.scenario_id
     scratch_root.mkdir(parents=True, exist_ok=True)
-
-    payload_body_name = payload_scene_name(benchmark_definition.payload.label)
 
     chosen_backend: SimulatorBackendType | None = None
     chosen_batch_width = None
@@ -2049,7 +2137,7 @@ def synthesize(
         "constraints": planner_constraints,
         "manufactured_parts": manufactured_part_entries,
         "coarse_payload_trajectory": coarse_payload_trajectory_dict(
-            payload_name=benchmark_definition.payload.label,
+            payload_name=synthetic_benchmark.payload.label,
             route_points=config.route_points,
             first_contacts=[hit.other_body for hit in chosen_contact_hits[:6]],
             terminal_reference_point=config.route_points[-1].name,
@@ -2068,7 +2156,7 @@ def synthesize(
     AssemblyDefinition.model_validate(assembly_definition)
 
     payload_trajectory_yaml = payload_trajectory_dict(
-        payload_name=benchmark_definition.payload.label,
+        payload_name=synthetic_benchmark.payload.label,
         route_points=config.route_points,
         first_contacts=[hit.other_body for hit in chosen_contact_hits[:6]],
         terminal_reference_point=config.route_points[-1].name,
@@ -2099,7 +2187,7 @@ def synthesize(
         scenario_id=config.scenario_id,
         route_points=config.route_points,
         part_specs=chosen_pruned_specs,
-        payload_name=benchmark_definition.payload.label,
+        payload_name=synthetic_benchmark.payload.label,
         split_seed=chosen_seed,
         tube_radius_mm=tube_radius_mm,
         clearance_mm=config.clearance_mm,
@@ -2111,7 +2199,7 @@ def synthesize(
         scenario_id=config.scenario_id,
         route_points=config.route_points,
         part_specs=chosen_pruned_specs,
-        payload_name=benchmark_definition.payload.label,
+        payload_name=synthetic_benchmark.payload.label,
         split_seed=chosen_seed,
         tube_radius_mm=tube_radius_mm,
         clearance_mm=config.clearance_mm,
@@ -2170,6 +2258,11 @@ def synthesize(
             contact_hits=chosen_contact_hits,
             part_specs=chosen_pruned_specs,
         )
+
+    startup_render = render_startup_workspace_preview(
+        workspace_root=coder_root,
+        payload_path=True,
+    )
 
     if config.promote_to_dataset:
         logger.info("promote_to_dataset_start")
@@ -2235,6 +2328,7 @@ def synthesize(
         "scene_path": str(chosen_scene_path) if chosen_scene_path else None,
         "planner_root": str(planner_root),
         "coder_root": str(coder_root),
+        "startup_render": startup_render,
         "total_cost": total_cost,
         "total_weight": total_weight,
         "success_rate_tube": float(chosen_verify_result.success_rate),
@@ -2248,9 +2342,9 @@ def default_route_points() -> list[RoutePoint]:
         RoutePoint(name="build_zone_start", pos_mm=(-250.0, 0.0, 140.0), t_s=0.0),
         RoutePoint(name="waypoint_01", pos_mm=(-220.0, 0.0, 132.0), t_s=0.8),
         RoutePoint(name="waypoint_02", pos_mm=(-220.0, 130.0, 120.0), t_s=1.6),
-        RoutePoint(name="waypoint_03", pos_mm=(300.0, 130.0, 98.0), t_s=2.7),
-        RoutePoint(name="waypoint_04", pos_mm=(330.0, 60.0, 72.0), t_s=4.0),
-        RoutePoint(name="goal_zone_contact", pos_mm=(300.0, 0.0, 40.0), t_s=5.5),
+        RoutePoint(name="waypoint_03", pos_mm=(300.0, 130.0, 102.0), t_s=2.7),
+        RoutePoint(name="waypoint_04", pos_mm=(345.0, 75.0, 82.0), t_s=4.0),
+        RoutePoint(name="goal_zone_contact", pos_mm=(300.0, 0.0, 56.0), t_s=5.5),
     ]
 
 
