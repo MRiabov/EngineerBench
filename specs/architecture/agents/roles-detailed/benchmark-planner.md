@@ -25,7 +25,8 @@ The Benchmark Planner turns a problem brief into a benchmark handoff package. It
 - `renders/benchmark_renders/**` when they exist
 - `renders/current-episode/**` when it exists
 - `specs/architecture/primary-system-objectives.md`
-- `specs/architecture/simulation-and-rendering.md`
+- `specs/architecture/rendering.md`
+- `specs/architecture/simulation.md`
 - `specs/architecture/agents/artifacts-and-filesystem.md`
 
 ## Native Tool Surface

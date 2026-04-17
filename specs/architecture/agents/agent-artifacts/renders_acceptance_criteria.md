@@ -34,7 +34,7 @@ It is worth being a dedicated artifact family because visual evidence is what le
 
 ## Cross-References
 
-- `specs/architecture/simulation-and-rendering.md`
+- `specs/architecture/rendering.md`
 - `specs/architecture/CAD-and-other-infra.md`
 - `specs/architecture/agents/artifacts-and-filesystem.md`
 - `specs/architecture/agents/definitions-of-success-and-failure.md`

@@ -81,7 +81,7 @@ legacy alias for `--fast-sim`.
 
 ### Simulation Backend Matrix Execution Contract
 
-The simulation-facing integration suite must run as a two-backend matrix aligned with `specs/architecture/distributed-execution.md` and `specs/architecture/simulation-and-rendering.md`.
+The simulation-facing integration suite must run as a two-backend matrix aligned with `specs/architecture/distributed-execution.md`, `specs/architecture/simulation.md`, and `specs/architecture/rendering.md`.
 
 - Discovery scope: include tests that call `/benchmark/simulate` or `/benchmark/verify` (directly or via helper wrappers).
 - Run order: execute MuJoCo first, then Genesis, to surface compatibility regressions before Genesis-only feature checks.

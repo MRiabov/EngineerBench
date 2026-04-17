@@ -32,4 +32,4 @@ It is worth being a dedicated artifact because it captures the benchmark-side mo
 
 - `specs/architecture/agents/handover-contracts.md`
 - `specs/architecture/agents/artifacts-and-filesystem.md`
-- `specs/architecture/simulation-and-rendering.md`
+- `specs/architecture/simulation.md`

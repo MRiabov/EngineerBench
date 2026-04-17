@@ -36,7 +36,9 @@ Within the agents tree, `specs/architecture/agents/roles-detailed/` is the sourc
 ### Runtime and infrastructure
 
 - [Distributed execution](./architecture/distributed-execution.md): controller plus split worker plane, worker APIs, dedicated renderer worker, persistence, Temporal boundary, and backend-routing rules such as fast validation preview versus physics simulation.
-- [CAD and other infrastructure](./architecture/CAD-and-other-infra.md): CAD metadata, rendering direction, dedicated renderer worker boundary, validation-preview rendering policy, schema contracts, and supporting infra assumptions.
+- [CAD and other infrastructure](./architecture/CAD-and-other-infra.md): CAD metadata, schema contracts, and supporting infra assumptions.
+- [Rendering](./architecture/rendering.md): render-worker boundary, preview artifacts, bundle contracts, and visual-evidence policy.
+- [Simulation](./architecture/simulation.md): physics assumptions, backend split, constraints model, and motion contracts.
 
 ### Evaluation and quality gates
 
@@ -44,9 +46,8 @@ Within the agents tree, `specs/architecture/agents/roles-detailed/` is the sourc
 - [Agent reward architecture](./architecture/agents/reward-architecture.md): reward shaping used for downstream training and optimization.
 - [Integration test rules](./integration-test-rules.md) and [integration test catalog](./integration-test-list.md): HTTP-only release-gate contracts and canonical `INT-xxx` / `INT-NEG-###` mappings for the system boundary checks.
 
-### Simulation
+### Fluids and deformables
 
-- [Simulation and rendering](./architecture/simulation-and-rendering.md): physics assumptions, backend responsibility split, dedicated renderer worker, constraints model, and rendering/preview ownership.
 - [Fluids, FEM, and stress validation](./architecture/fluids-and-deformables.md): Genesis-backed fluid simulation, deformable-material contracts, stress objectives, smoke-test policy, and WP2-specific artifacts.
 
 ### Observability

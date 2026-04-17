@@ -30,5 +30,5 @@ It is worth being a dedicated artifact because moving benchmarks and motion-sens
 ## Cross-References
 
 - `specs/architecture/agents/handover-contracts.md`
-- `specs/architecture/simulation-and-rendering.md`
+- `specs/architecture/simulation.md`
 - `specs/architecture/agents/artifacts-and-filesystem.md`

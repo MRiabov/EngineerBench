@@ -41,6 +41,6 @@ It is worth being a dedicated artifact because reviewers need a strict motion pr
 ## Cross-References
 
 - `specs/architecture/agents/handover-contracts.md`
-- `specs/architecture/simulation-and-rendering.md`
+- `specs/architecture/simulation.md`
 - `specs/architecture/agents/artifacts-and-filesystem.md`
 - `specs/architecture/agents/definitions-of-success-and-failure.md`

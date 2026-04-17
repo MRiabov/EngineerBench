@@ -28,9 +28,10 @@ To save refactors and speed up debugging, read `@specs/desired_architecture.md` 
 ### Runtime and quality gates
 
 - `@specs/architecture/distributed-execution.md` - controller/light/heavy worker topology, routing, persistence, and Temporal boundaries.
-- `@specs/architecture/CAD-and-other-infra.md` - CAD metadata, rendering direction, schema contracts, and supporting infra assumptions.
+- `@specs/architecture/CAD-and-other-infra.md` - CAD metadata, schema contracts, and supporting infra assumptions.
+- `@specs/architecture/rendering.md` - render-worker boundary, preview artifacts, bundle contracts, and visual-evidence policy.
 - `@specs/architecture/evals-architecture.md` - fast/medium/slow eval tiers, quality gates, terminal states, and fail-closed requirements.
-- `@specs/architecture/simulation-and-rendering.md` - physics assumptions, backend split, constraints, and rendering/preview ownership.
+- `@specs/architecture/simulation.md` - physics assumptions, backend split, constraints, and motion contracts.
 - `@specs/architecture/fluids-and-deformables.md` - Genesis-backed fluid simulation, deformable-material contracts, stress objectives, smoke-test policy, and WP2-specific artifacts.
 - `@specs/architecture/electronics-and-electromechanics.md` - electrical schema, circuit-validation gate, 3D wire routing, power-gated actuation, and WP3-specific artifacts.
 - `@specs/architecture/observability.md` - telemetry schema, event catalog, metrics, lineage IDs, and debugging/backups/review tracking.

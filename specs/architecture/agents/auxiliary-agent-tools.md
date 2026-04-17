@@ -74,5 +74,6 @@
 - [Agent tools](./tools.md)
 - [Agent harness](./agent-harness.md)
 - [Agent skills](./agent-skill.md)
-- [Simulation and rendering](../simulation-and-rendering.md)
+- [Rendering](../rendering.md)
+- [Simulation](../simulation.md)
 - [Observability](../observability.md)
