@@ -369,6 +369,14 @@ def _exact_pose_checks(
     require_goal_zone_overlap: bool,
     sample_point_label: str,
 ) -> list[str]:
+    spawn_z_mm = float(benchmark_definition.payload.start_position_mm[2])
+    sample_z_mm = float(transform.location.position[2])
+    if sample_z_mm - spawn_z_mm > 1e-6:
+        return [
+            f"{sample_point_label}: sampled payload point may not rise above "
+            "benchmark_definition.payload.start_position_mm"
+        ]
+
     # Sample each pose from a fresh transformed copy so repeated checks do not
     # accumulate translation/rotation across anchors.
     moved = moving_component.moved(transform)

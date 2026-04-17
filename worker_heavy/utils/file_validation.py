@@ -586,6 +586,24 @@ def _point_within_bounds(point: tuple[float, float, float], bounds: Any) -> bool
     )
 
 
+def _bounding_box_center(bounds: Any) -> tuple[float, float, float]:
+    return tuple(
+        (float(bounds.min[index]) + float(bounds.max[index])) / 2.0
+        for index in range(3)
+    )
+
+
+def _points_close(
+    left: tuple[float, float, float],
+    right: tuple[float, float, float],
+    *,
+    atol: float = 1e-6,
+) -> bool:
+    return all(
+        abs(float(left[index]) - float(right[index])) <= atol for index in range(3)
+    )
+
+
 def _payload_trajectory_policy_role_for_stage(
     node_type: AgentName | str | None,
 ) -> AgentName:
@@ -662,11 +680,26 @@ def _validate_payload_endpoint_positions(
     errors: list[str] = []
     build_zone = benchmark_definition.objectives.build_zone_mm
     goal_zone = benchmark_definition.objectives.goal_zone_mm
+    spawn_position_mm = tuple(
+        float(value) for value in benchmark_definition.payload.start_position_mm
+    )
+    goal_zone_center_mm = _bounding_box_center(goal_zone)
+    first_anchor_pos_mm = tuple(float(value) for value in first_anchor.pos_mm)
+    terminal_point_mm = (
+        tuple(float(value) for value in terminal_event.pos_mm)
+        if terminal_event is not None
+        else tuple(float(value) for value in last_anchor.pos_mm)
+    )
 
     if not _point_within_bounds(first_anchor.pos_mm, build_zone):
         errors.append(
             f"{artifact_name}: the first payload trajectory anchor must lie within "
             "benchmark_definition.objectives.build_zone_mm"
+        )
+    if not _points_close(first_anchor_pos_mm, spawn_position_mm):
+        errors.append(
+            f"{artifact_name}: the first payload trajectory point must equal "
+            "benchmark_definition.payload.start_position_mm (the spawn position)"
         )
 
     if last_anchor.goal_zone_contact or last_anchor.goal_zone_entry:
@@ -689,6 +722,40 @@ def _validate_payload_endpoint_positions(
         errors.append(
             f"{artifact_name}: payload trajectory must prove the terminal goal-zone "
             "entry/contact in the last anchor or terminal_event"
+        )
+
+    if not _points_close(terminal_point_mm, goal_zone_center_mm):
+        errors.append(
+            f"{artifact_name}: the final payload trajectory point must equal "
+            "the centre of benchmark_definition.objectives.goal_zone_mm"
+        )
+    return errors
+
+
+def _validate_payload_trajectory_heights(
+    *,
+    artifact_name: str,
+    benchmark_definition: BenchmarkDefinition,
+    anchors: list[Any],
+    terminal_event: Any | None,
+) -> list[str]:
+    spawn_z_mm = float(benchmark_definition.payload.start_position_mm[2])
+    errors: list[str] = []
+
+    for anchor_index, anchor in enumerate(anchors):
+        if float(anchor.pos_mm[2]) - spawn_z_mm > 1e-6:
+            errors.append(
+                f"{artifact_name}: anchors[{anchor_index}] may not rise above "
+                "benchmark_definition.payload.start_position_mm"
+            )
+
+    if (
+        terminal_event is not None
+        and float(terminal_event.pos_mm[2]) - spawn_z_mm > 1e-6
+    ):
+        errors.append(
+            f"{artifact_name}: terminal_event may not rise above "
+            "benchmark_definition.payload.start_position_mm"
         )
 
     return errors
@@ -739,6 +806,14 @@ def _validate_payload_trajectory_contract(
             benchmark_definition=benchmark_definition,
             first_anchor=anchors[0],
             last_anchor=anchors[-1],
+            terminal_event=terminal_event,
+        )
+    )
+    errors.extend(
+        _validate_payload_trajectory_heights(
+            artifact_name=artifact_name,
+            benchmark_definition=benchmark_definition,
+            anchors=anchors,
             terminal_event=terminal_event,
         )
     )

@@ -486,7 +486,7 @@ result = build()
                 {
                     "t_s": 0.5,
                     "reference_point": "build_zone_start",
-                    "pos_mm": [40.1, 0.0, 0.0],
+                    "pos_mm": [270.05, 0.0, 0.0],
                     "rot_deg": [0.0, 0.0, 0.0],
                     "position_tolerance_mm": [0.0, 0.0, 0.0],
                     "rotation_tolerance_deg": [0.1, 0.1, 0.1],
@@ -511,6 +511,90 @@ result = build()
     assert not is_valid, "Expected the segment sampler to reject the crossing path."
     assert any(
         "fixed geometry" in error or "intersects" in error or "goal_zone_mm" in error
+        for error in payload_result
+    ), payload_result
+
+
+@pytest.mark.integration_p0
+def test_int_engineer_payload_trajectory_rejects_points_above_spawn_height():
+    benchmark_definition = BenchmarkDefinition(
+        objectives=ObjectivesSection(
+            goal_zone_mm=BoundingBox(min_mm=(-5.0, -5.0, -5.0), max_mm=(5.0, 5.0, 5.0)),
+            forbid_zones=[],
+            build_zone_mm=BoundingBox(
+                min_mm=(-10.0, -10.0, -10.0), max_mm=(10.0, 10.0, 10.0)
+            ),
+        ),
+        benchmark_parts=[],
+        simulation_bounds_mm=BoundingBox(
+            min_mm=(-20.0, -20.0, -20.0),
+            max_mm=(20.0, 20.0, 20.0),
+        ),
+        payload=Payload(
+            label="payload",
+            shape="sphere",
+            material_id="aluminum_6061",
+            start_position_mm=(0.0, 0.0, 0.0),
+            runtime_jitter_mm=(0.0, 0.0, 0.0),
+        ),
+        constraints=Constraints(max_unit_cost=50.0, max_weight_g=1000.0),
+    )
+    payload_definition_text = yaml.safe_dump(
+        {
+            "backend": "GENESIS",
+            "payload_part_names": ["solution_assembly"],
+            "initial_pose": {
+                "reference_point": "build_zone_start",
+                "pos_mm": [0.0, 0.0, 0.0],
+                "rot_deg": [0.0, 0.0, 0.0],
+            },
+            "sample_stride_s": 0.3,
+            "anchors": [
+                {
+                    "t_s": 0.0,
+                    "reference_point": "build_zone_start",
+                    "pos_mm": [0.0, 0.0, 0.0],
+                    "rot_deg": [0.0, 0.0, 0.0],
+                    "position_tolerance_mm": [0.0, 0.0, 0.0],
+                    "rotation_tolerance_deg": [0.1, 0.1, 0.1],
+                    "build_zone_valid": True,
+                },
+                {
+                    "t_s": 0.5,
+                    "reference_point": "mid_air",
+                    "pos_mm": [0.0, 0.0, 1.0],
+                    "rot_deg": [0.0, 0.0, 0.0],
+                    "position_tolerance_mm": [0.0, 0.0, 0.0],
+                    "rotation_tolerance_deg": [0.1, 0.1, 0.1],
+                },
+                {
+                    "t_s": 1.0,
+                    "reference_point": "goal_zone_contact",
+                    "pos_mm": [0.0, 0.0, 0.0],
+                    "rot_deg": [0.0, 0.0, 0.0],
+                    "position_tolerance_mm": [0.0, 0.0, 0.0],
+                    "rotation_tolerance_deg": [0.1, 0.1, 0.1],
+                    "goal_zone_contact": True,
+                },
+            ],
+            "terminal_event": None,
+        },
+        sort_keys=False,
+    )
+
+    is_valid, payload_result = (
+        file_validation.validate_payload_trajectory_definition_yaml(
+            payload_definition_text,
+            benchmark_definition=benchmark_definition,
+            expected_payload_part_names=["solution_assembly"],
+            session_id="spawn-height-regression",
+            validate_clearance=False,
+        )
+    )
+
+    assert not is_valid
+    assert any(
+        "may not rise above benchmark_definition.payload.start_position_mm" in error
         for error in payload_result
     ), payload_result
 
@@ -676,7 +760,7 @@ def test_int_engineer_planner_payload_trajectory_clearance_validation_runs(
             PayloadTrajectoryAnchor(
                 t_s=0.5,
                 reference_point="goal_zone_entry",
-                pos_mm=(1.0, 0.0, 0.0),
+                pos_mm=(0.0, 0.0, 0.0),
                 rot_deg=(0.0, 0.0, 0.0),
                 position_tolerance_mm=(0.0, 0.0, 0.0),
                 rotation_tolerance_deg=(0.1, 0.1, 0.1),
