@@ -7,6 +7,7 @@ Implements the architecture contract:
 - `num_scenes` jittered scene instances inside that run
 """
 
+import os
 from dataclasses import dataclass
 from typing import Any
 
@@ -114,6 +115,38 @@ def _mujoco_apply_control(
             data.ctrl[actuator_id] = value
 
 
+def _mujoco_build_control_trajectory(
+    model: Any,
+    control_inputs: dict[str, float],
+    batch_size: int,
+    steps: int,
+) -> np.ndarray | None:
+    if not control_inputs:
+        return None
+
+    import mujoco
+
+    ncontrol = mujoco.mj_stateSize(model, mujoco.mjtState.mjSTATE_CTRL.value)
+    controls = np.zeros((batch_size, steps, ncontrol), dtype=np.float64)
+    for name, value in control_inputs.items():
+        actuator_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_ACTUATOR, name)
+        if actuator_id != -1:
+            controls[:, :, actuator_id] = value
+    return controls
+
+
+def _mujoco_set_state_and_forward(model: Any, data: Any, state: np.ndarray) -> None:
+    import mujoco
+
+    mujoco.mj_setState(
+        model,
+        data,
+        state,
+        mujoco.mjtState.mjSTATE_FULLPHYSICS.value,
+    )
+    mujoco.mj_forward(model, data)
+
+
 def _mujoco_body_names(model: Any) -> list[str]:
     import mujoco
 
@@ -154,6 +187,15 @@ def _mujoco_apply_jitter(
             data.qpos[q_adr : q_adr + 3] += np.array(jitter)
             mujoco.mj_forward(model, data)
             return
+
+
+def _mujoco_get_state_vector(model: Any, data: Any) -> np.ndarray:
+    import mujoco
+
+    nstate = mujoco.mj_stateSize(model, mujoco.mjtState.mjSTATE_FULLPHYSICS.value)
+    state = np.empty(nstate, dtype=np.float64)
+    mujoco.mj_getState(model, data, state, mujoco.mjtState.mjSTATE_FULLPHYSICS.value)
+    return state
 
 
 def _mujoco_get_body_state(
@@ -242,9 +284,9 @@ def _verify_mujoco_batched(
     explicit_target_body_name: str | None = None,
 ) -> MultiRunResult:
     import mujoco
+    from mujoco.rollout import Rollout
 
     model = mujoco.MjModel.from_xml_path(xml_path)
-    datas = [mujoco.MjData(model) for _ in range(num_scenes)]
     body_names = _mujoco_body_names(model)
     goal_sites = _mujoco_site_names(model, "zone_goal")
     forbid_sites = _mujoco_site_names(model, "zone_forbid")
@@ -256,9 +298,10 @@ def _verify_mujoco_batched(
         SuccessEvaluator(max_simulation_time=duration) for _ in range(num_scenes)
     ]
     rng = np.random.default_rng(seed)
+    scene_datas = [mujoco.MjData(model) for _ in range(num_scenes)]
 
     if target_body_name:
-        for data in datas:
+        for data in scene_datas:
             jitter = (
                 rng.uniform(-jitter_range[0], jitter_range[0]),
                 rng.uniform(-jitter_range[1], jitter_range[1]),
@@ -268,22 +311,46 @@ def _verify_mujoco_batched(
 
     dt = float(model.opt.timestep)
     steps = max(1, int(duration / dt))
+    control_trajectory = _mujoco_build_control_trajectory(
+        model,
+        control_inputs,
+        num_scenes,
+        steps,
+    )
+    nthread = max(1, min(num_scenes, os.cpu_count() or num_scenes))
+    rollout_datas = [mujoco.MjData(model) for _ in range(nthread)]
 
-    for _ in range(steps):
-        all_done = True
-        for idx, data in enumerate(datas):
-            outcome = outcomes[idx]
-            if outcome.done:
-                continue
-            all_done = False
+    with Rollout(nthread=nthread) as rollout:
+        states, _sensordata = rollout.rollout(
+            model,
+            rollout_datas,
+            np.stack(
+                [_mujoco_get_state_vector(model, data) for data in scene_datas],
+                axis=0,
+            ),
+            control=control_trajectory,
+            nstep=steps,
+        )
 
-            _mujoco_apply_control(model, data, control_inputs)
-            mujoco.mj_step(model, data)
-            current_time = float(data.time)
+    scratch_data = mujoco.MjData(model)
+    # Rollout owns the expensive batched stepping; replay returned states through
+    # mj_forward so the existing collision, velocity, and timeout checks still
+    # run against full derived scene data.
+    for idx, outcome in enumerate(outcomes):
+        if outcome.done:
+            continue
+
+        for step_idx in range(steps):
+            _mujoco_set_state_and_forward(
+                model,
+                scratch_data,
+                states[idx, step_idx],
+            )
+            current_time = float(scratch_data.time)
             outcome.total_time = current_time
 
             for body_name in body_names:
-                pos, vel = _mujoco_get_body_state(model, data, body_name)
+                pos, vel = _mujoco_get_body_state(model, scratch_data, body_name)
                 outcome.max_velocity = max(
                     outcome.max_velocity, float(np.linalg.norm(vel))
                 )
@@ -297,11 +364,11 @@ def _verify_mujoco_batched(
                     break
 
             if outcome.done:
-                continue
+                break
 
             for body_name in body_names:
                 if any(
-                    _mujoco_check_collision(model, data, body_name, site_name)
+                    _mujoco_check_collision(model, scratch_data, body_name, site_name)
                     for site_name in forbid_sites
                 ):
                     outcome.failure = SimulationFailure(
@@ -312,17 +379,17 @@ def _verify_mujoco_batched(
                     break
 
             if outcome.done:
-                continue
+                break
 
             if target_body_name and any(
-                _mujoco_check_collision(model, data, target_body_name, site_name)
+                _mujoco_check_collision(
+                    model, scratch_data, target_body_name, site_name
+                )
                 for site_name in goal_sites
             ):
                 outcome.success = True
                 outcome.done = True
-
-        if all_done:
-            break
+                break
 
     _finalize_pending_outcomes(outcomes, duration=duration, goal_sites=goal_sites)
 
