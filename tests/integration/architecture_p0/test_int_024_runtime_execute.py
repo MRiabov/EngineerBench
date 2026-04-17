@@ -331,7 +331,7 @@ print(f"VALIDATE_MESSAGE={message}")
                 part_id="environment_fixture",
                 label="environment_fixture",
                 metadata=BenchmarkPartMetadata(
-                    fixed=True,
+                    is_fixed=True,
                     material_id="aluminum_6061",
                 ),
             )

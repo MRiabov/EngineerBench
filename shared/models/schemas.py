@@ -525,7 +525,7 @@ class PhysicsConfig(StrictContractModel):
 class BenchmarkPartMetadata(StrictContractModel):
     """Benchmark-owned metadata for environment and fixture parts."""
 
-    fixed: bool = False
+    is_fixed: bool = False
     material_id: OptionalMaterialId = None
 
 

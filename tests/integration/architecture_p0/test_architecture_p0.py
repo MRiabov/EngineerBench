@@ -61,7 +61,7 @@ def _default_benchmark_parts():
             "part_id": "environment_fixture",
             "label": "environment_fixture",
             "metadata": {
-                "fixed": True,
+                "is_fixed": True,
                 "material_id": "aluminum_6061",
             },
         }

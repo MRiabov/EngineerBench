@@ -9,6 +9,7 @@ Validates the structure and content of:
 """
 
 # T015: Hashing for immutability checks
+import copy
 import hashlib
 import io
 import re
@@ -88,6 +89,27 @@ TEMPLATE_PLACEHOLDERS = [
     "[x_min",
     "[x_max",  # generic
 ]
+
+
+def _normalize_benchmark_definition_contract(data: dict[str, Any]) -> dict[str, Any]:
+    """Accept legacy benchmark-part metadata keys while validating canonically."""
+
+    normalized = copy.deepcopy(data)
+    benchmark_parts = normalized.get("benchmark_parts")
+    if not isinstance(benchmark_parts, list):
+        return normalized
+
+    for part in benchmark_parts:
+        if not isinstance(part, dict):
+            continue
+        metadata = part.get("metadata")
+        if not isinstance(metadata, dict):
+            continue
+        if "is_fixed" not in metadata and "fixed" in metadata:
+            metadata["is_fixed"] = metadata["fixed"]
+        metadata.pop("fixed", None)
+
+    return normalized
 
 
 _MISSING_FILE_ERROR_RE = re.compile(
@@ -966,6 +988,8 @@ def validate_benchmark_definition_yaml(
             return False, [
                 "benchmark_definition.yaml must declare at least one benchmark_parts entry"
             ]
+
+        data = _normalize_benchmark_definition_contract(data)
 
         # 1. Enforce that file is not the template
         found_placeholders = _find_template_placeholders(

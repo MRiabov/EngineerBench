@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 from typing import Any
 
 import structlog
@@ -144,6 +145,27 @@ def _validate_benchmark_definition_consistency(
     return None
 
 
+def _normalize_benchmark_definition_contract(data: dict[str, Any]) -> dict[str, Any]:
+    """Accept legacy seed bundle metadata while validating the canonical schema."""
+
+    normalized = copy.deepcopy(data)
+    benchmark_parts = normalized.get("benchmark_parts")
+    if not isinstance(benchmark_parts, list):
+        return normalized
+
+    for part in benchmark_parts:
+        if not isinstance(part, dict):
+            continue
+        metadata = part.get("metadata")
+        if not isinstance(metadata, dict):
+            continue
+        if "is_fixed" not in metadata and "fixed" in metadata:
+            metadata["is_fixed"] = metadata["fixed"]
+        metadata.pop("fixed", None)
+
+    return normalized
+
+
 def validate_benchmark_definition_yaml(
     content: str, session_id: str | None = None
 ) -> tuple[bool, BenchmarkDefinition | list[str]]:
@@ -151,6 +173,10 @@ def validate_benchmark_definition_yaml(
         data = yaml.safe_load(content)
         if data is None:
             return False, ["Empty or invalid YAML content"]
+        if not isinstance(data, dict):
+            return False, ["benchmark_definition.yaml must deserialize to a mapping"]
+
+        data = _normalize_benchmark_definition_contract(data)
 
         benchmark_parts = data.get("benchmark_parts")
         if not isinstance(benchmark_parts, list) or not benchmark_parts:

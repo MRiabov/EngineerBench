@@ -432,7 +432,7 @@ result = build()
                 {
                     "part_id": "environment_fixture",
                     "label": "environment_fixture",
-                    "metadata": {"fixed": True, "material_id": "aluminum_6061"},
+                    "metadata": {"is_fixed": True, "material_id": "aluminum_6061"},
                 }
             ],
             "physics": {"backend": "GENESIS", "compute_target": "auto"},
