@@ -78,6 +78,9 @@ Commit message rules:
   - `debug_*`
   - `verify_*`
   - `check_*`
+- Do not treat `scripts/experiments/**` as accidental scratch. Those files often
+  document syntax, performance, or verifier experiments and should be kept when
+  they are part of the current work.
 - The `skills/` directory is a nested repository, not a normal folder. If it is dirty, commit it first before splitting the parent repository.
 - Do not leave submodule changes uncommitted if they are part of the current work. Treat them like any other logical change group and commit them in the nested repo before finalizing the parent repo.
 - If found (especially at repo root), call them out to the user and suggest moving them to `/scripts/throwaway/`.
