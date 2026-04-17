@@ -4,7 +4,7 @@
   "created_at": "2026-04-15T18:13:05.946012+00:00",
   "episode_id": "c60e4005-029c-5372-9816-55c29f6c8ec8",
   "worker_session_id": "seed-renders-ep-003-gap-bridge-transfer-42e66f37",
-  "revision": "11ce19891da8897888564c8e741447fa521d0521",
+  "revision": "eb81561b9b759049381b667ab9fcaf1086faa66d",
   "scene_hash": "8ba69711d1d17ac903ab0496f970df69dfa4fc1efeaa0c7844b151c202beadd4",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",
