@@ -3,7 +3,6 @@ import uuid
 
 import httpx
 import pytest
-import yaml
 
 from controller.clients.worker import WorkerClient
 from controller.middleware.remote_fs import RemoteFilesystemMiddleware
@@ -18,25 +17,27 @@ from shared.models.schemas import (
     BenchmarkPartMetadata,
     BoundingBox,
     Constraints,
+    ForbidZone,
     ObjectivesSection,
     Payload,
     StaticRandomization,
 )
 from shared.workers.schema import ExecuteRequest, ExecuteResponse, WriteFileRequest
+from tests.integration.agent.helpers import dump_yaml_model
 
 WORKER_LIGHT_URL = os.getenv("WORKER_LIGHT_URL", "http://127.0.0.1:18001")
 
 
 def _default_benchmark_parts():
     return [
-        {
-            "part_id": "environment_fixture",
-            "label": "environment_fixture",
-            "metadata": {
-                "is_fixed": True,
-                "material_id": "aluminum_6061",
-            },
-        }
+        BenchmarkPartDefinition(
+            part_id="environment_fixture",
+            label="environment_fixture",
+            metadata=BenchmarkPartMetadata(
+                is_fixed=True,
+                material_id="aluminum_6061",
+            ),
+        )
     ]
 
 
@@ -175,11 +176,11 @@ print(f"VALIDATE_MESSAGE={message}")
         objectives=ObjectivesSection(
             goal_zone_mm=BoundingBox(min_mm=(0.0, 0.0, 0.0), max_mm=(10.0, 10.0, 10.0)),
             forbid_zones=[
-                {
-                    "name": "goal_overlap",
-                    "min_mm": (5.0, 5.0, 5.0),
-                    "max_mm": (12.0, 12.0, 12.0),
-                }
+                ForbidZone(
+                    name="goal_overlap",
+                    min_mm=(5.0, 5.0, 5.0),
+                    max_mm=(12.0, 12.0, 12.0),
+                )
             ],
             build_zone_mm=BoundingBox(
                 min_mm=(-20.0, -20.0, 0.0), max_mm=(20.0, 20.0, 30.0)
@@ -238,7 +239,7 @@ print(f"VALIDATE_MESSAGE={message}")
             f"{WORKER_LIGHT_URL}/fs/write",
             json=WriteFileRequest(
                 path="benchmark_definition.yaml",
-                content=yaml.dump(invalid_objectives.model_dump(mode="json")),
+                content=dump_yaml_model(invalid_objectives),
                 overwrite=True,
             ).model_dump(mode="json"),
             headers=headers,
@@ -265,7 +266,7 @@ print(f"VALIDATE_MESSAGE={message}")
             f"{WORKER_LIGHT_URL}/fs/write",
             json=WriteFileRequest(
                 path="benchmark_definition.yaml",
-                content=yaml.dump(valid_objectives.model_dump(mode="json")),
+                content=dump_yaml_model(valid_objectives),
                 overwrite=True,
             ).model_dump(mode="json"),
             headers=headers,
@@ -367,7 +368,7 @@ print(f"VALIDATE_MESSAGE={message}")
             f"{WORKER_LIGHT_URL}/fs/write",
             json=WriteFileRequest(
                 path="benchmark_definition.yaml",
-                content=yaml.dump(overlap_objectives.model_dump(mode="json")),
+                content=dump_yaml_model(overlap_objectives),
                 overwrite=True,
             ).model_dump(mode="json"),
             headers=headers,
@@ -530,7 +531,7 @@ print(f"VALIDATE_MESSAGE={message}")
             f"{WORKER_LIGHT_URL}/fs/write",
             json=WriteFileRequest(
                 path="benchmark_definition.yaml",
-                content=yaml.dump(objectives.model_dump(mode="json")),
+                content=dump_yaml_model(objectives),
                 overwrite=True,
             ).model_dump(mode="json"),
             headers=headers,
@@ -641,7 +642,7 @@ print(f"VALIDATE_MESSAGE={message}")
             f"{WORKER_LIGHT_URL}/fs/write",
             json=WriteFileRequest(
                 path="benchmark_definition.yaml",
-                content=yaml.dump(objectives.model_dump(mode="json")),
+                content=dump_yaml_model(objectives),
                 overwrite=True,
             ).model_dump(mode="json"),
             headers=headers,
@@ -803,7 +804,7 @@ print(f"VALIDATE_MESSAGE={message}")
             f"{WORKER_LIGHT_URL}/fs/write",
             json=WriteFileRequest(
                 path="benchmark_definition.yaml",
-                content=yaml.dump(objectives.model_dump(mode="json")),
+                content=dump_yaml_model(objectives),
                 overwrite=True,
             ).model_dump(mode="json"),
             headers=headers,

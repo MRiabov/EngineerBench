@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate integration mock-response inputs via node-entry preflight.
+"""Validate integration mock-response compatibility inputs via node-entry preflight.
 
 This script is stricter than the fixture normalizer:
 
@@ -11,8 +11,9 @@ This script is stricter than the fixture normalizer:
   validates them with the real node-entry contract helper
 - it then runs seeded workspace handoff validation so schema mismatches and
   missing handoff artifacts fail closed
-- it is intentionally happy-path only for the current `INT-###` corpus and
-  does not try to infer or special-case future negative-test semantics
+- it is intentionally happy-path only for the current `INT-###`
+  compatibility/replay corpus and does not try to infer or special-case future
+  negative-test semantics
 
 Reviewer-only transcript nodes are skipped when the scenario does not include a
 corresponding preflightable artifact directory. Those nodes are materialized by
@@ -21,8 +22,8 @@ runtime handoff logic, not by the static fixture inputs themselves.
 Backend-owned `.manifests/current_role.json` fixtures are treated specially:
 they are required inside each entry directory, validated against the active
 node, and written into the workspace separately from authored `write_file`
-steps so the corpus can carry the manifest without inflating the transcript
-count.
+steps so the compatibility corpus can carry the manifest without inflating the
+transcript count.
 """
 
 from __future__ import annotations
@@ -80,6 +81,7 @@ from shared.models.schemas import (
     BenchmarkDefinition,
     CostTotals,
 )
+from shared.models.serialization import dump_yaml_model
 from shared.script_contracts import CURRENT_ROLE_MANIFEST_PATH
 
 logger = get_logger(__name__)
@@ -130,10 +132,7 @@ def _benchmark_assembly_definition_content(
             estimate_confidence=estimate_confidence,
         ),
     )
-    return yaml.safe_dump(
-        assembly.model_dump(mode="json", by_alias=True, exclude_none=True),
-        sort_keys=False,
-    )
+    return dump_yaml_model(assembly)
 
 
 def _scenario_ids_from_args(

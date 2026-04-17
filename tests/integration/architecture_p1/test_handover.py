@@ -1,4 +1,5 @@
 import hashlib
+import uuid
 from pathlib import Path
 
 import pytest
@@ -6,19 +7,20 @@ import yaml
 from httpx import AsyncClient
 
 from controller.api.schemas import (
-    BenchmarkGenerateRequest,
-    BenchmarkGenerateResponse,
-    ConfirmRequest,
+    AgentRunRequest,
+    EpisodeCreateResponse,
     EpisodeResponse,
 )
-from shared.enums import EpisodeStatus
-from shared.simulation.schemas import SimulatorBackendType
+from shared.models.schemas import AssemblyDefinition
 from shared.workers.schema import (
     RenderManifest,
     ReviewManifest,
     ValidationResultRecord,
 )
-from tests.integration.agent.helpers import repo_git_revision, wait_for_benchmark_state
+from tests.integration.agent.helpers import (
+    repo_git_revision,
+    seed_approved_benchmark_bundle,
+)
 
 # Adjust URL to your controller if different
 CONTROLLER_URL = "http://127.0.0.1:18000"
@@ -40,55 +42,27 @@ async def test_benchmark_to_engineer_handoff():
     generated benchmark.
     """
     async with AsyncClient(base_url=CONTROLLER_URL, timeout=300.0) as client:
-        # 1. Trigger Benchmark Generation
-        request = BenchmarkGenerateRequest(
-            prompt="Create a benchmark with a moving platform.",
-            backend=SimulatorBackendType.GENESIS,
+        session_id = f"INT-032-{uuid.uuid4().hex[:8]}"
+        benchmark_request = AgentRunRequest(
+            task="INT-032 benchmark handoff fixture.",
+            session_id=session_id,
         )
-        resp = await client.post("/api/benchmark/generate", json=request.model_dump())
-        assert resp.status_code in [
-            200,
-            202,
-        ], f"Failed to trigger benchmark: {resp.text}"
-        benchmark_resp = BenchmarkGenerateResponse.model_validate(resp.json())
-        session_id = str(benchmark_resp.session_id)
-
-        last_episode = EpisodeResponse.model_validate(
-            await wait_for_benchmark_state(
-                client,
-                session_id,
-                timeout_s=150.0,
-                terminal_statuses={
-                    EpisodeStatus.PLANNED,
-                    EpisodeStatus.COMPLETED,
-                    EpisodeStatus.FAILED,
-                    EpisodeStatus.CANCELLED,
-                },
-            )
+        benchmark_resp = await client.post(
+            "/api/test/episodes", json=benchmark_request.model_dump(mode="json")
         )
-        if last_episode.status == EpisodeStatus.PLANNED:
-            await client.post(
-                f"/api/benchmark/{session_id}/confirm",
-                json=ConfirmRequest(comment="Handoff confirm").model_dump(),
-            )
-            last_episode = EpisodeResponse.model_validate(
-                await wait_for_benchmark_state(
-                    client,
-                    session_id,
-                    timeout_s=150.0,
-                    terminal_statuses={
-                        EpisodeStatus.COMPLETED,
-                        EpisodeStatus.FAILED,
-                        EpisodeStatus.CANCELLED,
-                    },
-                )
-            )
-
-        if last_episode.status == EpisodeStatus.FAILED:
-            pytest.fail(f"Benchmark generation failed: {last_episode.status}")
+        assert benchmark_resp.status_code == 201, benchmark_resp.text
+        benchmark_episode_id = str(
+            EpisodeCreateResponse.model_validate(benchmark_resp.json()).episode_id
+        )
+        await seed_approved_benchmark_bundle(
+            client,
+            benchmark_session_id=session_id,
+            benchmark_episode_id=benchmark_episode_id,
+            int_id="INT-033",
+        )
 
         # 3. Verify Handoff Package Artifacts from episode assets
-        episode_resp = await client.get(f"/api/episodes/{session_id}")
+        episode_resp = await client.get(f"/api/episodes/{benchmark_episode_id}")
         assert episode_resp.status_code == 200, (
             f"Failed to fetch episode assets: {episode_resp.text}"
         )
@@ -141,16 +115,16 @@ async def test_benchmark_to_engineer_handoff():
             f"review manifest must be in .manifests/. Found: {manifest_paths}"
         )
         manifest_resp = await client.get(
-            f"/api/episodes/{session_id}/assets/{manifest_paths[0]}"
+            f"/api/episodes/{benchmark_episode_id}/assets/{manifest_paths[0]}"
         )
         assert manifest_resp.status_code == 200, manifest_resp.text
         manifest = ReviewManifest.model_validate_json(manifest_resp.text)
         assert manifest.status == "ready_for_review"
         assert manifest.session_id == session_id
-        assert manifest.episode_id == str(benchmark_resp.episode_id)
+        assert manifest.episode_id == benchmark_episode_id
         assert manifest.worker_session_id == session_id
         assert manifest.revision == repo_git_revision()
-        assert manifest.benchmark_episode_id == str(benchmark_resp.episode_id)
+        assert manifest.benchmark_episode_id == benchmark_episode_id
         assert manifest.benchmark_worker_session_id == session_id
         assert manifest.benchmark_revision == repo_git_revision()
         assert manifest.solution_revision == repo_git_revision()
@@ -164,15 +138,15 @@ async def test_benchmark_to_engineer_handoff():
             p for p in artifact_paths if p == Path("benchmark_assembly_definition.yaml")
         )
         benchmark_assembly_definition_resp = await client.get(
-            f"/api/episodes/{session_id}/assets/{benchmark_assembly_definition_path}"
+            f"/api/episodes/{benchmark_episode_id}/assets/{benchmark_assembly_definition_path}"
         )
         assert benchmark_assembly_definition_resp.status_code == 200, (
             benchmark_assembly_definition_resp.text
         )
-        benchmark_assembly_definition = yaml.safe_load(
-            benchmark_assembly_definition_resp.text
+        benchmark_assembly_definition = AssemblyDefinition.model_validate(
+            yaml.safe_load(benchmark_assembly_definition_resp.text)
         )
-        assert manifest.environment_version == benchmark_assembly_definition["version"]
+        assert manifest.environment_version == benchmark_assembly_definition.version
         assert manifest.preview_evidence_paths
         assert {_asset_path(path) for path in manifest.preview_evidence_paths} == {
             _asset_path(path) for path in manifest.renders
@@ -181,12 +155,12 @@ async def test_benchmark_to_engineer_handoff():
         plan_review_decision_paths = [
             p
             for p in artifact_paths
-            if p == Path("benchmark-plan-review-decision-round-1.yaml")
+            if p == Path("reviews/benchmark-plan-review-decision-round-1.yaml")
         ]
         plan_review_comments_paths = [
             p
             for p in artifact_paths
-            if p == Path("benchmark-plan-review-comments-round-1.yaml")
+            if p == Path("reviews/benchmark-plan-review-comments-round-1.yaml")
         ]
         assert plan_review_decision_paths, (
             f"benchmark-plan-review-decision-round-1.yaml missing. "
@@ -198,7 +172,7 @@ async def test_benchmark_to_engineer_handoff():
         )
 
         plan_review_comments_resp = await client.get(
-            f"/api/episodes/{session_id}/assets/{plan_review_comments_paths[0]}"
+            f"/api/episodes/{benchmark_episode_id}/assets/{plan_review_comments_paths[0]}"
         )
         assert plan_review_comments_resp.status_code == 200, (
             plan_review_comments_resp.text
@@ -213,7 +187,7 @@ async def test_benchmark_to_engineer_handoff():
         assert "review_manifest_revision" in plan_review_comments["checklist"]
 
         script_resp = await client.get(
-            f"/api/episodes/{session_id}/assets/{manifest.script_path}"
+            f"/api/episodes/{benchmark_episode_id}/assets/{manifest.script_path}"
         )
         assert script_resp.status_code == 200, script_resp.text
         assert (
@@ -222,7 +196,7 @@ async def test_benchmark_to_engineer_handoff():
         )
 
         validation_manifest_resp = await client.get(
-            f"/api/episodes/{session_id}/assets/validation_results.json"
+            f"/api/episodes/{benchmark_episode_id}/assets/validation_results.json"
         )
         assert validation_manifest_resp.status_code == 200, (
             validation_manifest_resp.text
@@ -234,17 +208,16 @@ async def test_benchmark_to_engineer_handoff():
         assert validation_record.script_sha256 == manifest.script_sha256
 
         render_manifest_resp = await client.get(
-            f"/api/episodes/{session_id}/assets/{render_manifest_paths[0]}"
+            f"/api/episodes/{benchmark_episode_id}/assets/{render_manifest_paths[0]}"
         )
         assert render_manifest_resp.status_code == 200, render_manifest_resp.text
         render_manifest = RenderManifest.model_validate_json(render_manifest_resp.text)
         assert render_manifest.artifacts, "render_manifest.json must not be empty."
-        assert render_manifest.episode_id == str(benchmark_resp.episode_id)
+        assert render_manifest.episode_id == session_id
         assert render_manifest.worker_session_id == session_id
         assert render_manifest.revision == repo_git_revision()
         assert (
-            render_manifest.environment_version
-            == benchmark_assembly_definition["version"]
+            render_manifest.environment_version == benchmark_assembly_definition.version
         )
         assert render_manifest.preview_evidence_paths
         assert set(manifest.renders).issubset(set(render_manifest.artifacts.keys())), (

@@ -50,15 +50,22 @@ from shared.enums import AgentName, ManufacturingMethod, ReviewDecision
 from shared.models.schemas import (
     AssemblyConstraints,
     AssemblyDefinition,
+    BenchmarkDefinition,
     CostTotals,
     DatasetCurationManifest,
     PartMetadata,
     PlannerSubmissionResult,
 )
+from shared.models.serialization import dump_yaml_model
 from shared.workers.bundling import extract_bundle_base64
 from tests.integration.agent.helpers import (
     REPO_MANUFACTURING_CONFIG,
     _fixture_entry_file_content,
+    build_benchmark_assembly_definition_content,
+    build_engineer_planner_benchmark_definition_content,
+    build_engineer_planner_coarse_payload_trajectory,
+    build_open_corridor_benchmark_definition_content,
+    build_solution_plan_evidence_script_content,
 )
 from worker_renderer.utils.build123d_rendering import (
     export_preview_scene_bundle,
@@ -131,7 +138,10 @@ def _synthetic_planner_item(agent_name: AgentName, item_id: str) -> EvalDatasetI
             physics = dict(physics)
             physics.pop("fem_enabled", None)
             benchmark_definition["physics"] = physics
-        return yaml.safe_dump(benchmark_definition, sort_keys=False)
+        typed_benchmark_definition = BenchmarkDefinition.model_validate(
+            benchmark_definition
+        )
+        return dump_yaml_model(typed_benchmark_definition)
 
     def _minimal_benchmark_assembly_definition_content(
         benchmark_definition_content: str,
@@ -156,20 +166,11 @@ def _synthetic_planner_item(agent_name: AgentName, item_id: str) -> EvalDatasetI
                 estimate_confidence="high",
             ),
         )
-        return yaml.safe_dump(
-            benchmark_assembly_definition.model_dump(
-                mode="json", by_alias=True, exclude_none=True
-            ),
-            sort_keys=False,
-        )
+        return dump_yaml_model(benchmark_assembly_definition)
 
     if agent_name == AgentName.BENCHMARK_PLANNER:
         benchmark_definition_content = _normalize_benchmark_definition_content(
-            _fixture_entry_file_content(
-                "INT-204",
-                filename_suffix="benchmark_definition.yaml",
-                node="benchmark_planner",
-            )
+            build_open_corridor_benchmark_definition_content()
         )
         return EvalDatasetItem(
             id=item_id,
@@ -230,8 +231,16 @@ def _synthetic_planner_item(agent_name: AgentName, item_id: str) -> EvalDatasetI
                     filename_suffix="todo.md",
                     node="benchmark_planner",
                 ),
-                "benchmark_assembly_definition.yaml": _minimal_benchmark_assembly_definition_content(
-                    benchmark_definition_content
+                "benchmark_assembly_definition.yaml": build_benchmark_assembly_definition_content(
+                    benchmark_max_unit_cost_usd=18.0,
+                    benchmark_max_weight_g=225.0,
+                    planner_target_max_unit_cost_usd=18.0,
+                    planner_target_max_weight_g=225.0,
+                    estimated_unit_cost_usd=0.0,
+                    estimated_weight_g=0.0,
+                    estimate_confidence="high",
+                    part_name="open_corridor_frame",
+                    part_id="open_corridor_frame",
                 ),
                 "benchmark_definition.yaml": benchmark_definition_content,
                 "manufacturing_config.yaml": REPO_MANUFACTURING_CONFIG,
@@ -239,12 +248,9 @@ def _synthetic_planner_item(agent_name: AgentName, item_id: str) -> EvalDatasetI
         )
     if agent_name == AgentName.ENGINEER_PLANNER:
         benchmark_definition_content = _normalize_benchmark_definition_content(
-            _fixture_entry_file_content(
-                "INT-033",
-                filename_suffix="benchmark_definition.yaml",
-                node="engineer_planner",
-            )
+            build_engineer_planner_benchmark_definition_content()
         )
+        coarse_payload_trajectory = build_engineer_planner_coarse_payload_trajectory()
         return EvalDatasetItem(
             id=item_id,
             task="engineer planner workspace contract smoke test",
@@ -261,14 +267,33 @@ def _synthetic_planner_item(agent_name: AgentName, item_id: str) -> EvalDatasetI
                     filename_suffix="todo.md",
                     node="engineer_planner",
                 ),
-                "assembly_definition.yaml": _fixture_entry_file_content(
-                    "INT-033",
-                    filename_suffix="assembly_definition.yaml",
-                    node="engineer_planner",
+                "assembly_definition.yaml": build_benchmark_assembly_definition_content(
+                    benchmark_max_unit_cost_usd=200.0,
+                    benchmark_max_weight_g=1200.0,
+                    planner_target_max_unit_cost_usd=200.0,
+                    planner_target_max_weight_g=1200.0,
+                    estimated_unit_cost_usd=10.0,
+                    estimated_weight_g=2.7,
+                    estimate_confidence="high",
+                    part_name="solution_plan_evidence",
+                    part_id="solution_plan_evidence",
+                    coarse_payload_trajectory=coarse_payload_trajectory,
                 ),
                 "benchmark_definition.yaml": benchmark_definition_content,
-                "benchmark_assembly_definition.yaml": _minimal_benchmark_assembly_definition_content(
-                    benchmark_definition_content
+                "benchmark_assembly_definition.yaml": build_benchmark_assembly_definition_content(
+                    benchmark_max_unit_cost_usd=200.0,
+                    benchmark_max_weight_g=1200.0,
+                    planner_target_max_unit_cost_usd=200.0,
+                    planner_target_max_weight_g=1200.0,
+                    estimated_unit_cost_usd=0.0,
+                    estimated_weight_g=0.0,
+                    estimate_confidence="high",
+                ),
+                "solution_plan_evidence_script.py": build_solution_plan_evidence_script_content(),
+                "benchmark_plan_evidence_script.py": _fixture_entry_file_content(
+                    "INT-204",
+                    filename_suffix="benchmark_plan_evidence_script.py",
+                    node="benchmark_planner",
                 ),
                 "manufacturing_config.yaml": REPO_MANUFACTURING_CONFIG,
             },

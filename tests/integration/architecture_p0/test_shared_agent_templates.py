@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+import yaml
 
 from shared.agent_templates import (
     load_common_template_files,
@@ -10,6 +11,25 @@ from shared.agent_templates import (
 )
 from shared.current_role import parse_current_role_manifest
 from shared.enums import AgentName
+from shared.models.schemas import (
+    AssemblyConstraints,
+    AssemblyDefinition,
+    BenchmarkDefinition,
+    BenchmarkPartDefinition,
+    BenchmarkPartMetadata,
+    BoundingBox,
+    Constraints,
+    CostTotals,
+    ObjectivesSection,
+    Payload,
+    PayloadTrajectoryAnchor,
+    PayloadTrajectoryDefinition,
+    PayloadTrajectoryPose,
+    PhysicsConfig,
+    StaticRandomization,
+)
+from shared.models.serialization import dump_yaml_model
+from shared.simulation.schemas import SimulatorBackendType
 from tests.integration.agent.helpers import load_integration_mock_scenarios
 
 
@@ -115,6 +135,10 @@ def test_seed_starter_templates_cover_all_seeded_roles():
 def test_template_file_expands_from_shared_agent_templates(tmp_path: Path):
     scenario_dir = tmp_path / "mock_responses"
     scenario_dir.mkdir()
+    (scenario_dir / "fixture_payload.txt").write_text(
+        "from content file\n",
+        encoding="utf-8",
+    )
     (scenario_dir / "INT-999.yaml").write_text(
         (
             "transcript:\n"
@@ -124,6 +148,12 @@ def test_template_file_expands_from_shared_agent_templates(tmp_path: Path):
             "    tool_args:\n"
             "      path: solution_script.py\n"
             "      overwrite: true\n"
+            "      content_file: fixture_payload.txt\n"
+            "    expected_observation: success\n"
+            "  - tool_name: write_file\n"
+            "    tool_args:\n"
+            "      path: journal.md\n"
+            "      overwrite: true\n"
             "      template_file: common/solution_script.py\n"
             "    expected_observation: success\n"
         ),
@@ -131,12 +161,121 @@ def test_template_file_expands_from_shared_agent_templates(tmp_path: Path):
     )
 
     scenarios = load_integration_mock_scenarios(scenario_dir)
-    step = scenarios["INT-999"]["transcript"][0]["steps"][0]
-    assert step["tool_args"]["content"] == (
+    first_step, second_step = scenarios["INT-999"]["transcript"][0]["steps"]
+    assert first_step["tool_args"]["content"] == "from content file\n"
+    assert second_step["tool_args"]["content"] == (
         Path("shared/agent_templates/common/solution_script.py").read_text(
             encoding="utf-8"
         )
     )
+
+
+@pytest.mark.integration_p0
+def test_schema_first_fixture_models_round_trip_through_yaml():
+    benchmark_definition = BenchmarkDefinition(
+        objectives=ObjectivesSection(
+            goal_zone_mm=BoundingBox(
+                min_mm=(0.0, 0.0, 0.0),
+                max_mm=(5.0, 5.0, 5.0),
+            ),
+            forbid_zones=[],
+            build_zone_mm=BoundingBox(
+                min_mm=(-5.0, -5.0, 0.0),
+                max_mm=(10.0, 10.0, 10.0),
+            ),
+        ),
+        benchmark_parts=[
+            BenchmarkPartDefinition(
+                part_id="environment_fixture",
+                label="environment_fixture",
+                metadata=BenchmarkPartMetadata(
+                    is_fixed=True,
+                    material_id="aluminum_6061",
+                ),
+            )
+        ],
+        physics=PhysicsConfig(backend=SimulatorBackendType.GENESIS),
+        simulation_bounds_mm=BoundingBox(
+            min_mm=(-10.0, -10.0, -5.0),
+            max_mm=(10.0, 10.0, 10.0),
+        ),
+        payload=Payload(
+            label="payload_ball",
+            shape="sphere",
+            material_id="abs",
+            static_randomization=StaticRandomization(radius_mm=(0.5, 0.5)),
+            start_position_mm=(1.0, 1.0, 1.0),
+            runtime_jitter_mm=(0.1, 0.1, 0.1),
+        ),
+        constraints=Constraints(max_unit_cost=100.0, max_weight_g=1000.0),
+    )
+    benchmark_yaml = dump_yaml_model(benchmark_definition)
+    benchmark_round_trip = BenchmarkDefinition.model_validate(
+        yaml.safe_load(benchmark_yaml)
+    )
+    assert benchmark_round_trip == benchmark_definition
+    assert "benchmark_parts:" in benchmark_yaml
+    assert "payload:" in benchmark_yaml
+
+    assembly_definition = AssemblyDefinition(
+        version="1.0",
+        constraints=AssemblyConstraints(
+            benchmark_max_unit_cost_usd=100.0,
+            benchmark_max_weight_g=1000.0,
+            planner_target_max_unit_cost_usd=90.0,
+            planner_target_max_weight_g=900.0,
+        ),
+        manufactured_parts=[],
+        final_assembly=[],
+        totals=CostTotals(
+            estimated_unit_cost_usd=0.0,
+            estimated_weight_g=0.0,
+            estimate_confidence="high",
+        ),
+    )
+    assembly_yaml = dump_yaml_model(assembly_definition)
+    assembly_round_trip = AssemblyDefinition.model_validate(
+        yaml.safe_load(assembly_yaml)
+    )
+    assert assembly_round_trip == assembly_definition
+    assert "constraints:" in assembly_yaml
+    assert "totals:" in assembly_yaml
+
+    payload_definition = PayloadTrajectoryDefinition(
+        backend=SimulatorBackendType.GENESIS,
+        payload_part_names=["payload_ball"],
+        initial_pose=PayloadTrajectoryPose(
+            reference_point="payload_ball",
+            pos_mm=(0.0, 0.0, 0.0),
+            rot_deg=(0.0, 0.0, 0.0),
+        ),
+        sample_stride_s=0.5,
+        anchors=[
+            PayloadTrajectoryAnchor(
+                t_s=0.0,
+                reference_point="payload_ball",
+                pos_mm=(0.0, 0.0, 0.0),
+                rot_deg=(0.0, 0.0, 0.0),
+                position_tolerance_mm=(1.0, 1.0, 1.0),
+                build_zone_valid=True,
+            ),
+            PayloadTrajectoryAnchor(
+                t_s=1.0,
+                reference_point="payload_ball",
+                pos_mm=(4.0, 0.0, 0.0),
+                rot_deg=(0.0, 0.0, 0.0),
+                position_tolerance_mm=(1.0, 1.0, 1.0),
+                goal_zone_entry=True,
+            ),
+        ],
+    )
+    payload_yaml = dump_yaml_model(payload_definition)
+    payload_round_trip = PayloadTrajectoryDefinition.model_validate(
+        yaml.safe_load(payload_yaml)
+    )
+    assert payload_round_trip == payload_definition
+    assert "backend:" in payload_yaml
+    assert "anchors:" in payload_yaml
 
 
 @pytest.mark.integration_p0

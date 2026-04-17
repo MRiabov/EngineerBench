@@ -17,9 +17,15 @@ from controller.api.schemas import AgentRunRequest, AgentRunResponse, EpisodeRes
 from shared.current_role import current_role_manifest_json
 from shared.enums import AgentName, EpisodeStatus
 from shared.models.schemas import (
+    AssemblyConstraints,
+    AssemblyDefinition,
     BenchmarkDefinition,
+    BenchmarkPartDefinition,
+    BenchmarkPartMetadata,
     BoundingBox,
     Constraints,
+    CostTotals,
+    ForbidZone,
     ObjectivesSection,
     Payload,
     PhysicsConfig,
@@ -35,6 +41,7 @@ from shared.workers.schema import (
     WriteFileRequest,
 )
 from tests.integration.agent.helpers import (
+    dump_yaml_model,
     seed_benchmark_assembly_definition,
     seed_execution_reviewer_handover,
 )
@@ -57,14 +64,14 @@ ASSET_BUCKET = os.getenv("ASSET_S3_BUCKET", "problemologist")
 
 def _default_benchmark_parts():
     return [
-        {
-            "part_id": "environment_fixture",
-            "label": "environment_fixture",
-            "metadata": {
-                "is_fixed": True,
-                "material_id": "aluminum_6061",
-            },
-        }
+        BenchmarkPartDefinition(
+            part_id="environment_fixture",
+            label="environment_fixture",
+            metadata=BenchmarkPartMetadata(
+                is_fixed=True,
+                material_id="aluminum_6061",
+            ),
+        )
     ]
 
 
@@ -213,9 +220,7 @@ def build():
             f"{WORKER_LIGHT_URL}/fs/write",
             json=WriteFileRequest(
                 path="benchmark_definition.yaml",
-                content=yaml.safe_dump(
-                    benchmark_definition.model_dump(mode="json"), sort_keys=False
-                ),
+                content=dump_yaml_model(benchmark_definition),
                 overwrite=True,
             ).model_dump(mode="json"),
             headers={"X-Session-ID": session_id},
@@ -224,17 +229,23 @@ def build():
             f"{WORKER_LIGHT_URL}/fs/write",
             json=WriteFileRequest(
                 path="benchmark_assembly_definition.yaml",
-                content=(
-                    "version: '1.0'\n"
-                    "constraints:\n"
-                    "  benchmark_max_unit_cost_usd: 100\n"
-                    "  benchmark_max_weight_g: 1000\n"
-                    "  planner_target_max_unit_cost_usd: 90\n"
-                    "  planner_target_max_weight_g: 900\n"
-                    "totals:\n"
-                    "  estimated_unit_cost_usd: 10\n"
-                    "  estimated_weight_g: 100\n"
-                    "  estimate_confidence: high\n"
+                content=dump_yaml_model(
+                    AssemblyDefinition(
+                        version="1.0",
+                        constraints=AssemblyConstraints(
+                            benchmark_max_unit_cost_usd=100.0,
+                            benchmark_max_weight_g=1000.0,
+                            planner_target_max_unit_cost_usd=90.0,
+                            planner_target_max_weight_g=900.0,
+                        ),
+                        manufactured_parts=[],
+                        final_assembly=[],
+                        totals=CostTotals(
+                            estimated_unit_cost_usd=10.0,
+                            estimated_weight_g=100.0,
+                            estimate_confidence="high",
+                        ),
+                    )
                 ),
                 overwrite=True,
             ).model_dump(mode="json"),
@@ -262,19 +273,23 @@ def build():
             f"{WORKER_LIGHT_URL}/fs/write",
             json=WriteFileRequest(
                 path="assembly_definition.yaml",
-                content=(
-                    "version: '1.0'\n"
-                    "constraints:\n"
-                    "  benchmark_max_unit_cost_usd: 100\n"
-                    "  benchmark_max_weight_g: 1000\n"
-                    "  planner_target_max_unit_cost_usd: 90\n"
-                    "  planner_target_max_weight_g: 900\n"
-                    "totals:\n"
-                    "  estimated_unit_cost_usd: 10\n"
-                    "  estimated_weight_g: 100\n"
-                    "  estimate_confidence: high\n"
-                    "manufactured_parts: []\n"
-                    "final_assembly: []\n"
+                content=dump_yaml_model(
+                    AssemblyDefinition(
+                        version="1.0",
+                        constraints=AssemblyConstraints(
+                            benchmark_max_unit_cost_usd=100.0,
+                            benchmark_max_weight_g=1000.0,
+                            planner_target_max_unit_cost_usd=90.0,
+                            planner_target_max_weight_g=900.0,
+                        ),
+                        manufactured_parts=[],
+                        final_assembly=[],
+                        totals=CostTotals(
+                            estimated_unit_cost_usd=10.0,
+                            estimated_weight_g=100.0,
+                            estimate_confidence="high",
+                        ),
+                    )
                 ),
                 overwrite=True,
             ).model_dump(mode="json"),
@@ -639,11 +654,11 @@ async def test_int_020_simulation_failure_taxonomy():
                     min_mm=(10.5, 10.5, 10.5), max_mm=(12.5, 12.5, 12.5)
                 ),
                 forbid_zones=[
-                    {
-                        "name": "zone_forbid_test",
-                        "min_mm": (2.5, 2.5, 2.5),
-                        "max_mm": (4.5, 4.5, 4.5),
-                    }
+                    ForbidZone(
+                        name="zone_forbid_test",
+                        min_mm=(2.5, 2.5, 2.5),
+                        max_mm=(4.5, 4.5, 4.5),
+                    )
                 ],
                 build_zone_mm=BoundingBox(
                     min_mm=(0.5, 0.5, 0.5), max_mm=(20.5, 20.5, 20.5)
@@ -665,7 +680,7 @@ async def test_int_020_simulation_failure_taxonomy():
 
         req_write_obj = WriteFileRequest(
             path="benchmark_definition.yaml",
-            content=yaml.dump(objectives.model_dump(mode="json")),
+            content=dump_yaml_model(objectives),
             overwrite=True,
         )
         await client.post(
@@ -763,7 +778,7 @@ run()
         )
         req_write_success_obj = WriteFileRequest(
             path="benchmark_definition.yaml",
-            content=yaml.dump(success_objectives.model_dump(mode="json")),
+            content=dump_yaml_model(success_objectives),
             overwrite=True,
         )
         await client.post(
@@ -820,7 +835,7 @@ async def test_int_021_runtime_randomization_robustness():
         )
         req_write_obj = WriteFileRequest(
             path="benchmark_definition.yaml",
-            content=yaml.dump(objectives.model_dump(mode="json")),
+            content=dump_yaml_model(objectives),
             overwrite=True,
         )
         await client.post(
@@ -934,11 +949,11 @@ def build():
                     min_mm=(0.0, 0.0, 0.0), max_mm=(10.0, 10.0, 10.0)
                 ),
                 forbid_zones=[
-                    {
-                        "name": "goal_overlap",
-                        "min_mm": (5.0, 5.0, 5.0),
-                        "max_mm": (12.0, 12.0, 12.0),
-                    }
+                    ForbidZone(
+                        name="goal_overlap",
+                        min_mm=(5.0, 5.0, 5.0),
+                        max_mm=(12.0, 12.0, 12.0),
+                    )
                 ],
                 build_zone_mm=BoundingBox(
                     min_mm=(-20.0, -20.0, 0.0), max_mm=(20.0, 20.0, 30.0)
@@ -961,7 +976,7 @@ def build():
             f"{WORKER_LIGHT_URL}/fs/write",
             json=WriteFileRequest(
                 path="benchmark_definition.yaml",
-                content=yaml.dump(overlap_objectives.model_dump(mode="json")),
+                content=dump_yaml_model(overlap_objectives),
                 overwrite=True,
             ).model_dump(mode="json"),
             headers={"X-Session-ID": session_id},
@@ -986,11 +1001,11 @@ def build():
                         max_mm=(16.0, 16.0, 6.0),
                     ),
                     forbid_zones=[
-                        {
-                            "name": "spawn_conflict",
-                            "min_mm": (-3.0, -3.0, 0.0),
-                            "max_mm": (3.0, 3.0, 6.0),
-                        }
+                        ForbidZone(
+                            name="spawn_conflict",
+                            min_mm=(-3.0, -3.0, 0.0),
+                            max_mm=(3.0, 3.0, 6.0),
+                        )
                     ],
                     build_zone_mm=BoundingBox(
                         min_mm=(-20.0, -20.0, 0.0),
@@ -1010,7 +1025,7 @@ def build():
             f"{WORKER_LIGHT_URL}/fs/write",
             json=WriteFileRequest(
                 path="benchmark_definition.yaml",
-                content=yaml.dump(jitter_conflict_objectives.model_dump(mode="json")),
+                content=dump_yaml_model(jitter_conflict_objectives),
                 overwrite=True,
             ).model_dump(mode="json"),
             headers={"X-Session-ID": session_id},

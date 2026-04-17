@@ -1,4 +1,5 @@
 import asyncio
+import contextlib
 import hashlib
 import json
 import os
@@ -9,23 +10,50 @@ from collections.abc import Awaitable, Callable
 from functools import lru_cache
 from pathlib import Path
 
+import boto3
 import httpx
 import yaml
 from websockets.asyncio.client import connect as websocket_connect
 
 from controller.api.schemas import EpisodeResponse
 from controller.clients.worker import WorkerClient
+from controller.observability.tracing import sync_asset
 from controller.persistence.db import get_sessionmaker
-from controller.persistence.models import Episode
-from shared.enums import AgentName, EpisodeStatus, EpisodeType, TerminalReason
+from controller.persistence.models import BenchmarkAsset, Episode, Trace
+from shared.enums import (
+    AgentName,
+    EpisodeStatus,
+    EpisodeType,
+    ManufacturingMethod,
+    ReviewDecision,
+    TerminalReason,
+    TraceType,
+)
 from shared.git_utils import repo_revision
 from shared.models.schemas import (
     AssemblyConstraints,
     AssemblyDefinition,
+    BenchmarkDefinition,
+    BenchmarkPartDefinition,
+    BenchmarkPartMetadata,
+    BoundingBox,
+    CoarsePayloadTrajectory,
+    Constraints,
     CostTotals,
     EpisodeMetadata,
+    ManufacturedPartEstimate,
+    ObjectivesSection,
+    Payload,
+    PayloadTrajectoryAnchor,
+    PhysicsConfig,
+    RandomizationMeta,
+    ReviewComments,
+    ReviewFrontmatter,
+    StaticRandomization,
 )
+from shared.models.serialization import dump_yaml_model
 from shared.models.simulation import MultiRunResult, SimulationMetrics, SimulationResult
+from shared.simulation.schemas import SimulatorBackendType
 from shared.workers.schema import (
     PlanReviewManifest,
     RenderArtifactMetadata,
@@ -104,6 +132,9 @@ def _benchmark_assembly_definition_content(
     estimated_unit_cost_usd: float = 0.0,
     estimated_weight_g: float = 0.0,
     estimate_confidence: str = "medium",
+    part_name: str = "environment_fixture",
+    part_id: str | None = None,
+    coarse_payload_trajectory: CoarsePayloadTrajectory | None = None,
 ) -> str:
     planner_target_max_unit_cost_usd = (
         benchmark_max_unit_cost_usd
@@ -122,19 +153,20 @@ def _benchmark_assembly_definition_content(
             planner_target_max_weight_g=planner_target_max_weight_g,
         ),
         manufactured_parts=[
-            {
-                "part_name": "environment_fixture",
-                "part_id": "environment_fixture",
-                "manufacturing_method": "3DP",
-                "material_id": "aluminum_6061",
-                "quantity": 1,
-                "part_volume_mm3": 1000.0,
-                "stock_bbox_mm": {"x": 10.0, "y": 10.0, "z": 10.0},
-                "stock_volume_mm3": 1000.0,
-                "removed_volume_mm3": 0.0,
-                "estimated_unit_cost_usd": 10.0,
-            }
+            ManufacturedPartEstimate(
+                part_name=part_name,
+                part_id=part_id or part_name,
+                manufacturing_method=ManufacturingMethod.THREE_DP,
+                material_id="aluminum_6061",
+                quantity=1,
+                part_volume_mm3=1000.0,
+                stock_bbox_mm={"x": 10.0, "y": 10.0, "z": 10.0},
+                stock_volume_mm3=1000.0,
+                removed_volume_mm3=0.0,
+                estimated_unit_cost_usd=10.0,
+            )
         ],
+        coarse_payload_trajectory=coarse_payload_trajectory,
         final_assembly=[],
         totals=CostTotals(
             estimated_unit_cost_usd=10.0,
@@ -142,10 +174,220 @@ def _benchmark_assembly_definition_content(
             estimate_confidence=estimate_confidence,
         ),
     )
-    return yaml.safe_dump(
-        assembly.model_dump(mode="json", by_alias=True, exclude_none=True),
-        sort_keys=False,
+    return dump_yaml_model(assembly)
+
+
+def build_benchmark_assembly_definition_content(
+    *,
+    benchmark_max_unit_cost_usd: float = 200.0,
+    benchmark_max_weight_g: float = 1000.0,
+    planner_target_max_unit_cost_usd: float | None = None,
+    planner_target_max_weight_g: float | None = None,
+    estimated_unit_cost_usd: float = 0.0,
+    estimated_weight_g: float = 0.0,
+    estimate_confidence: str = "medium",
+    part_name: str = "environment_fixture",
+    part_id: str | None = None,
+    coarse_payload_trajectory: CoarsePayloadTrajectory | None = None,
+) -> str:
+    return _benchmark_assembly_definition_content(
+        benchmark_max_unit_cost_usd=benchmark_max_unit_cost_usd,
+        benchmark_max_weight_g=benchmark_max_weight_g,
+        planner_target_max_unit_cost_usd=planner_target_max_unit_cost_usd,
+        planner_target_max_weight_g=planner_target_max_weight_g,
+        estimated_unit_cost_usd=estimated_unit_cost_usd,
+        estimated_weight_g=estimated_weight_g,
+        estimate_confidence=estimate_confidence,
+        part_name=part_name,
+        part_id=part_id,
+        coarse_payload_trajectory=coarse_payload_trajectory,
     )
+
+
+def _approved_benchmark_definition_content() -> str:
+    benchmark_definition = BenchmarkDefinition(
+        objectives=ObjectivesSection(
+            goal_zone_mm=BoundingBox(
+                min_mm=(6.0, -2.0, 0.0),
+                max_mm=(10.0, 2.0, 4.0),
+            ),
+            forbid_zones=[],
+            build_zone_mm=BoundingBox(
+                min_mm=(-10.0, -10.0, -10.0),
+                max_mm=(10.0, 10.0, 10.0),
+            ),
+        ),
+        benchmark_parts=[
+            BenchmarkPartDefinition(
+                part_id="environment_fixture",
+                label="environment_fixture",
+                metadata=BenchmarkPartMetadata(
+                    is_fixed=True,
+                    material_id="aluminum_6061",
+                ),
+            )
+        ],
+        simulation_bounds_mm=BoundingBox(
+            min_mm=(-30.0, -30.0, -30.0),
+            max_mm=(30.0, 30.0, 30.0),
+        ),
+        payload=Payload(
+            label="projectile_ball",
+            shape="sphere",
+            material_id="abs",
+            start_position_mm=(0.0, 0.0, 0.0),
+            runtime_jitter_mm=(0.0, 0.0, 0.0),
+        ),
+        constraints=Constraints(max_unit_cost=200.0, max_weight_g=1200.0),
+    )
+    return dump_yaml_model(benchmark_definition)
+
+
+def build_approved_benchmark_definition_content() -> str:
+    return _approved_benchmark_definition_content()
+
+
+def _engineer_planner_benchmark_definition() -> BenchmarkDefinition:
+    return BenchmarkDefinition(
+        objectives=ObjectivesSection(
+            goal_zone_mm=BoundingBox(
+                min_mm=(-20.0, 0.0, -20.0),
+                max_mm=(20.0, 40.0, 24.0),
+            ),
+            forbid_zones=[],
+            build_zone_mm=BoundingBox(
+                min_mm=(-20.0, 0.0, -20.0),
+                max_mm=(20.0, 40.0, 24.0),
+            ),
+        ),
+        physics=PhysicsConfig(
+            backend=SimulatorBackendType.GENESIS,
+            compute_target="auto",
+        ),
+        simulation_bounds_mm=BoundingBox(
+            min_mm=(-100.0, -100.0, -100.0),
+            max_mm=(100.0, 100.0, 100.0),
+        ),
+        payload=Payload(
+            label="projectile_ball",
+            shape="sphere",
+            material_id="abs",
+            static_randomization=StaticRandomization(radius_mm=(0.5, 0.5)),
+            start_position_mm=(0.0, 20.0, 2.0),
+            runtime_jitter_mm=(0.0, 0.0, 0.0),
+        ),
+        benchmark_parts=[
+            BenchmarkPartDefinition(
+                part_id="environment_fixture",
+                label="environment_fixture",
+                metadata=BenchmarkPartMetadata(
+                    is_fixed=True,
+                    material_id="aluminum_6061",
+                ),
+            )
+        ],
+        constraints=Constraints(
+            estimated_solution_cost_usd=12.0,
+            estimated_solution_weight_g=150.0,
+            max_unit_cost=200.0,
+            max_weight_g=1200.0,
+        ),
+        randomization=RandomizationMeta(
+            static_variation_id="engineer_planner_fixture_v1",
+            runtime_jitter_enabled=True,
+        ),
+    )
+
+
+def build_engineer_planner_benchmark_definition_content() -> str:
+    return dump_yaml_model(_engineer_planner_benchmark_definition())
+
+
+def _engineer_planner_coarse_payload_trajectory() -> CoarsePayloadTrajectory:
+    return CoarsePayloadTrajectory(
+        payload_part_names=["solution_plan_evidence"],
+        sample_stride_s=0.25,
+        anchors=[
+            PayloadTrajectoryAnchor(
+                t_s=0.0,
+                reference_point="build_zone_start",
+                pos_mm=(0.0, 20.0, 2.0),
+                rot_deg=(0.0, 0.0, 0.0),
+                position_tolerance_mm=(1.2, 1.2, 1.2),
+                rotation_tolerance_deg=(0.1, 0.1, 5.0),
+                build_zone_valid=True,
+            ),
+            PayloadTrajectoryAnchor(
+                t_s=2.5,
+                reference_point="goal_zone_contact",
+                pos_mm=(0.0, 20.0, 2.0),
+                rot_deg=(0.0, 0.0, 0.0),
+                position_tolerance_mm=(1.2, 1.2, 1.2),
+                rotation_tolerance_deg=(0.1, 0.1, 5.0),
+                goal_zone_contact=True,
+            ),
+        ],
+    )
+
+
+def build_engineer_planner_coarse_payload_trajectory() -> CoarsePayloadTrajectory:
+    return _engineer_planner_coarse_payload_trajectory()
+
+
+def build_open_corridor_benchmark_definition() -> BenchmarkDefinition:
+    return BenchmarkDefinition(
+        objectives=ObjectivesSection(
+            goal_zone_mm=BoundingBox(
+                min_mm=(12.0, -2.0, 0.0),
+                max_mm=(16.0, 2.0, 4.0),
+            ),
+            forbid_zones=[],
+            build_zone_mm=BoundingBox(
+                min_mm=(-18.0, -8.0, 0.0),
+                max_mm=(18.0, 8.0, 12.0),
+            ),
+        ),
+        physics=PhysicsConfig(
+            backend=SimulatorBackendType.GENESIS,
+            compute_target="auto",
+        ),
+        simulation_bounds_mm=BoundingBox(
+            min_mm=(-20.0, -10.0, 0.0),
+            max_mm=(20.0, 10.0, 12.0),
+        ),
+        payload=Payload(
+            label="projectile_ball",
+            shape="sphere",
+            material_id="abs",
+            static_randomization=StaticRandomization(radius_mm=(0.5, 0.5)),
+            start_position_mm=(-12.0, 0.0, 2.0),
+            runtime_jitter_mm=(0.0, 0.0, 0.0),
+        ),
+        benchmark_parts=[
+            BenchmarkPartDefinition(
+                part_id="open_corridor_frame",
+                label="open_corridor_frame",
+                metadata=BenchmarkPartMetadata(
+                    is_fixed=True,
+                    material_id="aluminum_6061",
+                ),
+            )
+        ],
+        constraints=Constraints(
+            estimated_solution_cost_usd=12.0,
+            estimated_solution_weight_g=150.0,
+            max_unit_cost=18.0,
+            max_weight_g=225.0,
+        ),
+        randomization=RandomizationMeta(
+            static_variation_id="open_corridor_v1",
+            runtime_jitter_enabled=True,
+        ),
+    )
+
+
+def build_open_corridor_benchmark_definition_content() -> str:
+    return dump_yaml_model(build_open_corridor_benchmark_definition())
 
 
 @lru_cache(maxsize=1)
@@ -308,6 +550,18 @@ def _fixture_entry_file_content(
     )
 
 
+def build_solution_plan_evidence_script_content() -> str:
+    return (
+        "from build123d import Box\n\n"
+        "from utils.metadata import PartMetadata\n\n\n"
+        "def build():\n"
+        "    part = Box(1, 1, 1)\n"
+        '    part.label = "solution_plan_evidence"\n'
+        '    part.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)\n'
+        "    return part\n"
+    )
+
+
 def _fixture_entry_file_content_or_default(
     int_id: str,
     *,
@@ -353,10 +607,7 @@ async def seed_engineer_planner_handover(
             client,
             session_id=session_id,
             path="solution_plan_evidence_script.py",
-            content=_fixture_entry_file_content(
-                "INT-033",
-                filename_suffix="solution_plan_evidence_script.py",
-            ),
+            content=build_solution_plan_evidence_script_content(),
             bypass_agent_permissions=True,
         )
         await _seed_workspace_file(
@@ -383,6 +634,7 @@ async def _seed_workspace_file(
     path: str,
     content: str,
     bypass_agent_permissions: bool = False,
+    asset_episode_id: str | None = None,
 ) -> None:
     resp = await client.post(
         f"{WORKER_LIGHT_URL}/fs/write",
@@ -398,12 +650,38 @@ async def _seed_workspace_file(
         },
     )
     assert resp.status_code == 200, resp.text
+    with contextlib.suppress(Exception):
+        await sync_asset(asset_episode_id or session_id, path, content)
 
 
 def repo_git_revision() -> str:
     revision = repo_revision(Path(__file__).resolve().parents[3])
     assert revision, "repository git revision could not be determined."
     return revision
+
+
+def _benchmark_asset_url(bucket: str, key: str) -> str:
+    endpoint = (
+        os.getenv("S3_ENDPOINT")
+        or os.getenv("S3_ENDPOINT_URL")
+        or "http://127.0.0.1:19000"
+    ).rstrip("/")
+    return f"{endpoint}/{bucket}/{key}"
+
+
+def _asset_bucket_name() -> str:
+    return os.getenv("ASSET_S3_BUCKET", "problemologist")
+
+
+def _asset_s3_client():
+    return boto3.client(
+        "s3",
+        endpoint_url=os.getenv("S3_ENDPOINT") or os.getenv("S3_ENDPOINT_URL"),
+        aws_access_key_id=os.getenv("S3_ACCESS_KEY") or os.getenv("AWS_ACCESS_KEY_ID"),
+        aws_secret_access_key=os.getenv("S3_SECRET_KEY")
+        or os.getenv("AWS_SECRET_ACCESS_KEY"),
+        region_name=os.getenv("AWS_REGION", "us-east-1"),
+    )
 
 
 def integration_workspace_session_id(task: str, session_id: str) -> str:
@@ -479,15 +757,10 @@ async def seed_execution_reviewer_handover(
     render_rgb_path = render_path
     render_depth_path = f"{render_base}_depth.png"
     render_segmentation_path = f"{render_base}_segmentation.png"
-    benchmark_definition_seed = _fixture_entry_file_content_or_default(
-        int_id,
-        filename_suffix="benchmark_definition.yaml",
-        node="engineer_planner",
-    )
-    assembly_definition_seed = _fixture_entry_file_content_or_default(
-        int_id,
-        filename_suffix="assembly_definition.yaml",
-        node="engineer_planner",
+    benchmark_definition_seed = _approved_benchmark_definition_content()
+    assembly_definition_seed = _benchmark_assembly_definition_content(
+        estimated_weight_g=2.7,
+        estimate_confidence="high",
     )
     benchmark_assembly_definition_content = _benchmark_assembly_definition_content(
         benchmark_max_unit_cost_usd=200.0,
@@ -694,12 +967,18 @@ async def seed_approved_benchmark_bundle(
     script_content = Path(
         "shared/assets/template_repos/benchmark_generator/benchmark_script.py"
     ).read_text(encoding="utf-8")
-    benchmark_definition_content = Path(
-        f"tests/integration/mock_responses/{int_id}/engineer_planner/entry_01/04__benchmark_definition.yaml"
-    ).read_text(encoding="utf-8")
-    benchmark_assembly_definition_content = Path(
-        f"tests/integration/mock_responses/{int_id}/engineer_planner/entry_01/03__assembly_definition.yaml"
-    ).read_text(encoding="utf-8")
+    benchmark_definition_content = _approved_benchmark_definition_content()
+    benchmark_assembly_definition = AssemblyDefinition.model_validate(
+        yaml.safe_load(
+            Path(
+                f"tests/integration/mock_responses/{int_id}/engineer_planner/entry_01/03__assembly_definition.yaml"
+            ).read_text(encoding="utf-8")
+        )
+    )
+    benchmark_assembly_definition_content = dump_yaml_model(
+        benchmark_assembly_definition
+    )
+    benchmark_environment_version = benchmark_assembly_definition.version
     script_sha256 = hashlib.sha256(script_content.encode("utf-8")).hexdigest()
     benchmark_definition_sha256 = hashlib.sha256(
         benchmark_definition_content.encode("utf-8")
@@ -746,7 +1025,7 @@ async def seed_approved_benchmark_bundle(
         episode_id=benchmark_episode_id,
         worker_session_id=benchmark_session_id,
         benchmark_revision=revision,
-        environment_version="integration-test",
+        environment_version=benchmark_environment_version,
         artifact_hashes={
             "benchmark_definition.yaml": benchmark_definition_sha256,
             "benchmark_assembly_definition.yaml": benchmark_assembly_definition_sha256,
@@ -763,7 +1042,7 @@ async def seed_approved_benchmark_bundle(
         benchmark_worker_session_id=benchmark_session_id,
         benchmark_revision=revision,
         solution_revision=revision,
-        environment_version="integration-test",
+        environment_version=benchmark_environment_version,
         preview_evidence_paths=[
             render_rgb_path,
             render_depth_path,
@@ -792,6 +1071,7 @@ async def seed_approved_benchmark_bundle(
     await _seed_workspace_file(
         client,
         session_id=benchmark_session_id,
+        asset_episode_id=benchmark_episode_id,
         path="benchmark_script.py",
         content=script_content,
         bypass_agent_permissions=True,
@@ -799,6 +1079,92 @@ async def seed_approved_benchmark_bundle(
     await _seed_workspace_file(
         client,
         session_id=benchmark_session_id,
+        asset_episode_id=benchmark_episode_id,
+        path="benchmark_plan.md",
+        content="# Benchmark plan\n\nSeeded benchmark bundle.\n",
+        bypass_agent_permissions=True,
+    )
+    await _seed_workspace_file(
+        client,
+        session_id=benchmark_session_id,
+        asset_episode_id=benchmark_episode_id,
+        path="todo.md",
+        content="- [x] Seed benchmark bundle\n",
+        bypass_agent_permissions=True,
+    )
+    await _seed_workspace_file(
+        client,
+        session_id=benchmark_session_id,
+        asset_episode_id=benchmark_episode_id,
+        path="journal.md",
+        content="Seeded benchmark bundle for dataset export coverage.\n",
+        bypass_agent_permissions=True,
+    )
+    benchmark_review_checklist = {
+        "latest_revision_verified": True,
+        "review_manifest_revision": "latest",
+        "render_count": 2,
+        "render_paths": "renders/cad_preview.png, renders/simulation_preview.png",
+        "inspected_render_count": 2,
+        "visual_inspection_min_images": 1,
+        "visual_inspection_satisfied": True,
+        "deterministic_error_count": 0,
+        "deterministic_refusal_reason": "none",
+    }
+    for review_path, review_content in (
+        (
+            "reviews/benchmark-plan-review-decision-round-1.yaml",
+            dump_yaml_model(
+                ReviewFrontmatter(
+                    decision=ReviewDecision.APPROVED,
+                    comments=["Seeded benchmark bundle approved."],
+                    evidence={"files_checked": ["benchmark_plan.md"]},
+                )
+            ),
+        ),
+        (
+            "reviews/benchmark-plan-review-comments-round-1.yaml",
+            dump_yaml_model(
+                ReviewComments(
+                    summary="APPROVED: Seeded benchmark bundle approved.",
+                    comments=["Seeded benchmark bundle approved."],
+                    checklist=benchmark_review_checklist,
+                )
+            ),
+        ),
+        (
+            "reviews/benchmark-execution-review-decision-round-1.yaml",
+            dump_yaml_model(
+                ReviewFrontmatter(
+                    decision=ReviewDecision.APPROVED,
+                    comments=["Seeded benchmark bundle approved."],
+                    evidence={"files_checked": ["benchmark_script.py"]},
+                )
+            ),
+        ),
+        (
+            "reviews/benchmark-execution-review-comments-round-1.yaml",
+            dump_yaml_model(
+                ReviewComments(
+                    summary="APPROVED: Seeded benchmark bundle approved.",
+                    comments=["Seeded benchmark bundle approved."],
+                    checklist=benchmark_review_checklist,
+                )
+            ),
+        ),
+    ):
+        await _seed_workspace_file(
+            client,
+            session_id=benchmark_session_id,
+            asset_episode_id=benchmark_episode_id,
+            path=review_path,
+            content=review_content,
+            bypass_agent_permissions=True,
+        )
+    await _seed_workspace_file(
+        client,
+        session_id=benchmark_session_id,
+        asset_episode_id=benchmark_episode_id,
         path="benchmark_definition.yaml",
         content=benchmark_definition_content,
         bypass_agent_permissions=True,
@@ -806,6 +1172,7 @@ async def seed_approved_benchmark_bundle(
     await _seed_workspace_file(
         client,
         session_id=benchmark_session_id,
+        asset_episode_id=benchmark_episode_id,
         path="benchmark_assembly_definition.yaml",
         content=benchmark_assembly_definition_content,
         bypass_agent_permissions=True,
@@ -813,6 +1180,7 @@ async def seed_approved_benchmark_bundle(
     await _seed_workspace_file(
         client,
         session_id=benchmark_session_id,
+        asset_episode_id=benchmark_episode_id,
         path="manufacturing_config.yaml",
         content=REPO_MANUFACTURING_CONFIG,
         bypass_agent_permissions=True,
@@ -820,6 +1188,7 @@ async def seed_approved_benchmark_bundle(
     await _seed_workspace_file(
         client,
         session_id=benchmark_session_id,
+        asset_episode_id=benchmark_episode_id,
         path="validation_results.json",
         content=validation_record.model_dump_json(indent=2),
         bypass_agent_permissions=True,
@@ -827,6 +1196,7 @@ async def seed_approved_benchmark_bundle(
     await _seed_workspace_file(
         client,
         session_id=benchmark_session_id,
+        asset_episode_id=benchmark_episode_id,
         path="simulation_result.json",
         content=simulation_result.model_dump_json(indent=2),
         bypass_agent_permissions=True,
@@ -834,6 +1204,7 @@ async def seed_approved_benchmark_bundle(
     await _seed_workspace_file(
         client,
         session_id=benchmark_session_id,
+        asset_episode_id=benchmark_episode_id,
         path="renders/scene.xml",
         content="<mujoco><worldbody /></mujoco>\n",
         bypass_agent_permissions=True,
@@ -841,6 +1212,7 @@ async def seed_approved_benchmark_bundle(
     await _seed_workspace_file(
         client,
         session_id=benchmark_session_id,
+        asset_episode_id=benchmark_episode_id,
         path="renders/model.step",
         content="ISO-10303-21;\nEND-ISO-10303-21;\n",
         bypass_agent_permissions=True,
@@ -848,6 +1220,7 @@ async def seed_approved_benchmark_bundle(
     await _seed_workspace_file(
         client,
         session_id=benchmark_session_id,
+        asset_episode_id=benchmark_episode_id,
         path="renders/benchmark_definition.yaml",
         content=benchmark_definition_content,
         bypass_agent_permissions=True,
@@ -855,6 +1228,7 @@ async def seed_approved_benchmark_bundle(
     await _seed_workspace_file(
         client,
         session_id=benchmark_session_id,
+        asset_episode_id=benchmark_episode_id,
         path="renders/assembly_definition.yaml",
         content=benchmark_assembly_definition_content,
         bypass_agent_permissions=True,
@@ -863,12 +1237,15 @@ async def seed_approved_benchmark_bundle(
     await seed_current_revision_render_preview(
         client,
         session_id=benchmark_session_id,
+        asset_episode_id=benchmark_episode_id,
         render_path=render_path,
+        environment_version=benchmark_environment_version,
     )
 
     await _seed_workspace_file(
         client,
         session_id=benchmark_session_id,
+        asset_episode_id=benchmark_episode_id,
         path=".manifests/benchmark_plan_review_manifest.json",
         content=benchmark_plan_review_manifest.model_dump_json(indent=2),
         bypass_agent_permissions=True,
@@ -876,6 +1253,7 @@ async def seed_approved_benchmark_bundle(
     await _seed_workspace_file(
         client,
         session_id=benchmark_session_id,
+        asset_episode_id=benchmark_episode_id,
         path=".manifests/benchmark_review_manifest.json",
         content=benchmark_review_manifest.model_dump_json(indent=2, exclude_none=True),
         bypass_agent_permissions=True,
@@ -897,6 +1275,42 @@ async def seed_approved_benchmark_bundle(
         ]
         episode.status = EpisodeStatus.COMPLETED
         episode.metadata_vars = metadata.model_dump(mode="json")
+        seed_trace = Trace(
+            episode_id=uuid.UUID(benchmark_episode_id),
+            trace_type=TraceType.EVENT,
+            name="seeded_benchmark_export_lineage",
+            content="Seeded benchmark export lineage metadata.",
+            metadata_vars={
+                "simulation_run_id": f"{benchmark_episode_id}-simulation",
+                "review_id": f"{benchmark_episode_id}-review",
+            },
+            simulation_run_id=f"{benchmark_episode_id}-simulation",
+            review_id=f"{benchmark_episode_id}-review",
+        )
+        db.add(seed_trace)
+
+        benchmark_asset = await db.get(BenchmarkAsset, uuid.UUID(benchmark_episode_id))
+        if benchmark_asset is None:
+            benchmark_asset = BenchmarkAsset(
+                benchmark_id=uuid.UUID(benchmark_episode_id),
+                mjcf_url=_benchmark_asset_url(
+                    "benchmarks-assets", f"{benchmark_episode_id}/model.xml"
+                ),
+                build123d_url=_benchmark_asset_url(
+                    "benchmarks-source",
+                    f"{benchmark_episode_id}/benchmark_script.py",
+                ),
+                preview_bundle_url=_benchmark_asset_url(
+                    "benchmarks-assets", f"{benchmark_episode_id}/views.zip"
+                ),
+                random_variants=[],
+                difficulty_score=0.0,
+                benchmark_metadata={
+                    "environment_version": benchmark_environment_version,
+                    "source": "integration-test",
+                },
+            )
+            db.add(benchmark_asset)
         await db.commit()
 
 
@@ -905,6 +1319,8 @@ async def seed_current_revision_render_preview(
     *,
     session_id: str,
     render_path: str = "renders/render_e45_a45.png",
+    asset_episode_id: str | None = None,
+    environment_version: str = "integration-test",
 ) -> None:
     """Seed a current-revision render preview image and manifest for reviewer tests."""
 
@@ -920,7 +1336,7 @@ async def seed_current_revision_render_preview(
         episode_id=session_id,
         worker_session_id=session_id,
         revision=revision,
-        environment_version="integration-test",
+        environment_version=environment_version,
         preview_evidence_paths=[
             render_path,
             f"{render_base}_depth.png",
@@ -1010,6 +1426,24 @@ async def seed_current_revision_render_preview(
         timeout=60.0,
     )
     assert render_upload_resp.status_code == 200, render_upload_resp.text
+    s3_client = _asset_s3_client()
+    asset_bucket = _asset_bucket_name()
+    with contextlib.suppress(Exception):
+        s3_client.create_bucket(Bucket=asset_bucket)
+    for render_asset_path, body, content_type in (
+        (render_path, _png_bytes((255, 0, 0)), "image/png"),
+        (render_depth_path, _png_bytes((0, 255, 0)), "image/png"),
+        (render_segmentation_path, _png_bytes((0, 0, 255)), "image/png"),
+    ):
+        s3_client.put_object(
+            Bucket=asset_bucket,
+            Key=Path(render_asset_path).as_posix().lstrip("/"),
+            Body=body,
+            ContentType=content_type,
+        )
+    for render_asset_path in (render_path, render_depth_path, render_segmentation_path):
+        with contextlib.suppress(Exception):
+            await sync_asset(asset_episode_id or session_id, render_asset_path, None)
 
     manifest_json = manifest.model_dump_json(indent=2)
     for path, content in (
@@ -1023,6 +1457,7 @@ async def seed_current_revision_render_preview(
         await _seed_workspace_file(
             client,
             session_id=session_id,
+            asset_episode_id=asset_episode_id,
             path=path,
             content=content,
             bypass_agent_permissions=True,
@@ -1035,6 +1470,7 @@ async def seed_current_revision_render_preview(
         await _seed_workspace_file(
             client,
             session_id=session_id,
+            asset_episode_id=asset_episode_id,
             path=f"{compat_dir}/render_manifest.json",
             content=manifest_json,
             bypass_agent_permissions=True,

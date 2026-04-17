@@ -172,6 +172,7 @@ async def run_simulation_activity(
     script_path = params.script_path
     backend = params.backend
     smoke_test_mode = params.smoke_test_mode
+    skip_preview_rendering = params.skip_preview_rendering
     session_id = params.session_id
 
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -191,6 +192,7 @@ async def run_simulation_activity(
             session_id=session_id or "",
             episode_id=params.episode_id,
             stream_render_frames=params.stream_render_frames,
+            skip_preview_rendering=skip_preview_rendering,
             particle_budget=None,
         )
         artifacts = _collect_simulation_artifacts(root, result, session_id=session_id)

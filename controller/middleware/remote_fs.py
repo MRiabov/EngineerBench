@@ -690,6 +690,7 @@ class RemoteFilesystemMiddleware:
         backend: SimulatorBackendType | None = None,
         smoke_test_mode: bool | None = None,
         stream_render_frames: bool = False,
+        skip_preview_rendering: bool = False,
         bundle_base64: str | None = None,
     ) -> BenchmarkToolResponse:
         """Trigger physics simulation via worker client (with bundling)."""
@@ -714,6 +715,7 @@ class RemoteFilesystemMiddleware:
             backend=resolved_backend,
             smoke_test_mode=smoke_test_mode,
             stream_render_frames=stream_render_frames,
+            skip_preview_rendering=skip_preview_rendering,
         )
         await record_simulation_result(self.episode_id, res)
         return res

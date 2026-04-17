@@ -1051,6 +1051,7 @@ class WorkerClient:
         smoke_test_mode: bool | None = None,
         episode_id: str | None = None,
         stream_render_frames: bool = False,
+        skip_preview_rendering: bool = False,
     ) -> BenchmarkToolResponse:
         """Trigger physics simulation via worker."""
         resolved_backend = backend or get_default_simulator_backend()
@@ -1066,6 +1067,7 @@ class WorkerClient:
                 "smoke_test_mode": smoke_test_mode,
                 "episode_id": episode_id,
                 "stream_render_frames": stream_render_frames,
+                "skip_preview_rendering": skip_preview_rendering,
             }
             if script_content is not None:
                 raise NotImplementedError(
@@ -1089,6 +1091,7 @@ class WorkerClient:
             if episode_id is not None:
                 payload["episode_id"] = episode_id
             payload["stream_render_frames"] = stream_render_frames
+            payload["skip_preview_rendering"] = skip_preview_rendering
 
             await self._add_bundle_to_payload(payload)
 
@@ -1397,6 +1400,7 @@ class WorkerClient:
         smoke_test_mode: bool | None = None,
         episode_id: str | None = None,
         stream_render_frames: bool = False,
+        skip_preview_rendering: bool = False,
     ) -> BenchmarkToolResponse:
         if await self._role_family() != "benchmark":
             raise ValueError("Current worker role is not benchmark-side")
@@ -1407,6 +1411,7 @@ class WorkerClient:
             smoke_test_mode=smoke_test_mode,
             episode_id=episode_id,
             stream_render_frames=stream_render_frames,
+            skip_preview_rendering=skip_preview_rendering,
         )
 
     async def simulate_engineering(
@@ -1417,6 +1422,7 @@ class WorkerClient:
         smoke_test_mode: bool | None = None,
         episode_id: str | None = None,
         stream_render_frames: bool = False,
+        skip_preview_rendering: bool = False,
     ) -> BenchmarkToolResponse:
         if await self._role_family() != "engineering":
             raise ValueError("Current worker role is not engineering-side")
@@ -1427,6 +1433,7 @@ class WorkerClient:
             smoke_test_mode=smoke_test_mode,
             episode_id=episode_id,
             stream_render_frames=stream_render_frames,
+            skip_preview_rendering=skip_preview_rendering,
         )
 
     async def submit_benchmark_for_review(

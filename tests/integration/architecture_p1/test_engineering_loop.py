@@ -21,7 +21,8 @@ from shared.enums import (
     TerminalReason,
     TraceType,
 )
-from shared.models.schemas import BenchmarkDefinition
+from shared.models.schemas import BenchmarkDefinition, ReviewFrontmatter
+from shared.models.serialization import dump_yaml_model
 from shared.models.simulation import SimulationResult
 from shared.simulation.scene_builder import PreviewScene, payload_scene_name
 from shared.workers.schema import (
@@ -782,46 +783,43 @@ async def _reject_episode(client: AsyncClient, episode_id: str) -> EpisodeRespon
     verification_result = validation_results.verification_result
     assert verification_result is not None, "validation_results.json is missing"
 
-    review_content = "---\n"
-    review_content += yaml.safe_dump(
-        {
-            "decision": "rejected",
-            "comments": ["Retry lineage test rejection"],
-            "evidence": {
-                "files_checked": ["engineering_plan.md"],
-                "stability_summary": {
-                    "batchWidth": verification_result.num_scenes,
-                    "successCount": verification_result.success_count,
-                    "successRate": verification_result.success_rate,
-                    "isConsistent": verification_result.is_consistent,
-                    "sceneBuildCount": verification_result.scene_build_count,
-                    "backendRunCount": verification_result.backend_run_count,
-                    "batchedExecution": verification_result.batched_execution,
-                    "sceneSummaries": [
-                        {
-                            "sceneIndex": idx + 1,
-                            "success": scene.success,
-                            "summary": (
-                                f"Scene {idx + 1}: pass"
-                                if scene.success
-                                else f"Scene {idx + 1}: {scene.fail_reason}"
-                            ),
-                            "failReason": scene.fail_reason,
-                            "failureMode": (
-                                scene.fail_mode.value if scene.fail_mode else None
-                            ),
-                        }
-                        for idx, scene in enumerate(
-                            verification_result.individual_results
-                        )
-                    ],
-                },
-                "stability_summary_source": "validation_results.json",
+    review_frontmatter = ReviewFrontmatter(
+        decision=ReviewDecision.REJECTED,
+        comments=["Retry lineage test rejection"],
+        evidence={
+            "files_checked": ["engineering_plan.md"],
+            "stability_summary": {
+                "batchWidth": verification_result.num_scenes,
+                "successCount": verification_result.success_count,
+                "successRate": verification_result.success_rate,
+                "isConsistent": verification_result.is_consistent,
+                "sceneBuildCount": verification_result.scene_build_count,
+                "backendRunCount": verification_result.backend_run_count,
+                "batchedExecution": verification_result.batched_execution,
+                "sceneSummaries": [
+                    {
+                        "sceneIndex": idx + 1,
+                        "success": scene.success,
+                        "summary": (
+                            f"Scene {idx + 1}: pass"
+                            if scene.success
+                            else f"Scene {idx + 1}: {scene.fail_reason}"
+                        ),
+                        "failReason": scene.fail_reason,
+                        "failureMode": (
+                            scene.fail_mode.value if scene.fail_mode else None
+                        ),
+                    }
+                    for idx, scene in enumerate(verification_result.individual_results)
+                ],
             },
+            "stability_summary_source": "validation_results.json",
         },
-        sort_keys=False,
-    ).strip()
-    review_content += "\n---\nRejecting the episode for deterministic retry coverage.\n"
+    )
+    review_content = (
+        f"---\n{dump_yaml_model(review_frontmatter)}---\n"
+        "Rejecting the episode for deterministic retry coverage.\n"
+    )
     response = await client.post(
         f"/api/episodes/{episode_id}/review",
         json={"review_content": review_content},

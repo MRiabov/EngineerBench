@@ -9,9 +9,6 @@ from httpx import AsyncClient
 from controller.api.schemas import (
     AgentRunRequest,
     AgentRunResponse,
-    BenchmarkGenerateRequest,
-    BenchmarkGenerateResponse,
-    ConfirmRequest,
     DatasetExportRequest,
     DatasetExportResponse,
     EpisodeCreateResponse,
@@ -19,9 +16,8 @@ from controller.api.schemas import (
 )
 from shared.enums import EpisodeStatus
 from shared.models.schemas import DatasetRowArchiveManifest
-from shared.simulation.schemas import SimulatorBackendType
 from tests.integration.agent.helpers import (
-    wait_for_benchmark_state,
+    seed_approved_benchmark_bundle,
     wait_for_episode_terminal,
 )
 
@@ -42,59 +38,6 @@ def _s3_client():
         aws_secret_access_key=S3_SECRET_KEY,
         region_name="us-east-1",
     )
-
-
-async def _wait_for_benchmark_completion(
-    client: AsyncClient, session_id: str
-) -> tuple[BenchmarkGenerateResponse, EpisodeResponse]:
-    benchmark_resp = BenchmarkGenerateResponse.model_validate(
-        {
-            "status": "accepted",
-            "message": "Benchmark generation started",
-            "session_id": session_id,
-            "episode_id": session_id,
-        }
-    )
-
-    planned_episode = EpisodeResponse.model_validate(
-        await wait_for_benchmark_state(
-            client,
-            session_id,
-            timeout_s=150.0,
-            terminal_statuses={
-                EpisodeStatus.PLANNED,
-                EpisodeStatus.COMPLETED,
-                EpisodeStatus.FAILED,
-                EpisodeStatus.CANCELLED,
-            },
-        )
-    )
-    if planned_episode.status == EpisodeStatus.FAILED:
-        pytest.fail(f"Benchmark generation failed for session {session_id}")
-
-    if planned_episode.status == EpisodeStatus.PLANNED:
-        confirm_resp = await client.post(
-            f"/api/benchmark/{session_id}/confirm",
-            json=ConfirmRequest(comment="Proceed").model_dump(),
-        )
-        assert confirm_resp.status_code == 200, confirm_resp.text
-        planned_episode = EpisodeResponse.model_validate(
-            await wait_for_benchmark_state(
-                client,
-                session_id,
-                timeout_s=150.0,
-                terminal_statuses={
-                    EpisodeStatus.COMPLETED,
-                    EpisodeStatus.FAILED,
-                    EpisodeStatus.CANCELLED,
-                },
-            )
-        )
-
-    if planned_episode.status == EpisodeStatus.FAILED:
-        pytest.fail(f"Benchmark generation failed for session {session_id}")
-
-    return benchmark_resp, planned_episode
 
 
 async def _wait_for_episode_terminal(
@@ -142,27 +85,33 @@ def _assert_manifest_contains(
 @pytest.mark.asyncio
 async def test_dataset_export_benchmark_row_round_trip():
     async with AsyncClient(base_url=CONTROLLER_URL, timeout=300.0) as client:
-        benchmark_request = BenchmarkGenerateRequest(
-            prompt="Create a simple benchmark for dataset export coverage.",
-            backend=SimulatorBackendType.GENESIS,
+        benchmark_session_id = f"INT-005-{uuid.uuid4().hex[:8]}"
+        benchmark_request = AgentRunRequest(
+            task="INT-005 benchmark dataset export fixture.",
+            session_id=benchmark_session_id,
         )
-        resp = await client.post(
-            "/api/benchmark/generate", json=benchmark_request.model_dump()
+        benchmark_resp = await client.post(
+            "/api/test/episodes", json=benchmark_request.model_dump(mode="json")
         )
-        assert resp.status_code in (200, 202), resp.text
-        benchmark_session_id = str(
-            BenchmarkGenerateResponse.model_validate(resp.json()).session_id
+        assert benchmark_resp.status_code == 201, benchmark_resp.text
+        benchmark_episode_id = str(
+            EpisodeCreateResponse.model_validate(benchmark_resp.json()).episode_id
         )
-
-        benchmark_create, benchmark_episode = await _wait_for_benchmark_completion(
-            client, benchmark_session_id
+        await seed_approved_benchmark_bundle(
+            client,
+            benchmark_session_id=benchmark_session_id,
+            benchmark_episode_id=benchmark_episode_id,
+            int_id="INT-033",
         )
+        benchmark_resp = await client.get(f"/api/episodes/{benchmark_episode_id}")
+        assert benchmark_resp.status_code == 200, benchmark_resp.text
+        benchmark_episode = EpisodeResponse.model_validate(benchmark_resp.json())
 
         export_resp = await client.post(
             "/api/datasets/export",
-            json=DatasetExportRequest(
-                episode_id=benchmark_create.episode_id
-            ).model_dump(mode="json"),
+            json=DatasetExportRequest(episode_id=benchmark_episode.id).model_dump(
+                mode="json"
+            ),
         )
         assert export_resp.status_code == 200, export_resp.text
         export_data = DatasetExportResponse.model_validate(export_resp.json())
@@ -174,8 +123,8 @@ async def test_dataset_export_benchmark_row_round_trip():
 
         manifest = export_data.manifest
         assert manifest.lineage.episode_type == "benchmark"
-        assert manifest.lineage.episode_id == str(benchmark_create.episode_id)
-        assert manifest.lineage.benchmark_id == str(benchmark_create.episode_id)
+        assert manifest.lineage.episode_id == str(benchmark_episode.id)
+        assert manifest.lineage.benchmark_id == str(benchmark_episode.id)
         assert manifest.lineage.worker_session_id is not None
         assert manifest.lineage.revision_hash
         assert manifest.lineage.artifact_hash
@@ -230,26 +179,33 @@ async def test_dataset_export_benchmark_row_round_trip():
 @pytest.mark.asyncio
 async def test_dataset_export_solution_row_round_trip():
     async with AsyncClient(base_url=CONTROLLER_URL, timeout=300.0) as client:
-        benchmark_request = BenchmarkGenerateRequest(
-            prompt="Create a simple benchmark for solution export coverage.",
-            backend=SimulatorBackendType.GENESIS,
+        benchmark_session_id = f"INT-016-{uuid.uuid4().hex[:8]}"
+        benchmark_request = AgentRunRequest(
+            task="INT-016 benchmark solution export fixture.",
+            session_id=benchmark_session_id,
         )
-        resp = await client.post(
-            "/api/benchmark/generate", json=benchmark_request.model_dump()
+        benchmark_resp = await client.post(
+            "/api/test/episodes", json=benchmark_request.model_dump(mode="json")
         )
-        assert resp.status_code in (200, 202), resp.text
-        benchmark_session_id = str(
-            BenchmarkGenerateResponse.model_validate(resp.json()).session_id
+        assert benchmark_resp.status_code == 201, benchmark_resp.text
+        benchmark_episode_id = str(
+            EpisodeCreateResponse.model_validate(benchmark_resp.json()).episode_id
         )
-        benchmark_create, _ = await _wait_for_benchmark_completion(
-            client, benchmark_session_id
+        await seed_approved_benchmark_bundle(
+            client,
+            benchmark_session_id=benchmark_session_id,
+            benchmark_episode_id=benchmark_episode_id,
+            int_id="INT-033",
         )
+        benchmark_resp = await client.get(f"/api/episodes/{benchmark_episode_id}")
+        assert benchmark_resp.status_code == 200, benchmark_resp.text
+        benchmark_episode = EpisodeResponse.model_validate(benchmark_resp.json())
 
         engineer_session_id = f"INT-016-{uuid.uuid4().hex[:8]}"
         run_request = AgentRunRequest(
-            task=f"Solve benchmark: {benchmark_session_id}",
+            task=f"Solve benchmark: {benchmark_episode.id}",
             session_id=engineer_session_id,
-            metadata_vars={"benchmark_id": str(benchmark_create.episode_id)},
+            metadata_vars={"benchmark_id": str(benchmark_episode.id)},
         )
         run_resp = await client.post("/api/agent/run", json=run_request.model_dump())
         assert run_resp.status_code in (200, 202), run_resp.text
@@ -272,7 +228,7 @@ async def test_dataset_export_solution_row_round_trip():
 
         assert manifest.lineage.episode_type == "engineer"
         assert manifest.lineage.episode_id == engineer_episode_id
-        assert manifest.lineage.benchmark_id == str(benchmark_create.episode_id)
+        assert manifest.lineage.benchmark_id == str(benchmark_episode.id)
         assert manifest.lineage.worker_session_id == engineer_session_id
         assert manifest.lineage.review_id is not None
         assert manifest.lineage.revision_hash

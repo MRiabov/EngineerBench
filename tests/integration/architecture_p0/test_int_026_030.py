@@ -5,7 +5,6 @@ from pathlib import Path
 
 import httpx
 import pytest
-import yaml
 
 from controller.api.schemas import (
     AgentRunRequest,
@@ -19,11 +18,14 @@ from shared.current_role import current_role_manifest_json
 from shared.enums import AgentName, EpisodeStatus
 from shared.models.schemas import (
     BenchmarkDefinition,
+    BenchmarkPartDefinition,
+    BenchmarkPartMetadata,
     BoundingBox,
     Constraints,
     ObjectivesSection,
     Payload,
 )
+from shared.models.serialization import dump_yaml_model
 from shared.workers.schema import BenchmarkToolResponse, WriteFileRequest
 from tests.integration.agent.helpers import seed_benchmark_assembly_definition
 
@@ -35,11 +37,14 @@ CONTROLLER_URL = os.getenv("CONTROLLER_URL", "http://127.0.0.1:18000")
 
 def _default_benchmark_parts():
     return [
-        {
-            "part_id": "environment_fixture",
-            "label": "environment_fixture",
-            "metadata": {"is_fixed": True, "material_id": "aluminum_6061"},
-        }
+        BenchmarkPartDefinition(
+            part_id="environment_fixture",
+            label="environment_fixture",
+            metadata=BenchmarkPartMetadata(
+                is_fixed=True,
+                material_id="aluminum_6061",
+            ),
+        )
     ]
 
 
@@ -220,7 +225,7 @@ def build():
             client,
             session_id=session_id,
             path="benchmark_definition.yaml",
-            content=yaml.dump(objectives.model_dump(mode="json")),
+            content=dump_yaml_model(objectives),
         )
         await _seed_workspace_file(
             client,

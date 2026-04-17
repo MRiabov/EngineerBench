@@ -9,13 +9,16 @@ from httpx import AsyncClient
 from controller.api.schemas import (
     AgentRunRequest,
     AgentRunResponse,
-    BenchmarkGenerateRequest,
-    BenchmarkGenerateResponse,
-    ConfirmRequest,
+    EpisodeCreateResponse,
     EpisodeResponse,
 )
-from shared.enums import EpisodeStatus
-from shared.models.schemas import AssemblyDefinition
+from shared.enums import EpisodeStatus, ManufacturingMethod
+from shared.models.schemas import (
+    AssemblyConstraints,
+    AssemblyDefinition,
+    CostTotals,
+    ManufacturedPartEstimate,
+)
 from shared.workers.schema import (
     AnalyzeRequest,
     DeleteFileRequest,
@@ -25,7 +28,11 @@ from shared.workers.schema import (
     ReadFileResponse,
     WriteFileRequest,
 )
-from shared.workers.workbench_models import ManufacturingMethod, WorkbenchResult
+from shared.workers.workbench_models import WorkbenchResult
+from tests.integration.agent.helpers import (
+    dump_yaml_model,
+    seed_approved_benchmark_bundle,
+)
 
 # Adjust URL to your controller if different
 CONTROLLER_URL = "http://127.0.0.1:18000"
@@ -52,49 +59,32 @@ async def test_manufacturing_methods_and_materials():
     3. Invalid materials are rejected (via prompt injection or reviewing logs/artifacts)
     """
     async with AsyncClient(base_url=CONTROLLER_URL, timeout=300.0) as client:
-        # 1. Setup Benchmark
-        request = BenchmarkGenerateRequest(
-            prompt="Create a benchmark for a CNC machined part."
+        benchmark_session_id = f"INT-005-{uuid.uuid4().hex[:8]}"
+        benchmark_request = AgentRunRequest(
+            task="INT-005 manufacturing benchmark fixture.",
+            session_id=benchmark_session_id,
         )
-        resp = await client.post("/api/benchmark/generate", json=request.model_dump())
-        assert resp.status_code in [
-            200,
-            202,
-        ], f"Failed to generate benchmark: {resp.text}"
-        benchmark_resp = BenchmarkGenerateResponse.model_validate(resp.json())
-        benchmark_session_id = str(benchmark_resp.session_id)
-
-        # Wait for benchmark
-        confirmed = False
-        for _ in range(150):
-            status_resp = await client.get(f"/api/benchmark/{benchmark_session_id}")
-            if status_resp.status_code == 200:
-                bench_ep = EpisodeResponse.model_validate(status_resp.json())
-                if bench_ep.status == EpisodeStatus.PLANNED and not confirmed:
-                    await client.post(
-                        f"/api/benchmark/{benchmark_session_id}/confirm",
-                        json=ConfirmRequest(comment="Proceed").model_dump(),
-                    )
-                    confirmed = True
-                if bench_ep.status == EpisodeStatus.COMPLETED:
-                    break
-                if bench_ep.status == EpisodeStatus.FAILED:
-                    pytest.fail(
-                        "Benchmark generation failed during setup "
-                        f"(session_id={benchmark_session_id})."
-                    )
-            await asyncio.sleep(2)
-        else:
-            pytest.fail("Benchmark generation timed out.")
+        benchmark_resp = await client.post(
+            "/api/test/episodes", json=benchmark_request.model_dump(mode="json")
+        )
+        assert benchmark_resp.status_code == 201, benchmark_resp.text
+        benchmark_episode_id = str(
+            EpisodeCreateResponse.model_validate(benchmark_resp.json()).episode_id
+        )
+        await seed_approved_benchmark_bundle(
+            client,
+            benchmark_session_id=benchmark_session_id,
+            benchmark_episode_id=benchmark_episode_id,
+        )
 
         # 2. Trigger Engineer - Requesting CNC and specific material
         engineer_session_id = f"INT-036-{uuid.uuid4().hex[:8]}"
         # We explicitly ask for Aluminum 6061 (valid) to test success path first
-        task = f"Solve benchmark: {benchmark_session_id}. Use CNC milling with Aluminum 6061."
+        task = f"Solve benchmark: {benchmark_episode_id}. Use CNC milling with Aluminum 6061."
         run_request = AgentRunRequest(
             task=task,
             session_id=engineer_session_id,
-            metadata_vars={"benchmark_id": benchmark_session_id},
+            metadata_vars={"benchmark_id": benchmark_episode_id},
         )
 
         run_resp = await client.post("/api/agent/run", json=run_request.model_dump())
@@ -276,36 +266,34 @@ async def test_validate_and_price_recomputes_manufactured_weight():
     """The pricing script must recompute manufactured-part weight deterministically."""
     session_id = f"INT-033-{uuid.uuid4().hex[:8]}"
 
-    assembly_definition = AssemblyDefinition.model_validate(
-        {
-            "version": "1.0",
-            "constraints": {
-                "benchmark_max_unit_cost_usd": 100.0,
-                "benchmark_max_weight_g": 1000.0,
-                "planner_target_max_unit_cost_usd": 90.0,
-                "planner_target_max_weight_g": 900.0,
-            },
-            "manufactured_parts": [
-                {
-                    "part_name": "weight_probe",
-                    "part_id": "weight_probe",
-                    "manufacturing_method": "3DP",
-                    "material_id": "aluminum_6061",
-                    "quantity": 1,
-                    "part_volume_mm3": 1000.0,
-                    "stock_bbox_mm": {"x": 10.0, "y": 10.0, "z": 10.0},
-                    "stock_volume_mm3": 1000.0,
-                    "removed_volume_mm3": 0.0,
-                    "estimated_unit_cost_usd": 10.0,
-                }
-            ],
-            "final_assembly": [],
-            "totals": {
-                "estimated_unit_cost_usd": 10.0,
-                "estimated_weight_g": 0.0,
-                "estimate_confidence": "high",
-            },
-        }
+    assembly_definition = AssemblyDefinition(
+        version="1.0",
+        constraints=AssemblyConstraints(
+            benchmark_max_unit_cost_usd=100.0,
+            benchmark_max_weight_g=1000.0,
+            planner_target_max_unit_cost_usd=90.0,
+            planner_target_max_weight_g=900.0,
+        ),
+        manufactured_parts=[
+            ManufacturedPartEstimate(
+                part_name="weight_probe",
+                part_id="weight_probe",
+                manufacturing_method=ManufacturingMethod.THREE_DP,
+                material_id="aluminum_6061",
+                quantity=1,
+                part_volume_mm3=1000.0,
+                stock_bbox_mm={"x": 10.0, "y": 10.0, "z": 10.0},
+                stock_volume_mm3=1000.0,
+                removed_volume_mm3=0.0,
+                estimated_unit_cost_usd=10.0,
+            )
+        ],
+        final_assembly=[],
+        totals=CostTotals(
+            estimated_unit_cost_usd=10.0,
+            estimated_weight_g=0.0,
+            estimate_confidence="high",
+        ),
     )
 
     async with AsyncClient(base_url=WORKER_LIGHT_URL, timeout=300.0) as client:
@@ -315,10 +303,7 @@ async def test_validate_and_price_recomputes_manufactured_weight():
             f"{WORKER_LIGHT_URL}/fs/write",
             json=WriteFileRequest(
                 path="assembly_definition.yaml",
-                content=yaml.safe_dump(
-                    assembly_definition.model_dump(mode="json", by_alias=True),
-                    sort_keys=False,
-                ),
+                content=dump_yaml_model(assembly_definition),
                 overwrite=True,
             ).model_dump(mode="json"),
             headers=headers,
@@ -376,27 +361,29 @@ async def test_validate_and_price_rejects_missing_manufacturing_config():
     session_id = f"INT-035-{uuid.uuid4().hex[:8]}"
     headers = {"X-Session-ID": session_id}
 
-    assembly_definition = """
-version: "1.0"
-constraints:
-  benchmark_max_unit_cost_usd: 50.0
-  benchmark_max_weight_g: 1000.0
-  planner_target_max_unit_cost_usd: 45.0
-  planner_target_max_weight_g: 900.0
-manufactured_parts: []
-final_assembly: []
-totals:
-  estimated_unit_cost_usd: 0.0
-  estimated_weight_g: 0.0
-  estimate_confidence: high
-"""
-
     async with AsyncClient(base_url=WORKER_LIGHT_URL, timeout=300.0) as client:
         write_resp = await client.post(
             "/fs/write",
             json=WriteFileRequest(
                 path="assembly_definition.yaml",
-                content=assembly_definition,
+                content=dump_yaml_model(
+                    AssemblyDefinition(
+                        version="1.0",
+                        constraints=AssemblyConstraints(
+                            benchmark_max_unit_cost_usd=50.0,
+                            benchmark_max_weight_g=1000.0,
+                            planner_target_max_unit_cost_usd=45.0,
+                            planner_target_max_weight_g=900.0,
+                        ),
+                        manufactured_parts=[],
+                        final_assembly=[],
+                        totals=CostTotals(
+                            estimated_unit_cost_usd=0.0,
+                            estimated_weight_g=0.0,
+                            estimate_confidence="high",
+                        ),
+                    )
+                ),
                 overwrite=True,
                 bypass_agent_permissions=True,
             ).model_dump(mode="json"),

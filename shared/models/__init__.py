@@ -13,6 +13,7 @@ from .schemas import (
     PayloadTrajectoryTerminalEvent,
     ReviewFrontmatter,
 )
+from .serialization import dump_yaml_content, dump_yaml_model
 
 __all__ = [
     "CoarsePayloadTrajectory",
@@ -27,4 +28,6 @@ __all__ = [
     "PayloadTrajectoryDefinition",
     "PayloadTrajectoryTerminalEvent",
     "ReviewFrontmatter",
+    "dump_yaml_content",
+    "dump_yaml_model",
 ]

@@ -154,7 +154,7 @@ def ensure_services_are_ready(pytestconfig: pytest.Config):
 def ensure_integration_mock_scenario_ids(pytestconfig: pytest.Config):
     """
     Integration-only startup gate.
-    Enforce strict scenario IDs and file-backed fixtures in tests/integration/mock_responses/.
+    Enforce strict scenario IDs and file-backed compatibility fixtures in tests/integration/mock_responses/.
     """
     if not _should_enforce_integration_readiness(pytestconfig):
         return

@@ -66,6 +66,9 @@ class SimulationFailure(BaseModel):
     reason: FailureReason
     detail: str | None = None
     payload_trajectory_monitor: PayloadTrajectoryMonitorState | None = None
+    failure_position_mm: tuple[float, float, float] | None = None
+    failure_step_index: int | None = None
+    failure_time_s: float | None = None
 
     def __str__(self) -> str:
         if self.detail:

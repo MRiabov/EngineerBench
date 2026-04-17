@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Normalize derived fields in integration mock-response fixtures.
+"""Normalize derived fields in integration mock-response compatibility fixtures.
 
-This utility is meant for `tests/integration/mock_responses/` content files.
-It rewrites deterministic assembly totals/geometry fields and validates the
-benchmark-definition schema without touching scenario-specific narrative or
-planner intent text.
+This utility is meant for `tests/integration/mock_responses/` compatibility
+snapshots. It rewrites deterministic assembly totals/geometry fields and
+validates the benchmark-definition schema without touching scenario-specific
+narrative or planner intent text.
 
 Use `--fix` to write normalized files back to disk. Without `--fix`, the script
 only reports drift.

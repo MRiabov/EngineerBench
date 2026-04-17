@@ -46,6 +46,27 @@ class _SceneOutcome:
     done: bool = False
 
 
+def _build_failure(
+    reason: FailureReason,
+    detail: str | None = None,
+    *,
+    position_mm: Any | None = None,
+    step_index: int | None = None,
+    time_s: float | None = None,
+    existing: SimulationFailure | None = None,
+) -> SimulationFailure:
+    update: dict[str, Any] = {}
+    if position_mm is not None:
+        update["failure_position_mm"] = tuple(float(value) for value in position_mm)
+    if step_index is not None:
+        update["failure_step_index"] = int(step_index)
+    if time_s is not None:
+        update["failure_time_s"] = float(time_s)
+    if existing is not None:
+        return existing.model_copy(update=update)
+    return SimulationFailure(reason=reason, detail=detail, **update)
+
+
 def _identify_target_body_name(
     body_names: list[str], explicit_target_body_name: str | None = None
 ) -> str | None:
@@ -384,9 +405,12 @@ def _verify_mujoco_batched(
             pos, vel = _mujoco_get_body_state_by_id(model, baseline_data, body_id)
             fail_reason = evaluators[0].check_failure(0.0, pos, vel)
             if fail_reason:
-                static_failure = SimulationFailure(
-                    reason=fail_reason,
-                    detail=body_name,
+                static_failure = _build_failure(
+                    fail_reason,
+                    body_name,
+                    position_mm=pos,
+                    step_index=0,
+                    time_s=0.0,
                 )
                 break
 
@@ -394,9 +418,12 @@ def _verify_mujoco_batched(
                 _mujoco_check_collision_by_id(model, baseline_data, body_id, site_id)
                 for site_id in forbid_site_ids
             ):
-                static_failure = SimulationFailure(
-                    reason=FailureReason.FORBID_ZONE_HIT,
-                    detail=body_name,
+                static_failure = _build_failure(
+                    FailureReason.FORBID_ZONE_HIT,
+                    body_name,
+                    position_mm=pos,
+                    step_index=0,
+                    time_s=0.0,
                 )
                 break
 
@@ -466,9 +493,20 @@ def _verify_mujoco_batched(
                 )
                 fail_reason = evaluators[idx].check_failure(current_time, pos, vel)
                 if fail_reason:
-                    outcome.failure = SimulationFailure(
-                        reason=fail_reason,
-                        detail=body_name,
+                    if fail_reason == FailureReason.OUT_OF_BOUNDS:
+                        logger.warning(
+                            "out_of_bounds_detected",
+                            body=body_name,
+                            pos=pos.tolist(),
+                            time_s=current_time,
+                            step_index=step_idx,
+                        )
+                    outcome.failure = _build_failure(
+                        fail_reason,
+                        body_name,
+                        position_mm=pos,
+                        step_index=step_idx,
+                        time_s=current_time,
                     )
                     outcome.done = True
                     break
@@ -481,9 +519,12 @@ def _verify_mujoco_batched(
                     _mujoco_check_collision_by_id(model, scratch_data, body_id, site_id)
                     for site_id in forbid_site_ids
                 ):
-                    outcome.failure = SimulationFailure(
-                        reason=FailureReason.FORBID_ZONE_HIT,
-                        detail=body_name,
+                    outcome.failure = _build_failure(
+                        FailureReason.FORBID_ZONE_HIT,
+                        body_name,
+                        position_mm=pos,
+                        step_index=step_idx,
+                        time_s=current_time,
                     )
                     outcome.done = True
                     break
@@ -576,7 +617,7 @@ def _verify_genesis_batched(
     dt = getattr(backend, "timestep", 0.002)
     steps = max(1, int(duration / dt))
 
-    for _ in range(steps):
+    for step_idx in range(steps):
         if all(outcome.done for outcome in outcomes):
             break
 
@@ -590,11 +631,26 @@ def _verify_genesis_batched(
             outcome.total_time = current_time
             if not res.success:
                 if res.failure:
-                    outcome.failure = res.failure
+                    if res.failure.reason == FailureReason.OUT_OF_BOUNDS:
+                        logger.warning(
+                            "out_of_bounds_detected",
+                            body=getattr(res.failure, "detail", None),
+                            pos=getattr(res.failure, "failure_position_mm", None),
+                            time_s=current_time,
+                            step_index=step_idx,
+                        )
+                    outcome.failure = res.failure.model_copy(
+                        update={
+                            "failure_step_index": step_idx,
+                            "failure_time_s": current_time,
+                        }
+                    )
                 else:
-                    outcome.failure = SimulationFailure(
-                        reason=FailureReason.PHYSICS_INSTABILITY,
-                        detail=str(getattr(res, "failure_reason", "backend failure")),
+                    outcome.failure = _build_failure(
+                        FailureReason.PHYSICS_INSTABILITY,
+                        str(getattr(res, "failure_reason", "backend failure")),
+                        step_index=step_idx,
+                        time_s=current_time,
                     )
                 outcome.done = True
                 continue
@@ -609,9 +665,20 @@ def _verify_genesis_batched(
                     np.array(state.vel),
                 )
                 if fail_reason:
-                    outcome.failure = SimulationFailure(
-                        reason=fail_reason,
-                        detail=body_name,
+                    if fail_reason == FailureReason.OUT_OF_BOUNDS:
+                        logger.warning(
+                            "out_of_bounds_detected",
+                            body=body_name,
+                            pos=list(state.pos),
+                            time_s=current_time,
+                            step_index=step_idx,
+                        )
+                    outcome.failure = _build_failure(
+                        fail_reason,
+                        body_name,
+                        position_mm=state.pos,
+                        step_index=step_idx,
+                        time_s=current_time,
                     )
                     outcome.done = True
                     break
@@ -624,9 +691,12 @@ def _verify_genesis_batched(
                     backend.check_collision(body_name, site_name, env_idx=env_idx)
                     for site_name in forbid_sites
                 ):
-                    outcome.failure = SimulationFailure(
-                        reason=FailureReason.FORBID_ZONE_HIT,
-                        detail=body_name,
+                    outcome.failure = _build_failure(
+                        FailureReason.FORBID_ZONE_HIT,
+                        body_name,
+                        position_mm=state.pos,
+                        step_index=step_idx,
+                        time_s=current_time,
                     )
                     outcome.done = True
                     break

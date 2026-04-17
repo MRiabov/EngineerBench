@@ -3,10 +3,27 @@ import uuid
 
 import httpx
 import pytest
-import yaml
 
 from shared.current_role import current_role_manifest_json
 from shared.enums import AgentName
+from shared.models.schemas import (
+    AssemblyConstraints,
+    AssemblyDefinition,
+    BenchmarkDefinition,
+    BenchmarkPartDefinition,
+    BenchmarkPartMetadata,
+    BoundingBox,
+    Constraints,
+    CostTotals,
+    ForbidZone,
+    ObjectivesSection,
+    Payload,
+    PhysicsConfig,
+    RandomizationMeta,
+    StaticRandomization,
+)
+from shared.models.serialization import dump_yaml_content
+from shared.simulation.schemas import SimulatorBackendType
 from shared.workers.schema import (
     BenchmarkToolRequest,
     BenchmarkToolResponse,
@@ -21,14 +38,14 @@ WORKER_HEAVY_URL = os.getenv("WORKER_HEAVY_URL", "http://127.0.0.1:18002")
 
 def _default_benchmark_parts():
     return [
-        {
-            "part_id": "environment_fixture",
-            "label": "environment_fixture",
-            "metadata": {
-                "is_fixed": True,
-                "material_id": "aluminum_6061",
-            },
-        }
+        BenchmarkPartDefinition(
+            part_id="environment_fixture",
+            label="environment_fixture",
+            metadata=BenchmarkPartMetadata(
+                is_fixed=True,
+                material_id="aluminum_6061",
+            ),
+        )
     ]
 
 
@@ -93,19 +110,22 @@ Confirm the projectile starts outside the fixed geometry envelope.
 - Minor geometry drift is the primary risk.
 """
     valid_todo = "# TODO\n\n- [x] Planner handoff seeded\n"
-    valid_cost = """version: "1.0"
-manufactured_parts: []
-final_assembly: []
-constraints:
-  benchmark_max_unit_cost_usd: 50.0
-  benchmark_max_weight_g: 1200.0
-  planner_target_max_unit_cost_usd: 45.0
-  planner_target_max_weight_g: 1000.0
-totals:
-  estimated_unit_cost_usd: 10.0
-  estimated_weight_g: 100.0
-  estimate_confidence: high
-"""
+    valid_cost = AssemblyDefinition(
+        version="1.0",
+        constraints=AssemblyConstraints(
+            benchmark_max_unit_cost_usd=50.0,
+            benchmark_max_weight_g=1200.0,
+            planner_target_max_unit_cost_usd=45.0,
+            planner_target_max_weight_g=1000.0,
+        ),
+        manufactured_parts=[],
+        final_assembly=[],
+        totals=CostTotals(
+            estimated_unit_cost_usd=10.0,
+            estimated_weight_g=100.0,
+            estimate_confidence="high",
+        ),
+    )
     minimal_script = """
 from build123d import Box, Location
 from shared.models.schemas import PartMetadata
@@ -133,48 +153,48 @@ def _objective_validation_payload(
     start_position_mm: list[float],
     runtime_jitter_mm: list[float],
     radius_mm: list[float],
-    forbid_zones: list[dict] | None = None,
+    forbid_zones: list[ForbidZone] | None = None,
     simulation_bounds_min_mm: list[float] | None = None,
     simulation_bounds_max_mm: list[float] | None = None,
-) -> dict:
-    return {
-        "objectives": {
-            "goal_zone_mm": {
-                "min_mm": goal_zone_min_mm,
-                "max_mm": goal_zone_max_mm,
-            },
-            "forbid_zones": forbid_zones or [],
-            "build_zone_mm": {
-                "min_mm": build_zone_min_mm,
-                "max_mm": build_zone_max_mm,
-            },
-        },
-        "physics": {"backend": "GENESIS"},
-        "simulation_bounds_mm": {
-            "min_mm": simulation_bounds_min_mm or [-30.0, -30.0, -10.0],
-            "max_mm": simulation_bounds_max_mm or [30.0, 30.0, 30.0],
-        },
-        "payload": {
-            "label": "projectile_ball",
-            "shape": "sphere",
-            "material_id": "abs",
-            "static_randomization": {"radius_mm": radius_mm},
-            "start_position_mm": start_position_mm,
-            "runtime_jitter_mm": runtime_jitter_mm,
-        },
-        "constraints": {"max_unit_cost": 50.0, "max_weight_g": 1200.0},
-        "benchmark_parts": _default_benchmark_parts(),
-        "randomization": {
-            "static_variation_id": "v1.0",
-            "runtime_jitter_enabled": True,
-        },
-    }
+) -> BenchmarkDefinition:
+    return BenchmarkDefinition(
+        objectives=ObjectivesSection(
+            goal_zone_mm=BoundingBox(
+                min_mm=tuple(goal_zone_min_mm),
+                max_mm=tuple(goal_zone_max_mm),
+            ),
+            forbid_zones=forbid_zones or [],
+            build_zone_mm=BoundingBox(
+                min_mm=tuple(build_zone_min_mm),
+                max_mm=tuple(build_zone_max_mm),
+            ),
+        ),
+        physics=PhysicsConfig(backend=SimulatorBackendType.GENESIS),
+        simulation_bounds_mm=BoundingBox(
+            min_mm=tuple(simulation_bounds_min_mm or [-30.0, -30.0, -10.0]),
+            max_mm=tuple(simulation_bounds_max_mm or [30.0, 30.0, 30.0]),
+        ),
+        payload=Payload(
+            label="projectile_ball",
+            shape="sphere",
+            material_id="abs",
+            static_randomization=StaticRandomization(radius_mm=tuple(radius_mm)),
+            start_position_mm=tuple(start_position_mm),
+            runtime_jitter_mm=tuple(runtime_jitter_mm),
+        ),
+        constraints=Constraints(max_unit_cost=50.0, max_weight_g=1200.0),
+        benchmark_parts=_default_benchmark_parts(),
+        randomization=RandomizationMeta(
+            static_variation_id="v1.0",
+            runtime_jitter_enabled=True,
+        ),
+    )
 
 
 async def _write_workspace_file(
     client: httpx.AsyncClient, headers: dict[str, str], path: str, content: str | dict
 ) -> None:
-    payload = content if isinstance(content, str) else yaml.dump(content)
+    payload = dump_yaml_content(content)
     resp = await client.post(
         f"{WORKER_LIGHT_URL}/fs/write",
         json=WriteFileRequest(
@@ -219,74 +239,25 @@ async def test_int_008_objectives_semantic_validation_rejects_goal_forbid_overla
     session_id = f"INT-008-OBJ-{uuid.uuid4().hex[:8]}"
     headers = {"X-Session-ID": session_id}
 
-    valid_plan = """## 1. Learning Objective
-
-Move the projectile into the goal zone.
-
-## 2. Geometry
-
-- Ground plane
-- Guide rails
-
-## 3. Objectives
-
-- Reach the goal zone
-"""
-    valid_todo = "# TODO\n\n- [x] Planner handoff seeded\n"
-    valid_cost = """version: "1.0"
-manufactured_parts: []
-final_assembly: []
-totals:
-  estimated_unit_cost_usd: 10.0
-  estimated_weight_g: 100.0
-"""
-    minimal_script = """
-from build123d import Box, Location
-from shared.models.schemas import PartMetadata
-from shared.workers.workbench_models import ManufacturingMethod
-
-def build():
-    p = Box(10, 10, 10)
-    p = p.move(Location((0, 0, 5)))
-    p.label = "test_part"
-    p.metadata = PartMetadata(
-        manufacturing_method=ManufacturingMethod.CNC,
-        material_id="aluminum-6061",
+    valid_plan, valid_todo, valid_cost, minimal_script = (
+        _objective_validation_artifacts()
     )
-    return p
-"""
-    overlapping_objectives = {
-        "objectives": {
-            "goal_zone_mm": {"min_mm": [1.0, -1.0, 0.0], "max_mm": [2.0, 1.0, 1.0]},
-            "forbid_zones": [
-                {
-                    "name": "out_of_bounds",
-                    "min_mm": [0.0, -2.0, 0.0],
-                    "max_mm": [3.0, 2.0, 2.0],
-                }
-            ],
-            "build_zone_mm": {"min_mm": [-5.0, -5.0, 0.0], "max_mm": [5.0, 5.0, 15.0]},
-        },
-        "physics": {"backend": "GENESIS"},
-        "simulation_bounds_mm": {
-            "min_mm": [-30.0, -30.0, -10.0],
-            "max_mm": [30.0, 30.0, 30.0],
-        },
-        "payload": {
-            "label": "projectile_ball",
-            "shape": "sphere",
-            "material_id": "abs",
-            "static_randomization": {"radius_mm": [0.25, 0.25]},
-            "start_position_mm": [0.0, 0.0, 12.0],
-            "runtime_jitter_mm": [0.1, 0.1, 0.1],
-        },
-        "constraints": {"max_unit_cost": 50.0, "max_weight_g": 1200.0},
-        "benchmark_parts": _default_benchmark_parts(),
-        "randomization": {
-            "static_variation_id": "v1.0",
-            "runtime_jitter_enabled": True,
-        },
-    }
+    overlapping_objectives = _objective_validation_payload(
+        goal_zone_min_mm=[1.0, -1.0, 0.0],
+        goal_zone_max_mm=[2.0, 1.0, 1.0],
+        build_zone_min_mm=[-5.0, -5.0, 0.0],
+        build_zone_max_mm=[5.0, 5.0, 15.0],
+        start_position_mm=[0.0, 0.0, 12.0],
+        runtime_jitter_mm=[0.1, 0.1, 0.1],
+        radius_mm=[0.25, 0.25],
+        forbid_zones=[
+            ForbidZone(
+                name="out_of_bounds",
+                min_mm=(0.0, -2.0, 0.0),
+                max_mm=(3.0, 2.0, 2.0),
+            )
+        ],
+    )
 
     async with httpx.AsyncClient(timeout=300.0) as client:
         await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
@@ -340,11 +311,11 @@ async def test_int_008_objectives_semantic_validation_rejects_runtime_envelope_f
         runtime_jitter_mm=[0.25, 0.25, 0.25],
         radius_mm=[0.1, 0.1],
         forbid_zones=[
-            {
-                "name": "clearance_window",
-                "min_mm": [-0.25, -0.25, 4.5],
-                "max_mm": [0.25, 0.25, 5.5],
-            }
+            ForbidZone(
+                name="clearance_window",
+                min_mm=(-0.25, -0.25, 4.5),
+                max_mm=(0.25, 0.25, 5.5),
+            )
         ],
     )
 
@@ -634,67 +605,19 @@ async def test_int_008_requires_non_empty_benchmark_parts():
     session_id = f"INT-008-PARTS-{uuid.uuid4().hex[:8]}"
     headers = {"X-Session-ID": session_id}
 
-    valid_plan = """## 1. Learning Objective
-
-Move the projectile into the goal zone.
-
-## 2. Geometry
-
-- Ground plane
-- Guide rails
-
-## 3. Objectives
-
-- Reach the goal zone
-"""
-    valid_todo = "# TODO\n\n- [x] Planner handoff seeded\n"
-    valid_cost = """version: "1.0"
-manufactured_parts: []
-final_assembly: []
-totals:
-  estimated_unit_cost_usd: 10.0
-  estimated_weight_g: 100.0
-"""
-    minimal_script = """
-from build123d import Box, Location
-from shared.models.schemas import PartMetadata
-from shared.workers.workbench_models import ManufacturingMethod
-
-def build():
-    p = Box(10, 10, 10)
-    p = p.move(Location((0, 0, 5)))
-    p.label = "test_part"
-    p.metadata = PartMetadata(
-        manufacturing_method=ManufacturingMethod.CNC,
-        material_id="aluminum-6061",
+    valid_plan, valid_todo, valid_cost, minimal_script = (
+        _objective_validation_artifacts()
     )
-    return p
-"""
-    missing_benchmark_parts = {
-        "objectives": {
-            "goal_zone_mm": {"min_mm": [1.0, -1.0, 0.0], "max_mm": [2.0, 1.0, 1.0]},
-            "forbid_zones": [],
-            "build_zone_mm": {"min_mm": [-5.0, -5.0, 0.0], "max_mm": [5.0, 5.0, 15.0]},
-        },
-        "physics": {"backend": "GENESIS"},
-        "simulation_bounds_mm": {
-            "min_mm": [-30.0, -30.0, -10.0],
-            "max_mm": [30.0, 30.0, 30.0],
-        },
-        "payload": {
-            "label": "projectile_ball",
-            "shape": "sphere",
-            "material_id": "abs",
-            "static_randomization": {"radius_mm": [0.25, 0.25]},
-            "start_position_mm": [-4.0, 0.0, 0.5],
-            "runtime_jitter_mm": [0.1, 0.1, 0.1],
-        },
-        "constraints": {"max_unit_cost": 50.0, "max_weight_g": 1200.0},
-        "randomization": {
-            "static_variation_id": "v1.0",
-            "runtime_jitter_enabled": True,
-        },
-    }
+    missing_benchmark_parts = _objective_validation_payload(
+        goal_zone_min_mm=[1.0, -1.0, 0.0],
+        goal_zone_max_mm=[2.0, 1.0, 1.0],
+        build_zone_min_mm=[-5.0, -5.0, 0.0],
+        build_zone_max_mm=[5.0, 5.0, 15.0],
+        start_position_mm=[-4.0, 0.0, 0.5],
+        runtime_jitter_mm=[0.1, 0.1, 0.1],
+        radius_mm=[0.25, 0.25],
+    ).model_dump(mode="json")
+    missing_benchmark_parts.pop("benchmark_parts", None)
 
     async with httpx.AsyncClient(timeout=300.0) as client:
         await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
@@ -729,68 +652,18 @@ async def test_int_008_submit_requires_explicit_reviewer_stage():
     session_id = f"INT-008-STAGE-{uuid.uuid4().hex[:8]}"
     headers = {"X-Session-ID": session_id}
 
-    valid_plan = """## 1. Learning Objective
-
-Move the projectile into the goal zone.
-
-## 2. Geometry
-
-- Ground plane
-- Guide rails
-
-## 3. Objectives
-
-- Reach the goal zone
-"""
-    valid_todo = "# TODO\n\n- [x] Planner handoff seeded\n"
-    valid_cost = """version: "1.0"
-manufactured_parts: []
-final_assembly: []
-totals:
-  estimated_unit_cost_usd: 10.0
-  estimated_weight_g: 100.0
-"""
-    minimal_script = """
-from build123d import Box, Location
-from shared.models.schemas import PartMetadata
-from shared.workers.workbench_models import ManufacturingMethod
-
-def build():
-    p = Box(10, 10, 10)
-    p = p.move(Location((0, 0, 5)))
-    p.label = "test_part"
-    p.metadata = PartMetadata(
-        manufacturing_method=ManufacturingMethod.CNC,
-        material_id="aluminum-6061",
+    valid_plan, valid_todo, valid_cost, minimal_script = (
+        _objective_validation_artifacts()
     )
-    return p
-"""
-    valid_objectives = {
-        "objectives": {
-            "goal_zone_mm": {"min_mm": [1.0, -1.0, 0.0], "max_mm": [2.0, 1.0, 1.0]},
-            "forbid_zones": [],
-            "build_zone_mm": {"min_mm": [-5.0, -5.0, 0.0], "max_mm": [5.0, 5.0, 15.0]},
-        },
-        "benchmark_parts": _default_benchmark_parts(),
-        "physics": {"backend": "GENESIS"},
-        "simulation_bounds_mm": {
-            "min_mm": [-30.0, -30.0, -10.0],
-            "max_mm": [30.0, 30.0, 30.0],
-        },
-        "payload": {
-            "label": "projectile_ball",
-            "shape": "sphere",
-            "material_id": "abs",
-            "static_randomization": {"radius_mm": [0.25, 0.25]},
-            "start_position_mm": [-4.0, 0.0, 0.5],
-            "runtime_jitter_mm": [0.1, 0.1, 0.1],
-        },
-        "constraints": {"max_unit_cost": 50.0, "max_weight_g": 1200.0},
-        "randomization": {
-            "static_variation_id": "v1.0",
-            "runtime_jitter_enabled": True,
-        },
-    }
+    valid_objectives = _objective_validation_payload(
+        goal_zone_min_mm=[1.0, -1.0, 0.0],
+        goal_zone_max_mm=[2.0, 1.0, 1.0],
+        build_zone_min_mm=[-5.0, -5.0, 0.0],
+        build_zone_max_mm=[5.0, 5.0, 15.0],
+        start_position_mm=[-4.0, 0.0, 0.5],
+        runtime_jitter_mm=[0.1, 0.1, 0.1],
+        radius_mm=[0.25, 0.25],
+    )
 
     async with httpx.AsyncClient(timeout=300.0) as client:
         await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
@@ -831,75 +704,26 @@ async def test_int_008_objectives_semantic_validation_rejects_runtime_envelope_f
     session_id = f"INT-008-FORBID-{uuid.uuid4().hex[:8]}"
     headers = {"X-Session-ID": session_id}
 
-    valid_plan = """## 1. Learning Objective
-
-Move the projectile into the goal zone.
-
-## 2. Geometry
-
-- Ground plane
-- Guide rails
-
-## 3. Objectives
-
-- Reach the goal zone
-"""
-    valid_todo = "# TODO\n\n- [x] Planner handoff seeded\n"
-    valid_cost = """version: "1.0"
-manufactured_parts: []
-final_assembly: []
-totals:
-  estimated_unit_cost_usd: 10.0
-  estimated_weight_g: 100.0
-"""
-    minimal_script = """
-from build123d import Box, Location
-from shared.models.schemas import PartMetadata
-from shared.workers.workbench_models import ManufacturingMethod
-
-def build():
-    p = Box(10, 10, 10)
-    p = p.move(Location((0, 0, 5)))
-    p.label = "test_part"
-    p.metadata = PartMetadata(
-        manufacturing_method=ManufacturingMethod.CNC,
-        material_id="aluminum-6061",
+    valid_plan, valid_todo, valid_cost, minimal_script = (
+        _objective_validation_artifacts()
     )
-    return p
-"""
 
-    forbid_collision_objectives = {
-        "objectives": {
-            "goal_zone_mm": {"min_mm": [3.0, 3.0, 3.0], "max_mm": [4.0, 4.0, 4.0]},
-            "forbid_zones": [
-                {
-                    "name": "center_block",
-                    "min_mm": [-1.0, -1.0, 0.0],
-                    "max_mm": [1.0, 1.0, 2.0],
-                }
-            ],
-            "build_zone_mm": {"min_mm": [-5.0, -5.0, 0.0], "max_mm": [5.0, 5.0, 10.0]},
-        },
-        "physics": {"backend": "GENESIS"},
-        "simulation_bounds_mm": {
-            "min_mm": [-30.0, -30.0, -10.0],
-            "max_mm": [30.0, 30.0, 30.0],
-        },
-        "payload": {
-            "label": "projectile_ball",
-            "shape": "sphere",
-            "material_id": "abs",
-            "static_randomization": {"radius_mm": [0.25, 0.25]},
-            "start_position_mm": [0.0, 0.0, 1.0],
-            "runtime_jitter_mm": [0.5, 0.5, 0.5],
-        },
-        "constraints": {"max_unit_cost": 50.0, "max_weight_g": 1200.0},
-        "benchmark_parts": _default_benchmark_parts(),
-        "randomization": {
-            "static_variation_id": "v1.0",
-            "runtime_jitter_enabled": True,
-        },
-    }
+    forbid_collision_objectives = _objective_validation_payload(
+        goal_zone_min_mm=[3.0, 3.0, 3.0],
+        goal_zone_max_mm=[4.0, 4.0, 4.0],
+        build_zone_min_mm=[-5.0, -5.0, 0.0],
+        build_zone_max_mm=[5.0, 5.0, 10.0],
+        start_position_mm=[0.0, 0.0, 1.0],
+        runtime_jitter_mm=[0.5, 0.5, 0.5],
+        radius_mm=[0.25, 0.25],
+        forbid_zones=[
+            ForbidZone(
+                name="center_block",
+                min_mm=(-1.0, -1.0, 0.0),
+                max_mm=(1.0, 1.0, 2.0),
+            )
+        ],
+    )
 
     async with httpx.AsyncClient(timeout=300.0) as client:
         await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
@@ -944,73 +768,23 @@ async def test_int_008_objectives_semantic_validation_rejects_negative_runtime_r
     session_id = f"INT-008-RANGE-{uuid.uuid4().hex[:8]}"
     headers = {"X-Session-ID": session_id}
 
-    valid_plan = """## 1. Learning Objective
-
-Move the projectile into the goal zone.
-
-## 2. Geometry
-
-- Ground plane
-- Guide rails
-
-## 3. Objectives
-
-- Reach the goal zone
-"""
-    valid_todo = "# TODO\n\n- [x] Planner handoff seeded\n"
-    valid_cost = """version: "1.0"
-manufactured_parts: []
-final_assembly: []
-totals:
-  estimated_unit_cost_usd: 10.0
-  estimated_weight_g: 100.0
-"""
-    minimal_script = """
-from build123d import Box, Location
-from shared.models.schemas import PartMetadata
-from shared.workers.workbench_models import ManufacturingMethod
-
-def build():
-    p = Box(10, 10, 10)
-    p = p.move(Location((0, 0, 5)))
-    p.label = "test_part"
-    p.metadata = PartMetadata(
-        manufacturing_method=ManufacturingMethod.CNC,
-        material_id="aluminum-6061",
+    valid_plan, valid_todo, valid_cost, minimal_script = (
+        _objective_validation_artifacts()
     )
-    return p
-"""
 
-    base_objectives = {
-        "objectives": {
-            "goal_zone_mm": {"min_mm": [3.0, 3.0, 3.0], "max_mm": [4.0, 4.0, 4.0]},
-            "forbid_zones": [],
-            "build_zone_mm": {"min_mm": [-5.0, -5.0, 0.0], "max_mm": [5.0, 5.0, 10.0]},
-        },
-        "physics": {"backend": "GENESIS"},
-        "simulation_bounds_mm": {
-            "min_mm": [-30.0, -30.0, -10.0],
-            "max_mm": [30.0, 30.0, 30.0],
-        },
-        "payload": {
-            "label": "projectile_ball",
-            "shape": "sphere",
-            "material_id": "abs",
-            "static_randomization": {"radius_mm": [0.25, 0.25]},
-            "start_position_mm": [0.0, 0.0, 1.0],
-            "runtime_jitter_mm": [0.5, 0.5, 0.5],
-        },
-        "constraints": {"max_unit_cost": 50.0, "max_weight_g": 1200.0},
-        "benchmark_parts": _default_benchmark_parts(),
-        "randomization": {
-            "static_variation_id": "v1.0",
-            "runtime_jitter_enabled": True,
-        },
-    }
+    base_objectives = _objective_validation_payload(
+        goal_zone_min_mm=[3.0, 3.0, 3.0],
+        goal_zone_max_mm=[4.0, 4.0, 4.0],
+        build_zone_min_mm=[-5.0, -5.0, 0.0],
+        build_zone_max_mm=[5.0, 5.0, 10.0],
+        start_position_mm=[0.0, 0.0, 1.0],
+        runtime_jitter_mm=[0.5, 0.5, 0.5],
+        radius_mm=[0.25, 0.25],
+    )
 
     async with httpx.AsyncClient(timeout=300.0) as client:
         # 1. Negative runtime jitter must fail closed.
-        negative_jitter = yaml.safe_load(yaml.safe_dump(base_objectives))
+        negative_jitter = base_objectives.model_dump(mode="json")
         negative_jitter["payload"]["runtime_jitter_mm"] = [-0.5, 0.5, 0.5]
         await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
         await _write_workspace_file(client, headers, "todo.md", valid_todo)
@@ -1037,7 +811,7 @@ def build():
         assert "runtime_jitter_mm" in data.message
 
         # 2. Negative static randomization radius must also fail closed.
-        negative_radius = yaml.safe_load(yaml.safe_dump(base_objectives))
+        negative_radius = base_objectives.model_dump(mode="json")
         negative_radius["payload"]["static_randomization"]["radius_mm"] = [
             -0.25,
             0.25,

@@ -7,7 +7,6 @@ from pathlib import Path
 import cv2
 import numpy as np
 import pytest
-import yaml
 from httpx import AsyncClient
 
 from controller.api.schemas import AgentRunResponse, EpisodeResponse
@@ -17,6 +16,8 @@ from shared.agents.config import load_agents_config
 from shared.enums import AgentName, EpisodeStatus
 from shared.models.schemas import (
     BenchmarkDefinition,
+    BenchmarkPartDefinition,
+    BenchmarkPartMetadata,
     BoundingBox,
     Constraints,
     ForbidZone,
@@ -31,7 +32,10 @@ from shared.workers.schema import (
     BenchmarkToolResponse,
     WriteFileRequest,
 )
-from tests.integration.agent.helpers import seed_benchmark_assembly_definition
+from tests.integration.agent.helpers import (
+    dump_yaml_model,
+    seed_benchmark_assembly_definition,
+)
 
 # Adjust URL to your controller if different
 CONTROLLER_URL = "http://127.0.0.1:18000"
@@ -43,11 +47,14 @@ pytestmark = pytest.mark.xdist_group(name="physics_sims")
 
 def _default_benchmark_parts():
     return [
-        {
-            "part_id": "environment_fixture",
-            "label": "environment_fixture",
-            "metadata": {"is_fixed": True, "material_id": "aluminum_6061"},
-        }
+        BenchmarkPartDefinition(
+            part_id="environment_fixture",
+            label="environment_fixture",
+            metadata=BenchmarkPartMetadata(
+                is_fixed=True,
+                material_id="aluminum_6061",
+            ),
+        )
     ]
 
 
@@ -236,9 +243,7 @@ async def test_render_artifact_generation_int_039_simulation_video_shows_objecti
             f"{WORKER_LIGHT_URL}/fs/write",
             json=WriteFileRequest(
                 path="benchmark_definition.yaml",
-                content=yaml.safe_dump(
-                    objectives.model_dump(mode="json"), sort_keys=False
-                ),
+                content=dump_yaml_model(objectives),
                 overwrite=True,
             ).model_dump(mode="json"),
             headers=headers,

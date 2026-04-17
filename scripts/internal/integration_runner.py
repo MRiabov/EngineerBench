@@ -657,6 +657,8 @@ def run_pytest_subprocess(
         and xdist_workers not in {"0", "0.0", "false", "False", "none", "None"}
     )
     cmd = [
+        "rtk",
+        "test",
         "uv",
         "run",
         "pytest",

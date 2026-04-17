@@ -873,6 +873,7 @@ def simulate_subprocess(
     session_id: str | None = None,
     episode_id: str | None = None,
     stream_render_frames: bool = False,
+    skip_preview_rendering: bool = False,
     particle_budget: int | None = None,
 ) -> SimulationResult:
     """Serializable entry point for ProcessPoolExecutor."""
@@ -899,6 +900,7 @@ def simulate_subprocess(
         session_id=session_id,
         episode_id=episode_id,
         stream_render_frames=stream_render_frames,
+        skip_preview_rendering=skip_preview_rendering,
         particle_budget=particle_budget,
         script_path=script_path,
         script_content=script_content,
@@ -949,6 +951,7 @@ def simulate(
     session_id: str | None = None,
     episode_id: str | None = None,
     stream_render_frames: bool = False,
+    skip_preview_rendering: bool = False,
     script_path: str | Path | None = None,
     script_content: str | None = None,
 ) -> SimulationResult:
@@ -1257,49 +1260,51 @@ def simulate(
             or repo_revision(Path(__file__).resolve().parents[2])
         )
 
-        try:
-            isolated_script_path = working_dir / "script.py"
-            if isolated_script_path.exists():
-                render_paths = _prerender_24_views_isolated(
-                    working_dir=working_dir,
-                    output_dir=renders_dir,
-                    backend_type=backend_type,
+        render_paths: list[str] = []
+        if not skip_preview_rendering:
+            try:
+                isolated_script_path = working_dir / "script.py"
+                if isolated_script_path.exists():
+                    render_paths = _prerender_24_views_isolated(
+                        working_dir=working_dir,
+                        output_dir=renders_dir,
+                        backend_type=backend_type,
+                        session_id=session_id,
+                        smoke_test_mode=smoke_test_mode,
+                        particle_budget=particle_budget,
+                        revision=runtime_revision,
+                        script_path=script_path,
+                        script_content=script_content,
+                        objectives=objectives,
+                        publish_bundle_index=False,
+                    )
+                else:
+                    render_paths = prerender_24_views(
+                        component,
+                        output_dir=str(renders_dir),
+                        workspace_root=working_dir,
+                        backend_type=backend_type,
+                        session_id=session_id,
+                        scene_path=str(scene_path),
+                        smoke_test_mode=smoke_test_mode,
+                        revision=runtime_revision,
+                        publish_bundle_index=False,
+                    )
+            except Exception as exc:
+                logger.warning(
+                    "validation_preview_render_failed",
+                    error=str(exc),
                     session_id=session_id,
-                    smoke_test_mode=smoke_test_mode,
-                    particle_budget=particle_budget,
-                    revision=runtime_revision,
-                    script_path=script_path,
-                    script_content=script_content,
-                    objectives=objectives,
-                    publish_bundle_index=False,
                 )
-            else:
-                render_paths = prerender_24_views(
-                    component,
-                    output_dir=str(renders_dir),
-                    workspace_root=working_dir,
-                    backend_type=backend_type,
-                    session_id=session_id,
-                    scene_path=str(scene_path),
-                    smoke_test_mode=smoke_test_mode,
-                    revision=runtime_revision,
-                    publish_bundle_index=False,
+                return SimulationResult(
+                    success=False,
+                    summary=f"Validation preview render failed: {exc}",
+                    failure=SimulationFailure(
+                        reason=FailureReason.VALIDATION_FAILED,
+                        detail=str(exc),
+                    ),
+                    confidence=SimulationConfidence.HIGH,
                 )
-        except Exception as exc:
-            logger.warning(
-                "validation_preview_render_failed",
-                error=str(exc),
-                session_id=session_id,
-            )
-            return SimulationResult(
-                success=False,
-                summary=f"Validation preview render failed: {exc}",
-                failure=SimulationFailure(
-                    reason=FailureReason.VALIDATION_FAILED,
-                    detail=str(exc),
-                ),
-                confidence=SimulationConfidence.HIGH,
-            )
         if final_video_path and final_video_path.exists():
             render_paths.append(str(final_video_path))
             object_pose_path = final_video_path.parent / "objects.parquet"

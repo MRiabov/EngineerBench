@@ -600,6 +600,39 @@ def _simulate_submission(
     return BenchmarkToolResponse.model_validate(res)
 
 
+def simulate_benchmark_script_content(
+    *,
+    script_content: str,
+    script_path: str = "script.py",
+    backend: Any | None = None,
+    smoke_test_mode: bool | None = None,
+    skip_preview_rendering: bool = False,
+    particle_budget: int | None = None,
+    session_id: str | None = None,
+    episode_id: str | None = None,
+    stream_render_frames: bool = False,
+    bundle_base64: str | None = None,
+) -> BenchmarkToolResponse:
+    """Run worker-heavy benchmark simulation from inline script content."""
+    backend_value = getattr(backend, "value", backend) if backend is not None else None
+    payload: dict[str, Any] = {
+        "script_path": script_path,
+        "script_content": script_content,
+        "backend": backend_value or get_default_simulator_backend().value,
+        "smoke_test_mode": smoke_test_mode,
+        "skip_preview_rendering": skip_preview_rendering,
+        "particle_budget": particle_budget,
+        "session_id": session_id,
+        "episode_id": episode_id,
+        "stream_render_frames": stream_render_frames,
+        "agent_role": _script_agent_role(),
+    }
+    if bundle_base64 is not None:
+        payload["bundle_base64"] = bundle_base64
+    res = _call_heavy_worker("/benchmark/simulate", payload)
+    return BenchmarkToolResponse.model_validate(res)
+
+
 def _validate_submission(
     compound: Compound, *, script_path: str | Path | None = None, **kwargs
 ) -> tuple[bool, str | None]:

@@ -38,6 +38,7 @@ class ScriptToolRequest(BaseModel):
     backend: SimulatorBackendType = Field(default_factory=get_default_simulator_backend)
     smoke_test_mode: bool | None = None
     bundle_base64: str | None = None
+    skip_preview_rendering: bool = False
     orbit_pitch: float | list[float] = Field(
         default=-45.0,
         validation_alias=AliasChoices("pitch", "orbit_pitch"),
@@ -210,6 +211,7 @@ async def simulate_script(
                 backend=payload.backend,
                 smoke_test_mode=payload.smoke_test_mode,
                 stream_render_frames=payload.stream_render_frames,
+                skip_preview_rendering=payload.skip_preview_rendering,
                 bundle_base64=payload.bundle_base64,
             )
             if isinstance(result, BenchmarkToolResponse):

@@ -74,7 +74,104 @@ class GenesisBackend(PhysicsRendererBackend):
         self.session_id = session_id
         self.num_envs = max(1, num_envs)
         self.render_width, self.render_height = get_video_render_resolution()
+        self._contact_cache_time: float | None = None
+        self._contact_force_cache: list[ContactForce] = []
+        self._contact_pair_cache: set[tuple[str, str]] = set()
+        self._zone_bounds_cache: dict[
+            str, tuple[tuple[float, float, float], tuple[float, float, float]] | None
+        ] = {}
         self._ensure_initialized()
+
+    def _invalidate_collision_caches(self) -> None:
+        self._contact_cache_time = None
+        self._contact_force_cache = []
+        self._contact_pair_cache = set()
+        self._zone_bounds_cache.clear()
+
+    @staticmethod
+    def _as_float_triplet(values: Any) -> tuple[float, float, float] | None:
+        if values is None:
+            return None
+        if hasattr(values, "cpu"):
+            values = values.cpu().numpy()
+        try:
+            arr = np.asarray(values, dtype=float).reshape(-1)
+        except Exception:
+            return None
+        if arr.size < 3 or not np.all(np.isfinite(arr[:3])):
+            return None
+        return tuple(float(value) for value in arr[:3].tolist())
+
+    def _resolve_zone_bounds(
+        self, site_name: str
+    ) -> tuple[tuple[float, float, float], tuple[float, float, float]] | None:
+        if site_name in self._zone_bounds_cache:
+            return self._zone_bounds_cache[site_name]
+
+        ent_cfg = self.entity_configs.get(site_name)
+        if not ent_cfg and self.scene_meta:
+            scene_assets = getattr(self.scene_meta, "assets", None)
+            if isinstance(scene_assets, dict):
+                entity_defs = scene_assets.get("entities", [])
+            else:
+                entity_defs = getattr(scene_assets, "entities", []) or []
+            for cfg in entity_defs:
+                if cfg.get("name") == site_name:
+                    ent_cfg = cfg
+                    break
+
+        bounds: tuple[tuple[float, float, float], tuple[float, float, float]] | None = (
+            None
+        )
+        if ent_cfg and ent_cfg.get("is_zone"):
+            min_value = ent_cfg.get("min_mm", ent_cfg.get("min"))
+            max_value = ent_cfg.get("max_mm", ent_cfg.get("max"))
+            min_triplet = self._as_float_triplet(min_value)
+            max_triplet = self._as_float_triplet(max_value)
+            if min_triplet is not None and max_triplet is not None:
+                bounds = (min_triplet, max_triplet)
+            else:
+                center = self._as_float_triplet(
+                    ent_cfg.get("pos_mm", ent_cfg.get("pos"))
+                )
+                size = self._as_float_triplet(
+                    ent_cfg.get("size_mm", ent_cfg.get("size"))
+                )
+                if center is not None and size is not None:
+                    bounds = (
+                        tuple(center[i] - size[i] for i in range(3)),
+                        tuple(center[i] + size[i] for i in range(3)),
+                    )
+
+        self._zone_bounds_cache[site_name] = bounds
+        return bounds
+
+    def _refresh_contact_cache(self) -> None:
+        if not self.scene:
+            self._contact_cache_time = None
+            self._contact_force_cache = []
+            self._contact_pair_cache = set()
+            return
+
+        contacts = self.scene.sim.get_contacts()
+        cache: list[ContactForce] = []
+        pairs: set[tuple[str, str]] = set()
+        for c in contacts:
+            force = c.force.cpu().numpy() if hasattr(c.force, "cpu") else c.force
+            contact = ContactForce(
+                body1=c.entities[0].name,
+                body2=c.entities[1].name,
+                force=tuple(force.tolist()),
+                position=tuple(c.pos.cpu().numpy().tolist())
+                if hasattr(c.pos, "cpu")
+                else tuple(c.pos.tolist()),
+            )
+            cache.append(contact)
+            pairs.add(tuple(sorted((contact.body1, contact.body2))))
+
+        self._contact_cache_time = self.current_time
+        self._contact_force_cache = cache
+        self._contact_pair_cache = pairs
 
     def _ensure_initialized(self):
         if gs is not None and not getattr(gs, "_initialized", False):
@@ -230,6 +327,7 @@ class GenesisBackend(PhysicsRendererBackend):
                 and self.scene_meta.config == scene.config
             ):
                 logger.debug("genesis_backend_reuse_scene", scene_path=scene.scene_path)
+                self._invalidate_collision_caches()
                 return
 
             # Ensure fresh state for Genesis global state
@@ -250,6 +348,7 @@ class GenesisBackend(PhysicsRendererBackend):
             self.mjcf_actuators = {}
             self.applied_controls = {}
             self._is_built = False
+            self._invalidate_collision_caches()
 
             if "gs_scene" in scene.assets:
                 self.scene = scene.assets["gs_scene"]
@@ -838,27 +937,14 @@ class GenesisBackend(PhysicsRendererBackend):
         if not self.scene:
             return []
 
+        if self._contact_cache_time == self.current_time:
+            return self._contact_force_cache
+
         # Genesis provides contacts via solver/sim
         # In version 0.3.x, contacts are typically accessed via simulator.get_contacts()
         try:
-            # logger.debug("genesis_calling_sim_get_contacts")
-            contacts = self.scene.sim.get_contacts()
-            results = []
-            for c in contacts:
-                # c has fields like pos, normal, force, entities, etc.
-                # c.entities is a tuple of (entity_a, entity_b)
-                force = c.force.cpu().numpy() if hasattr(c.force, "cpu") else c.force
-                results.append(
-                    ContactForce(
-                        body1=c.entities[0].name,
-                        body2=c.entities[1].name,
-                        force=tuple(force.tolist()),
-                        position=tuple(c.pos.cpu().numpy().tolist())
-                        if hasattr(c.pos, "cpu")
-                        else tuple(c.pos.tolist()),
-                    )
-                )
-            return results
+            self._refresh_contact_cache()
+            return self._contact_force_cache
         except Exception as e:
             import traceback
 
@@ -868,6 +954,9 @@ class GenesisBackend(PhysicsRendererBackend):
                 stack="".join(traceback.format_stack()),
             )
             # Fallback if API changed or no contacts
+            self._contact_cache_time = self.current_time
+            self._contact_force_cache = []
+            self._contact_pair_cache = set()
             return []
 
     def get_site_state(self, _site_name: str) -> SiteState:
@@ -1006,43 +1095,23 @@ class GenesisBackend(PhysicsRendererBackend):
         site_entity = self.entities.get(site_name)
 
         if not target_entity or not site_entity:
-            # Check if it's a zone in entity_configs
-            ent_cfg = self.entity_configs.get(site_name)
-            if not ent_cfg and self.scene_meta:
-                # Fallback for scene_meta
-                for cfg in self.scene_meta.assets.get("entities", []):
-                    if cfg.get("name") == site_name:
-                        ent_cfg = cfg
-                        break
+            zone_bounds = self._resolve_zone_bounds(site_name)
+            if zone_bounds is None:
+                return False
 
-            if ent_cfg and ent_cfg.get("is_zone"):
-                # Check if target body pos is within zone
-                state = self.get_body_state(body_name, env_idx=env_idx)
-                pos = state.pos
-
-                # Handle both min/max and pos/size representations
-                if "min" in ent_cfg and "max" in ent_cfg:
-                    z_min = ent_cfg["min"]
-                    z_max = ent_cfg["max"]
-                elif "pos" in ent_cfg and "size" in ent_cfg:
-                    center = ent_cfg["pos"]
-                    half_extents = ent_cfg["size"]
-                    z_min = [center[i] - half_extents[i] for i in range(3)]
-                    z_max = [center[i] + half_extents[i] for i in range(3)]
-                else:
-                    return False
-
-                return all(z_min[i] <= pos[i] <= z_max[i] for i in range(3))
-
-            return False
+            # Zone checks are purely positional, so avoid repeatedly fetching
+            # the full contact list.
+            state = self.get_body_state(body_name, env_idx=env_idx)
+            pos = state.pos
+            z_min, z_max = zone_bounds
+            return all(z_min[i] <= pos[i] <= z_max[i] for i in range(3))
 
         # If both are entities, check simulation contacts
-        contacts = self.get_contact_forces()
-        for c in contacts:
-            if (c.body1 == body_name and c.body2 == site_name) or (
-                c.body1 == site_name and c.body2 == body_name
-            ):
-                return True
+        if self._contact_cache_time != self.current_time:
+            self._refresh_contact_cache()
+
+        if tuple(sorted((body_name, site_name))) in self._contact_pair_cache:
+            return True
 
         return False
 
@@ -1075,6 +1144,7 @@ class GenesisBackend(PhysicsRendererBackend):
                 else:
                     qpos[:3] += jitter_tensor
                 entity.set_qpos(qpos, envs_idx=envs_idx)
+                self._invalidate_collision_caches()
         else:
             # Check links within entities
             for ent in self.entities.values():
@@ -1097,6 +1167,7 @@ class GenesisBackend(PhysicsRendererBackend):
                                         jitter_tensor
                                     )
                                 ent.set_qpos(qpos, envs_idx=envs_idx)
+                                self._invalidate_collision_caches()
                             return
 
     def reset(self) -> None:
@@ -1105,6 +1176,7 @@ class GenesisBackend(PhysicsRendererBackend):
             raise RuntimeError("Scene not loaded")
 
         self.scene.reset()
+        self._invalidate_collision_caches()
 
     def close(self) -> None:
         try:
@@ -1119,3 +1191,4 @@ class GenesisBackend(PhysicsRendererBackend):
         self.entities = {}
         self.cameras = {}
         self._is_built = False
+        self._invalidate_collision_caches()

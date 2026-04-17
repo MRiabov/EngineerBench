@@ -17,6 +17,7 @@ import re
 import runpy
 import shutil
 import sys
+import tempfile
 import textwrap
 from collections import Counter, defaultdict
 from contextlib import redirect_stderr, redirect_stdout
@@ -219,6 +220,9 @@ class ScenarioConfig:
     promote_to_dataset: bool = False
     backfill_source_solution: bool = False
     emit_debug_plots: bool = True
+    emit_simulation_video: bool = True
+    simulation_video_retry_seed: int | None = 11
+    simulation_video_duration_s: float = 8.0
     batch_width_range: tuple[int, int] = (10, 20)
     success_threshold: float = 0.8
     backend_order: tuple[SimulatorBackendType, ...] = (SimulatorBackendType.MUJOCO,)
@@ -1772,6 +1776,7 @@ def log_verification_failure_diagnostics(
     backend_type: SimulatorBackendType,
     verify_result: Any,
     route_points: list[RoutePoint],
+    simulation_bounds_mm: Any | None = None,
 ) -> dict[str, Any]:
     failed_result = next(
         (
@@ -1787,6 +1792,10 @@ def log_verification_failure_diagnostics(
     stuck_body_name = None
     stuck_position_mm: list[float] | None = None
     stuck_position_source = "unknown"
+    failure_position_mm: list[float] | None = None
+    failure_step_index: int | None = None
+    failure_step_count: int | None = None
+    failure_time_s: float | None = None
 
     if failed_result is not None:
         failure_reason = str(getattr(failed_result, "fail_reason", None) or "")
@@ -1794,10 +1803,27 @@ def log_verification_failure_diagnostics(
         if failure is not None:
             failure_detail = getattr(failure, "detail", None)
             monitor_state = getattr(failure, "payload_trajectory_monitor", None)
+            raw_failure_position = getattr(failure, "failure_position_mm", None)
+            if raw_failure_position is not None:
+                failure_position_mm = [float(v) for v in raw_failure_position]
+            raw_failure_step_index = getattr(failure, "failure_step_index", None)
+            if raw_failure_step_index is not None:
+                failure_step_index = int(raw_failure_step_index)
+                failure_step_count = failure_step_index + 1
+            raw_failure_time_s = getattr(failure, "failure_time_s", None)
+            if raw_failure_time_s is not None:
+                failure_time_s = float(raw_failure_time_s)
         if monitor_state is None:
             monitor_state = getattr(failed_result, "payload_trajectory_monitor", None)
+    else:
+        fail_reasons = list(getattr(verify_result, "fail_reasons", []) or [])
+        if fail_reasons:
+            failure_reason = str(fail_reasons[0])
 
-    if monitor_state is not None:
+    if failure_position_mm is not None:
+        stuck_position_mm = failure_position_mm
+        stuck_position_source = "simulation_failure"
+    elif monitor_state is not None:
         observed_position = getattr(monitor_state, "observed_position_mm", None)
         if observed_position is not None:
             stuck_position_mm = [float(v) for v in observed_position]
@@ -1806,6 +1832,8 @@ def log_verification_failure_diagnostics(
 
     if stuck_body_name is None and failure_detail:
         stuck_body_name = str(failure_detail)
+    if stuck_body_name is None and failure_reason and ":" in failure_reason:
+        stuck_body_name = failure_reason.split(":", 1)[1].strip() or None
 
     if stuck_position_mm is None:
         stuck_position_mm = [float(v) for v in route_points[0].pos_mm]
@@ -1820,8 +1848,17 @@ def log_verification_failure_diagnostics(
         "stuck_body_name": stuck_body_name,
         "stuck_position_mm": stuck_position_mm,
         "stuck_position_source": stuck_position_source,
+        "failure_position_mm": failure_position_mm,
+        "failure_step_index": failure_step_index,
+        "failure_step_count": failure_step_count,
+        "failure_time_s": failure_time_s,
         "first_route_point_mm": [float(v) for v in route_points[0].pos_mm],
         "goal_route_point_mm": [float(v) for v in route_points[-1].pos_mm],
+        "simulation_bounds_mm": (
+            simulation_bounds_mm.model_dump()
+            if simulation_bounds_mm is not None
+            else None
+        ),
     }
     logger.info("verification_stuck_summary", **summary)
     return summary
@@ -1889,6 +1926,68 @@ def render_startup_workspace_preview(
         "render_blobs_base64": response.render_blobs_base64,
         "materialized_paths": materialized_paths,
     }
+
+
+def render_simulation_video_preview(
+    *,
+    backend_type: SimulatorBackendType,
+    script_content: str,
+    session_id: str,
+) -> dict[str, Any]:
+    from shared.rendering.renderer_client import bundle_workspace_base64
+    from shared.utils.agent import simulate_benchmark_script_content
+
+    with tempfile.TemporaryDirectory() as staging_dir:
+        staging_root = Path(staging_dir)
+        for rel_path in (
+            ".manifests/current_role.json",
+            "benchmark_definition.yaml",
+            "payload_trajectory_definition.yaml",
+            "assembly_definition.yaml",
+        ):
+            source = REPO_ROOT / rel_path
+            if source.exists():
+                target = staging_root / rel_path
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(source, target)
+
+        response = simulate_benchmark_script_content(
+            script_content=script_content,
+            script_path="solution_script.py",
+            backend=backend_type,
+            smoke_test_mode=False,
+            skip_preview_rendering=True,
+            session_id=session_id,
+            bundle_base64=bundle_workspace_base64(staging_root),
+        )
+    artifacts = response.artifacts
+    render_paths = list(artifacts.render_paths) if artifacts else []
+    object_store_keys = dict(artifacts.object_store_keys) if artifacts else {}
+    video_path = next(
+        (path for path in render_paths if Path(path).suffix.lower() == ".mp4"),
+        None,
+    )
+    object_pose_path = next(
+        (path for path in render_paths if Path(path).name == "objects.parquet"),
+        None,
+    )
+    summary = {
+        "success": bool(response.success),
+        "status_text": response.message,
+        "message": response.message,
+        "video_path": video_path,
+        "object_pose_path": object_pose_path,
+        "render_paths": render_paths,
+        "object_store_keys": object_store_keys,
+        "failure_reason": str(artifacts.failure)
+        if artifacts and artifacts.failure
+        else None,
+        "simulation_result_json": (
+            artifacts.simulation_result_json if artifacts else None
+        ),
+    }
+    logger.info("simulation_video_rendered", **summary)
+    return summary
 
 
 def stage_bundle_root(
@@ -2090,6 +2189,7 @@ def synthesize(
     chosen_scene_path: Path | None = None
     chosen_verify_result = None
     chosen_pruned_result = None
+    simulation_video_summary: dict[str, Any] | None = None
 
     for retry_seed in progress_iter(config.retry_seeds, "retry seeds"):
         try:
@@ -2120,6 +2220,32 @@ def synthesize(
                 backend_type=config.backend_order[0],
             )
 
+            if (
+                config.emit_simulation_video
+                and simulation_video_summary is None
+                and (
+                    config.simulation_video_retry_seed is None
+                    or retry_seed == config.simulation_video_retry_seed
+                )
+            ):
+                simulation_video_script = build_solution_script_text(
+                    scenario_id=config.scenario_id,
+                    route_points=config.route_points,
+                    part_specs=candidate_specs,
+                    payload_name=synthetic_benchmark.payload.label,
+                    split_seed=retry_seed,
+                    tube_radius_mm=tube_radius_mm,
+                    clearance_mm=config.clearance_mm,
+                    wall_thickness_mm=config.wall_thickness_mm,
+                    max_segment_mm=config.max_segment_mm,
+                    material_id=config.material_id,
+                )
+                simulation_video_summary = render_simulation_video_preview(
+                    backend_type=config.backend_order[0],
+                    script_content=simulation_video_script,
+                    session_id=f"{config.scenario_id}-video-{retry_seed}",
+                )
+
             for backend_type in progress_iter(
                 config.backend_order, f"backend {retry_seed}"
             ):
@@ -2149,6 +2275,7 @@ def synthesize(
                             backend_type=backend_type,
                             verify_result=verify_result,
                             route_points=config.route_points,
+                            simulation_bounds_mm=benchmark_definition.simulation_bounds_mm,
                         )
                         logger.info(
                             "verification_failed",
@@ -2210,6 +2337,7 @@ def synthesize(
                             backend_type=backend_type,
                             verify_result=pruned_result,
                             route_points=config.route_points,
+                            simulation_bounds_mm=benchmark_definition.simulation_bounds_mm,
                         )
                         logger.info(
                             "pruned_verification_failed",
@@ -2491,6 +2619,7 @@ def synthesize(
         "planner_root": str(planner_root),
         "coder_root": str(coder_root),
         "startup_render": startup_render,
+        "simulation_video_summary": simulation_video_summary,
         "total_cost": total_cost,
         "total_weight": total_weight,
         "success_rate_tube": float(chosen_verify_result.success_rate),
@@ -2504,11 +2633,11 @@ def default_route_points() -> list[RoutePoint]:
         # Keep the prototype aligned with the source ec-002 route trace so the
         # scratch scaffold has a physically plausible entry lane instead of a
         # disconnected waypoint chain.
-        RoutePoint(name="build_zone_start", pos_mm=(-280.0, 0.0, 240.0), t_s=0.0),
-        RoutePoint(name="left_capture_lane", pos_mm=(-240.0, 0.0, 220.0), t_s=1.5),
-        RoutePoint(name="bypass_corner", pos_mm=(-240.0, 110.0, 180.0), t_s=2.4),
-        RoutePoint(name="goal_lane_entry", pos_mm=(-40.0, 110.0, 130.0), t_s=3.6),
-        RoutePoint(name="goal_approach", pos_mm=(240.0, 110.0, 90.0), t_s=4.8),
+        RoutePoint(name="build_zone_start", pos_mm=(-280.0, 0.0, 180.0), t_s=0.0),
+        RoutePoint(name="left_capture_lane", pos_mm=(-240.0, 0.0, 160.0), t_s=1.5),
+        RoutePoint(name="bypass_corner", pos_mm=(-240.0, 110.0, 120.0), t_s=2.4),
+        RoutePoint(name="goal_lane_entry", pos_mm=(-40.0, 110.0, 70.0), t_s=3.6),
+        RoutePoint(name="goal_approach", pos_mm=(240.0, 110.0, 50.0), t_s=4.8),
         RoutePoint(name="goal_zone_contact", pos_mm=(325.0, 0.0, 40.0), t_s=6.0),
     ]
 
@@ -2531,6 +2660,7 @@ def main(config: ScenarioConfig | None = None) -> dict[str, Any]:
             promote_to_dataset=False,
             backfill_source_solution=False,
         )
+    os.environ.setdefault("WORKER_HEAVY_URL", "http://127.0.0.1:28002")
     log_path = notebook_log_path(config.scenario_id)
     with NotebookLogCapture(log_path):
         logger.info("notebook_log_capture_start", log_path=str(log_path))

@@ -51,4 +51,4 @@ export INTEGRATION_ORDERED_MARKER_SPLITS="${INTEGRATION_ORDERED_MARKER_SPLITS:-1
 # clobber each other. The env var is kept for compatibility with older docs.
 export INTEGRATION_ASYNC_CLEANUP="${INTEGRATION_ASYNC_CLEANUP:-1}"
 
-exec uv run python3 scripts/internal/integration_runner.py run "${pytest_passthrough_args[@]}" "$@"
+exec rtk uv run python3 scripts/internal/integration_runner.py run "${pytest_passthrough_args[@]}" "$@"

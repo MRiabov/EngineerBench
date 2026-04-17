@@ -5,7 +5,6 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
-import yaml
 
 import worker_heavy.utils.file_validation as file_validation
 from controller.agent.node_entry_validation import (
@@ -27,6 +26,8 @@ from shared.models.schemas import (
     AssemblyConstraints,
     AssemblyDefinition,
     BenchmarkDefinition,
+    BenchmarkPartDefinition,
+    BenchmarkPartMetadata,
     BoundingBox,
     CoarsePayloadTrajectory,
     Constraints,
@@ -34,14 +35,19 @@ from shared.models.schemas import (
     ObjectivesSection,
     Payload,
     PayloadTrajectoryAnchor,
+    PayloadTrajectoryDefinition,
+    PayloadTrajectoryPose,
+    StaticRandomization,
 )
 from shared.script_contracts import (
     BENCHMARK_SCRIPT_PATH,
     SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
 )
+from shared.simulation.schemas import SimulatorBackendType
 from shared.utils.agent import validate_engineering
 from shared.workers.loader import load_component_from_script
 from shared.workers.schema import BenchmarkToolResponse
+from tests.integration.agent.helpers import dump_yaml_model
 
 ROOT = Path(__file__).resolve().parents[3]
 
@@ -86,54 +92,90 @@ async def test_int_current_role_manifest_wins_over_mixed_workspace_files():
         )
         await worker.write_file(
             "benchmark_definition.yaml",
-            yaml.safe_dump(
-                {
-                    "constraints": {"max_unit_cost": 100.0, "max_weight_g": 1000.0},
-                    "objectives": {
-                        "goal_zone_mm": {"min_mm": [0, 0, 0], "max_mm": [1, 1, 1]},
-                        "forbid_zones": [],
-                        "build_zone_mm": {"min_mm": [0, 0, 0], "max_mm": [1, 1, 1]},
-                    },
-                },
-                sort_keys=False,
+            dump_yaml_model(
+                BenchmarkDefinition(
+                    objectives=ObjectivesSection(
+                        goal_zone_mm=BoundingBox(
+                            min_mm=(0.0, 0.0, 0.0),
+                            max_mm=(1.0, 1.0, 1.0),
+                        ),
+                        forbid_zones=[],
+                        build_zone_mm=BoundingBox(
+                            min_mm=(0.0, 0.0, 0.0),
+                            max_mm=(1.0, 1.0, 1.0),
+                        ),
+                    ),
+                    benchmark_parts=[
+                        BenchmarkPartDefinition(
+                            part_id="environment_fixture",
+                            label="environment_fixture",
+                            metadata=BenchmarkPartMetadata(
+                                is_fixed=True,
+                                material_id="aluminum_6061",
+                            ),
+                        )
+                    ],
+                    simulation_bounds_mm=BoundingBox(
+                        min_mm=(-1.0, -1.0, -1.0), max_mm=(2.0, 2.0, 2.0)
+                    ),
+                    payload=Payload(
+                        label="benchmark_payload",
+                        shape="cube",
+                        material_id="abs",
+                        start_position_mm=(0.0, 0.0, 0.0),
+                        runtime_jitter_mm=(0.0, 0.0, 0.0),
+                    ),
+                    constraints=Constraints(
+                        max_unit_cost=100.0,
+                        max_weight_g=1000.0,
+                    ),
+                )
             ),
             overwrite=True,
             bypass_agent_permissions=True,
         )
         await worker.write_file(
             "assembly_definition.yaml",
-            yaml.safe_dump(
-                {
-                    "version": "1.0",
-                    "constraints": {},
-                    "manufactured_parts": [],
-                    "final_assembly": [],
-                    "totals": {
-                        "estimated_unit_cost_usd": 0.0,
-                        "estimated_weight_g": 0.0,
-                        "estimate_confidence": "high",
-                    },
-                },
-                sort_keys=False,
+            dump_yaml_model(
+                AssemblyDefinition(
+                    version="1.0",
+                    constraints=AssemblyConstraints(
+                        benchmark_max_unit_cost_usd=100.0,
+                        benchmark_max_weight_g=1000.0,
+                        planner_target_max_unit_cost_usd=90.0,
+                        planner_target_max_weight_g=900.0,
+                    ),
+                    manufactured_parts=[],
+                    final_assembly=[],
+                    totals=CostTotals(
+                        estimated_unit_cost_usd=0.0,
+                        estimated_weight_g=0.0,
+                        estimate_confidence="high",
+                    ),
+                )
             ),
             overwrite=True,
             bypass_agent_permissions=True,
         )
         await worker.write_file(
             "benchmark_assembly_definition.yaml",
-            yaml.safe_dump(
-                {
-                    "version": "1.0",
-                    "constraints": {},
-                    "manufactured_parts": [],
-                    "final_assembly": [],
-                    "totals": {
-                        "estimated_unit_cost_usd": 0.0,
-                        "estimated_weight_g": 0.0,
-                        "estimate_confidence": "high",
-                    },
-                },
-                sort_keys=False,
+            dump_yaml_model(
+                AssemblyDefinition(
+                    version="1.0",
+                    constraints=AssemblyConstraints(
+                        benchmark_max_unit_cost_usd=100.0,
+                        benchmark_max_weight_g=1000.0,
+                        planner_target_max_unit_cost_usd=90.0,
+                        planner_target_max_weight_g=900.0,
+                    ),
+                    manufactured_parts=[],
+                    final_assembly=[],
+                    totals=CostTotals(
+                        estimated_unit_cost_usd=0.0,
+                        estimated_weight_g=0.0,
+                        estimate_confidence="high",
+                    ),
+                )
             ),
             overwrite=True,
             bypass_agent_permissions=True,
@@ -415,47 +457,45 @@ result = build()
         encoding="utf-8",
     )
 
-    benchmark_definition_text = yaml.safe_dump(
-        {
-            "objectives": {
-                "goal_zone_mm": {
-                    "min_mm": [40.1, -10.0, -10.0],
-                    "max_mm": [500.0, 10.0, 10.0],
-                },
-                "forbid_zones": [],
-                "build_zone_mm": {
-                    "min_mm": [-10.0, -10.0, -10.0],
-                    "max_mm": [500.0, 10.0, 10.0],
-                },
-            },
-            "benchmark_parts": [
-                {
-                    "part_id": "environment_fixture",
-                    "label": "environment_fixture",
-                    "metadata": {"is_fixed": True, "material_id": "aluminum_6061"},
-                }
-            ],
-            "physics": {"backend": "GENESIS", "compute_target": "auto"},
-            "simulation_bounds_mm": {
-                "min_mm": [-10.0, -10.0, -10.0],
-                "max_mm": [500.0, 10.0, 10.0],
-            },
-            "payload": {
-                "label": "payload_body",
-                "shape": "cube",
-                "material_id": "abs",
-                "static_randomization": {"radius_mm": [0.0, 0.0]},
-                "start_position_mm": [0.0, 0.0, 0.0],
-                "runtime_jitter_mm": [0.0, 0.0, 0.0],
-            },
-            "constraints": {"max_unit_cost": 50.0, "max_weight_g": 980.0},
-            "randomization": {
-                "static_variation_id": "segment_sampling_regression",
-                "runtime_jitter_enabled": False,
-            },
-        },
-        sort_keys=False,
+    benchmark_definition = BenchmarkDefinition(
+        objectives=ObjectivesSection(
+            goal_zone_mm=BoundingBox(
+                min_mm=(40.1, -10.0, -10.0), max_mm=(500.0, 10.0, 10.0)
+            ),
+            forbid_zones=[],
+            build_zone_mm=BoundingBox(
+                min_mm=(-10.0, -10.0, -10.0), max_mm=(500.0, 10.0, 10.0)
+            ),
+        ),
+        benchmark_parts=[
+            BenchmarkPartDefinition(
+                part_id="environment_fixture",
+                label="environment_fixture",
+                metadata=BenchmarkPartMetadata(
+                    is_fixed=True,
+                    material_id="aluminum_6061",
+                ),
+            )
+        ],
+        simulation_bounds_mm=BoundingBox(
+            min_mm=(-10.0, -10.0, -10.0),
+            max_mm=(500.0, 10.0, 10.0),
+        ),
+        payload=Payload(
+            label="payload_body",
+            shape="cube",
+            material_id="abs",
+            static_randomization=StaticRandomization(radius_mm=(0.0, 0.0)),
+            start_position_mm=(0.0, 0.0, 0.0),
+            runtime_jitter_mm=(0.0, 0.0, 0.0),
+        ),
+        constraints=Constraints(max_unit_cost=50.0, max_weight_g=980.0),
     )
+    benchmark_definition.randomization.static_variation_id = (
+        "segment_sampling_regression"
+    )
+    benchmark_definition.randomization.runtime_jitter_enabled = False
+    benchmark_definition_text = dump_yaml_model(benchmark_definition)
 
     is_valid, benchmark_definition_or_errors = (
         file_validation.validate_benchmark_definition_yaml(benchmark_definition_text)
@@ -463,39 +503,38 @@ result = build()
     assert is_valid, benchmark_definition_or_errors
     benchmark_definition = benchmark_definition_or_errors
 
-    payload_definition_text = yaml.safe_dump(
-        {
-            "backend": "GENESIS",
-            "payload_part_names": ["solution_assembly"],
-            "initial_pose": {
-                "reference_point": "build_zone_start",
-                "pos_mm": [0.0, 0.0, 0.0],
-                "rot_deg": [0.0, 0.0, 0.0],
-            },
-            "sample_stride_s": 0.3,
-            "anchors": [
-                {
-                    "t_s": 0.0,
-                    "reference_point": "build_zone_start",
-                    "pos_mm": [0.0, 0.0, 0.0],
-                    "rot_deg": [0.0, 0.0, 0.0],
-                    "position_tolerance_mm": [0.0, 0.0, 0.0],
-                    "rotation_tolerance_deg": [0.1, 0.1, 0.1],
-                    "build_zone_valid": True,
-                },
-                {
-                    "t_s": 0.5,
-                    "reference_point": "build_zone_start",
-                    "pos_mm": [270.05, 0.0, 0.0],
-                    "rot_deg": [0.0, 0.0, 0.0],
-                    "position_tolerance_mm": [0.0, 0.0, 0.0],
-                    "rotation_tolerance_deg": [0.1, 0.1, 0.1],
-                    "goal_zone_contact": True,
-                },
+    payload_definition_text = dump_yaml_model(
+        PayloadTrajectoryDefinition(
+            backend=SimulatorBackendType.GENESIS,
+            payload_part_names=["solution_assembly"],
+            initial_pose=PayloadTrajectoryPose(
+                reference_point="build_zone_start",
+                pos_mm=(0.0, 0.0, 0.0),
+                rot_deg=(0.0, 0.0, 0.0),
+            ),
+            sample_stride_s=0.3,
+            anchors=[
+                PayloadTrajectoryAnchor(
+                    t_s=0.0,
+                    reference_point="build_zone_start",
+                    pos_mm=(0.0, 0.0, 0.0),
+                    rot_deg=(0.0, 0.0, 0.0),
+                    position_tolerance_mm=(0.0, 0.0, 0.0),
+                    rotation_tolerance_deg=(0.1, 0.1, 0.1),
+                    build_zone_valid=True,
+                ),
+                PayloadTrajectoryAnchor(
+                    t_s=0.5,
+                    reference_point="build_zone_start",
+                    pos_mm=(270.05, 0.0, 0.0),
+                    rot_deg=(0.0, 0.0, 0.0),
+                    position_tolerance_mm=(0.0, 0.0, 0.0),
+                    rotation_tolerance_deg=(0.1, 0.1, 0.1),
+                    goal_zone_contact=True,
+                ),
             ],
-            "terminal_event": None,
-        },
-        sort_keys=False,
+            terminal_event=None,
+        )
     )
 
     is_valid, payload_result = (
@@ -539,47 +578,46 @@ def test_int_engineer_payload_trajectory_rejects_points_above_spawn_height():
         ),
         constraints=Constraints(max_unit_cost=50.0, max_weight_g=1000.0),
     )
-    payload_definition_text = yaml.safe_dump(
-        {
-            "backend": "GENESIS",
-            "payload_part_names": ["solution_assembly"],
-            "initial_pose": {
-                "reference_point": "build_zone_start",
-                "pos_mm": [0.0, 0.0, 0.0],
-                "rot_deg": [0.0, 0.0, 0.0],
-            },
-            "sample_stride_s": 0.3,
-            "anchors": [
-                {
-                    "t_s": 0.0,
-                    "reference_point": "build_zone_start",
-                    "pos_mm": [0.0, 0.0, 0.0],
-                    "rot_deg": [0.0, 0.0, 0.0],
-                    "position_tolerance_mm": [0.0, 0.0, 0.0],
-                    "rotation_tolerance_deg": [0.1, 0.1, 0.1],
-                    "build_zone_valid": True,
-                },
-                {
-                    "t_s": 0.5,
-                    "reference_point": "mid_air",
-                    "pos_mm": [0.0, 0.0, 1.0],
-                    "rot_deg": [0.0, 0.0, 0.0],
-                    "position_tolerance_mm": [0.0, 0.0, 0.0],
-                    "rotation_tolerance_deg": [0.1, 0.1, 0.1],
-                },
-                {
-                    "t_s": 1.0,
-                    "reference_point": "goal_zone_contact",
-                    "pos_mm": [0.0, 0.0, 0.0],
-                    "rot_deg": [0.0, 0.0, 0.0],
-                    "position_tolerance_mm": [0.0, 0.0, 0.0],
-                    "rotation_tolerance_deg": [0.1, 0.1, 0.1],
-                    "goal_zone_contact": True,
-                },
+    payload_definition_text = dump_yaml_model(
+        PayloadTrajectoryDefinition(
+            backend=SimulatorBackendType.GENESIS,
+            payload_part_names=["solution_assembly"],
+            initial_pose=PayloadTrajectoryPose(
+                reference_point="build_zone_start",
+                pos_mm=(0.0, 0.0, 0.0),
+                rot_deg=(0.0, 0.0, 0.0),
+            ),
+            sample_stride_s=0.3,
+            anchors=[
+                PayloadTrajectoryAnchor(
+                    t_s=0.0,
+                    reference_point="build_zone_start",
+                    pos_mm=(0.0, 0.0, 0.0),
+                    rot_deg=(0.0, 0.0, 0.0),
+                    position_tolerance_mm=(0.0, 0.0, 0.0),
+                    rotation_tolerance_deg=(0.1, 0.1, 0.1),
+                    build_zone_valid=True,
+                ),
+                PayloadTrajectoryAnchor(
+                    t_s=0.5,
+                    reference_point="mid_air",
+                    pos_mm=(0.0, 0.0, 1.0),
+                    rot_deg=(0.0, 0.0, 0.0),
+                    position_tolerance_mm=(0.0, 0.0, 0.0),
+                    rotation_tolerance_deg=(0.1, 0.1, 0.1),
+                ),
+                PayloadTrajectoryAnchor(
+                    t_s=1.0,
+                    reference_point="goal_zone_contact",
+                    pos_mm=(0.0, 0.0, 0.0),
+                    rot_deg=(0.0, 0.0, 0.0),
+                    position_tolerance_mm=(0.0, 0.0, 0.0),
+                    rotation_tolerance_deg=(0.1, 0.1, 0.1),
+                    goal_zone_contact=True,
+                ),
             ],
-            "terminal_event": None,
-        },
-        sort_keys=False,
+            terminal_event=None,
+        )
     )
 
     is_valid, payload_result = (
@@ -683,12 +721,87 @@ def test_int_engineer_planner_payload_clearance_validation_runs(
                 "- Risk: low.\n"
             ),
             "todo.md": "# TODO List\n\n- [ ] Build the handoff package\n",
-            "benchmark_definition.yaml": "benchmark: true\n",
-            "assembly_definition.yaml": "assembly: true\n",
+            "benchmark_definition.yaml": dump_yaml_model(
+                BenchmarkDefinition(
+                    objectives=ObjectivesSection(
+                        goal_zone_mm=BoundingBox(
+                            min_mm=(-5.0, -5.0, -5.0), max_mm=(5.0, 5.0, 5.0)
+                        ),
+                        forbid_zones=[],
+                        build_zone_mm=BoundingBox(
+                            min_mm=(-10.0, -10.0, -10.0),
+                            max_mm=(10.0, 10.0, 10.0),
+                        ),
+                    ),
+                    benchmark_parts=[],
+                    simulation_bounds_mm=BoundingBox(
+                        min_mm=(-20.0, -20.0, -20.0),
+                        max_mm=(20.0, 20.0, 20.0),
+                    ),
+                    payload=Payload(
+                        label="payload",
+                        shape="sphere",
+                        material_id="aluminum_6061",
+                        start_position_mm=(0.0, 0.0, 0.0),
+                        runtime_jitter_mm=(0.0, 0.0, 0.0),
+                    ),
+                    constraints=Constraints(
+                        max_unit_cost=50.0,
+                        max_weight_g=1000.0,
+                    ),
+                )
+            ),
+            "assembly_definition.yaml": dump_yaml_model(
+                AssemblyDefinition(
+                    version="1.0",
+                    constraints=AssemblyConstraints(
+                        planner_target_max_unit_cost_usd=40.0,
+                        planner_target_max_weight_g=900.0,
+                    ),
+                    manufactured_parts=[],
+                    final_assembly=[],
+                    totals=CostTotals(
+                        estimated_unit_cost_usd=0.0,
+                        estimated_weight_g=0.0,
+                        estimate_confidence="high",
+                    ),
+                )
+            ),
             "solution_plan_evidence_script.py": (
                 "from build123d import Box\n\nresult = Box(1, 1, 1)\n"
             ),
-            "payload_trajectory_definition.yaml": "backend: GENESIS\n",
+            "payload_trajectory_definition.yaml": dump_yaml_model(
+                PayloadTrajectoryDefinition(
+                    backend=SimulatorBackendType.GENESIS,
+                    payload_part_names=["solution_assembly"],
+                    initial_pose=PayloadTrajectoryPose(
+                        reference_point="build_zone_start",
+                        pos_mm=(0.0, 0.0, 0.0),
+                        rot_deg=(0.0, 0.0, 0.0),
+                    ),
+                    sample_stride_s=0.3,
+                    anchors=[
+                        PayloadTrajectoryAnchor(
+                            t_s=0.0,
+                            reference_point="build_zone_start",
+                            pos_mm=(0.0, 0.0, 0.0),
+                            rot_deg=(0.0, 0.0, 0.0),
+                            position_tolerance_mm=(0.0, 0.0, 0.0),
+                            rotation_tolerance_deg=(0.1, 0.1, 0.1),
+                            build_zone_valid=True,
+                        ),
+                        PayloadTrajectoryAnchor(
+                            t_s=0.5,
+                            reference_point="goal_zone_contact",
+                            pos_mm=(0.0, 0.0, 0.0),
+                            rot_deg=(0.0, 0.0, 0.0),
+                            position_tolerance_mm=(0.0, 0.0, 0.0),
+                            rotation_tolerance_deg=(0.1, 0.1, 0.1),
+                            goal_zone_contact=True,
+                        ),
+                    ],
+                )
+            ),
         },
         session_id="planner-clearance-test",
     )

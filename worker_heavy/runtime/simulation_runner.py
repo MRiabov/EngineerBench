@@ -325,6 +325,7 @@ async def run_simulation_in_isolated_process(
     session_id: str,
     episode_id: str | None,
     stream_render_frames: bool,
+    skip_preview_rendering: bool = False,
     particle_budget: int | None,
 ) -> SimulationResult:
     """
@@ -347,6 +348,7 @@ async def run_simulation_in_isolated_process(
             session_id,
             episode_id,
             stream_render_frames,
+            skip_preview_rendering,
             particle_budget,
             timeout_seconds=_SIMULATION_WALL_CLOCK_TIMEOUT_SECONDS,
         )
@@ -387,6 +389,7 @@ async def run_validation_in_isolated_process(
     output_dir: Path,
     smoke_test_mode: bool,
     session_id: str,
+    skip_preview_rendering: bool = False,
     particle_budget: int | None,
 ) -> tuple[bool, str | None]:
     """

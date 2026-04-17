@@ -326,6 +326,10 @@ class BenchmarkToolRequest(BaseModel):
         default=False,
         description="If true, stream low-frequency simulation frames to the episode websocket.",
     )
+    skip_preview_rendering: bool = Field(
+        default=False,
+        description="If true, skip the post-simulation 24-view preview bundle.",
+    )
     particle_budget: int | None = Field(
         default=None,
         description="Optional particle budget override.",
@@ -777,6 +781,7 @@ class HeavySimulationParams(BaseModel):
     script_path: str
     backend: SimulatorBackendType
     smoke_test_mode: bool | None = None
+    skip_preview_rendering: bool = False
     session_id: str
     episode_id: str | None = None
     stream_render_frames: bool = False

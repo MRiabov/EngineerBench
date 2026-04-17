@@ -241,6 +241,7 @@ async def run_simulation_task(
     x_session_id,
     episode_id,
     stream_render_frames,
+    skip_preview_rendering,
     particle_budget,
 ):
     """Run simulation in an isolated child process (crash containment boundary)."""
@@ -254,6 +255,7 @@ async def run_simulation_task(
         session_id=x_session_id,
         episode_id=episode_id,
         stream_render_frames=stream_render_frames,
+        skip_preview_rendering=skip_preview_rendering,
         particle_budget=particle_budget,
     )
 
@@ -321,6 +323,7 @@ async def api_simulate(
                     x_session_id,
                     request.episode_id,
                     request.stream_render_frames,
+                    request.skip_preview_rendering,
                     request.particle_budget,
                 )
 

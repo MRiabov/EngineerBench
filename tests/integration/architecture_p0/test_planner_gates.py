@@ -20,17 +20,27 @@ from controller.api.schemas import (
     EpisodeResponse,
 )
 from shared.current_role import current_role_manifest_json
-from shared.enums import AgentName, EpisodeStatus, TraceType
+from shared.enums import AgentName, EpisodeStatus, ManufacturingMethod, TraceType
 from shared.models.schemas import (
     AssemblyConstraints,
     AssemblyDefinition,
     BenchmarkDefinition,
+    BenchmarkPartDefinition,
+    BenchmarkPartMetadata,
     BoundingBox,
     Constraints,
     CostTotals,
+    ManufacturedPartEstimate,
     ObjectivesSection,
+    PartConfig,
     Payload,
+    PayloadTrajectoryAnchor,
+    PayloadTrajectoryDefinition,
+    PayloadTrajectoryPose,
+    PayloadTrajectoryTerminalEvent,
 )
+from shared.models.serialization import dump_yaml_content
+from shared.models.simulation import SimulationResult
 from shared.simulation.schemas import SimulatorBackendType
 from shared.workers.schema import (
     BenchmarkToolRequest,
@@ -41,7 +51,7 @@ from shared.workers.schema import (
     PlanReviewManifest,
     WriteFileRequest,
 )
-from tests.integration.agent.helpers import wait_for_benchmark_state
+from tests.integration.agent.helpers import dump_yaml_model, wait_for_benchmark_state
 from tests.integration.backend_utils import selected_backend
 
 # Constants
@@ -60,14 +70,14 @@ def _asset_path(asset_path: str | Path) -> Path:
 
 def _default_benchmark_parts():
     return [
-        {
-            "part_id": "environment_fixture",
-            "label": "environment_fixture",
-            "metadata": {
-                "is_fixed": True,
-                "material_id": "aluminum_6061",
-            },
-        }
+        BenchmarkPartDefinition(
+            part_id="environment_fixture",
+            label="environment_fixture",
+            metadata=BenchmarkPartMetadata(
+                is_fixed=True,
+                material_id="aluminum_6061",
+            ),
+        )
     ]
 
 
@@ -225,12 +235,7 @@ async def setup_workspace(client, headers, files):
             ),
         }
     for path, content in files.items():
-        if isinstance(content, (BenchmarkDefinition, AssemblyDefinition)):
-            content_str = yaml.dump(content.model_dump(mode="json", by_alias=True))
-        elif not isinstance(content, str):
-            content_str = yaml.dump(content)
-        else:
-            content_str = content
+        content_str = dump_yaml_content(content)
 
         write_req = WriteFileRequest(
             path=path,
@@ -243,6 +248,46 @@ async def setup_workspace(client, headers, files):
             headers=headers,
         )
         assert resp.status_code == 200, f"Failed to write {path}: {resp.text}"
+
+
+async def _validate_solution_script(
+    client: httpx.AsyncClient,
+    headers: dict[str, str],
+    script_path: str,
+    *,
+    reviewer_stage: AgentName = AgentName.BENCHMARK_REVIEWER,
+) -> BenchmarkToolResponse:
+    resp = await client.post(
+        f"{WORKER_LIGHT_URL}/benchmark/validate",
+        json=BenchmarkToolRequest(
+            script_path=script_path, reviewer_stage=reviewer_stage
+        ).model_dump(mode="json"),
+        headers=headers,
+    )
+    assert resp.status_code == 200, resp.text
+    return BenchmarkToolResponse.model_validate(resp.json())
+
+
+async def _seed_successful_simulation_result(
+    client: httpx.AsyncClient, headers: dict[str, str], script_path: str
+) -> SimulationResult:
+    simulation_result = SimulationResult(
+        success=True,
+        summary="Goal achieved in green zone.",
+        render_paths=[],
+        confidence="high",
+    )
+    resp = await client.post(
+        f"{WORKER_LIGHT_URL}/fs/write",
+        json=WriteFileRequest(
+            path="simulation_result.json",
+            content=simulation_result.model_dump_json(indent=2),
+            overwrite=True,
+        ).model_dump(mode="json"),
+        headers=headers,
+    )
+    assert resp.status_code == 200, resp.text
+    return simulation_result
 
 
 def _parse_submit_observation_node_type(observation: str | None) -> str | None:
@@ -731,22 +776,109 @@ async def test_int_114_benchmark_planner_flow_emits_submit_benchmark_plan_trace(
 async def test_int_006_plan_structure_validation(
     session_id, base_headers, valid_todo, valid_objectives, valid_cost, minimal_script
 ):
-    """INT-006: Verify benchmark_plan.md structural requirements."""
+    """INT-006: Verify engineering_plan.md structural requirements."""
     async with httpx.AsyncClient(timeout=300.0) as client:
+        matching_script = minimal_script.replace("test_part", "environment_fixture")
+        benchmark_script = """
+from build123d import *
+from shared.models.schemas import PartMetadata
+from shared.workers.workbench_models import ManufacturingMethod
+def build():
+    p = Box(4, 4, 4)
+    p = p.move(Location((-40, -40, 2)))
+    p.label = "fixture_fixed"
+    p.metadata = PartMetadata(
+        manufacturing_method=ManufacturingMethod.CNC, material_id="aluminum-6061"
+    )
+    return p
+"""
+        solution_plan_evidence_script = """
+from build123d import *
+from shared.models.schemas import PartMetadata
+from shared.workers.workbench_models import ManufacturingMethod
+def build():
+    p = Box(40, 40, 40)
+    p = p.move(Location((0, 0, 50)))
+    p.label = "payload_ball"
+    p.metadata = PartMetadata(
+        manufacturing_method=ManufacturingMethod.CNC, material_id="aluminum-6061"
+    )
+    return p
+"""
+        payload_definition = PayloadTrajectoryDefinition(
+            backend=SimulatorBackendType.GENESIS,
+            payload_part_names=["payload_ball"],
+            initial_pose=PayloadTrajectoryPose(
+                reference_point="spawn_position",
+                pos_mm=(0.0, 0.0, 50.0),
+                rot_deg=(0.0, 0.0, 0.0),
+            ),
+            sample_stride_s=0.3,
+            anchors=[
+                PayloadTrajectoryAnchor(
+                    t_s=0.0,
+                    reference_point="spawn_position",
+                    pos_mm=(0.0, 0.0, 50.0),
+                    rot_deg=(0.0, 0.0, 0.0),
+                    position_tolerance_mm=(0.5, 0.5, 0.5),
+                    rotation_tolerance_deg=(0.1, 0.1, 1.0),
+                    build_zone_valid=True,
+                ),
+                PayloadTrajectoryAnchor(
+                    t_s=1.0,
+                    reference_point="pre_goal",
+                    pos_mm=(20.2, 20.2, 20.2),
+                    rot_deg=(0.0, 0.0, 0.0),
+                    position_tolerance_mm=(0.5, 0.5, 0.5),
+                    rotation_tolerance_deg=(0.1, 0.1, 1.0),
+                ),
+            ],
+            terminal_event=PayloadTrajectoryTerminalEvent(
+                kind="goal_zone_contact",
+                t_s=1.1,
+                reference_point="goal_zone_contact",
+                pos_mm=(15.0, 15.0, 15.0),
+                contact_surfaces=["goal_zone"],
+            ),
+        )
+        structure_cost = valid_cost.model_copy(deep=True)
+        structure_cost.totals.estimated_unit_cost_usd = 0.0
+        structure_cost.totals.estimated_weight_g = 0.0
         base_files = {
+            ".manifests/current_role.json": current_role_manifest_json(
+                AgentName.ENGINEER_CODER
+            ),
             "todo.md": valid_todo,
             "benchmark_definition.yaml": valid_objectives,
-            "benchmark_assembly_definition.yaml": valid_cost,
-            "solution.py": minimal_script,
+            "assembly_definition.yaml": structure_cost,
+            "manufacturing_config.yaml": REPO_MANUFACTURING_CONFIG,
+            "benchmark_script.py": benchmark_script,
+            "solution_script.py": solution_plan_evidence_script,
+            "solution_plan_evidence_script.py": solution_plan_evidence_script,
+            "payload_trajectory_definition.yaml": dump_yaml_model(payload_definition),
+            "solution.py": matching_script,
         }
 
         # 1. Missing required heading
-        invalid_plan = "## 1. Solution Overview\nNo other headings."
-        await setup_workspace(
-            client, base_headers, {**base_files, "benchmark_plan.md": invalid_plan}
+        invalid_plan = (
+            "## 1. Solution Overview\nNo other headings.\nenvironment_fixture"
         )
+        await setup_workspace(
+            client, base_headers, {**base_files, "engineering_plan.md": invalid_plan}
+        )
+        await _validate_solution_script(
+            client,
+            base_headers,
+            "solution.py",
+            reviewer_stage=AgentName.ENGINEER_EXECUTION_REVIEWER,
+        )
+        sim_data = await _seed_successful_simulation_result(
+            client, base_headers, "solution.py"
+        )
+        assert sim_data.success, sim_data.message
         submit_req = BenchmarkToolRequest(
-            script_path="solution.py", reviewer_stage=AgentName.BENCHMARK_REVIEWER
+            script_path="solution.py",
+            reviewer_stage=AgentName.ENGINEER_EXECUTION_REVIEWER,
         )
         resp = await client.post(
             f"{WORKER_HEAVY_URL}/benchmark/submit",
@@ -754,12 +886,13 @@ async def test_int_006_plan_structure_validation(
             headers=base_headers,
         )
         data = BenchmarkToolResponse.model_validate(resp.json())
-        assert "benchmark_plan.md invalid" in data.message
+        assert "engineering_plan.md invalid" in data.message
         assert "Missing required section" in data.message
 
         # 2. Parts List missing table/bullets
         invalid_plan = """## 1. Solution Overview
 Overview.
+environment_fixture
 ## 2. Parts List
 Just some text here, no list or table.
 ## 3. Assembly Strategy
@@ -800,7 +933,7 @@ The plan needs a traceable calculation instead of a freeform claim.
 
 #### Cross-References
 
-        - `benchmark_plan.md#3-assembly-strategy`
+        - `engineering_plan.md#3-assembly-strategy`
 
 ## 6. Critical Constraints / Operating Envelope
 - Constraint: The mechanism must remain inside the derived operating limits.
@@ -811,8 +944,18 @@ The plan needs a traceable calculation instead of a freeform claim.
 - Risk: None
 """
         await setup_workspace(
-            client, base_headers, {**base_files, "benchmark_plan.md": invalid_plan}
+            client, base_headers, {**base_files, "engineering_plan.md": invalid_plan}
         )
+        await _validate_solution_script(
+            client,
+            base_headers,
+            "solution.py",
+            reviewer_stage=AgentName.ENGINEER_EXECUTION_REVIEWER,
+        )
+        sim_data = await _seed_successful_simulation_result(
+            client, base_headers, "solution.py"
+        )
+        assert sim_data.success, sim_data.message
         resp = await client.post(
             f"{WORKER_HEAVY_URL}/benchmark/submit",
             json=submit_req.model_dump(mode="json"),
@@ -824,10 +967,11 @@ The plan needs a traceable calculation instead of a freeform claim.
         # 3. Detailed Calculations uses the wrong table schema
         invalid_plan = """## 1. Solution Overview
 Overview.
+environment_fixture
 ## 2. Parts List
 | Part | Qty |
 |------|-----|
-| Box  | 1   |
+| environment_fixture | 1 |
 ## 3. Assembly Strategy
 1. Step
 ## 4. Assumption Register
@@ -852,7 +996,7 @@ The capture opening must exceed the throat.
 #### Design Impact
 - Ramp geometry must remain wider than the throat.
 #### Cross-References
-        - `benchmark_plan.md#3-assembly-strategy`
+        - `engineering_plan.md#3-assembly-strategy`
 
 ## 6. Critical Constraints / Operating Envelope
 - Constraint: The mechanism must remain inside the derived operating limits.
@@ -863,8 +1007,18 @@ The capture opening must exceed the throat.
 - Risk: None
 """
         await setup_workspace(
-            client, base_headers, {**base_files, "benchmark_plan.md": invalid_plan}
+            client, base_headers, {**base_files, "engineering_plan.md": invalid_plan}
         )
+        await _validate_solution_script(
+            client,
+            base_headers,
+            "solution.py",
+            reviewer_stage=AgentName.ENGINEER_EXECUTION_REVIEWER,
+        )
+        sim_data = await _seed_successful_simulation_result(
+            client, base_headers, "solution.py"
+        )
+        assert sim_data.success, sim_data.message
         resp = await client.post(
             f"{WORKER_HEAVY_URL}/benchmark/submit",
             json=submit_req.model_dump(mode="json"),
@@ -876,10 +1030,11 @@ The capture opening must exceed the throat.
         # 4. Detailed Calculations uses the wrong subsection heading form
         invalid_plan = """## 1. Solution Overview
 Overview.
+environment_fixture
 ## 2. Parts List
 | Part | Qty |
 |------|-----|
-| Box  | 1   |
+| environment_fixture | 1 |
 ## 3. Assembly Strategy
 1. Step
 ## 4. Assumption Register
@@ -904,7 +1059,7 @@ The capture opening must exceed the throat.
 #### Design Impact
 - Ramp geometry must remain wider than the throat.
 #### Cross-References
-        - `benchmark_plan.md#3-assembly-strategy`
+        - `engineering_plan.md#3-assembly-strategy`
 
 ## 6. Critical Constraints / Operating Envelope
 - Constraint: The mechanism must remain inside the derived operating limits.
@@ -915,8 +1070,18 @@ The capture opening must exceed the throat.
 - Risk: None
 """
         await setup_workspace(
-            client, base_headers, {**base_files, "benchmark_plan.md": invalid_plan}
+            client, base_headers, {**base_files, "engineering_plan.md": invalid_plan}
         )
+        await _validate_solution_script(
+            client,
+            base_headers,
+            "solution.py",
+            reviewer_stage=AgentName.ENGINEER_EXECUTION_REVIEWER,
+        )
+        sim_data = await _seed_successful_simulation_result(
+            client, base_headers, "solution.py"
+        )
+        assert sim_data.success, sim_data.message
         resp = await client.post(
             f"{WORKER_HEAVY_URL}/benchmark/submit",
             json=submit_req.model_dump(mode="json"),
@@ -931,10 +1096,11 @@ The capture opening must exceed the throat.
         # 5. Detailed Calculations strict schema still accepts the intended shape
         valid_strict_plan = """## 1. Solution Overview
 Overview.
+environment_fixture
 ## 2. Parts List
 | Part | Qty |
 |------|-----|
-| Box  | 1   |
+| environment_fixture | 1 |
 ## 3. Assembly Strategy
 1. Step
 ## 4. Assumption Register
@@ -959,7 +1125,7 @@ The cube must slide reliably under the declared surface/friction assumptions.
 #### Design Impact
 - The ramp angle must be updated or the assumptions must change.
 #### Cross-References
-        - `benchmark_plan.md#3-assembly-strategy`
+        - `engineering_plan.md#3-assembly-strategy`
 
 ## 6. Critical Constraints / Operating Envelope
 - Constraint: The mechanism must remain inside the derived operating limits.
@@ -975,12 +1141,13 @@ The cube must slide reliably under the declared surface/friction assumptions.
             base_headers,
             {
                 **base_files,
-                "benchmark_plan.md": valid_strict_plan,
+                "engineering_plan.md": valid_strict_plan,
                 "solution.py": matching_script,
             },
         )
         validate_req = BenchmarkToolRequest(
-            script_path="solution.py", reviewer_stage=AgentName.BENCHMARK_REVIEWER
+            script_path="solution.py",
+            reviewer_stage=AgentName.ENGINEER_EXECUTION_REVIEWER,
         )
         validate_resp = await client.post(
             f"{WORKER_LIGHT_URL}/benchmark/validate",
@@ -989,6 +1156,10 @@ The cube must slide reliably under the declared surface/friction assumptions.
         )
         data = BenchmarkToolResponse.model_validate(validate_resp.json())
         assert data.success is True
+        sim_data = await _seed_successful_simulation_result(
+            client, base_headers, "solution.py"
+        )
+        assert sim_data.success, sim_data.message
 
 
 @pytest.mark.integration_p0
@@ -1060,24 +1231,29 @@ async def test_int_008_objectives_validation(
 ):
     """INT-008: Verify benchmark_definition.yaml schema and template detection."""
     async with httpx.AsyncClient(timeout=300.0) as client:
+        matching_script = minimal_script.replace("test_part", "environment_fixture")
         base_files = {
             "benchmark_plan.md": valid_plan,
             "todo.md": valid_todo,
             "benchmark_assembly_definition.yaml": valid_cost,
-            "solution.py": minimal_script,
+            "solution.py": matching_script,
         }
 
         # 1. Template placeholders present (e.g., x_min)
-        template_content = valid_objectives.model_dump(mode="json")
-        template_content["objectives"]["goal_zone_mm"]["min_mm"] = [
-            "x_min",
-            "y_min",
-            "z_min",
-        ]
+        template_content = dump_yaml_model(valid_objectives).replace(
+            "    min_mm:\n    - 10.0\n    - 10.0\n    - 10.0",
+            "    min_mm:\n    - x_min\n    - y_min\n    - z_min",
+        )
         await setup_workspace(
             client,
             base_headers,
             {**base_files, "benchmark_definition.yaml": template_content},
+        )
+        await _validate_solution_script(
+            client,
+            base_headers,
+            "solution.py",
+            reviewer_stage=AgentName.ENGINEER_EXECUTION_REVIEWER,
         )
         submit_req = BenchmarkToolRequest(
             script_path="solution.py", reviewer_stage=AgentName.BENCHMARK_REVIEWER
@@ -1091,13 +1267,16 @@ async def test_int_008_objectives_validation(
         assert "template placeholders" in data.message
 
         # 2. Schema violation (wrong type)
-        invalid_obj = valid_objectives.model_dump(mode="json")
-        invalid_obj["objectives"]["goal_zone_mm"]["min_mm"] = "not_a_list"
+        invalid_obj = dump_yaml_model(valid_objectives).replace(
+            "    min_mm:\n    - 10.0\n    - 10.0\n    - 10.0",
+            "    min_mm: not_a_list",
+        )
         await setup_workspace(
             client,
             base_headers,
             {**base_files, "benchmark_definition.yaml": invalid_obj},
         )
+        await _validate_solution_script(client, base_headers, "solution.py")
         resp = await client.post(
             f"{WORKER_HEAVY_URL}/benchmark/submit",
             json=submit_req.model_dump(mode="json"),
@@ -1107,13 +1286,14 @@ async def test_int_008_objectives_validation(
         assert "benchmark_definition.yaml invalid" in data.message
 
         # 3. Blank payload label must fail closed.
-        blank_label_obj = valid_objectives.model_dump(mode="json")
-        blank_label_obj["payload"]["label"] = ""
+        blank_label_obj = valid_objectives.model_copy(deep=True)
+        blank_label_obj.payload.label = ""
         await setup_workspace(
             client,
             base_headers,
             {**base_files, "benchmark_definition.yaml": blank_label_obj},
         )
+        await _validate_solution_script(client, base_headers, "solution.py")
         resp = await client.post(
             f"{WORKER_HEAVY_URL}/benchmark/submit",
             json=submit_req.model_dump(mode="json"),
@@ -1183,16 +1363,23 @@ def build():
 @pytest.mark.asyncio
 @pytest.mark.int_id("INT-009")
 async def test_int_009_cost_estimation_validation(
-    session_id, base_headers, valid_plan, valid_todo, valid_objectives, minimal_script
+    session_id,
+    base_headers,
+    valid_plan,
+    valid_todo,
+    valid_objectives,
+    valid_cost,
+    minimal_script,
 ):
     """INT-009: Verify benchmark_assembly_definition.yaml schema and placeholders."""
     async with httpx.AsyncClient(timeout=300.0) as client:
+        matching_script = minimal_script.replace("test_part", "environment_fixture")
         base_files = {
             "benchmark_plan.md": valid_plan,
             "todo.md": valid_todo,
             "benchmark_definition.yaml": valid_objectives,
             "manufacturing_config.yaml": REPO_MANUFACTURING_CONFIG,
-            "solution.py": minimal_script,
+            "solution.py": matching_script,
         }
 
         # 1. Template placeholders ([implement here])
@@ -1202,6 +1389,7 @@ async def test_int_009_cost_estimation_validation(
             base_headers,
             {**base_files, "benchmark_assembly_definition.yaml": template_cost},
         )
+        await _validate_solution_script(client, base_headers, "solution.py")
         submit_req = BenchmarkToolRequest(
             script_path="solution.py", reviewer_stage=AgentName.BENCHMARK_REVIEWER
         )
@@ -1214,15 +1402,14 @@ async def test_int_009_cost_estimation_validation(
         assert "template placeholders" in data.message
 
         # 2. Schema violation (missing required field)
-        invalid_cost = {
-            "version": "1.0",
-            "totals": {},
-        }  # Missing estimated_unit_cost_usd
+        invalid_cost = valid_cost.model_dump(mode="json")
+        invalid_cost["totals"] = {}
         await setup_workspace(
             client,
             base_headers,
             {**base_files, "benchmark_assembly_definition.yaml": invalid_cost},
         )
+        await _validate_solution_script(client, base_headers, "solution.py")
         resp = await client.post(
             f"{WORKER_HEAVY_URL}/benchmark/submit",
             json=submit_req.model_dump(mode="json"),
@@ -1232,27 +1419,15 @@ async def test_int_009_cost_estimation_validation(
         assert "benchmark_assembly_definition.yaml invalid" in data.message
 
         # 3. Unknown extra fields must fail closed (top-level and nested)
-        extra_cost = {
-            "version": "1.0",
-            "constraints": {
-                "benchmark_max_unit_cost_usd": 50.0,
-                "benchmark_max_weight_g": 1000.0,
-                "planner_target_max_unit_cost_usd": 45.0,
-                "planner_target_max_weight_g": 900.0,
-                "unknown_constraint_key": True,
-            },
-            "totals": {
-                "estimated_unit_cost_usd": 30.0,
-                "estimated_weight_g": 500.0,
-                "estimate_confidence": "high",
-            },
-            "unknown_top_level": "forbidden",
-        }
+        extra_cost = valid_cost.model_dump(mode="json")
+        extra_cost["constraints"]["unknown_constraint_key"] = True
+        extra_cost["unknown_top_level"] = "forbidden"
         await setup_workspace(
             client,
             base_headers,
             {**base_files, "benchmark_assembly_definition.yaml": extra_cost},
         )
+        await _validate_solution_script(client, base_headers, "solution.py")
         resp = await client.post(
             f"{WORKER_HEAVY_URL}/benchmark/submit",
             json=submit_req.model_dump(mode="json"),
@@ -1278,20 +1453,11 @@ async def test_int_011_planner_caps_enforcement(
     """INT-011: Verify handoff blockage when planner caps exceed benchmark limits."""
     async with httpx.AsyncClient(timeout=300.0) as client:
         # Keep invalid payload as raw data so schema validation happens in the endpoint path.
-        invalid_cost = {
-            "version": "1.0",
-            "constraints": {
-                "benchmark_max_unit_cost_usd": 50.0,
-                "benchmark_max_weight_g": 1000.0,
-                "planner_target_max_unit_cost_usd": 60.0,  # OVER LIMIT
-                "planner_target_max_weight_g": 500.0,
-            },
-            "totals": {
-                "estimated_unit_cost_usd": 40.0,
-                "estimated_weight_g": 200.0,
-                "estimate_confidence": "medium",
-            },
-        }
+        invalid_cost = valid_cost.model_dump(mode="json")
+        invalid_cost["constraints"]["planner_target_max_unit_cost_usd"] = 60.0
+        invalid_cost["totals"]["estimated_unit_cost_usd"] = 40.0
+        invalid_cost["totals"]["estimated_weight_g"] = 200.0
+        invalid_cost["totals"]["estimate_confidence"] = "medium"
         files = {
             "benchmark_plan.md": valid_plan,
             "todo.md": valid_todo,
@@ -1485,21 +1651,24 @@ async def test_int_010_planner_pricing_script_integration(
 ):
     """INT-010: Verify validate_costing_and_price block when over caps."""
     async with httpx.AsyncClient(timeout=300.0) as client:
-        # Keep invalid payload as raw data so schema validation happens in the endpoint path.
-        invalid_cost = {
-            "version": "1.0",
-            "constraints": {
-                "benchmark_max_unit_cost_usd": 50.0,
-                "benchmark_max_weight_g": 1000.0,
-                "planner_target_max_unit_cost_usd": 45.0,
-                "planner_target_max_weight_g": 900.0,
-            },
-            "totals": {
-                "estimated_unit_cost_usd": 55.0,  # OVER PLANNER CAP
-                "estimated_weight_g": 500.0,
-                "estimate_confidence": "high",
-            },
-        }
+        # Keep the payload invalid, but derive it from the typed schema first.
+        invalid_cost = AssemblyDefinition(
+            version="1.0",
+            constraints=AssemblyConstraints(
+                benchmark_max_unit_cost_usd=50.0,
+                benchmark_max_weight_g=1000.0,
+                planner_target_max_unit_cost_usd=45.0,
+                planner_target_max_weight_g=900.0,
+            ),
+            manufactured_parts=[],
+            final_assembly=[],
+            totals=CostTotals(
+                estimated_unit_cost_usd=0.0,
+                estimated_weight_g=0.0,
+                estimate_confidence="high",
+            ),
+        ).model_dump(mode="json")
+        invalid_cost["totals"]["estimated_unit_cost_usd"] = 55.0
         files = {
             "benchmark_plan.md": valid_plan,
             "todo.md": valid_todo,
@@ -1550,42 +1719,35 @@ async def test_int_010_handoff_rejects_low_quantity_that_only_passes_at_volume(
         objectives.constraints.max_unit_cost = 40.0
         objectives.constraints.max_weight_g = 1000.0
 
-        assembly_definition = {
-            "version": "1.0",
-            "constraints": {
-                "benchmark_max_unit_cost_usd": 40.0,
-                "benchmark_max_weight_g": 1000.0,
-                "planner_target_max_unit_cost_usd": 35.0,
-                "planner_target_max_weight_g": 900.0,
-            },
-            "manufactured_parts": [
-                {
-                    "part_name": "qty_probe",
-                    "part_id": "qty_probe",
-                    "manufacturing_method": "CNC",
-                    "material_id": "aluminum_6061",
-                    "quantity": 1,
-                    "part_volume_mm3": 1000.0,
-                    "stock_bbox_mm": {"x": 10.0, "y": 10.0, "z": 10.0},
-                    "stock_volume_mm3": 1000.0,
-                    "removed_volume_mm3": 0.0,
-                    "estimated_unit_cost_usd": 35.0,
-                }
+        assembly_definition = AssemblyDefinition(
+            version="1.0",
+            constraints=AssemblyConstraints(
+                benchmark_max_unit_cost_usd=40.0,
+                benchmark_max_weight_g=1000.0,
+                planner_target_max_unit_cost_usd=35.0,
+                planner_target_max_weight_g=900.0,
+            ),
+            manufactured_parts=[
+                ManufacturedPartEstimate(
+                    part_name="qty_probe",
+                    part_id="qty_probe",
+                    manufacturing_method=ManufacturingMethod.CNC,
+                    material_id="aluminum_6061",
+                    quantity=1,
+                    part_volume_mm3=1000.0,
+                    stock_bbox_mm={"x": 10.0, "y": 10.0, "z": 10.0},
+                    stock_volume_mm3=1000.0,
+                    removed_volume_mm3=0.0,
+                    estimated_unit_cost_usd=35.0,
+                )
             ],
-            "final_assembly": [
-                {
-                    "name": "qty_probe",
-                    "config": {
-                        "dofs": [],
-                    },
-                }
-            ],
-            "totals": {
-                "estimated_unit_cost_usd": 35.0,
-                "estimated_weight_g": 2.7,
-                "estimate_confidence": "high",
-            },
-        }
+            final_assembly=[PartConfig(name="qty_probe")],
+            totals=CostTotals(
+                estimated_unit_cost_usd=35.0,
+                estimated_weight_g=2.7,
+                estimate_confidence="high",
+            ),
+        )
         script = """
 from build123d import Box, Location
 from shared.models.schemas import PartMetadata
@@ -1610,6 +1772,7 @@ def build():
                 "todo.md": valid_todo,
                 "benchmark_definition.yaml": objectives,
                 "assembly_definition.yaml": assembly_definition,
+                "manufacturing_config.yaml": REPO_MANUFACTURING_CONFIG,
                 "script.py": script,
             },
         )
