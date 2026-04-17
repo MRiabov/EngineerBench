@@ -158,6 +158,19 @@ def _mujoco_body_names(model: Any) -> list[str]:
     return names
 
 
+def _mujoco_body_records(model: Any) -> list[tuple[str, int, bool]]:
+    import mujoco
+
+    records: list[tuple[str, int, bool]] = []
+    for body_id in range(model.nbody):
+        name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_BODY, body_id)
+        if name and name not in {"world", "0"} and not name.startswith("zone_"):
+            # Bodies with joints can move over time; fixed bodies can be checked
+            # once because their world pose does not change during replay.
+            records.append((name, body_id, bool(model.body_jntnum[body_id] > 0)))
+    return records
+
+
 def _mujoco_site_names(model: Any, prefix: str) -> list[str]:
     import mujoco
 
@@ -167,6 +180,17 @@ def _mujoco_site_names(model: Any, prefix: str) -> list[str]:
         if name and name.startswith(prefix):
             names.append(name)
     return names
+
+
+def _mujoco_site_ids(model: Any, prefix: str) -> list[int]:
+    import mujoco
+
+    ids: list[int] = []
+    for site_id in range(model.nsite):
+        name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_SITE, site_id)
+        if name and name.startswith(prefix):
+            ids.append(site_id)
+    return ids
 
 
 def _mujoco_apply_jitter(
@@ -198,12 +222,9 @@ def _mujoco_get_state_vector(model: Any, data: Any) -> np.ndarray:
     return state
 
 
-def _mujoco_get_body_state(
-    model: Any, data: Any, body_name: str
+def _mujoco_get_body_state_by_id(
+    model: Any, data: Any, body_id: int
 ) -> tuple[np.ndarray, np.ndarray]:
-    import mujoco
-
-    body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, body_name)
     if body_id == -1:
         return np.zeros(3), np.zeros(3)
 
@@ -212,13 +233,20 @@ def _mujoco_get_body_state(
     return pos, vel
 
 
-def _mujoco_check_collision(
-    model: Any, data: Any, body_name: str, site_name: str
-) -> bool:
+def _mujoco_get_body_state(
+    model: Any, data: Any, body_name: str
+) -> tuple[np.ndarray, np.ndarray]:
     import mujoco
 
     body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, body_name)
-    site_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_SITE, site_name)
+    return _mujoco_get_body_state_by_id(model, data, body_id)
+
+
+def _mujoco_check_collision_by_id(
+    model: Any, data: Any, body_id: int, site_id: int
+) -> bool:
+    import mujoco
+
     if body_id == -1 or site_id == -1:
         return False
 
@@ -274,6 +302,16 @@ def _mujoco_check_collision(
     return False
 
 
+def _mujoco_check_collision(
+    model: Any, data: Any, body_name: str, site_name: str
+) -> bool:
+    import mujoco
+
+    body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, body_name)
+    site_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_SITE, site_name)
+    return _mujoco_check_collision_by_id(model, data, body_id, site_id)
+
+
 def _verify_mujoco_batched(
     xml_path: str,
     control_inputs: dict[str, float],
@@ -287,12 +325,28 @@ def _verify_mujoco_batched(
     from mujoco.rollout import Rollout
 
     model = mujoco.MjModel.from_xml_path(xml_path)
-    body_names = _mujoco_body_names(model)
+    body_records = _mujoco_body_records(model)
+    body_names = [name for name, _, _ in body_records]
+    # The replay loop is hot enough that we keep body/site identities in
+    # integer form once the scene is loaded. That lets the threaded rollout feed
+    # a lighter serial replay pass without repeated name lookups.
+    moving_body_records = [
+        (name, body_id) for name, body_id, is_dynamic in body_records if is_dynamic
+    ]
+    static_body_records = [
+        (name, body_id) for name, body_id, is_dynamic in body_records if not is_dynamic
+    ]
     goal_sites = _mujoco_site_names(model, "zone_goal")
-    forbid_sites = _mujoco_site_names(model, "zone_forbid")
+    goal_site_ids = _mujoco_site_ids(model, "zone_goal")
+    forbid_site_ids = _mujoco_site_ids(model, "zone_forbid")
     target_body_name = _identify_target_body_name(
         body_names, explicit_target_body_name=explicit_target_body_name
     )
+    target_body_id = -1
+    if target_body_name:
+        target_body_id = mujoco.mj_name2id(
+            model, mujoco.mjtObj.mjOBJ_BODY, target_body_name
+        )
     outcomes = [_SceneOutcome() for _ in range(num_scenes)]
     evaluators = [
         SuccessEvaluator(max_simulation_time=duration) for _ in range(num_scenes)
@@ -320,6 +374,61 @@ def _verify_mujoco_batched(
     nthread = max(1, min(num_scenes, os.cpu_count() or num_scenes))
     rollout_datas = [mujoco.MjData(model) for _ in range(nthread)]
 
+    # Static bodies never move, so we can validate their time-invariant failure
+    # conditions once up front. That keeps the replay loop focused on the bodies
+    # whose pose actually changes with the rollout state.
+    if static_body_records:
+        baseline_data = scene_datas[0]
+        static_failure: SimulationFailure | None = None
+        for body_name, body_id in static_body_records:
+            pos, vel = _mujoco_get_body_state_by_id(model, baseline_data, body_id)
+            fail_reason = evaluators[0].check_failure(0.0, pos, vel)
+            if fail_reason:
+                static_failure = SimulationFailure(
+                    reason=fail_reason,
+                    detail=body_name,
+                )
+                break
+
+            if forbid_site_ids and any(
+                _mujoco_check_collision_by_id(model, baseline_data, body_id, site_id)
+                for site_id in forbid_site_ids
+            ):
+                static_failure = SimulationFailure(
+                    reason=FailureReason.FORBID_ZONE_HIT,
+                    detail=body_name,
+                )
+                break
+
+        if static_failure is not None:
+            for outcome in outcomes:
+                outcome.failure = static_failure
+                outcome.done = True
+            _finalize_pending_outcomes(
+                outcomes, duration=duration, goal_sites=goal_sites
+            )
+            results = [_build_metrics(outcome) for outcome in outcomes]
+            success_count = sum(1 for result in results if result.success)
+            success_rate = success_count / num_scenes if num_scenes > 0 else 0.0
+            fail_reasons = list(
+                {
+                    result.fail_reason
+                    for result in results
+                    if result.fail_reason is not None
+                }
+            )
+            return MultiRunResult(
+                num_scenes=num_scenes,
+                success_count=success_count,
+                success_rate=success_rate,
+                is_consistent=(len({result.success for result in results}) == 1),
+                individual_results=results,
+                fail_reasons=fail_reasons,
+                scene_build_count=1,
+                backend_run_count=1,
+                batched_execution=True,
+            )
+
     with Rollout(nthread=nthread) as rollout:
         states, _sensordata = rollout.rollout(
             model,
@@ -335,7 +444,8 @@ def _verify_mujoco_batched(
     scratch_data = mujoco.MjData(model)
     # Rollout owns the expensive batched stepping; replay returned states through
     # mj_forward so the existing collision, velocity, and timeout checks still
-    # run against full derived scene data.
+    # run against full derived scene data. This replay remains serial because it
+    # needs explicit per-scene early exits and derived MuJoCo state.
     for idx, outcome in enumerate(outcomes):
         if outcome.done:
             continue
@@ -349,8 +459,8 @@ def _verify_mujoco_batched(
             current_time = float(scratch_data.time)
             outcome.total_time = current_time
 
-            for body_name in body_names:
-                pos, vel = _mujoco_get_body_state(model, scratch_data, body_name)
+            for body_name, body_id in moving_body_records:
+                pos, vel = _mujoco_get_body_state_by_id(model, scratch_data, body_id)
                 outcome.max_velocity = max(
                     outcome.max_velocity, float(np.linalg.norm(vel))
                 )
@@ -366,10 +476,10 @@ def _verify_mujoco_batched(
             if outcome.done:
                 break
 
-            for body_name in body_names:
+            for body_name, body_id in moving_body_records:
                 if any(
-                    _mujoco_check_collision(model, scratch_data, body_name, site_name)
-                    for site_name in forbid_sites
+                    _mujoco_check_collision_by_id(model, scratch_data, body_id, site_id)
+                    for site_id in forbid_site_ids
                 ):
                     outcome.failure = SimulationFailure(
                         reason=FailureReason.FORBID_ZONE_HIT,
@@ -381,11 +491,11 @@ def _verify_mujoco_batched(
             if outcome.done:
                 break
 
-            if target_body_name and any(
-                _mujoco_check_collision(
-                    model, scratch_data, target_body_name, site_name
+            if target_body_id != -1 and any(
+                _mujoco_check_collision_by_id(
+                    model, scratch_data, target_body_id, site_id
                 )
-                for site_name in goal_sites
+                for site_id in goal_site_ids
             ):
                 outcome.success = True
                 outcome.done = True
