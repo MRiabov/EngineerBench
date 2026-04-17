@@ -1,9 +1,10 @@
 """Synthetic tube-guided rigid-body corpus generator.
 
 This module is the execution core behind the Jupyter notebook driver.
-It stages a scratch tube scaffold, runs batched jittered verification,
-captures the wall-contact cloud, prunes the scaffold into simple box
-primitives, and exports planner/coder row bundles plus dataset row records.
+It stages a scratch tube scaffold from the engineer-coder ec-002 input
+contract, runs batched jittered verification, captures the wall-contact
+cloud, prunes the scaffold into simple box primitives, and exports
+planner/coder row bundles plus dataset row records.
 """
 
 from __future__ import annotations
@@ -23,6 +24,19 @@ from io import StringIO
 from pathlib import Path
 from typing import Any, Iterable
 
+
+def bootstrap_repo_root(start: Path | None = None) -> Path:
+    current = (start or Path(__file__).resolve().parent).resolve()
+    for candidate in (current, *current.parents):
+        if (candidate / "specs" / "desired_architecture.md").exists():
+            if str(candidate) not in sys.path:
+                sys.path.insert(0, str(candidate))
+            return candidate
+    raise FileNotFoundError("Could not locate the repository root")
+
+
+REPO_ROOT = bootstrap_repo_root()
+
 import matplotlib.pyplot as plt
 import numpy as np
 import structlog
@@ -41,6 +55,13 @@ from build123d import (
     sweep,
 )
 from scipy.spatial.transform import Rotation as SciPyRotation
+
+try:
+    from tube_guided_synthetic_rigid_body_corpus_utils import validate_route_clearance
+except ImportError:  # pragma: no cover - notebook import fallback
+    from notebooks.tube_guided_synthetic_rigid_body_corpus_utils import (
+        validate_route_clearance,
+    )
 
 from shared.enums import AgentName, ManufacturingMethod
 from shared.models.schemas import (
@@ -117,9 +138,7 @@ def find_repo_root(start: Path | None = None) -> Path:
     raise FileNotFoundError("Could not locate the repository root")
 
 
-ROOT = find_repo_root(Path(__file__).resolve().parent)
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+ROOT = REPO_ROOT
 
 NOTEBOOK_LOG_DIR = ROOT / "logs" / "notebook"
 NOTEBOOK_LOG_DIR.mkdir(parents=True, exist_ok=True)
@@ -166,12 +185,13 @@ class ContactHit:
 @dataclass
 class ScenarioConfig:
     scenario_id: str
-    benchmark_bundle_dir: Path
+    source_seed_bundle_dir: Path
     planner_row_id: str
     coder_row_id: str
     route_points: list[RoutePoint]
     scratch_root: Path
     promote_to_dataset: bool = False
+    backfill_source_solution: bool = False
     emit_debug_plots: bool = True
     batch_width_range: tuple[int, int] = (10, 20)
     success_threshold: float = 0.8
@@ -363,10 +383,10 @@ def build_tube_scaffold(route_points: list[RoutePoint], radius_mm: float) -> Com
         sweep(route_profile.sketch, path=route_line.line)
     part = tube.part
     part.label = "tube_scaffold"
-    part.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
+    part.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
     compound = Compound(children=[part])
     compound.label = "tube_scaffold"
-    compound.metadata = CompoundMetadata(fixed=True)
+    compound.metadata = CompoundMetadata(is_fixed=True)
     return compound
 
 
@@ -382,7 +402,7 @@ def build_box_part(spec: PartSpec):
     part.label = spec.name
     part.metadata = PartMetadata(
         material_id=spec.material_id,
-        fixed=spec.fixed,
+        is_fixed=spec.fixed,
     )
     return part
 
@@ -468,7 +488,7 @@ def compound_from_specs(specs: list[PartSpec], label: str) -> Compound:
     parts = parts_from_specs(specs)
     compound = Compound(children=parts)
     compound.label = label
-    compound.metadata = CompoundMetadata(fixed=True)
+    compound.metadata = CompoundMetadata(is_fixed=True)
     return compound
 
 
@@ -481,9 +501,10 @@ def intersects_any(compound: Compound) -> tuple[bool, tuple[Any, Any], float]:
 def payload_extent_mm(benchmark_definition: BenchmarkDefinition) -> float:
     payload = benchmark_definition.payload
     shape = str(getattr(payload, "shape", "sphere")).strip().lower()
-    radius_range = getattr(
-        getattr(payload, "static_randomization", None), "radius", None
-    )
+    static_randomization = getattr(payload, "static_randomization", None)
+    radius_range = getattr(static_randomization, "radius_mm", None)
+    if radius_range is None:
+        radius_range = getattr(static_randomization, "radius", None)
     radius = float(max(radius_range)) if radius_range else None
 
     if shape == "sphere":
@@ -495,12 +516,100 @@ def payload_extent_mm(benchmark_definition: BenchmarkDefinition) -> float:
     return 2.0 * (radius if radius is not None else 1.0)
 
 
+def normalize_benchmark_contract_dict(data: dict[str, Any]) -> dict[str, Any]:
+    objectives = (
+        data.get("objectives") if isinstance(data.get("objectives"), dict) else {}
+    )
+    payload = data.get("payload") if isinstance(data.get("payload"), dict) else {}
+    constraints = (
+        data.get("constraints") if isinstance(data.get("constraints"), dict) else {}
+    )
+    randomization = (
+        data.get("randomization") if isinstance(data.get("randomization"), dict) else {}
+    )
+    physics = data.get("physics") if isinstance(data.get("physics"), dict) else {}
+
+    normalized_benchmark_parts: list[dict[str, Any]] = []
+    for part in data.get("benchmark_parts", []):
+        if not isinstance(part, dict):
+            normalized_benchmark_parts.append(part)
+            continue
+        metadata = (
+            part.get("metadata") if isinstance(part.get("metadata"), dict) else {}
+        )
+        normalized_benchmark_parts.append(
+            {
+                "part_id": part.get("part_id"),
+                "label": part.get("label"),
+                "metadata": {
+                    "fixed": metadata.get("fixed")
+                    if metadata.get("fixed") is not None
+                    else metadata.get("is_fixed"),
+                    "material_id": metadata.get("material_id"),
+                },
+            }
+        )
+
+    normalized = {
+        "objectives": {
+            "goal_zone_mm": objectives.get("goal_zone_mm")
+            or objectives.get("goal_zone"),
+            "forbid_zones": [],
+            "build_zone_mm": objectives.get("build_zone_mm")
+            or objectives.get("build_zone"),
+        },
+        "benchmark_parts": normalized_benchmark_parts,
+        "physics": physics,
+        "simulation_bounds_mm": data.get("simulation_bounds_mm")
+        or data.get("simulation_bounds"),
+        "payload": {
+            "label": payload.get("label"),
+            "shape": payload.get("shape"),
+            "material_id": payload.get("material_id"),
+            "static_randomization": {
+                "radius_mm": (
+                    payload.get("static_randomization", {}).get("radius_mm")
+                    if isinstance(payload.get("static_randomization"), dict)
+                    else None
+                )
+                or (
+                    payload.get("static_randomization", {}).get("radius")
+                    if isinstance(payload.get("static_randomization"), dict)
+                    else None
+                ),
+            },
+            "start_position_mm": payload.get("start_position_mm")
+            or payload.get("start_position"),
+            "runtime_jitter_mm": payload.get("runtime_jitter_mm")
+            or payload.get("runtime_jitter"),
+        },
+        "constraints": constraints,
+        "randomization": randomization,
+        "assembly_totals": data.get("assembly_totals"),
+    }
+
+    for zone in objectives.get("forbid_zones", []):
+        if not isinstance(zone, dict):
+            continue
+        normalized["objectives"]["forbid_zones"].append(
+            {
+                "name": zone.get("name"),
+                "min_mm": zone.get("min_mm") or zone.get("min"),
+                "max_mm": zone.get("max_mm") or zone.get("max"),
+            }
+        )
+
+    return normalized
+
+
 def scale_benchmark_definition_to_mm(
     benchmark_definition: BenchmarkDefinition,
     *,
-    scale: float = 1000.0,
+    scale: float = 1.0,
 ) -> BenchmarkDefinition:
-    data = benchmark_definition.model_dump(mode="json")
+    data = normalize_benchmark_contract_dict(
+        benchmark_definition.model_dump(mode="json")
+    )
 
     def scale_point(point: list[float] | tuple[float, float, float] | None):
         if point is None:
@@ -511,10 +620,12 @@ def scale_benchmark_definition_to_mm(
         if not isinstance(box, dict):
             return box
         scaled = dict(box)
-        if "min" in scaled:
-            scaled["min"] = scale_point(scaled["min"])
-        if "max" in scaled:
-            scaled["max"] = scale_point(scaled["max"])
+        for key in ("min_mm", "min"):
+            if key in scaled:
+                scaled[key] = scale_point(scaled[key])
+        for key in ("max_mm", "max"):
+            if key in scaled:
+                scaled[key] = scale_point(scaled[key])
         return scaled
 
     objectives = (
@@ -524,13 +635,13 @@ def scale_benchmark_definition_to_mm(
     constraints = (
         data.get("constraints") if isinstance(data.get("constraints"), dict) else {}
     )
-    simulation_bounds = data.get("simulation_bounds")
+    simulation_bounds = data.get("simulation_bounds_mm")
 
     if isinstance(objectives, dict):
-        if "goal_zone" in objectives:
-            objectives["goal_zone"] = scale_bbox(objectives.get("goal_zone"))
-        if "build_zone" in objectives:
-            objectives["build_zone"] = scale_bbox(objectives.get("build_zone"))
+        if "goal_zone_mm" in objectives:
+            objectives["goal_zone_mm"] = scale_bbox(objectives.get("goal_zone_mm"))
+        if "build_zone_mm" in objectives:
+            objectives["build_zone_mm"] = scale_bbox(objectives.get("build_zone_mm"))
         if "forbid_zones" in objectives and isinstance(
             objectives["forbid_zones"], list
         ):
@@ -540,31 +651,33 @@ def scale_benchmark_definition_to_mm(
                     scaled_forbid_zones.append(zone)
                     continue
                 zone_scaled = dict(zone)
-                zone_scaled["min"] = scale_point(zone_scaled.get("min"))
-                zone_scaled["max"] = scale_point(zone_scaled.get("max"))
+                if "min_mm" in zone_scaled:
+                    zone_scaled["min_mm"] = scale_point(zone_scaled.get("min_mm"))
+                if "max_mm" in zone_scaled:
+                    zone_scaled["max_mm"] = scale_point(zone_scaled.get("max_mm"))
                 scaled_forbid_zones.append(zone_scaled)
             objectives["forbid_zones"] = scaled_forbid_zones
 
     if isinstance(payload, dict):
-        if payload.get("start_position") is not None:
-            payload["start_position"] = scale_point(payload.get("start_position"))
+        if payload.get("start_position_mm") is not None:
+            payload["start_position_mm"] = scale_point(payload.get("start_position_mm"))
         static_randomization = (
             payload.get("static_randomization")
             if isinstance(payload.get("static_randomization"), dict)
             else {}
         )
-        if static_randomization.get("radius") is not None:
-            static_randomization["radius"] = [
-                float(value) * scale for value in static_randomization["radius"]
+        if static_randomization.get("radius_mm") is not None:
+            static_randomization["radius_mm"] = [
+                float(value) * scale for value in static_randomization["radius_mm"]
             ]
         payload["static_randomization"] = static_randomization
-        if payload.get("runtime_jitter") is not None:
-            payload["runtime_jitter"] = [
-                float(value) * scale for value in payload["runtime_jitter"]
+        if payload.get("runtime_jitter_mm") is not None:
+            payload["runtime_jitter_mm"] = [
+                float(value) * scale for value in payload["runtime_jitter_mm"]
             ]
 
     if isinstance(simulation_bounds, dict):
-        data["simulation_bounds"] = scale_bbox(simulation_bounds)
+        data["simulation_bounds_mm"] = scale_bbox(simulation_bounds)
     if isinstance(constraints, dict):
         for key in (
             "estimated_solution_cost_usd",
@@ -591,8 +704,8 @@ def expanded_bounding_box(
         [margin_mm, margin_mm, envelope_mm + margin_mm], dtype=float
     )
     return {
-        "min": [float(v) for v in lower.tolist()],
-        "max": [float(v) for v in upper.tolist()],
+        "min_mm": [float(v) for v in lower.tolist()],
+        "max_mm": [float(v) for v in upper.tolist()],
     }
 
 
@@ -600,57 +713,7 @@ def load_benchmark_definition(bundle_dir: Path) -> BenchmarkDefinition:
     raw = load_yaml(bundle_dir / "benchmark_definition.yaml")
     if not isinstance(raw, dict):
         raise ValueError("benchmark_definition.yaml must deserialize to a mapping")
-
-    objectives = (
-        raw.get("objectives") if isinstance(raw.get("objectives"), dict) else {}
-    )
-    payload = raw.get("payload") if isinstance(raw.get("payload"), dict) else {}
-    constraints = (
-        raw.get("constraints") if isinstance(raw.get("constraints"), dict) else {}
-    )
-    randomization = (
-        raw.get("randomization") if isinstance(raw.get("randomization"), dict) else {}
-    )
-    physics = raw.get("physics") if isinstance(raw.get("physics"), dict) else {}
-
-    pruned = {
-        "objectives": {
-            "goal_zone": objectives.get("goal_zone"),
-            "forbid_zones": objectives.get("forbid_zones", []),
-            "build_zone": objectives.get("build_zone"),
-        },
-        "benchmark_parts": raw.get("benchmark_parts", []),
-        "physics": {
-            "backend": physics.get("backend", SimulatorBackendType.MUJOCO.value),
-            "compute_target": physics.get("compute_target", "auto"),
-        },
-        "simulation_bounds": raw.get("simulation_bounds"),
-        "payload": {
-            "label": payload.get("label"),
-            "shape": payload.get("shape"),
-            "material_id": payload.get("material_id"),
-            "static_randomization": payload.get("static_randomization", {}),
-            "start_position": payload.get("start_position"),
-            "runtime_jitter": payload.get("runtime_jitter"),
-        },
-        "constraints": {
-            "estimated_solution_cost_usd": constraints.get(
-                "estimated_solution_cost_usd"
-            ),
-            "estimated_solution_weight_g": constraints.get(
-                "estimated_solution_weight_g"
-            ),
-            "max_unit_cost": constraints.get("max_unit_cost"),
-            "max_weight_g": constraints.get("max_weight_g"),
-            "target_quantity": constraints.get("target_quantity"),
-        },
-        "randomization": {
-            "static_variation_id": randomization.get("static_variation_id"),
-            "runtime_jitter_enabled": randomization.get("runtime_jitter_enabled", True),
-        },
-        "assembly_totals": raw.get("assembly_totals"),
-    }
-    return BenchmarkDefinition.model_validate(pruned)
+    return BenchmarkDefinition.model_validate(normalize_benchmark_contract_dict(raw))
 
 
 def synthetic_benchmark_definition(
@@ -660,12 +723,14 @@ def synthetic_benchmark_definition(
     envelope_mm: float,
     margin_mm: float,
 ) -> dict[str, Any]:
-    benchmark_data = benchmark_definition.model_dump(mode="json")
+    benchmark_data = normalize_benchmark_contract_dict(
+        benchmark_definition.model_dump(mode="json")
+    )
     bbox = expanded_bounding_box(
         route_points, envelope_mm=envelope_mm, margin_mm=margin_mm
     )
-    benchmark_data["objectives"]["build_zone"] = bbox
-    benchmark_data["simulation_bounds"] = bbox
+    benchmark_data["objectives"]["build_zone_mm"] = bbox
+    benchmark_data["simulation_bounds_mm"] = bbox
     benchmark_data["constraints"]["estimated_solution_cost_usd"] = None
     benchmark_data["constraints"]["estimated_solution_weight_g"] = None
     return benchmark_data
@@ -1037,7 +1102,7 @@ def build_route_lowering_script_text(
             part.label = spec["name"]
             part.metadata = PartMetadata(
                 material_id=spec["material_id"],
-                fixed=bool(spec.get("fixed", True)),
+                is_fixed=bool(spec.get("fixed", True)),
             )
             return part
 
@@ -1097,7 +1162,7 @@ def build_route_lowering_script_text(
                             "center_mm": [float(v) for v in world_center],
                             "euler_deg": [float(v) for v in euler],
                             "material_id": material_id,
-                            "fixed": True,
+                            "is_fixed": True,
                         }}
                     )
 
@@ -1118,7 +1183,7 @@ def build_route_lowering_script_text(
             ]
             assembly = Compound(children=parts)
             assembly.label = ASSEMBLY_LABEL
-            assembly.metadata = CompoundMetadata(fixed=True)
+            assembly.metadata = CompoundMetadata(is_fixed=True)
             return assembly
         """
         )
@@ -1629,7 +1694,6 @@ def render_debug_plots(
 def stage_bundle_root(
     *,
     root: Path,
-    benchmark_bundle_dir: Path,
     benchmark_definition_yaml: dict[str, Any],
     benchmark_script_text: str,
     benchmark_assembly_text: str,
@@ -1686,7 +1750,7 @@ def build_candidate_assembly(
     parts = parts_from_specs(specs)
     compound = Compound(children=parts)
     compound.label = "synthetic_route_candidate"
-    compound.metadata = CompoundMetadata(fixed=True)
+    compound.metadata = CompoundMetadata(is_fixed=True)
     return specs, compound
 
 
@@ -1716,6 +1780,28 @@ def validate_geometry(compound: Compound) -> None:
         )
 
 
+def backfill_source_solution(
+    *,
+    source_seed_bundle_dir: Path,
+    solved_coder_root: Path,
+) -> None:
+    source_solution_root = source_seed_bundle_dir / ".solution"
+    solved_solution_root = solved_coder_root / ".solution"
+    if not solved_solution_root.exists():
+        raise FileNotFoundError(
+            f"Missing solved solution bundle at {solved_solution_root}"
+        )
+    if source_solution_root.exists():
+        shutil.rmtree(source_solution_root)
+    shutil.copytree(solved_solution_root, source_solution_root)
+    logger.info(
+        "backfill_source_solution_done",
+        source_seed_bundle_dir=str(source_seed_bundle_dir),
+        source_solution_root=str(source_solution_root),
+        solved_solution_root=str(solved_solution_root),
+    )
+
+
 def synthesize(
     config: ScenarioConfig,
 ) -> dict[str, Any]:
@@ -1724,14 +1810,14 @@ def synthesize(
     logger.info(
         "synthesize_start",
         scenario_id=config.scenario_id,
-        benchmark_bundle_dir=str(config.benchmark_bundle_dir),
+        source_seed_bundle_dir=str(config.source_seed_bundle_dir),
         planner_row_id=config.planner_row_id,
         coder_row_id=config.coder_row_id,
     )
     benchmark_definition = scale_benchmark_definition_to_mm(
-        load_benchmark_definition(config.benchmark_bundle_dir)
+        load_benchmark_definition(config.source_seed_bundle_dir)
     )
-    benchmark_build = load_benchmark_build_fn(config.benchmark_bundle_dir)
+    benchmark_build = load_benchmark_build_fn(config.source_seed_bundle_dir)
     benchmark_geometry = benchmark_build()
     payload_extent = payload_extent_mm(benchmark_definition)
     tube_radius_mm = (payload_extent / 2.0) + config.clearance_mm
@@ -1754,18 +1840,27 @@ def synthesize(
         margin_mm=build_zone_margin_mm,
     )
     synthetic_benchmark = BenchmarkDefinition.model_validate(synthetic_benchmark_dict)
+    route_clearance_errors = validate_route_clearance(
+        route_points=config.route_points,
+        benchmark_definition=synthetic_benchmark,
+        pipe_radius_mm=tube_radius_mm,
+        clearance_mm=config.clearance_mm,
+    )
+    if route_clearance_errors:
+        raise RuntimeError("; ".join(route_clearance_errors))
 
     benchmark_script_text = (
-        config.benchmark_bundle_dir / "benchmark_script.py"
+        config.source_seed_bundle_dir / "benchmark_script.py"
     ).read_text(encoding="utf-8")
     benchmark_assembly_text = (
-        config.benchmark_bundle_dir / "benchmark_assembly_definition.yaml"
+        config.source_seed_bundle_dir / "benchmark_assembly_definition.yaml"
     ).read_text(encoding="utf-8")
-    benchmark_bundle_reviews = config.benchmark_bundle_dir / "reviews"
+    benchmark_bundle_reviews = config.source_seed_bundle_dir / "reviews"
     scratch_root = config.scratch_root / config.scenario_id
     scratch_root.mkdir(parents=True, exist_ok=True)
 
     payload_body_name = payload_scene_name(benchmark_definition.payload.label)
+
     chosen_backend: SimulatorBackendType | None = None
     chosen_batch_width = None
     chosen_seed = None
@@ -1820,7 +1915,7 @@ def synthesize(
                         control_inputs={},
                         jitter_range=tuple(
                             float(v)
-                            for v in benchmark_definition.payload.runtime_jitter
+                            for v in benchmark_definition.payload.runtime_jitter_mm
                         ),
                         num_scenes=batch_width,
                         duration=8.0,
@@ -1875,7 +1970,7 @@ def synthesize(
                         control_inputs={},
                         jitter_range=tuple(
                             float(v)
-                            for v in benchmark_definition.payload.runtime_jitter
+                            for v in benchmark_definition.payload.runtime_jitter_mm
                         ),
                         num_scenes=batch_width,
                         duration=8.0,
@@ -1939,7 +2034,7 @@ def synthesize(
     pruned_parts = parts_from_specs(chosen_pruned_specs)
     pruned_compound = Compound(children=pruned_parts)
     pruned_compound.label = "synthetic_route_solution"
-    pruned_compound.metadata = CompoundMetadata(fixed=True)
+    pruned_compound.metadata = CompoundMetadata(is_fixed=True)
     validate_geometry(pruned_compound)
 
     manufactured_part_entries, total_cost, total_weight = annotate_manufactured_parts(
@@ -2033,7 +2128,6 @@ def synthesize(
 
     stage_bundle_root(
         root=planner_root,
-        benchmark_bundle_dir=config.benchmark_bundle_dir,
         benchmark_definition_yaml=synthetic_benchmark_dict,
         benchmark_script_text=benchmark_script_text,
         benchmark_assembly_text=benchmark_assembly_text,
@@ -2049,7 +2143,6 @@ def synthesize(
 
     stage_bundle_root(
         root=coder_root,
-        benchmark_bundle_dir=config.benchmark_bundle_dir,
         benchmark_definition_yaml=synthetic_benchmark_dict,
         benchmark_script_text=benchmark_script_text,
         benchmark_assembly_text=benchmark_assembly_text,
@@ -2120,6 +2213,12 @@ def synthesize(
             coder_row_id=config.coder_row_id,
         )
 
+    if config.backfill_source_solution:
+        backfill_source_solution(
+            source_seed_bundle_dir=config.source_seed_bundle_dir,
+            solved_coder_root=coder_root,
+        )
+
     logger.info(
         "synthesize_done",
         scenario_id=config.scenario_id,
@@ -2148,9 +2247,9 @@ def default_route_points() -> list[RoutePoint]:
     return [
         RoutePoint(name="build_zone_start", pos_mm=(-250.0, 0.0, 140.0), t_s=0.0),
         RoutePoint(name="waypoint_01", pos_mm=(-220.0, 0.0, 132.0), t_s=0.8),
-        RoutePoint(name="waypoint_02", pos_mm=(-220.0, 95.0, 120.0), t_s=1.6),
-        RoutePoint(name="waypoint_03", pos_mm=(-60.0, 95.0, 98.0), t_s=2.7),
-        RoutePoint(name="waypoint_04", pos_mm=(180.0, 95.0, 72.0), t_s=4.0),
+        RoutePoint(name="waypoint_02", pos_mm=(-220.0, 130.0, 120.0), t_s=1.6),
+        RoutePoint(name="waypoint_03", pos_mm=(300.0, 130.0, 98.0), t_s=2.7),
+        RoutePoint(name="waypoint_04", pos_mm=(330.0, 60.0, 72.0), t_s=4.0),
         RoutePoint(name="goal_zone_contact", pos_mm=(300.0, 0.0, 40.0), t_s=5.5),
     ]
 
@@ -2159,18 +2258,19 @@ def main(config: ScenarioConfig | None = None) -> dict[str, Any]:
     if config is None:
         config = ScenarioConfig(
             scenario_id="tube-guided-synthetic-001",
-            benchmark_bundle_dir=ROOT
+            source_seed_bundle_dir=ROOT
             / "dataset"
             / "data"
             / "seed"
             / "artifacts"
-            / "benchmark_coder"
-            / "bc-002-tunnel",
+            / "engineer_coder"
+            / "ec-002-low-friction-cube",
             planner_row_id="ep-synth-001",
             coder_row_id="ec-synth-001",
             route_points=default_route_points(),
             scratch_root=ROOT / "tmp" / "tube_guided_synthetic_corpus",
             promote_to_dataset=False,
+            backfill_source_solution=False,
         )
     log_path = notebook_log_path(config.scenario_id)
     with NotebookLogCapture(log_path):

@@ -241,10 +241,10 @@ def _build_payload_component(definition: BenchmarkDefinition) -> Compound:
 
     part = part.move(Location(tuple(payload.start_position)))
     part.label = payload.label
-    part.metadata = PartMetadata(material_id=payload.material_id, fixed=False)
+    part.metadata = PartMetadata(material_id=payload.material_id, is_fixed=False)
 
     preview = Compound(label=f"{payload.label}_preview", children=[part])
-    preview.metadata = CompoundMetadata(fixed=False)
+    preview.metadata = CompoundMetadata(is_fixed=False)
     return preview
 
 
