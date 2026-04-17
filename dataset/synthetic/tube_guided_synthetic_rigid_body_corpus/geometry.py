@@ -58,7 +58,11 @@ def frame_from_segment(
     # Recompute a fresh frame per span rather than carrying the previous span's
     # roll forward. Transporting the tangent basis was accumulating twist at
     # joins and made the corridor look over-rotated in the preview render.
-    y_axis = normalize(np.cross(up, x_axis))
+    #
+    # Use the opposite lateral handedness from the preview-only helper so the
+    # corridor floor actually slopes with the intended travel direction instead
+    # of backing the payload out of the tube under gravity.
+    y_axis = normalize(np.cross(x_axis, up))
     z_axis = normalize(np.cross(x_axis, y_axis))
     y_axis = normalize(np.cross(z_axis, x_axis))
     frame = np.column_stack([x_axis, y_axis, z_axis])

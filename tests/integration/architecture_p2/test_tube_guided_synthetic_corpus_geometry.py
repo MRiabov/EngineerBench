@@ -59,7 +59,7 @@ def _reference_frame(start_mm: np.ndarray, end_mm: np.ndarray) -> np.ndarray:
     up = np.array([0.0, 0.0, 1.0], dtype=float)
     if abs(float(np.dot(x_axis, up))) > 0.95:
         up = np.array([0.0, 1.0, 0.0], dtype=float)
-    y_axis = np.cross(up, x_axis)
+    y_axis = np.cross(x_axis, up)
     y_axis = y_axis / np.linalg.norm(y_axis)
     z_axis = np.cross(x_axis, y_axis)
     z_axis = z_axis / np.linalg.norm(z_axis)

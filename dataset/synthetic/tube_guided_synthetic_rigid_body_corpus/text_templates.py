@@ -92,7 +92,11 @@ def build_route_lowering_script_text(
             # previous span's roll forward. Transporting the tangent basis was
             # accumulating twist at joins and made the corridor look
             # over-rotated in the preview render.
-            y_axis = normalize(np.cross(up, x_axis))
+            #
+            # Keep the corridor floor sloping with the intended travel
+            # direction so the payload does not get driven back out of the
+            # tube by gravity.
+            y_axis = normalize(np.cross(x_axis, up))
             z_axis = normalize(np.cross(x_axis, y_axis))
             y_axis = normalize(np.cross(z_axis, x_axis))
             frame = np.column_stack([x_axis, y_axis, z_axis])
