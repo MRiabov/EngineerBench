@@ -202,15 +202,15 @@ written rationale.
 
 - [ ] Add a shared schema-first YAML serializer for integration fixtures.
 - [ ] Move core benchmark, assembly, and payload fixture builders to typed
-      model instances.
+  model instances.
 - [ ] Remove dict-shaped fixture assembly where a schema class already exists.
 
 ### Corpus demotion
 
 - [ ] Update the mock-response loader and startup checks so the corpus is
-      compatibility material, not canonical fixture ownership.
+  compatibility material, not canonical fixture ownership.
 - [ ] Refresh `tests/integration/mock_responses/README.md` to match the new
-      contract.
+  contract.
 - [ ] Update normalization tooling so it operates on schema-emitted YAML.
 
 ### Tests and regressions
@@ -218,7 +218,7 @@ written rationale.
 - [ ] Migrate representative P0 and P1 tests to the schema-first fixture path.
 - [ ] Add round-trip regressions for emitted benchmark and payload YAML.
 - [ ] Verify the same typed model validates the authored object and the emitted
-      file content.
+  file content.
 
 ## File-Level Change Set
 

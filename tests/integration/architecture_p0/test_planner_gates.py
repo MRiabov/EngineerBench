@@ -287,6 +287,16 @@ async def _seed_successful_simulation_result(
         headers=headers,
     )
     assert resp.status_code == 200, resp.text
+    heavy_resp = await client.post(
+        f"{WORKER_HEAVY_URL}/fs/write",
+        json=WriteFileRequest(
+            path="simulation_result.json",
+            content=simulation_result.model_dump_json(indent=2),
+            overwrite=True,
+        ).model_dump(mode="json"),
+        headers=headers,
+    )
+    assert heavy_resp.status_code == 200, heavy_resp.text
     return simulation_result
 
 
@@ -546,7 +556,7 @@ async def test_int_005_mandatory_artifacts_gate(
         )
         data = BenchmarkToolResponse.model_validate(resp.json())
         assert not data.success
-        assert "benchmark_plan.md is missing" in data.message
+        assert "Missing required plan file: benchmark_plan.md" in data.message
 
         # 2. Missing todo.md
         files = base_files.copy()
@@ -797,7 +807,7 @@ from build123d import *
 from shared.models.schemas import PartMetadata
 from shared.workers.workbench_models import ManufacturingMethod
 def build():
-    p = Box(130, 1, 1, align=(Align.MIN, Align.CENTER, Align.CENTER))
+    p = Box(66, 1, 1, align=(Align.MIN, Align.CENTER, Align.CENTER))
     p = p.move(Location((0, 0, 50)))
     p.label = "payload_ball"
     p.metadata = PartMetadata(
@@ -827,7 +837,7 @@ def build():
                 PayloadTrajectoryAnchor(
                     t_s=1.0,
                     reference_point="pre_goal",
-                    pos_mm=(20.2, 20.2, 20.2),
+                    pos_mm=(33.0, 33.0, 33.0),
                     rot_deg=(0.0, 0.0, 0.0),
                     position_tolerance_mm=(0.5, 0.5, 0.5),
                     rotation_tolerance_deg=(0.1, 0.1, 1.0),
@@ -1476,6 +1486,10 @@ async def test_int_011_planner_caps_enforcement(
             json=val_req.model_dump(mode="json"),
             headers=base_headers,
         )
+        sim_data = await _seed_successful_simulation_result(
+            client, base_headers, "solution.py"
+        )
+        assert sim_data.success, sim_data.message
 
         resp = await client.post(
             f"{WORKER_HEAVY_URL}/benchmark/submit",
@@ -1509,12 +1523,18 @@ async def test_int_015_engineer_handover_immutability(
     async with httpx.AsyncClient(timeout=300.0) as client:
         await client.post(f"{WORKER_LIGHT_URL}/git/init", headers=base_headers)
 
+        matching_plan = valid_plan.replace(
+            "| Box  | 1   |", "| environment_fixture | 1   |"
+        )
+        matching_cost = valid_cost.model_copy(deep=True)
+        matching_cost.totals.estimated_unit_cost_usd = 0.0
+        matching_cost.totals.estimated_weight_g = 0.0
         files = {
-            "benchmark_plan.md": valid_plan,
+            "benchmark_plan.md": matching_plan,
             "todo.md": valid_todo,
             "benchmark_definition.yaml": valid_objectives,
-            "benchmark_assembly_definition.yaml": valid_cost,
-            "solution.py": minimal_script,
+            "benchmark_assembly_definition.yaml": matching_cost,
+            "solution.py": minimal_script.replace("test_part", "environment_fixture"),
         }
         await setup_workspace(client, base_headers, files)
 
@@ -1530,7 +1550,7 @@ async def test_int_015_engineer_handover_immutability(
 
         # Cheat: modify benchmark_definition.yaml
         modified_objectives = valid_objectives.model_copy(deep=True)
-        modified_objectives.constraints.max_unit_cost = 1000.0
+        modified_objectives.randomization.runtime_jitter_enabled = False
         await setup_workspace(
             client, base_headers, {"benchmark_definition.yaml": modified_objectives}
         )
@@ -1852,6 +1872,14 @@ async def test_int_018_validate_and_price_integration_gate(
         relaxed_objectives = valid_objectives.model_copy(deep=True)
         relaxed_objectives.constraints.max_unit_cost = 500.0
         relaxed_objectives.constraints.max_weight_g = 10000.0
+        matching_plan = valid_plan.replace(
+            "| Box  | 1   |", "| environment_fixture | 1   |"
+        )
+        matching_cost = valid_cost.model_copy(deep=True)
+        matching_cost.constraints.benchmark_max_unit_cost_usd = 500.0
+        matching_cost.constraints.benchmark_max_weight_g = 10000.0
+        matching_cost.totals.estimated_unit_cost_usd = 0.0
+        matching_cost.totals.estimated_weight_g = 0.0
 
         goal_script = """
 from build123d import *
@@ -1859,7 +1887,7 @@ from shared.models.schemas import PartMetadata
 from shared.workers.workbench_models import ManufacturingMethod
 def build():
     p = Box(1, 1, 1).translate((15, 15, 15))
-    p.label = "ball"
+    p.label = "environment_fixture"
     p.metadata = PartMetadata(
         manufacturing_method=ManufacturingMethod.CNC, material_id="aluminum-6061"
     )
@@ -1867,10 +1895,10 @@ def build():
 """
 
         files = {
-            "benchmark_plan.md": valid_plan,
+            "benchmark_plan.md": matching_plan,
             "todo.md": valid_todo,
             "benchmark_definition.yaml": relaxed_objectives,
-            "benchmark_assembly_definition.yaml": valid_cost,
+            "benchmark_assembly_definition.yaml": matching_cost,
             "manufacturing_config.yaml": REPO_MANUFACTURING_CONFIG,
             "script.py": goal_script,
         }
