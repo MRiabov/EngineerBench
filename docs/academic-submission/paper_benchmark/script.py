@@ -26,7 +26,7 @@ def _make_part(spec: dict[str, object]):
         Box(*size, align=(Align.CENTER, Align.CENTER, Align.MIN))
     built = part.part.move(Location(center, (0.0, 0.0, orientation_deg)))
     built.label = label
-    built.metadata = PartMetadata(material_id=material_id, fixed=fixed)
+    built.metadata = PartMetadata(material_id=material_id, is_fixed=fixed)
     return built
 
 
@@ -35,5 +35,5 @@ def build() -> Compound:
         label="paper_compact_transfer_benchmark",
         children=[_make_part(spec) for spec in SCENE.values()],
     )
-    assembly.metadata = CompoundMetadata(fixed=False)
+    assembly.metadata = CompoundMetadata(is_fixed=False)
     return assembly

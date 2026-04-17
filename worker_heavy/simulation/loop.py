@@ -105,9 +105,9 @@ class SimulationLoop:
                 )
             )
             scene_config = {"particle_budget": self.particle_budget}
-            if objectives and objectives.simulation_bounds:
+            if objectives and objectives.simulation_bounds_mm:
                 scene_config["simulation_bounds"] = (
-                    objectives.simulation_bounds.model_dump()
+                    objectives.simulation_bounds_mm.model_dump()
                 )
 
             scene = SimulationScene(
@@ -250,7 +250,7 @@ class SimulationLoop:
             self.payload_trajectory_monitor_init_error = None
             self.success_evaluator = SuccessEvaluator(
                 max_simulation_time=self.max_simulation_time,
-                simulation_bounds=self.objectives.simulation_bounds
+                simulation_bounds=self.objectives.simulation_bounds_mm
                 if self.objectives
                 else None,
                 session_id=session_id,
@@ -469,8 +469,8 @@ class SimulationLoop:
                 "time_s": current_time,
                 "observation_window_s": self.benchmark_payload_observation_window_s,
                 "bounds": (
-                    self.objectives.simulation_bounds.model_dump()
-                    if self.objectives and self.objectives.simulation_bounds
+                    self.objectives.simulation_bounds_mm.model_dump()
+                    if self.objectives and self.objectives.simulation_bounds_mm
                     else None
                 ),
             },
@@ -611,8 +611,8 @@ class SimulationLoop:
                         "out_of_bounds_detected",
                         body=bname,
                         pos=bstate.pos,
-                        bounds=self.objectives.simulation_bounds.model_dump()
-                        if self.objectives and self.objectives.simulation_bounds
+                        bounds=self.objectives.simulation_bounds_mm.model_dump()
+                        if self.objectives and self.objectives.simulation_bounds_mm
                         else None,
                     )
                 self.fail_reason = SimulationFailure(

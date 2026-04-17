@@ -15,8 +15,20 @@ class WorkbenchContext(BaseModel):
 class BuildZone(BaseModel):
     """Defines the spatial bounds within which a design must fit."""
 
-    min: tuple[float, float, float]  # (x, y, z) minimum coordinates
-    max: tuple[float, float, float]  # (x, y, z) maximum coordinates
+    min_mm: tuple[float, float, float] = Field(
+        validation_alias="min"
+    )  # (x, y, z) minimum coordinates
+    max_mm: tuple[float, float, float] = Field(
+        validation_alias="max"
+    )  # (x, y, z) maximum coordinates
+
+    @property
+    def min(self) -> tuple[float, float, float]:
+        return self.min_mm
+
+    @property
+    def max(self) -> tuple[float, float, float]:
+        return self.max_mm
 
 
 class CostBreakdown(BaseModel):

@@ -21,7 +21,7 @@
 
 - Shape: `sphere`
 - Label: `projectile_ball`
-- Static randomization: radius in `[4, 6]` mm
+- Static randomization: radius_mm in `[4, 6]` mm
 - Nominal start position: `[-30, 0, 24]`
 - Runtime jitter:
   - Position: `[2, 2, 1]` mm
@@ -31,12 +31,12 @@
 
 - Goal zone:
   - Type: AABB
-  - Location: `min [27, -6, 6]`, `max [37, 6, 14]`
+  - Location: `min_mm [27, -6, 6]`, `max_mm [37, 6, 14]`
 - Forbid zones:
-  - `central_void`: `min [-7, -10, 0]`, `max [7, 10, 14]`
+  - `central_void`: `min_mm [-7, -10, 0]`, `max_mm [7, 10, 14]`
 - Build zone:
-  - `min [-40, -28, 0]`
-  - `max [40, 28, 48]`
+  - `min_mm [-40, -28, 0]`
+  - `max_mm [40, 28, 48]`
 
 ## 5. Design
 
@@ -49,7 +49,7 @@
 
 ## 6. Randomization
 
-- Static: allow only the declared radius variation on the sphere and keep the
+- Static: allow only the declared radius_mm variation on the sphere and keep the
   benchmark fixtures fixed.
 - Runtime: use the declared position jitter on the sphere spawn position to
   test robustness.
@@ -72,7 +72,7 @@
 ## 9. Part Metadata
 
 - `left_start_deck`, `right_goal_deck`, `bridge_reference_table`, and
-  `gap_floor_guard` must be static (`fixed: true`) and carry a known
+  `gap_floor_guard` must be static (`is_fixed: true`) and carry a known
   `material_id`.
 - The payload uses `material_id: abs`.
 - No part in this family should introduce powered behavior.

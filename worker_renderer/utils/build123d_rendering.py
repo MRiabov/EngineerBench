@@ -179,7 +179,9 @@ def _preview_render_stem(
 
 
 def _scene_axis_tick_count(scene: PreviewScene) -> int:
-    spans = [scene.bounds_max[i] - scene.bounds_min[i] for i in range(3)]
+    bounds_min = _scene_bounds_min(scene)
+    bounds_max = _scene_bounds_max(scene)
+    spans = [bounds_max[i] - bounds_min[i] for i in range(3)]
     longest_span = max(max(spans), 1e-6)
     # Aim for roughly 20 mm spacing, then clamp to the requested 7-13 range.
     label_count = int(round(longest_span / 20.0)) + 1
@@ -187,7 +189,9 @@ def _scene_axis_tick_count(scene: PreviewScene) -> int:
 
 
 def _scene_axis_label_format(scene: PreviewScene, label_count: int) -> str:
-    spans = [scene.bounds_max[i] - scene.bounds_min[i] for i in range(3)]
+    bounds_min = _scene_bounds_min(scene)
+    bounds_max = _scene_bounds_max(scene)
+    spans = [bounds_max[i] - bounds_min[i] for i in range(3)]
     longest_span = max(max(spans), 1e-6)
     spacing = longest_span / max(label_count - 1, 1)
     if spacing >= 10.0:
@@ -340,18 +344,45 @@ def _combined_bounds(
 
     if objectives is not None:
         for box in [
-            objectives.objectives.goal_zone,
+            objectives.objectives.goal_zone_mm,
             *objectives.objectives.forbid_zones,
-            objectives.objectives.build_zone,
+            objectives.objectives.build_zone_mm,
         ]:
-            min_x = min(min_x, box.min[0])
-            min_y = min(min_y, box.min[1])
-            min_z = min(min_z, box.min[2])
-            max_x = max(max_x, box.max[0])
-            max_y = max(max_y, box.max[1])
-            max_z = max(max_z, box.max[2])
+            min_x = min(min_x, box.min_mm[0])
+            min_y = min(min_y, box.min_mm[1])
+            min_z = min(min_z, box.min_mm[2])
+            max_x = max(max_x, box.max_mm[0])
+            max_y = max(max_y, box.max_mm[1])
+            max_z = max(max_z, box.max_mm[2])
 
     return (min_x, min_y, min_z), (max_x, max_y, max_z)
+
+
+def _scene_bounds_min(scene: PreviewScene) -> tuple[float, float, float]:
+    return tuple(float(v) for v in getattr(scene, "bounds_min_mm"))
+
+
+def _scene_bounds_max(scene: PreviewScene) -> tuple[float, float, float]:
+    return tuple(float(v) for v in getattr(scene, "bounds_max_mm"))
+
+
+def _scene_center(scene: PreviewScene) -> tuple[float, float, float]:
+    return tuple(float(v) for v in getattr(scene, "center_mm"))
+
+
+def _entity_pos(entity: PreviewEntity) -> tuple[float, float, float]:
+    return tuple(float(v) for v in getattr(entity, "pos_mm"))
+
+
+def _entity_euler(entity: PreviewEntity) -> tuple[float, float, float]:
+    return tuple(float(v) for v in getattr(entity, "euler_deg"))
+
+
+def _entity_box_size(entity: PreviewEntity) -> tuple[float, float, float] | None:
+    box_size = getattr(entity, "box_size_mm", None)
+    if box_size is None:
+        return None
+    return tuple(float(v) for v in box_size)
 
 
 def _preview_camera_distance(
@@ -444,12 +475,8 @@ def _build_axes_actor(
     axes_actor = vtkCubeAxesActor2D()
     axes_actor.SetCamera(renderer.GetActiveCamera())
     axes_actor.SetBounds(
-        scene.bounds_min[0],
-        scene.bounds_max[0],
-        scene.bounds_min[1],
-        scene.bounds_max[1],
-        scene.bounds_min[2],
-        scene.bounds_max[2],
+        *_scene_bounds_min(scene),
+        *_scene_bounds_max(scene),
     )
     axes_actor.SetFlyModeToOuterEdges()
     axes_actor.SetNumberOfLabels(tick_count)
@@ -543,11 +570,11 @@ def collect_preview_scene(
                         instance_name=part_data.label,
                         object_type="zone",
                         object_id=part_index,
-                        pos=tuple(float(v) for v in part_data.pos),
-                        euler=tuple(float(v) for v in part_data.euler),
-                        box_size=tuple(
+                        pos_mm=tuple(float(v) for v in part_data.pos_mm),
+                        euler_deg=tuple(float(v) for v in part_data.euler_deg),
+                        box_size_mm=tuple(
                             float(v)
-                            for v in (part_data.zone_size or [0.05, 0.05, 0.05])
+                            for v in (part_data.zone_size_mm or [0.05, 0.05, 0.05])
                         ),
                         zone_type=zone_type,
                         color_rgba=zone_color,
@@ -578,8 +605,8 @@ def collect_preview_scene(
                     instance_name=part_data.label,
                     object_type="part",
                     object_id=part_index,
-                    pos=tuple(float(v) for v in part_data.pos),
-                    euler=tuple(float(v) for v in part_data.euler),
+                    pos_mm=tuple(float(v) for v in part_data.pos_mm),
+                    euler_deg=tuple(float(v) for v in part_data.euler_deg),
                     mesh_paths=obj_paths,
                     material_id=part_data.material_id,
                     body_name=part_data.label,
@@ -614,8 +641,8 @@ def collect_preview_scene(
                     instance_name=payload.label,
                     object_type="part",
                     object_id=payload_object_id,
-                    pos=payload.start_position,
-                    euler=(0.0, 0.0, 0.0),
+                    pos_mm=payload.start_position_mm,
+                    euler_deg=(0.0, 0.0, 0.0),
                     mesh_paths=obj_paths,
                     material_id=payload.material_id,
                     body_name=payload.scene_name,
@@ -633,23 +660,23 @@ def collect_preview_scene(
                 (
                     "zone_goal",
                     ZoneType.GOAL,
-                    objectives.objectives.goal_zone.min,
-                    objectives.objectives.goal_zone.max,
+                    objectives.objectives.goal_zone_mm.min_mm,
+                    objectives.objectives.goal_zone_mm.max_mm,
                 ),
                 *(
                     (
                         f"zone_forbid_{index}_{zone.name}",
                         ZoneType.FORBID,
-                        zone.min,
-                        zone.max,
+                        zone.min_mm,
+                        zone.max_mm,
                     )
                     for index, zone in enumerate(objectives.objectives.forbid_zones)
                 ),
                 (
                     "zone_build",
                     ZoneType.BUILD,
-                    objectives.objectives.build_zone.min,
-                    objectives.objectives.build_zone.max,
+                    objectives.objectives.build_zone_mm.min_mm,
+                    objectives.objectives.build_zone_mm.max_mm,
                 ),
             ]
 
@@ -678,9 +705,9 @@ def collect_preview_scene(
                         instance_name=label,
                         object_type="zone",
                         object_id=base_index + offset,
-                        pos=pos,
-                        euler=(0.0, 0.0, 0.0),
-                        box_size=size,
+                        pos_mm=pos,
+                        euler_deg=(0.0, 0.0, 0.0),
+                        box_size_mm=size,
                         zone_type=zone_type,
                         color_rgba=color_rgba,
                         segmentation_color_rgb=_unique_color(base_index + offset),
@@ -696,9 +723,9 @@ def collect_preview_scene(
         return PreviewScene(
             component_label=component_label,
             entities=render_entities,
-            bounds_min=bounds_min,
-            bounds_max=bounds_max,
-            center=center,
+            bounds_min_mm=bounds_min,
+            bounds_max_mm=bounds_max,
+            center_mm=center,
             diagonal=max(diagonal, 1e-6),
         )
     finally:
@@ -721,13 +748,16 @@ def _add_entity_actors(
     if segmentation and not entity.include_in_segmentation:
         return
 
-    if entity.box_size is not None:
-        source, mapper = _build_box_actor(entity.box_size)
+    box_size = _entity_box_size(entity)
+    if box_size is not None:
+        source, mapper = _build_box_actor(box_size)
         actor = None
         if include_fill:
             actor = vtk.vtkActor()
             actor.SetMapper(mapper)
-            actor.SetUserTransform(_make_transform(entity.pos, entity.euler))
+            actor.SetUserTransform(
+                _make_transform(_entity_pos(entity), _entity_euler(entity))
+            )
     else:
         if not entity.mesh_paths:
             return
@@ -737,14 +767,18 @@ def _add_entity_actors(
             if include_fill:
                 actor = vtk.vtkActor()
                 actor.SetMapper(mapper)
-                actor.SetUserTransform(_make_transform(entity.pos, entity.euler))
+                actor.SetUserTransform(
+                    _make_transform(_entity_pos(entity), _entity_euler(entity))
+                )
                 renderer.AddActor(actor)
                 _apply_actor_style(actor, entity, segmentation=segmentation)
             if include_edges:
                 renderer.AddActor(
                     _build_preview_edge_actor(
                         source,
-                        transform=_make_transform(entity.pos, entity.euler),
+                        transform=_make_transform(
+                            _entity_pos(entity), _entity_euler(entity)
+                        ),
                         color=edge_color,
                     )
                 )
@@ -757,7 +791,7 @@ def _add_entity_actors(
         renderer.AddActor(
             _build_preview_edge_actor(
                 source,
-                transform=_make_transform(entity.pos, entity.euler),
+                transform=_make_transform(_entity_pos(entity), _entity_euler(entity)),
                 color=edge_color,
             )
         )
@@ -989,7 +1023,7 @@ def render_preview_scene(
         width = default_width if width is None else width
         height = default_height if height is None else height
 
-    center = scene.center
+    center = _scene_center(scene)
     distance = _preview_camera_distance(scene, width=width, height=height)
     camera_position = camera_position_from_orbit(center, distance, pitch, yaw)
     bundle = _build_renderer(
@@ -1076,7 +1110,7 @@ def render_preview_scene_bundle(
         else output_dir.parent
     )
 
-    center = scene.center
+    center = _scene_center(scene)
     distance = _preview_camera_distance(scene, width=width, height=height)
     angles = [0, 45, 90, 135, 180, 225, 270, 315]
     elevations = [-15, -45, -75]
@@ -1888,7 +1922,7 @@ class Build123dRendererBackend(RendererBackend):
             if state and state.fov is not None
             else _DEFAULT_PREVIEW_VIEW_ANGLE_DEG,
         )
-        default_lookat = self.scene.center
+        default_lookat = _scene_center(self.scene)
         default_pos = camera_position_from_orbit(
             default_lookat,
             distance,

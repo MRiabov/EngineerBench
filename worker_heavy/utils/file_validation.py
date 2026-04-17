@@ -638,20 +638,20 @@ def _validate_payload_endpoint_positions(
     terminal_event: Any | None,
 ) -> list[str]:
     errors: list[str] = []
-    build_zone = benchmark_definition.objectives.build_zone
-    goal_zone = benchmark_definition.objectives.goal_zone
+    build_zone = benchmark_definition.objectives.build_zone_mm
+    goal_zone = benchmark_definition.objectives.goal_zone_mm
 
     if not _point_within_bounds(first_anchor.pos_mm, build_zone):
         errors.append(
             f"{artifact_name}: the first payload trajectory anchor must lie within "
-            "benchmark_definition.objectives.build_zone"
+            "benchmark_definition.objectives.build_zone_mm"
         )
 
     if last_anchor.goal_zone_contact or last_anchor.goal_zone_entry:
         if not _point_within_bounds(last_anchor.pos_mm, goal_zone):
             errors.append(
                 f"{artifact_name}: the terminal payload trajectory anchor must lie within "
-                "benchmark_definition.objectives.goal_zone"
+                "benchmark_definition.objectives.goal_zone_mm"
             )
     elif terminal_event is not None:
         if terminal_event.zone_name != "goal_zone":
@@ -661,7 +661,7 @@ def _validate_payload_endpoint_positions(
         if not _point_within_bounds(terminal_event.pos_mm, goal_zone):
             errors.append(
                 f"{artifact_name}: terminal_event.pos_mm must lie within "
-                "benchmark_definition.objectives.goal_zone"
+                "benchmark_definition.objectives.goal_zone_mm"
             )
     else:
         errors.append(

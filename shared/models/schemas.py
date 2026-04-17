@@ -90,8 +90,8 @@ class CodeReference(BaseModel):
 class BoundingBox(StrictContractModel):
     """Axis-aligned bounding box with min/max coordinates."""
 
-    min: CoercedTuple3D
-    max: CoercedTuple3D
+    min_mm: CoercedTuple3D
+    max_mm: CoercedTuple3D
 
 
 # =============================================================================
@@ -103,22 +103,22 @@ class ForbidZone(StrictContractModel):
     """A zone that the payload must not enter."""
 
     name: str
-    min: CoercedTuple3D
-    max: CoercedTuple3D
+    min_mm: CoercedTuple3D
+    max_mm: CoercedTuple3D
 
 
 class ObjectivesSection(StrictContractModel):
     """The objective section of benchmark_definition.yaml."""
 
-    goal_zone: BoundingBox
+    goal_zone_mm: BoundingBox
     forbid_zones: list[ForbidZone] = []
-    build_zone: BoundingBox
+    build_zone_mm: BoundingBox
 
 
 class StaticRandomization(StrictContractModel):
     """Per-benchmark-run randomization of object properties."""
 
-    radius: CoercedTuple2D | None = None
+    radius_mm: CoercedTuple2D | None = None
 
 
 class Payload(StrictContractModel):
@@ -128,8 +128,8 @@ class Payload(StrictContractModel):
     shape: str
     material_id: MaterialId
     static_randomization: StaticRandomization = StaticRandomization()
-    start_position: CoercedTuple3D
-    runtime_jitter: CoercedTuple3D
+    start_position_mm: CoercedTuple3D
+    runtime_jitter_mm: CoercedTuple3D
 
     @field_validator("label")
     @classmethod
@@ -481,15 +481,15 @@ class EntityDefinition(BaseModel):
     name: str
     type: str = "rigid"  # "rigid", "soft_mesh", "zone", etc.
     file: str | None = None
-    pos: CoercedTuple3D = (0.0, 0.0, 0.0)
-    euler: CoercedTuple3D = (0.0, 0.0, 0.0)
+    pos_mm: CoercedTuple3D = (0.0, 0.0, 0.0)
+    euler_deg: CoercedTuple3D = (0.0, 0.0, 0.0)
     material_id: MaterialId = "aluminum_6061"
     is_zone: bool = False
 
     # For zones
-    min: CoercedTuple3D | None = None
-    max: CoercedTuple3D | None = None
-    size: CoercedTuple3D | None = None
+    min_mm: CoercedTuple3D | None = None
+    max_mm: CoercedTuple3D | None = None
+    size_mm: CoercedTuple3D | None = None
 
     model_config = ConfigDict(extra="allow")
 
@@ -497,7 +497,7 @@ class EntityDefinition(BaseModel):
 class CableDefinition(BaseModel):
     wire_id: str
     points: list[CoercedTuple3D]
-    radius: float = 0.001
+    radius_mm: float = 0.001
     material_id: MaterialId = "copper"
 
     model_config = ConfigDict(extra="allow")
@@ -554,7 +554,7 @@ class BenchmarkDefinition(StrictContractModel):
     objectives: ObjectivesSection
     benchmark_parts: list[BenchmarkPartDefinition] = Field(default_factory=list)
     physics: PhysicsConfig = PhysicsConfig()
-    simulation_bounds: BoundingBox
+    simulation_bounds_mm: BoundingBox
     payload: Payload
     constraints: Constraints
     randomization: RandomizationMeta = RandomizationMeta()
@@ -588,20 +588,16 @@ class PartMetadata(BaseModel):
     """Metadata for individual parts in a CAD assembly."""
 
     material_id: OptionalMaterialId = None
-    is_fixed: bool = Field(default=False, alias="fixed")
+    is_fixed: bool = False
     manufacturing_method: ManufacturingMethod | None = None
     joint: JointMetadata | None = None
-
-    model_config = ConfigDict(populate_by_name=True)
 
 
 class CompoundMetadata(BaseModel):
     """Metadata for compounds (assemblies) in a CAD hierarchy."""
 
-    is_fixed: bool = Field(default=False, alias="fixed")
+    is_fixed: bool = False
     joint: JointMetadata | None = None
-
-    model_config = ConfigDict(populate_by_name=True)
 
 
 # =============================================================================

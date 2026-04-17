@@ -178,18 +178,22 @@ class GenesisBackend(PhysicsRendererBackend):
         if self.scene is None or gs is None:
             return
 
-        pos = tuple(float(v) for v in (ent_cfg.pos or (0.0, 0.0, 0.0)))
-        if ent_cfg.size is not None:
-            size = tuple(float(v) for v in ent_cfg.size)
-        elif ent_cfg.min is not None and ent_cfg.max is not None:
-            size = tuple(float(ent_cfg.max[i] - ent_cfg.min[i]) / 2.0 for i in range(3))
-            pos = tuple(float(ent_cfg.min[i] + ent_cfg.max[i]) / 2.0 for i in range(3))
+        pos = tuple(float(v) for v in (ent_cfg.pos_mm or (0.0, 0.0, 0.0)))
+        if ent_cfg.size_mm is not None:
+            size = tuple(float(v) for v in ent_cfg.size_mm)
+        elif ent_cfg.min_mm is not None and ent_cfg.max_mm is not None:
+            size = tuple(
+                float(ent_cfg.max_mm[i] - ent_cfg.min_mm[i]) / 2.0 for i in range(3)
+            )
+            pos = tuple(
+                float(ent_cfg.min_mm[i] + ent_cfg.max_mm[i]) / 2.0 for i in range(3)
+            )
         else:
             return
 
         color = self._zone_visual_rgba(getattr(ent_cfg, "zone_type", None))
         surface = gs.surfaces.Default(color=color[:3], opacity=color[3])
-        base_kwargs = {"pos": pos, "size": size, "fixed": True}
+        base_kwargs = {"pos": pos, "size": size, "is_fixed": True}
         morph_variants = (
             {**base_kwargs, "collision": False, "visualization": True},
             {**base_kwargs, "collision": False},
@@ -431,8 +435,8 @@ class GenesisBackend(PhysicsRendererBackend):
                         entity = self.scene.add_entity(
                             gs.morphs.Mesh(
                                 file=str(obj_path),
-                                pos=ent_cfg.pos,
-                                euler=ent_cfg.euler,
+                                pos=ent_cfg.pos_mm,
+                                euler=ent_cfg.euler_deg,
                             ),
                             material=material,
                         )

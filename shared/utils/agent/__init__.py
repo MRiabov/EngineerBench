@@ -229,7 +229,7 @@ def _build_objective_zone(label: str, bounds_min, bounds_max):
         align=(Align.CENTER, Align.CENTER, Align.CENTER),
     ).move(Location(center))
     zone.label = label
-    zone.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
+    zone.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
     return zone
 
 
@@ -240,10 +240,10 @@ def objectives_geometry() -> Compound:
     objectives = benchmark_definition.objectives
     children = []
 
-    goal_zone = objectives.goal_zone
+    goal_zone = objectives.goal_zone_mm
     if goal_zone is not None:
         children.append(
-            _build_objective_zone("zone_goal", goal_zone.min, goal_zone.max)
+            _build_objective_zone("zone_goal", goal_zone.min_mm, goal_zone.max_mm)
         )
 
     for index, forbid_zone in enumerate(objectives.forbid_zones or []):
@@ -251,15 +251,15 @@ def objectives_geometry() -> Compound:
         children.append(
             _build_objective_zone(
                 f"zone_forbid_{index}_{zone_name}",
-                forbid_zone.min,
-                forbid_zone.max,
+                forbid_zone.min_mm,
+                forbid_zone.max_mm,
             )
         )
 
-    build_zone = objectives.build_zone
+    build_zone = objectives.build_zone_mm
     if build_zone is not None:
         children.append(
-            _build_objective_zone("zone_build", build_zone.min, build_zone.max)
+            _build_objective_zone("zone_build", build_zone.min_mm, build_zone.max_mm)
         )
 
     overlay = Compound(children=children) if children else Compound()
@@ -926,16 +926,16 @@ async def _preview_async(
         response.manifest_path = str(
             preview_output_dir.relative_to(workspace_root) / "render_manifest.json"
         )
-    if response.pitch is None:
+    if response.orbit_pitch_deg is None:
         if isinstance(orbit_pitch, float):
-            response.pitch = orbit_pitch
+            response.orbit_pitch_deg = orbit_pitch
         elif isinstance(orbit_pitch, list) and len(orbit_pitch) == 1:
-            response.pitch = orbit_pitch[0]
-    if response.yaw is None:
+            response.orbit_pitch_deg = orbit_pitch[0]
+    if response.orbit_yaw_deg is None:
         if isinstance(orbit_yaw, float):
-            response.yaw = orbit_yaw
+            response.orbit_yaw_deg = orbit_yaw
         elif isinstance(orbit_yaw, list) and len(orbit_yaw) == 1:
-            response.yaw = orbit_yaw[0]
+            response.orbit_yaw_deg = orbit_yaw[0]
     if response.status_text is None:
         response.status_text = response.message or "Preview generated successfully"
     if response.message:

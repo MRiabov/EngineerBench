@@ -472,8 +472,8 @@ async def api_preview(
                 script_path=request.script_path,
                 agent_role=x_agent_role,
                 rendering_type=resolved_rendering_type.value,
-                orbit_pitch=request.orbit_pitch,
-                orbit_yaw=request.orbit_yaw,
+                orbit_pitch_deg=request.orbit_pitch_deg,
+                orbit_yaw_deg=request.orbit_yaw_deg,
             )
             with bundle_context(request.bundle_base64, workspace_root):
                 bundle_base64 = (
@@ -484,8 +484,8 @@ async def api_preview(
                     renderer_client.render_preview,
                     bundle_base64=bundle_base64,
                     script_path=request.script_path,
-                    orbit_pitch=request.orbit_pitch,
-                    orbit_yaw=request.orbit_yaw,
+                    orbit_pitch=request.orbit_pitch_deg,
+                    orbit_yaw=request.orbit_yaw_deg,
                     rendering_type=request.rendering_type,
                     session_id=x_session_id,
                     agent_role=x_agent_role,
@@ -528,6 +528,16 @@ async def api_preview(
                     manifest_path=manifest_path,
                     rendering_type=resolved_rendering_type.value,
                 )
+                preview_pitch = (
+                    request.orbit_pitch_deg[0]
+                    if isinstance(request.orbit_pitch_deg, list)
+                    else request.orbit_pitch_deg
+                )
+                preview_yaw = (
+                    request.orbit_yaw_deg[0]
+                    if isinstance(request.orbit_yaw_deg, list)
+                    else request.orbit_yaw_deg
+                )
                 return PreviewDesignResponse(
                     success=response.success,
                     status_text="Preview generated successfully",
@@ -535,8 +545,8 @@ async def api_preview(
                     artifact_path=str(image_path.relative_to(workspace_root)),
                     manifest_path=manifest_path,
                     rendering_type=resolved_rendering_type,
-                    pitch=request.orbit_pitch,
-                    yaw=request.orbit_yaw,
+                    orbit_pitch_deg=preview_pitch,
+                    orbit_yaw_deg=preview_yaw,
                     image_bytes_base64=response.image_bytes_base64,
                     object_store_keys=response.object_store_keys,
                     render_manifest_json=response.render_manifest_json,
@@ -548,13 +558,23 @@ async def api_preview(
         raise
     except Exception as e:
         logger.warning("api_benchmark_preview_failed", error=str(e))
+        preview_pitch = (
+            request.orbit_pitch_deg[0]
+            if isinstance(request.orbit_pitch_deg, list)
+            else request.orbit_pitch_deg
+        )
+        preview_yaw = (
+            request.orbit_yaw_deg[0]
+            if isinstance(request.orbit_yaw_deg, list)
+            else request.orbit_yaw_deg
+        )
         return PreviewDesignResponse(
             success=False,
             message=str(e),
             status_text="Preview generation failed",
             rendering_type=_resolve_preview_rendering_type(request),
-            pitch=request.orbit_pitch,
-            yaw=request.orbit_yaw,
+            orbit_pitch_deg=preview_pitch,
+            orbit_yaw_deg=preview_yaw,
         )
 
 

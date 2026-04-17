@@ -374,11 +374,11 @@ def _exact_pose_checks(
     moved = moving_component.moved(transform)
     moved_min, moved_max = _shape_bbox(moved)
     sim_min, sim_max = _shape_bbox(
-        _zone_body_from_bounds(benchmark_definition.simulation_bounds)
+        _zone_body_from_bounds(benchmark_definition.simulation_bounds_mm)
     )
     if not _bbox_within_bounds(moved_min, moved_max, sim_min, sim_max):
         return [
-            f"{sample_point_label}: moved payload leaves benchmark_definition.simulation_bounds"
+            f"{sample_point_label}: moved payload leaves benchmark_definition.simulation_bounds_mm"
         ]
 
     for zone in benchmark_definition.objectives.forbid_zones:
@@ -396,7 +396,7 @@ def _exact_pose_checks(
 
     if require_goal_zone_overlap:
         goal_zone_body = _zone_body_from_bounds(
-            benchmark_definition.objectives.goal_zone, inflation_mm=1e-6
+            benchmark_definition.objectives.goal_zone_mm, inflation_mm=1e-6
         )
         try:
             goal_intersection = moved.intersect(goal_zone_body)
@@ -405,10 +405,10 @@ def _exact_pose_checks(
                 f"{sample_point_label}: unable to evaluate goal-zone overlap: {exc}"
             ]
         if _shape_volume(goal_intersection) <= 0.0:
-            return [f"{sample_point_label}: terminal pose does not enter goal_zone"]
+            return [f"{sample_point_label}: terminal pose does not enter goal_zone_mm"]
     elif not allow_goal_zone_overlap:
         goal_zone_body = _zone_body_from_bounds(
-            benchmark_definition.objectives.goal_zone, inflation_mm=1e-6
+            benchmark_definition.objectives.goal_zone_mm, inflation_mm=1e-6
         )
         try:
             goal_intersection = moved.intersect(goal_zone_body)
@@ -514,7 +514,7 @@ def _validate_cell(
             forbidden_bodies=forbidden_bodies,
             fixed_bounds=fixed_bounds,
             simulation_bounds=_shape_bbox(
-                _zone_body_from_bounds(benchmark_definition.simulation_bounds)
+                _zone_body_from_bounds(benchmark_definition.simulation_bounds_mm)
             ),
         )
         and not terminal_goal_proof

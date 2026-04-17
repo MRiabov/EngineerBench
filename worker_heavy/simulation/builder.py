@@ -423,7 +423,7 @@ class SceneCompiler:
                 # Default to free joint
                 logger.warning(
                     "Adding free joint to body '%s'. This part will fall if not supported. "
-                    "Use 'fixed=True' or 'constraint' attribute to secure it.",
+                    "Use 'is_fixed=True' or 'constraint' attribute to secure it.",
                     name,
                 )
                 ET.SubElement(body, "joint", type="free")
@@ -509,7 +509,7 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
         self.assets_dir.mkdir(parents=True, exist_ok=True)
 
         weld_constraints = []
-        body_locations = {}  # name -> (pos, euler)
+        body_locations = {}  # name -> (pos_mm, euler_deg)
 
         from worker_heavy.workbenches.config import load_config, load_merged_config
 
@@ -522,17 +522,17 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
         # 1. Add zones from objectives if provided
         if objectives:
             # Add Goal Zone
-            gz = objectives.objectives.goal_zone
+            gz = objectives.objectives.goal_zone_mm
             # Calculate center and half-extents
             gz_pos = [
-                (gz.min[0] + gz.max[0]) / 2,
-                (gz.min[1] + gz.max[1]) / 2,
-                (gz.min[2] + gz.max[2]) / 2,
+                (gz.min_mm[0] + gz.max_mm[0]) / 2,
+                (gz.min_mm[1] + gz.max_mm[1]) / 2,
+                (gz.min_mm[2] + gz.max_mm[2]) / 2,
             ]
             gz_size = [
-                (gz.max[0] - gz.min[0]) / 2,
-                (gz.max[1] - gz.min[1]) / 2,
-                (gz.max[2] - gz.min[2]) / 2,
+                (gz.max_mm[0] - gz.min_mm[0]) / 2,
+                (gz.max_mm[1] - gz.min_mm[1]) / 2,
+                (gz.max_mm[2] - gz.min_mm[2]) / 2,
             ]
             self.compiler.add_body(
                 name="zone_goal",
@@ -545,14 +545,14 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
             # Add Forbid Zones
             for i, fz in enumerate(objectives.objectives.forbid_zones):
                 fz_pos = [
-                    (fz.min[0] + fz.max[0]) / 2,
-                    (fz.min[1] + fz.max[1]) / 2,
-                    (fz.min[2] + fz.max[2]) / 2,
+                    (fz.min_mm[0] + fz.max_mm[0]) / 2,
+                    (fz.min_mm[1] + fz.max_mm[1]) / 2,
+                    (fz.min_mm[2] + fz.max_mm[2]) / 2,
                 ]
                 fz_size = [
-                    (fz.max[0] - fz.min[0]) / 2,
-                    (fz.max[1] - fz.min[1]) / 2,
-                    (fz.max[2] - fz.min[2]) / 2,
+                    (fz.max_mm[0] - fz.min_mm[0]) / 2,
+                    (fz.max_mm[1] - fz.min_mm[1]) / 2,
+                    (fz.max_mm[2] - fz.min_mm[2]) / 2,
                 ]
                 self.compiler.add_body(
                     name=f"zone_forbid_{i}_{fz.name}",
@@ -562,16 +562,16 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
                     pos=fz_pos,
                 )
 
-            bz = objectives.objectives.build_zone
+            bz = objectives.objectives.build_zone_mm
             bz_pos = [
-                (bz.min[0] + bz.max[0]) / 2,
-                (bz.min[1] + bz.max[1]) / 2,
-                (bz.min[2] + bz.max[2]) / 2,
+                (bz.min_mm[0] + bz.max_mm[0]) / 2,
+                (bz.min_mm[1] + bz.max_mm[1]) / 2,
+                (bz.min_mm[2] + bz.max_mm[2]) / 2,
             ]
             bz_size = [
-                (bz.max[0] - bz.min[0]) / 2,
-                (bz.max[1] - bz.min[1]) / 2,
-                (bz.max[2] - bz.min[2]) / 2,
+                (bz.max_mm[0] - bz.min_mm[0]) / 2,
+                (bz.max_mm[1] - bz.min_mm[1]) / 2,
+                (bz.max_mm[2] - bz.min_mm[2]) / 2,
             ]
             self.compiler.add_body(
                 name="zone_build",
@@ -593,9 +593,9 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
                     name=data.label,
                     is_zone=True,
                     zone_type=data.zone_type,
-                    zone_size=data.zone_size,
-                    pos=data.pos,
-                    euler=data.euler,
+                    zone_size=data.zone_size_mm,
+                    pos=data.pos_mm,
+                    euler=data.euler_deg,
                 )
             else:
                 material_id = data.material_id
@@ -622,15 +622,15 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
                 self.compiler.add_body(
                     name=data.label,
                     mesh_names=mesh_names,
-                    pos=data.pos,
-                    euler=data.euler,
+                    pos=data.pos_mm,
+                    euler=data.euler_deg,
                     is_fixed=data.is_fixed,
                     joint_type=data.joint_type,
                     joint_axis=data.joint_axis,
                     joint_range=data.joint_range,
                     geom_rgba=self._resolve_geom_rgba(material_id, mfg_config),
                 )
-                body_locations[data.label] = (data.pos, data.euler)
+                body_locations[data.label] = (data.pos_mm, data.euler_deg)
 
         # 3. Add the benchmark-mandated payload as a dynamic body.
         if objectives and getattr(objectives, "payload", None):
@@ -660,7 +660,7 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
             self.compiler.add_body(
                 name=moved_body_name,
                 mesh_names=mesh_names,
-                pos=[float(v) for v in payload_object.start_position],
+                pos=[float(v) for v in payload_object.start_position_mm],
                 euler=[0.0, 0.0, 0.0],
                 is_fixed=False,
                 geom_rgba=self._resolve_geom_rgba(
@@ -668,7 +668,7 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
                 ),
             )
             body_locations[moved_body_name] = (
-                list(payload_object.start_position),
+                list(payload_object.start_position_mm),
                 [0.0, 0.0, 0.0],
             )
 
@@ -723,15 +723,15 @@ class GenesisSimulationBuilder(SimulationBuilderBase):
         # 1. Add zones from objectives
         if objectives:
             # Add Goal Zone
-            gz = objectives.objectives.goal_zone
-            gz_pos = [(gz.min[i] + gz.max[i]) / 2 for i in range(3)]
-            gz_size = [(gz.max[i] - gz.min[i]) / 2 for i in range(3)]
+            gz = objectives.objectives.goal_zone_mm
+            gz_pos = [(gz.min_mm[i] + gz.max_mm[i]) / 2 for i in range(3)]
+            gz_size = [(gz.max_mm[i] - gz.min_mm[i]) / 2 for i in range(3)]
             scene_data["entities"].append(
                 {
                     "name": "zone_goal",
                     "type": "box",
-                    "pos": gz_pos,
-                    "size": gz_size,
+                    "pos_mm": gz_pos,
+                    "size_mm": gz_size,
                     "is_zone": True,
                     "zone_type": ZoneType.GOAL,
                 }
@@ -739,28 +739,28 @@ class GenesisSimulationBuilder(SimulationBuilderBase):
 
             # Add Forbid Zones
             for i, fz in enumerate(objectives.objectives.forbid_zones):
-                fz_pos = [(fz.min[j] + fz.max[j]) / 2 for j in range(3)]
-                fz_size = [(fz.max[j] - fz.min[j]) / 2 for j in range(3)]
+                fz_pos = [(fz.min_mm[j] + fz.max_mm[j]) / 2 for j in range(3)]
+                fz_size = [(fz.max_mm[j] - fz.min_mm[j]) / 2 for j in range(3)]
                 scene_data["entities"].append(
                     {
                         "name": f"zone_forbid_{i}_{fz.name}",
                         "type": "box",
-                        "pos": fz_pos,
-                        "size": fz_size,
+                        "pos_mm": fz_pos,
+                        "size_mm": fz_size,
                         "is_zone": True,
                         "zone_type": ZoneType.FORBID,
                     }
                 )
 
-            bz = objectives.objectives.build_zone
-            bz_pos = [(bz.min[i] + bz.max[i]) / 2 for i in range(3)]
-            bz_size = [(bz.max[i] - bz.min[i]) / 2 for i in range(3)]
+            bz = objectives.objectives.build_zone_mm
+            bz_pos = [(bz.min_mm[i] + bz.max_mm[i]) / 2 for i in range(3)]
+            bz_size = [(bz.max_mm[i] - bz.min_mm[i]) / 2 for i in range(3)]
             scene_data["entities"].append(
                 {
                     "name": "zone_build",
                     "type": "box",
-                    "pos": bz_pos,
-                    "size": bz_size,
+                    "pos_mm": bz_pos,
+                    "size_mm": bz_size,
                     "is_zone": True,
                     "zone_type": ZoneType.BUILD,
                 }
@@ -793,10 +793,10 @@ class GenesisSimulationBuilder(SimulationBuilderBase):
 
             entity_info = {
                 "name": data.label,
-                "pos": data.pos,
-                "euler": data.euler,
+                "pos_mm": data.pos_mm,
+                "euler_deg": data.euler_deg,
                 "material_id": data.material_id,
-                "fixed": data.is_fixed,
+                "is_fixed": data.is_fixed,
                 "joint": {
                     "type": data.joint_type,
                     "axis": data.joint_axis,

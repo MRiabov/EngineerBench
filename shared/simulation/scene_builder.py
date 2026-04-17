@@ -62,10 +62,10 @@ class PreviewEntity(BaseModel):
     instance_name: str
     object_type: str
     object_id: int
-    pos: tuple[float, float, float]
-    euler: tuple[float, float, float]
+    pos_mm: tuple[float, float, float]
+    euler_deg: tuple[float, float, float]
     mesh_paths: list[str] = Field(default_factory=list)
-    box_size: tuple[float, float, float] | None = None
+    box_size_mm: tuple[float, float, float] | None = None
     material_id: str | None = None
     body_name: str | None = None
     geom_name: str | None = None
@@ -82,9 +82,9 @@ class PreviewScene(BaseModel):
 
     component_label: str | None = None
     entities: list[PreviewEntity] = Field(default_factory=list)
-    bounds_min: tuple[float, float, float]
-    bounds_max: tuple[float, float, float]
-    center: tuple[float, float, float]
+    bounds_min_mm: tuple[float, float, float]
+    bounds_max_mm: tuple[float, float, float]
+    center_mm: tuple[float, float, float]
     diagonal: float
 
 
@@ -96,12 +96,12 @@ class MaterializedPayload(BaseModel):
     label: str
     scene_name: str
     geometry: Solid | Compound | Any
-    start_position: tuple[float, float, float]
+    start_position_mm: tuple[float, float, float]
     material_id: str
 
     def start_geometry(self) -> Solid | Compound | Any:
         """Return the payload geometry moved to its declared start pose."""
-        return self.geometry.move(Location(self.start_position))
+        return self.geometry.move(Location(self.start_position_mm))
 
 
 class AssemblyPartData(BaseModel):
@@ -109,8 +109,8 @@ class AssemblyPartData(BaseModel):
 
     label: str
     part: Solid | Compound | Any
-    pos: list[float]
-    euler: list[float]
+    pos_mm: list[float]
+    euler_deg: list[float]
     is_fixed: bool = False
     joint_type: str | None = None
     joint_axis: list[float] | None = None
@@ -118,7 +118,7 @@ class AssemblyPartData(BaseModel):
     material_id: str | None = None
     is_zone: bool = False
     zone_type: ZoneType | None = None
-    zone_size: list[float] | None = None
+    zone_size_mm: list[float] | None = None
     constraint: str | None = None
     weld_target: str | None = None
 
@@ -127,7 +127,7 @@ def build_payload_geometry(payload: Any):
     """Build the authored payload geometry from its declared shape."""
     shape = str(getattr(payload, "shape", "sphere")).strip().lower()
     radius_range = getattr(
-        getattr(payload, "static_randomization", None), "radius", None
+        getattr(payload, "static_randomization", None), "radius_mm", None
     )
     radius = float(max(radius_range)) if radius_range else None
 
@@ -168,13 +168,15 @@ def materialize_payload(payload: Any) -> MaterializedPayload:
     with contextlib.suppress(Exception):
         geometry.label = label
 
-    start_position = tuple(float(value) for value in getattr(payload, "start_position"))
+    start_position = tuple(
+        float(value) for value in getattr(payload, "start_position_mm")
+    )
     material_id = str(getattr(payload, "material_id"))
     return MaterializedPayload(
         label=label,
         scene_name=payload_scene_name(label),
         geometry=geometry,
-        start_position=start_position,
+        start_position_mm=start_position,
         material_id=material_id,
     )
 
@@ -275,8 +277,8 @@ class CommonAssemblyTraverser:
                 AssemblyPartData(
                     label=label,
                     part=node,
-                    pos=pos,
-                    euler=euler,
+                    pos_mm=pos,
+                    euler_deg=euler,
                     is_fixed=meta["is_fixed"],
                     material_id=meta["material_id"],
                     joint_type=meta["joint_type"],
@@ -284,7 +286,7 @@ class CommonAssemblyTraverser:
                     joint_range=meta["joint_range"],
                     is_zone=zone_info["is_zone"],
                     zone_type=zone_info["type"],
-                    zone_size=zone_info["size"],
+                    zone_size_mm=zone_info["size_mm"],
                     constraint=constraint,
                     weld_target=weld_target,
                 )
@@ -369,7 +371,7 @@ class CommonAssemblyTraverser:
     def _detect_zone(child: Any, label: str) -> dict[str, Any]:
         is_zone = False
         zone_type: ZoneType | None = None
-        zone_size = None
+        zone_size_mm = None
         if label.startswith("zone_"):
             is_zone = True
             if "goal" in label:
@@ -379,8 +381,8 @@ class CommonAssemblyTraverser:
             else:
                 zone_type = ZoneType.FORBID
             bb = child.bounding_box()
-            zone_size = [bb.size.X / 2, bb.size.Y / 2, bb.size.Z / 2]
-        return {"is_zone": is_zone, "type": zone_type, "size": zone_size}
+            zone_size_mm = [bb.size.X / 2, bb.size.Y / 2, bb.size.Z / 2]
+        return {"is_zone": is_zone, "type": zone_type, "size_mm": zone_size_mm}
 
 
 class MeshProcessor:

@@ -59,8 +59,8 @@ class SuccessEvaluator:
         if qpos is not None and len(qpos) >= 3:
             # Always prioritize simulation_bounds if provided
             if self.simulation_bounds:
-                b_min = np.array(self.simulation_bounds.min)
-                b_max = np.array(self.simulation_bounds.max)
+                b_min = np.array(self.simulation_bounds.min_mm)
+                b_max = np.array(self.simulation_bounds.max_mm)
                 if np.any(qpos < b_min) or np.any(qpos > b_max):
                     return SimulationFailureMode.OUT_OF_BOUNDS
             else:

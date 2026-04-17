@@ -550,7 +550,7 @@ def submit_for_review(
             "Submission rejected (Inventory exactness): " + "; ".join(inventory_errors)
         )
 
-    build_zone = objectives_model.objectives.build_zone
+    build_zone_mm = objectives_model.objectives.build_zone_mm
     constraints = objectives_model.constraints
 
     manufactured_labels = {part.part_name for part in estimation.manufactured_parts}
@@ -567,7 +567,7 @@ def submit_for_review(
             dfm_config,
             assembly_definition=estimation,
             part_labels=manufactured_labels or None,
-            build_zone=build_zone,
+            build_zone=build_zone_mm,
             session_id=session_id,
             quantity=requested_quantity,
             default_method=method,

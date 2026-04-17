@@ -117,29 +117,29 @@ def _is_within_bounds(
 
     # Check each dimension
     violations = []
-    if build_zone.min[0] > bbox.min.X:
+    if build_zone.min_mm[0] > bbox.min.X:
         violations.append(
-            f"X min ({bbox.min.X:.2f}) < build zone min ({build_zone.min[0]:.2f})"
+            f"X min ({bbox.min.X:.2f}) < build zone min ({build_zone.min_mm[0]:.2f})"
         )
-    if build_zone.min[1] > bbox.min.Y:
+    if build_zone.min_mm[1] > bbox.min.Y:
         violations.append(
-            f"Y min ({bbox.min.Y:.2f}) < build zone min ({build_zone.min[1]:.2f})"
+            f"Y min ({bbox.min.Y:.2f}) < build zone min ({build_zone.min_mm[1]:.2f})"
         )
-    if build_zone.min[2] > bbox.min.Z:
+    if build_zone.min_mm[2] > bbox.min.Z:
         violations.append(
-            f"Z min ({bbox.min.Z:.2f}) < build zone min ({build_zone.min[2]:.2f})"
+            f"Z min ({bbox.min.Z:.2f}) < build zone min ({build_zone.min_mm[2]:.2f})"
         )
-    if build_zone.max[0] < bbox.max.X:
+    if build_zone.max_mm[0] < bbox.max.X:
         violations.append(
-            f"X max ({bbox.max.X:.2f}) > build zone max ({build_zone.max[0]:.2f})"
+            f"X max ({bbox.max.X:.2f}) > build zone max ({build_zone.max_mm[0]:.2f})"
         )
-    if build_zone.max[1] < bbox.max.Y:
+    if build_zone.max_mm[1] < bbox.max.Y:
         violations.append(
-            f"Y max ({bbox.max.Y:.2f}) > build zone max ({build_zone.max[1]:.2f})"
+            f"Y max ({bbox.max.Y:.2f}) > build zone max ({build_zone.max_mm[1]:.2f})"
         )
-    if build_zone.max[2] < bbox.max.Z:
+    if build_zone.max_mm[2] < bbox.max.Z:
         violations.append(
-            f"Z max ({bbox.max.Z:.2f}) > build zone max ({build_zone.max[2]:.2f})"
+            f"Z max ({bbox.max.Z:.2f}) > build zone max ({build_zone.max_mm[2]:.2f})"
         )
 
     if violations:
@@ -154,7 +154,9 @@ def _metadata_is_fixed(metadata: Any) -> bool:
     if value is not None:
         return bool(value)
     if isinstance(metadata, dict):
-        return bool(metadata.get("is_fixed", metadata.get("fixed", False)))
+        if "is_fixed" not in metadata:
+            raise ValueError("deprecated functionality removed: fixed metadata key")
+        return bool(metadata["is_fixed"])
     return False
 
 

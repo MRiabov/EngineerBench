@@ -107,13 +107,13 @@ def render_cad(
         materialized_path.parent.relative_to(workspace_root) / "render_manifest.json"
     )
     if isinstance(orbit_pitch, list):
-        response.pitch = orbit_pitch[0] if len(orbit_pitch) == 1 else None
+        response.orbit_pitch_deg = orbit_pitch[0] if len(orbit_pitch) == 1 else None
     else:
-        response.pitch = orbit_pitch
+        response.orbit_pitch_deg = orbit_pitch
     if isinstance(orbit_yaw, list):
-        response.yaw = orbit_yaw[0] if len(orbit_yaw) == 1 else None
+        response.orbit_yaw_deg = orbit_yaw[0] if len(orbit_yaw) == 1 else None
     else:
-        response.yaw = orbit_yaw
+        response.orbit_yaw_deg = orbit_yaw
     if response.status_text is None:
         response.status_text = response.message or "Preview generated successfully"
 
@@ -129,8 +129,8 @@ def render_cad(
         "preview_saved",
         path=str(materialized_path),
         saved_render_dir=str(materialized_path.parent.relative_to(workspace_root)),
-        orbit_pitch=orbit_pitch,
-        orbit_yaw=orbit_yaw,
+        orbit_pitch_deg=orbit_pitch,
+        orbit_yaw_deg=orbit_yaw,
         rendering_type=response.rendering_type.value,
     )
     return response

@@ -8,7 +8,7 @@ def _make_box(label: str, size: tuple[float, float, float], center: tuple[float,
         Location(center)
     )
     part.label = label
-    part.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
+    part.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
     return part
 
 def build():

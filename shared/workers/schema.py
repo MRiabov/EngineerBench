@@ -2,7 +2,6 @@ from enum import StrEnum
 from typing import Any, Literal, TypeAlias
 
 from pydantic import (
-    AliasChoices,
     BaseModel,
     ConfigDict,
     Field,
@@ -38,7 +37,7 @@ def _validate_preview_camera_value(
     *,
     field_name: str,
 ) -> float | list[float]:
-    if field_name == "orbit_pitch":
+    if field_name == "orbit_pitch_deg":
         lower_bound = -90.0
         upper_bound = 90.0
         upper_inclusive = True
@@ -79,8 +78,8 @@ class PreviewViewSpec(BaseModel):
     """One requested preview camera view after normalization."""
 
     view_index: StrictInt = Field(ge=0)
-    orbit_pitch: float
-    orbit_yaw: float
+    orbit_pitch_deg: float
+    orbit_yaw_deg: float
 
     model_config = ConfigDict(extra="forbid")
 
@@ -646,21 +645,19 @@ class PreviewDesignRequest(BaseModel):
         default=None,
         description="Gzipped tarball of the session workspace (base64 encoded).",
     )
-    orbit_pitch: float | list[float] = Field(
+    orbit_pitch_deg: float | list[float] = Field(
         default=45.0,
         description=(
             "Camera elevation angle in degrees (negative = looking down). "
             "Scalar inputs are normalized to single-item view lists."
         ),
-        validation_alias=AliasChoices("pitch", "orbit_pitch"),
     )
-    orbit_yaw: float | list[float] = Field(
+    orbit_yaw_deg: float | list[float] = Field(
         default=45.0,
         description=(
             "Camera azimuth angle in degrees (clockwise from front). "
             "Scalar inputs are normalized to single-item view lists."
         ),
-        validation_alias=AliasChoices("yaw", "orbit_yaw"),
     )
     rgb: bool | None = Field(default=None, description="Request RGB output.")
     depth: bool | None = Field(default=None, description="Request depth output.")
@@ -711,7 +708,7 @@ class PreviewDesignRequest(BaseModel):
     def validate_smoke_test_mode(cls, value: bool | None) -> bool | None:
         return ensure_smoke_test_mode_allowed(value)
 
-    @field_validator("orbit_pitch", "orbit_yaw", mode="after")
+    @field_validator("orbit_pitch_deg", "orbit_yaw_deg", mode="after")
     @classmethod
     def validate_preview_camera_range(
         cls, value: float | list[float], info
@@ -732,8 +729,8 @@ class PreviewDesignResponse(BaseModel):
     artifact_path: StrictStr | None = None
     manifest_path: StrictStr | None = None
     rendering_type: PreviewRenderingType = PreviewRenderingType.RGB
-    pitch: float | None = None
-    yaw: float | None = None
+    orbit_pitch_deg: float | None = None
+    orbit_yaw_deg: float | None = None
     image_path: StrictStr | None = None
     image_bytes_base64: StrictStr | None = Field(
         default=None,
@@ -747,6 +744,8 @@ class PreviewDesignResponse(BaseModel):
     render_manifest_json: StrictStr | None = None
     events: list[BaseEvent] = Field(default_factory=list)
 
+    model_config = ConfigDict(extra="forbid")
+
 
 class PreviewWorkflowParams(BaseModel):
     """Parameters for the controller preview workflow."""
@@ -754,14 +753,8 @@ class PreviewWorkflowParams(BaseModel):
     bundle_base64: StrictStr
     script_path: StrictStr = Field(default="script.py")
     script_content: StrictStr | None = None
-    orbit_pitch: float | list[float] = Field(
-        default=45.0,
-        validation_alias=AliasChoices("pitch", "orbit_pitch"),
-    )
-    orbit_yaw: float | list[float] = Field(
-        default=45.0,
-        validation_alias=AliasChoices("yaw", "orbit_yaw"),
-    )
+    orbit_pitch_deg: float | list[float] = 45.0
+    orbit_yaw_deg: float | list[float] = 45.0
     rgb: bool | None = None
     depth: bool | None = None
     segmentation: bool | None = None
@@ -773,6 +766,8 @@ class PreviewWorkflowParams(BaseModel):
     smoke_test_mode: bool | None = None
     session_id: StrictStr
     agent_role: StrictStr
+
+    model_config = ConfigDict(extra="forbid")
 
 
 class HeavySimulationParams(BaseModel):
@@ -798,21 +793,17 @@ class HeavyPreviewParams(BaseModel):
 
     bundle_base64: StrictStr
     script_path: str
-    orbit_pitch: float | list[float] = Field(
-        default=45.0,
-        validation_alias=AliasChoices("pitch", "orbit_pitch"),
-    )
-    orbit_yaw: float | list[float] = Field(
-        default=45.0,
-        validation_alias=AliasChoices("yaw", "orbit_yaw"),
-    )
+    orbit_pitch_deg: float | list[float] = 45.0
+    orbit_yaw_deg: float | list[float] = 45.0
     rgb: bool | None = None
     depth: bool | None = None
     segmentation: bool | None = None
     payload_path: bool = False
     rendering_type: PreviewRenderingType | None = None
 
-    @field_validator("orbit_pitch", "orbit_yaw", mode="after")
+    model_config = ConfigDict(extra="forbid")
+
+    @field_validator("orbit_pitch_deg", "orbit_yaw_deg", mode="after")
     @classmethod
     def validate_preview_camera_range(
         cls, value: float | list[float], info
@@ -932,8 +923,8 @@ class RenderArtifactMetadata(BaseModel):
     modality: Literal["rgb", "depth", "segmentation", "unknown"] = "unknown"
     group_key: StrictStr | None = None
     view_index: StrictInt | None = None
-    orbit_pitch: float | None = None
-    orbit_yaw: float | None = None
+    orbit_pitch_deg: float | None = None
+    orbit_yaw_deg: float | None = None
     siblings: RenderSiblingPaths = Field(default_factory=RenderSiblingPaths)
     depth_min_m: float | None = None
     depth_max_m: float | None = None
@@ -1023,12 +1014,12 @@ class RenderBundlePointPickRequest(BaseModel):
     """Request for a single point-pick query against one render bundle."""
 
     bundle_path: StrictStr
-    pixel_x: StrictInt = Field(ge=0)
-    pixel_y: StrictInt = Field(ge=0)
-    image_width: StrictInt = Field(gt=0)
-    image_height: StrictInt = Field(gt=0)
-    orbit_pitch: float = 45.0
-    orbit_yaw: float = 45.0
+    pixel_x_px: StrictInt = Field(ge=0)
+    pixel_y_px: StrictInt = Field(ge=0)
+    image_width_px: StrictInt = Field(gt=0)
+    image_height_px: StrictInt = Field(gt=0)
+    orbit_pitch_deg: float = 45.0
+    orbit_yaw_deg: float = 45.0
     view_index: StrictInt = Field(default=0, ge=0)
     bundle_id: StrictStr | None = None
     manifest_path: StrictStr | None = None
@@ -1046,12 +1037,12 @@ class RenderBundlePointPickResult(BaseModel):
     scene_hash: StrictStr | None = None
     manifest_path: StrictStr | None = None
     view_index: StrictInt = Field(ge=0)
-    pixel_x: StrictInt = Field(ge=0)
-    pixel_y: StrictInt = Field(ge=0)
-    image_width: StrictInt = Field(gt=0)
-    image_height: StrictInt = Field(gt=0)
-    orbit_pitch: float
-    orbit_yaw: float
+    pixel_x_px: StrictInt = Field(ge=0)
+    pixel_y_px: StrictInt = Field(ge=0)
+    image_width_px: StrictInt = Field(gt=0)
+    image_height_px: StrictInt = Field(gt=0)
+    orbit_pitch_deg: float
+    orbit_yaw_deg: float
     ray_origin: tuple[float, float, float]
     ray_direction: tuple[float, float, float]
     hit: StrictBool
