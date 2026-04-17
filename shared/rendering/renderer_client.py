@@ -14,6 +14,8 @@ from shared.workers.bundling import bundle_directory_base64
 from shared.workers.schema import (
     BenchmarkToolRequest,
     BenchmarkToolResponse,
+    PointCloudRenderBackend,
+    PointCloudRenderRequest,
     PreviewDesignRequest,
     PreviewDesignResponse,
     PreviewRenderingType,
@@ -216,6 +218,34 @@ def render_static_preview(
     ).model_dump(mode="json")
     payload["session_id"] = session_id
     url = f"{renderer_base_url()}/benchmark/static-preview"
+    data = _post_json_with_busy_retry(
+        url=url,
+        payload=payload,
+        session_id=session_id,
+        extra_headers={"x-agent-role": agent_role} if agent_role else None,
+        timeout=120.0,
+    )
+    return BenchmarkToolResponse.model_validate(data)
+
+
+def render_point_cloud(
+    *,
+    bundle_base64: str,
+    sample_limit: int = 50000,
+    point_size_px: int = 4,
+    render_backend: PointCloudRenderBackend = PointCloudRenderBackend.VTK,
+    output_name: str = "point_cloud.png",
+    session_id: str,
+    agent_role: str | None = None,
+) -> BenchmarkToolResponse:
+    payload = PointCloudRenderRequest(
+        bundle_base64=bundle_base64,
+        sample_limit=sample_limit,
+        point_size_px=point_size_px,
+        render_backend=render_backend,
+        output_name=output_name,
+    ).model_dump(mode="json")
+    url = f"{renderer_base_url()}/debug/render_point_cloud"
     data = _post_json_with_busy_retry(
         url=url,
         payload=payload,

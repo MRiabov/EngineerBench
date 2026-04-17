@@ -27,6 +27,7 @@ from shared.workers.persistence import collect_and_cleanup_events
 from shared.workers.schema import (
     BenchmarkToolRequest,
     BenchmarkToolResponse,
+    PointCloudRenderRequest,
     PreviewDesignRequest,
     PreviewDesignResponse,
     PreviewRenderingType,
@@ -58,6 +59,7 @@ from worker_renderer.utils.build123d_rendering import (
 )
 from worker_renderer.utils.file_validation import validate_benchmark_definition_yaml
 from worker_renderer.utils.payload_path_overlay import resolve_payload_path_points
+from worker_renderer.utils.point_cloud_rendering import render_scene_point_cloud
 from worker_renderer.utils.rendering import (
     append_render_bundle_index,
     build_render_bundle_index_entry,
@@ -487,7 +489,7 @@ def _single_preview_group_key(
     view_index: int | None = None,
     view_count: int = 1,
 ) -> str:
-    base = f"{label}_render_e{abs(int(round(pitch)))}_a{int(round(yaw))}"
+    base = f"{label}_render_e{abs(round(pitch))}_a{round(yaw)}"
     if view_count > 1:
         if view_index is None:
             raise ValueError("view_index is required for multi-view preview naming")
@@ -547,7 +549,7 @@ def _normalize_preview_views(
             orbit_pitch_deg=pitch,
             orbit_yaw_deg=yaw,
         )
-        for index, (pitch, yaw) in enumerate(zip(pitch_values, yaw_values))
+        for index, (pitch, yaw) in enumerate(zip(pitch_values, yaw_values, strict=True))
     ]
 
 
@@ -1099,8 +1101,10 @@ async def api_preview(
                                     include_segmentation_axes=render_policy.segmentation.axes,
                                     include_segmentation_edges=render_policy.segmentation.edges,
                                     payload_path_points=payload_path_points,
-                                    include_payload_path_overlay=request.payload_path
-                                    and render_policy.handoff_rgb_payload_path_overlay.enabled,
+                                    include_payload_path_overlay=(
+                                        request.payload_path
+                                        and render_policy.handoff_rgb_payload_path_overlay.enabled
+                                    ),
                                     width=render_width,
                                     height=render_height,
                                 )
@@ -1299,7 +1303,9 @@ async def api_static_preview(
                             segmentation_axes=render_policy.segmentation.axes,
                             segmentation_edges=render_policy.segmentation.edges,
                             payload_path_points=payload_path_points,
-                            include_payload_path_overlay=render_policy.handoff_rgb_payload_path_overlay.enabled,
+                            include_payload_path_overlay=(
+                                render_policy.handoff_rgb_payload_path_overlay.enabled
+                            ),
                             width=render_width,
                             height=render_height,
                         )
@@ -1354,7 +1360,9 @@ async def api_static_preview(
                                 segmentation_axes=render_policy.segmentation.axes,
                                 segmentation_edges=render_policy.segmentation.edges,
                                 payload_path_points=payload_path_points,
-                                include_payload_path_overlay=render_policy.handoff_rgb_payload_path_overlay.enabled,
+                                include_payload_path_overlay=(
+                                    render_policy.handoff_rgb_payload_path_overlay.enabled
+                                ),
                             )
                             _persist_preview_scene_bundle(
                                 bundle_root=renders_dir,
@@ -1386,6 +1394,118 @@ async def api_static_preview(
     except Exception as exc:
         logger.warning(
             "renderer_static_preview_failed", error=str(exc), session_id=x_session_id
+        )
+        return BenchmarkToolResponse(success=False, message=str(exc))
+
+
+@renderer_router.post(
+    "/debug/render_point_cloud",
+    response_model=BenchmarkToolResponse,
+    response_model_exclude_none=True,
+)
+async def api_render_point_cloud(
+    request: PointCloudRenderRequest,
+    x_session_id: str = Header(default="renderer"),
+    x_agent_role: str | None = Header(default=None),
+):
+    """Render a static point cloud from the current preview scene bundle."""
+
+    try:
+        async with render_operation_admission("point-cloud", x_session_id):
+            render_policy = load_agents_config().render
+            render_width = render_policy.image_resolution.width
+            render_height = render_policy.image_resolution.height
+            with _bundle_context(request.bundle_base64) as root:
+                with _event_file_context(root):
+                    scene, _ = _load_preview_scene_bundle(root)
+                    if scene is None:
+                        raise FileNotFoundError(
+                            "unable to locate preview_scene.json in the workspace"
+                        )
+                    bundle_root = (
+                        root / "renders" / "debug_point_cloud" / uuid.uuid4().hex
+                    )
+                    bundle_root.mkdir(parents=True, exist_ok=True)
+                    source_mesh_root = root / "meshes"
+                    if any(entity.mesh_paths for entity in scene.entities):
+                        if not source_mesh_root.exists():
+                            raise FileNotFoundError(
+                                "preview scene bundle is missing the meshes directory"
+                            )
+                    _persist_preview_scene_bundle(
+                        bundle_root=bundle_root,
+                        scene=scene,
+                        source_mesh_root=(
+                            source_mesh_root if source_mesh_root.exists() else None
+                        ),
+                    )
+                    scene_path = bundle_root / "preview_scene.json"
+
+                    render_result = await asyncio.to_thread(
+                        render_scene_point_cloud,
+                        scene_path,
+                        output_dir=bundle_root,
+                        output_name=request.output_name,
+                        sample_limit=request.sample_limit,
+                        point_size_px=request.point_size_px,
+                        render_backend=request.render_backend,
+                        width=render_width,
+                        height=render_height,
+                    )
+
+                    output_rel_path = str(
+                        render_result.image_path.relative_to(root)
+                    ).replace("\\", "/")
+                    manifest = normalize_render_manifest(
+                        render_paths=[output_rel_path],
+                        workspace_root=root,
+                        episode_id=x_session_id,
+                        worker_session_id=x_session_id,
+                        bundle_path=str(bundle_root.relative_to(root)).replace(
+                            "\\", "/"
+                        ),
+                    )
+                    manifest_path = bundle_root / "render_manifest.json"
+                    _write_text_atomic(
+                        manifest_path,
+                        manifest.model_dump_json(indent=2),
+                    )
+                    append_render_bundle_index(
+                        root,
+                        build_render_bundle_index_entry(
+                            manifest,
+                            manifest_path=str(manifest_path.relative_to(root)).replace(
+                                "\\", "/"
+                            ),
+                            primary_media_paths=[output_rel_path],
+                        ),
+                    )
+
+                events = collect_and_cleanup_events(root, session_id=x_session_id)
+                artifacts = _collect_render_artifacts(
+                    root,
+                    [output_rel_path],
+                    session_id=x_session_id,
+                    store_image_artifacts=False,
+                )
+                return BenchmarkToolResponse(
+                    success=True,
+                    message=(
+                        "Point cloud rendered successfully "
+                        f"from {render_result.source_surface_count} surface meshes "
+                        f"using {render_result.sampled_point_count} sampled surface points."
+                    ),
+                    artifacts=artifacts,
+                    events=events,
+                )
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.warning(
+            "renderer_point_cloud_failed",
+            error=str(exc),
+            session_id=x_session_id,
+            agent_role=x_agent_role,
         )
         return BenchmarkToolResponse(success=False, message=str(exc))
 

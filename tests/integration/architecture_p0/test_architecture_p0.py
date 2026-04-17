@@ -36,6 +36,8 @@ from shared.workers.schema import (
     BenchmarkToolResponse,
     ExecuteRequest,
     ExecuteResponse,
+    PointCloudRenderBackend,
+    PointCloudRenderRequest,
     ReadFileRequest,
     VerificationRequest,
     WriteFileRequest,
@@ -319,6 +321,76 @@ def build():
             path.startswith("renders/benchmark_renders/")
             for path in static_preview_data.artifacts.render_paths
         ), static_preview_data.artifacts.render_paths
+
+
+def _point_cloud_preview_bundle_base64() -> str:
+    from build123d import Align, Box, Compound
+
+    from shared.models.schemas import PartMetadata
+    from shared.rendering import export_preview_scene_bundle
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        workspace_root = Path(tmpdir)
+        box = Box(
+            1.0,
+            1.0,
+            1.0,
+            align=(Align.CENTER, Align.CENTER, Align.CENTER),
+        )
+        box.label = "point_cloud_box"
+        box.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=False)
+        scene = Compound(children=[box], label="point_cloud_scene")
+        return export_preview_scene_bundle(
+            scene,
+            objectives=None,
+            workspace_root=workspace_root,
+            smoke_test_mode=True,
+        )
+
+
+@pytest.mark.integration_p0
+@pytest.mark.asyncio
+@pytest.mark.int_id("INT-223")
+async def test_int_223_point_cloud_debug_render():
+    """INT-223: renderer debug endpoint renders a static point cloud."""
+    session_id = f"INT-223-{uuid.uuid4().hex[:8]}"
+
+    async with httpx.AsyncClient(timeout=300.0) as client:
+        bundle64 = _point_cloud_preview_bundle_base64()
+
+        for render_backend, output_name in (
+            (PointCloudRenderBackend.VTK, "point_cloud_vtk.png"),
+            (PointCloudRenderBackend.MATPLOTLIB, "point_cloud_matplotlib.png"),
+        ):
+            resp = await client.post(
+                f"{WORKER_RENDERER_URL}/debug/render_point_cloud",
+                json=PointCloudRenderRequest(
+                    bundle_base64=bundle64,
+                    sample_limit=32,
+                    point_size_px=6,
+                    render_backend=render_backend,
+                    output_name=output_name,
+                ).model_dump(mode="json"),
+                headers={"X-Session-ID": session_id},
+                timeout=300.0,
+            )
+            assert resp.status_code == 200, resp.text
+            data = BenchmarkToolResponse.model_validate(resp.json())
+            assert data.success, data.message
+            assert data.artifacts is not None
+            assert any(
+                path.startswith("renders/debug_point_cloud/")
+                and path.endswith(output_name)
+                for path in data.artifacts.render_paths
+            ), data.artifacts.render_paths
+            assert any(
+                path.endswith("preview_scene.json")
+                for path in (
+                    list(data.artifacts.render_blobs_base64)
+                    + list(data.artifacts.object_store_keys)
+                )
+            ), data.artifacts
+            assert "sampled surface points" in data.message
 
 
 def _simulation_video_smoke_script() -> str:

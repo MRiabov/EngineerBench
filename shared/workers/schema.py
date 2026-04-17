@@ -74,6 +74,13 @@ class PreviewRenderingType(StrEnum):
     SEGMENTATION = "segmentation"
 
 
+class PointCloudRenderBackend(StrEnum):
+    """Supported point-cloud visualization backends."""
+
+    VTK = "vtk"
+    MATPLOTLIB = "matplotlib"
+
+
 class PreviewViewSpec(BaseModel):
     """One requested preview camera view after normalization."""
 
@@ -824,6 +831,32 @@ class SimulationVideoRequest(BaseModel):
     output_name: StrictStr = "simulation.mp4"
     fps: StrictInt = Field(default=30, ge=1, le=240)
     session_id: StrictStr | None = None
+
+
+class PointCloudRenderRequest(BaseModel):
+    """Request to render a static point cloud from a preview scene bundle."""
+
+    bundle_base64: StrictStr
+    sample_limit: StrictInt = Field(
+        default=50000,
+        ge=1,
+        le=250000,
+        description="Maximum number of sampled surface points to draw.",
+    )
+    point_size_px: StrictInt = Field(
+        default=4,
+        ge=1,
+        le=32,
+        description="Rendered point diameter in pixels.",
+    )
+    render_backend: PointCloudRenderBackend = Field(
+        default=PointCloudRenderBackend.VTK,
+        description="Visualization backend to use for the sampled point cloud.",
+    )
+    output_name: StrictStr = Field(
+        default="point_cloud.png",
+        description="Filename for the rendered point-cloud image.",
+    )
 
 
 class HeavySubmitParams(BaseModel):
