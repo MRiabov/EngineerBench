@@ -145,15 +145,15 @@ The render contract for dynamic simulation evidence is runtime-resolved and reco
 
 The rule is:
 
-1. simulation video is intended to be a backend/service switch,
-2. the runtime-selected simulation render choice is serialized in `simulation_result.json` so reviewers can replay the exact evidence path,
-3. explicit preview remains a separate preview contract, executed by the renderer worker, and continues to live in the preview manifest path,
-4. the renderer-owned `render_point_cloud(...)` helper is a sibling scene-surface debug path with its own backend selector, and it may use `vtk`, `matplotlib`, or both,
-5. `render_cad(...)` is the ephemeral on-demand path that writes into `renders/current-episode/` for the active stage,
-6. when `render_cad(..., payload_path=True)` is requested, the static render bundle may also include a motion-path overlay, but the overlay is review context only and does not affect validation or simulation semantics,
-7. every persistent handoff render request publishes an immutable 24-view bundle directory with a bundle-local manifest, using the established 8-azimuth by 3-elevation view family,
-8. the render bundle path itself identifies whether the evidence belongs to benchmark input, engineer planning, or final solution submission,
-9. final solution submission bundles must be composed from the benchmark-owned scene, including any declared benchmark payload, plus the approved engineer solution so benchmark fixtures and objective overlays are present by default,
+01. simulation video is intended to be a backend/service switch,
+02. the runtime-selected simulation render choice is serialized in `simulation_result.json` so reviewers can replay the exact evidence path,
+03. explicit preview remains a separate preview contract, executed by the renderer worker, and continues to live in the preview manifest path,
+04. the renderer-owned `render_point_cloud(...)` helper is a sibling scene-surface debug path with its own backend selector, and it may use `vtk`, `matplotlib`, or both,
+05. `render_cad(...)` is the ephemeral on-demand path that writes into `renders/current-episode/` for the active stage,
+06. when `render_cad(..., payload_path=True)` is requested, the static render bundle may also include a motion-path overlay, but the overlay is review context only and does not affect validation or simulation semantics,
+07. every persistent handoff render request publishes an immutable 24-view bundle directory with a bundle-local manifest, using the established 8-azimuth by 3-elevation view family,
+08. the render bundle path itself identifies whether the evidence belongs to benchmark input, engineer planning, or final solution submission,
+09. final solution submission bundles must be composed from the benchmark-owned scene, including any declared benchmark payload, plus the approved engineer solution so benchmark fixtures and objective overlays are present by default,
 10. if a backend cannot satisfy the selected render path, the failure should surface as a validation/runtime contract error rather than being hidden behind an unrelated global fallback,
 11. all static rendering, ever, should be worker-renderer, not scattered around the codebase.
 
