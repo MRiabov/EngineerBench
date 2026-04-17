@@ -71,12 +71,12 @@ def main() -> int:
 
     request = RenderBundlePointPickRequest(
         bundle_path=str(bundle_path),
-        pixel_x=args.pixel_x,
-        pixel_y=args.pixel_y,
-        image_width=args.image_width,
-        image_height=args.image_height,
-        orbit_pitch=args.orbit_pitch,
-        orbit_yaw=args.orbit_yaw,
+        pixel_x_px=args.pixel_x,
+        pixel_y_px=args.pixel_y,
+        image_width_px=args.image_width,
+        image_height_px=args.image_height,
+        orbit_pitch_deg=args.orbit_pitch,
+        orbit_yaw_deg=args.orbit_yaw,
         view_index=args.view_index,
         bundle_id=args.bundle_id,
         manifest_path=args.manifest_path,

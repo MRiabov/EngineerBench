@@ -27,7 +27,7 @@ def _boxes_intersect(
 
 
 def _validate_bounding_box_order(label: str, box: Any) -> str | None:
-    for axis, min_value, max_value in zip(("x", "y", "z"), box.min, box.max):
+    for axis, min_value, max_value in zip(("x", "y", "z"), box.min_mm, box.max_mm):
         if min_value > max_value:
             return _benchmark_refusal_error(
                 BenchmarkRefusalReason.INVALID_OBJECTIVES,
@@ -61,13 +61,13 @@ def _validate_non_negative_range(
 def _validate_benchmark_definition_consistency(
     objectives: BenchmarkDefinition,
 ) -> str | None:
-    goal = objectives.objectives.goal_zone
-    build_zone = objectives.objectives.build_zone
+    goal_zone = objectives.objectives.goal_zone_mm
+    build_zone = objectives.objectives.build_zone_mm
 
     for label, box in (
-        ("goal_zone", goal),
-        ("build_zone", build_zone),
-        ("simulation_bounds", objectives.simulation_bounds),
+        ("goal_zone_mm", goal_zone),
+        ("build_zone_mm", build_zone),
+        ("simulation_bounds_mm", objectives.simulation_bounds_mm),
     ):
         box_error = _validate_bounding_box_order(label, box)
         if box_error is not None:
@@ -77,28 +77,32 @@ def _validate_benchmark_definition_consistency(
         zone_error = _validate_bounding_box_order(f"forbid zone '{zone.name}'", zone)
         if zone_error is not None:
             return zone_error
-        if _boxes_intersect(goal.min, goal.max, zone.min, zone.max):
+        if _boxes_intersect(
+            goal_zone.min_mm, goal_zone.max_mm, zone.min_mm, zone.max_mm
+        ):
             return _benchmark_refusal_error(
                 BenchmarkRefusalReason.CONTRADICTORY_CONSTRAINTS,
-                f"goal_zone overlaps forbid zone '{zone.name}'",
+                f"goal_zone_mm overlaps forbid zone '{zone.name}'",
             )
 
-    if not _boxes_intersect(goal.min, goal.max, build_zone.min, build_zone.max):
+    if not _boxes_intersect(
+        goal_zone.min_mm, goal_zone.max_mm, build_zone.min_mm, build_zone.max_mm
+    ):
         return _benchmark_refusal_error(
             BenchmarkRefusalReason.UNSOLVABLE_SCENARIO,
-            "goal_zone does not overlap build_zone",
+            "goal_zone_mm does not overlap build_zone_mm",
         )
 
-    jitter = objectives.payload.runtime_jitter
-    start = objectives.payload.start_position
-    jitter_error = _validate_non_negative_range("payload.runtime_jitter", jitter)
+    jitter = objectives.payload.runtime_jitter_mm
+    start = objectives.payload.start_position_mm
+    jitter_error = _validate_non_negative_range("payload.runtime_jitter_mm", jitter)
     if jitter_error is not None:
         return jitter_error
 
     radius_max = 0.0
-    radius_range = objectives.payload.static_randomization.radius
+    radius_range = objectives.payload.static_randomization.radius_mm
     radius_error = _validate_non_negative_range(
-        "payload.static_randomization.radius", radius_range
+        "payload.static_randomization.radius_mm", radius_range
     )
     if radius_error is not None:
         return radius_error
@@ -116,21 +120,21 @@ def _validate_benchmark_definition_consistency(
         start[2] + jitter[2] + radius_max,
     )
 
-    if not _boxes_intersect(moved_min, moved_max, build_zone.min, build_zone.max):
+    if not _boxes_intersect(moved_min, moved_max, build_zone.min_mm, build_zone.max_mm):
         return _benchmark_refusal_error(
             BenchmarkRefusalReason.UNSOLVABLE_SCENARIO,
-            "payload runtime envelope does not overlap build_zone",
+            "payload runtime envelope does not overlap build_zone_mm",
         )
 
     for i, axis in enumerate(("x", "y", "z")):
-        if moved_min[i] < build_zone.min[i] or moved_max[i] > build_zone.max[i]:
+        if moved_min[i] < build_zone.min_mm[i] or moved_max[i] > build_zone.max_mm[i]:
             return _benchmark_refusal_error(
                 BenchmarkRefusalReason.UNSOLVABLE_SCENARIO,
-                f"payload runtime envelope exceeds build_zone on axis {axis}",
+                f"payload runtime envelope exceeds build_zone_mm on axis {axis}",
             )
 
     for zone in objectives.objectives.forbid_zones:
-        if _boxes_intersect(moved_min, moved_max, zone.min, zone.max):
+        if _boxes_intersect(moved_min, moved_max, zone.min_mm, zone.max_mm):
             return _benchmark_refusal_error(
                 BenchmarkRefusalReason.CONTRADICTORY_CONSTRAINTS,
                 "payload runtime envelope intersects forbid zone "

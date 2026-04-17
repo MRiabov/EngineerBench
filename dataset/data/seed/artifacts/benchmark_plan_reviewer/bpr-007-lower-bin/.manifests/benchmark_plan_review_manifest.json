@@ -5,9 +5,9 @@
   "planner_node_type": "benchmark_planner",
   "artifact_hashes": {
     "benchmark_assembly_definition.yaml": "0aa96153a33b56ab94011f1863154dd9e401512770aba689b6cacfdc0d0549f9",
-    "benchmark_definition.yaml": "9f145d01e32a803dd6b1e363c8295bb541dae6f7580f486ad55ac94d95dca50a",
+    "benchmark_definition.yaml": "0938f7f6ce686128b7563402a1102f88a92b65301ef14a743de24a5c3b0fd008",
     "todo.md": "48bedf1e34b37e41cd188d38c5f11791cd94a7ac21b0ac199537feb7c9396c3a",
-    "benchmark_plan.md": "c7880f4dc6796c9f388c8b4ec1dac81bee22d3d58432f31589a105680394e32c",
-    "benchmark_plan_evidence_script.py": "7c2ea5351bc4d55b9b70ce63e4e4c40be13d62809de94ab21a4d2447df311f23"
+    "benchmark_plan.md": "1a554d0d26e1d004b7bb1596e9bb4766987aa7361b7999ee4e4a77b0d061a1e6",
+    "benchmark_plan_evidence_script.py": "4e6a29517fd190fcb520cab54490a1fa64fb1ce930719e9332c47726e65ae117"
   }
 }

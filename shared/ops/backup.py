@@ -13,7 +13,7 @@ logger = structlog.get_logger(__name__)
 
 def get_s3_config():
     config = {}
-    endpoint = os.getenv("S3_ENDPOINT")
+    endpoint = os.getenv("S3_ENDPOINT") or os.getenv("S3_ENDPOINT_URL")
     access_key = os.getenv("S3_ACCESS_KEY")
     secret_key = os.getenv("S3_SECRET_KEY")
 

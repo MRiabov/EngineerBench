@@ -15,22 +15,22 @@ benchmark_parts:
   - part_id: base_plate
     label: base_plate
     metadata:
-      is_fixed: true
+      fixed: true
       material_id: aluminum_6061
   - part_id: deflector_ramp
     label: deflector_ramp
     metadata:
-      is_fixed: true
+      fixed: true
       material_id: aluminum_6061
   - part_id: side_goal_wall
     label: side_goal_wall
     metadata:
-      is_fixed: true
+      fixed: true
       material_id: aluminum_6061
   - part_id: catch_bin
     label: catch_bin
     metadata:
-      is_fixed: true
+      fixed: true
       material_id: hdpe
 physics:
   backend: GENESIS

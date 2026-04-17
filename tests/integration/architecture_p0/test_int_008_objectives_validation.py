@@ -126,35 +126,41 @@ def build():
 
 def _objective_validation_payload(
     *,
-    goal_zone_min: list[float],
-    goal_zone_max: list[float],
-    build_zone_min: list[float],
-    build_zone_max: list[float],
-    start_position: list[float],
-    runtime_jitter: list[float],
-    radius: list[float],
+    goal_zone_min_mm: list[float],
+    goal_zone_max_mm: list[float],
+    build_zone_min_mm: list[float],
+    build_zone_max_mm: list[float],
+    start_position_mm: list[float],
+    runtime_jitter_mm: list[float],
+    radius_mm: list[float],
     forbid_zones: list[dict] | None = None,
-    simulation_bounds_min: list[float] | None = None,
-    simulation_bounds_max: list[float] | None = None,
+    simulation_bounds_min_mm: list[float] | None = None,
+    simulation_bounds_max_mm: list[float] | None = None,
 ) -> dict:
     return {
         "objectives": {
-            "goal_zone_mm": {"min_mm": goal_zone_min, "max_mm": goal_zone_max},
+            "goal_zone_mm": {
+                "min_mm": goal_zone_min_mm,
+                "max_mm": goal_zone_max_mm,
+            },
             "forbid_zones": forbid_zones or [],
-            "build_zone_mm": {"min_mm": build_zone_min, "max_mm": build_zone_max},
+            "build_zone_mm": {
+                "min_mm": build_zone_min_mm,
+                "max_mm": build_zone_max_mm,
+            },
         },
         "physics": {"backend": "GENESIS"},
         "simulation_bounds_mm": {
-            "min_mm": simulation_bounds_min or [-30.0, -30.0, -10.0],
-            "max_mm": simulation_bounds_max or [30.0, 30.0, 30.0],
+            "min_mm": simulation_bounds_min_mm or [-30.0, -30.0, -10.0],
+            "max_mm": simulation_bounds_max_mm or [30.0, 30.0, 30.0],
         },
         "payload": {
             "label": "projectile_ball",
             "shape": "sphere",
             "material_id": "abs",
-            "static_randomization": {"radius_mm": radius},
-            "start_position_mm": start_position,
-            "runtime_jitter_mm": runtime_jitter,
+            "static_randomization": {"radius_mm": radius_mm},
+            "start_position_mm": start_position_mm,
+            "runtime_jitter_mm": runtime_jitter_mm,
         },
         "constraints": {"max_unit_cost": 50.0, "max_weight_g": 1200.0},
         "benchmark_parts": _default_benchmark_parts(),
@@ -332,7 +338,7 @@ async def test_int_008_objectives_semantic_validation_rejects_runtime_envelope_f
         build_zone_max_mm=[5.0, 5.0, 15.0],
         start_position_mm=[0.0, 0.0, 5.0],
         runtime_jitter_mm=[0.25, 0.25, 0.25],
-        radius=[0.1, 0.1],
+        radius_mm=[0.1, 0.1],
         forbid_zones=[
             {
                 "name": "clearance_window",
@@ -395,7 +401,7 @@ async def test_int_008_objectives_semantic_validation_rejects_goal_zone_outside_
         build_zone_max_mm=[5.0, 5.0, 15.0],
         start_position_mm=[0.0, 0.0, 5.0],
         runtime_jitter_mm=[0.25, 0.25, 0.25],
-        radius=[0.1, 0.1],
+        radius_mm=[0.1, 0.1],
     )
 
     async with httpx.AsyncClient(timeout=300.0) as client:
@@ -450,7 +456,7 @@ async def test_int_008_objectives_semantic_validation_rejects_build_zone_outside
         build_zone_max_mm=[13.0, 5.0, 10.0],
         start_position_mm=[0.0, 0.0, 5.0],
         runtime_jitter_mm=[0.25, 0.25, 0.25],
-        radius=[0.1, 0.1],
+        radius_mm=[0.1, 0.1],
         simulation_bounds_min_mm=[-12.0, -12.0, -1.0],
         simulation_bounds_max_mm=[12.0, 12.0, 12.0],
     )
@@ -508,7 +514,7 @@ async def test_int_008_objectives_semantic_validation_rejects_runtime_envelope_e
         build_zone_max_mm=[10.0, 10.0, 10.0],
         start_position_mm=[9.6, 5.0, 5.0],
         runtime_jitter_mm=[0.6, 0.1, 0.1],
-        radius=[0.2, 0.2],
+        radius_mm=[0.2, 0.2],
     )
 
     async with httpx.AsyncClient(timeout=300.0) as client:
@@ -581,7 +587,7 @@ async def test_int_008_objectives_semantic_validation_rejects_negative_runtime_j
         build_zone_max_mm=[5.0, 5.0, 15.0],
         start_position_mm=[0.0, 0.0, 5.0],
         runtime_jitter_mm=runtime_jitter,
-        radius=radius,
+        radius_mm=radius,
     )
 
     async with httpx.AsyncClient(timeout=300.0) as client:

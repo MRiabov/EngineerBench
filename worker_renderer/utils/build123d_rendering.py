@@ -10,6 +10,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from io import BytesIO
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import structlog
@@ -82,6 +83,10 @@ class PreviewRenderResult:
     saved_paths: list[str]
     legend_by_path: dict[str, list[SegmentationLegendEntry]]
     depth_ranges_by_path: dict[str, tuple[float, float]]
+
+
+def _tuple3(values: Any) -> tuple[float, float, float]:
+    return (float(values[0]), float(values[1]), float(values[2]))
 
 
 def _rgba_from_hex(color: str, alpha: float = 1.0) -> tuple[float, float, float, float]:
@@ -359,30 +364,30 @@ def _combined_bounds(
 
 
 def _scene_bounds_min(scene: PreviewScene) -> tuple[float, float, float]:
-    return tuple(float(v) for v in getattr(scene, "bounds_min_mm"))
+    return _tuple3(getattr(scene, "bounds_min_mm"))
 
 
 def _scene_bounds_max(scene: PreviewScene) -> tuple[float, float, float]:
-    return tuple(float(v) for v in getattr(scene, "bounds_max_mm"))
+    return _tuple3(getattr(scene, "bounds_max_mm"))
 
 
 def _scene_center(scene: PreviewScene) -> tuple[float, float, float]:
-    return tuple(float(v) for v in getattr(scene, "center_mm"))
+    return _tuple3(getattr(scene, "center_mm"))
 
 
 def _entity_pos(entity: PreviewEntity) -> tuple[float, float, float]:
-    return tuple(float(v) for v in getattr(entity, "pos_mm"))
+    return _tuple3(getattr(entity, "pos_mm"))
 
 
 def _entity_euler(entity: PreviewEntity) -> tuple[float, float, float]:
-    return tuple(float(v) for v in getattr(entity, "euler_deg"))
+    return _tuple3(getattr(entity, "euler_deg"))
 
 
 def _entity_box_size(entity: PreviewEntity) -> tuple[float, float, float] | None:
     box_size = getattr(entity, "box_size_mm", None)
     if box_size is None:
         return None
-    return tuple(float(v) for v in box_size)
+    return _tuple3(box_size)
 
 
 def _preview_camera_distance(
@@ -1520,11 +1525,11 @@ def _render_preview_modality_bundle(
 def camera_position_from_orbit(
     center: tuple[float, float, float],
     distance: float,
-    elevation_deg: float,
-    azimuth_deg: float,
+    orbit_pitch_deg: float,
+    orbit_yaw_deg: float,
 ) -> tuple[float, float, float]:
-    rad_azim = math.radians(azimuth_deg)
-    rad_elev = math.radians(elevation_deg)
+    rad_azim = math.radians(orbit_yaw_deg)
+    rad_elev = math.radians(orbit_pitch_deg)
     x = center[0] + distance * math.cos(rad_elev) * math.sin(rad_azim)
     y = center[1] - distance * math.cos(rad_elev) * math.cos(rad_azim)
     z = center[2] - distance * math.sin(rad_elev)

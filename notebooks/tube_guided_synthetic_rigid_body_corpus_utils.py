@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import Any, Iterable
 
 import numpy as np
@@ -95,9 +94,7 @@ def validate_route_clearance(
             or pipe_bounds.max.Y > build_zone.max_mm[1]
             or pipe_bounds.max.Z > build_zone.max_mm[2]
         ):
-            errors.append(
-                "route clearance: swept route pipe leaves build_zone bounds"
-            )
+            errors.append("route clearance: swept route pipe leaves build_zone bounds")
     except Exception as exc:
         errors.append(f"route clearance: unable to evaluate build_zone bounds: {exc}")
 

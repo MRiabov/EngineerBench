@@ -12,7 +12,7 @@ benchmark_parts:
   - part_id: environment_fixture
     label: environment_fixture
     metadata:
-      is_fixed: true
+      fixed: true
       material_id: aluminum_6061
 
 physics:

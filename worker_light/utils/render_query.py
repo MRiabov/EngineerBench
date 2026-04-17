@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import math
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator, cast
 
 import numpy as np
 import structlog
@@ -28,6 +28,10 @@ from worker_renderer.utils.build123d_rendering import (
 )
 
 logger = structlog.get_logger(__name__)
+
+
+def _tuple3(values: Any) -> tuple[float, float, float]:
+    return (float(values[0]), float(values[1]), float(values[2]))
 
 
 class _BundleManifestResolution(BaseModel):
@@ -190,20 +194,22 @@ def _normalize_vector(value: np.ndarray) -> np.ndarray:
 def _camera_ray(
     scene: PreviewScene,
     *,
-    pixel_x: int,
-    pixel_y: int,
-    image_width: int,
-    image_height: int,
-    orbit_pitch: float,
-    orbit_yaw: float,
+    pixel_x_px: int,
+    pixel_y_px: int,
+    image_width_px: int,
+    image_height_px: int,
+    orbit_pitch_deg: float,
+    orbit_yaw_deg: float,
 ) -> tuple[tuple[float, float, float], tuple[float, float, float]]:
-    distance = _preview_camera_distance(scene, width=image_width, height=image_height)
-    center = tuple(float(v) for v in scene.center)
+    distance = _preview_camera_distance(
+        scene, width=image_width_px, height=image_height_px
+    )
+    center = _tuple3(scene.center_mm)
     camera_position = camera_position_from_orbit(
         center,
         distance,
-        orbit_pitch,
-        orbit_yaw,
+        orbit_pitch_deg,
+        orbit_yaw_deg,
     )
     origin = np.asarray(camera_position, dtype=float)
     target = np.asarray(center, dtype=float)
@@ -216,20 +222,17 @@ def _camera_ray(
     right = _normalize_vector(right)
     true_up = _normalize_vector(np.cross(right, forward))
 
-    aspect = max(float(image_width) / max(float(image_height), 1.0), 1e-6)
+    aspect = max(float(image_width_px) / max(float(image_height_px), 1.0), 1e-6)
     vertical_fov_rad = math.radians(30.0)
     tan_vertical = math.tan(vertical_fov_rad / 2.0)
     tan_horizontal = tan_vertical * aspect
 
-    ndc_x = ((float(pixel_x) + 0.5) / float(image_width)) * 2.0 - 1.0
-    ndc_y = 1.0 - ((float(pixel_y) + 0.5) / float(image_height)) * 2.0
+    ndc_x = ((float(pixel_x_px) + 0.5) / float(image_width_px)) * 2.0 - 1.0
+    ndc_y = 1.0 - ((float(pixel_y_px) + 0.5) / float(image_height_px)) * 2.0
     direction = _normalize_vector(
         forward + ndc_x * tan_horizontal * right + ndc_y * tan_vertical * true_up
     )
-    return (
-        tuple(float(v) for v in origin.tolist()),
-        tuple(float(v) for v in direction.tolist()),
-    )
+    return _tuple3(origin.tolist()), _tuple3(direction.tolist())
 
 
 def _load_mesh(mesh_path: Path) -> trimesh.Trimesh | None:
@@ -265,15 +268,17 @@ def _apply_transform(
     return transformed
 
 
-def _iter_entity_meshes(scene: PreviewScene, bundle_root: Path):
+def _iter_entity_meshes(
+    scene: PreviewScene, bundle_root: Path
+) -> Iterator[tuple[Any, trimesh.Trimesh]]:
     for entity in scene.entities:
-        if entity.box_size is not None:
+        if entity.box_size_mm is not None:
             yield (
                 entity,
                 _apply_transform(
-                    _box_mesh(entity.box_size),
-                    pos=entity.pos,
-                    euler=entity.euler,
+                    _box_mesh(entity.box_size_mm),
+                    pos=entity.pos_mm,
+                    euler=entity.euler_deg,
                 ),
             )
             continue
@@ -288,7 +293,10 @@ def _iter_entity_meshes(scene: PreviewScene, bundle_root: Path):
             )
             if mesh is None:
                 continue
-            yield entity, _apply_transform(mesh, pos=entity.pos, euler=entity.euler)
+            yield (
+                entity,
+                _apply_transform(mesh, pos=entity.pos_mm, euler=entity.euler_deg),
+            )
 
 
 def _pick_hit(
@@ -305,8 +313,12 @@ def _pick_hit(
     best_entity: Any | None = None
 
     for entity, mesh in _iter_entity_meshes(scene, bundle_root):
+        if mesh is None:
+            continue
+        mesh = cast(trimesh.Trimesh, mesh)
+        ray = cast(Any, mesh.ray)
         try:
-            locations, index_ray, _ = mesh.ray.intersects_location(
+            locations, index_ray, _ = ray.intersects_location(
                 ray_origin,
                 ray_direction,
                 multiple_hits=False,
@@ -319,7 +331,7 @@ def _pick_hit(
         distance = float(np.linalg.norm(location - ray_origin[0]))
         if best_distance is None or distance < best_distance:
             best_distance = distance
-            best_point = tuple(float(v) for v in location.tolist())
+            best_point = _tuple3(location.tolist())
             best_entity = entity
 
     return best_distance is not None, best_distance, best_point, best_entity
@@ -429,12 +441,12 @@ def query_render_bundle(
             )
         origin, direction = _camera_ray(
             scene,
-            pixel_x=request.pixel_x,
-            pixel_y=request.pixel_y,
-            image_width=request.image_width,
-            image_height=request.image_height,
-            orbit_pitch=request.orbit_pitch,
-            orbit_yaw=request.orbit_yaw,
+            pixel_x_px=request.pixel_x_px,
+            pixel_y_px=request.pixel_y_px,
+            image_width_px=request.image_width_px,
+            image_height_px=request.image_height_px,
+            orbit_pitch_deg=request.orbit_pitch_deg,
+            orbit_yaw_deg=request.orbit_yaw_deg,
         )
         hit, distance, world_point, entity = _pick_hit(
             scene,
@@ -451,12 +463,12 @@ def query_render_bundle(
                 "\\", "/"
             ),
             view_index=request.view_index,
-            pixel_x=request.pixel_x,
-            pixel_y=request.pixel_y,
-            image_width=request.image_width,
-            image_height=request.image_height,
-            orbit_pitch=request.orbit_pitch,
-            orbit_yaw=request.orbit_yaw,
+            pixel_x_px=request.pixel_x_px,
+            pixel_y_px=request.pixel_y_px,
+            image_width_px=request.image_width_px,
+            image_height_px=request.image_height_px,
+            orbit_pitch_deg=request.orbit_pitch_deg,
+            orbit_yaw_deg=request.orbit_yaw_deg,
             ray_origin=origin,
             ray_direction=direction,
             hit=hit,
@@ -501,12 +513,12 @@ def pick_preview_pixel(
     request: RenderBundlePointPickRequest | None = None,
     *,
     bundle_path: str | Path | None = None,
-    pixel_x: int | None = None,
-    pixel_y: int | None = None,
-    image_width: int | None = None,
-    image_height: int | None = None,
-    orbit_pitch: float = 45.0,
-    orbit_yaw: float = 45.0,
+    pixel_x_px: int | None = None,
+    pixel_y_px: int | None = None,
+    image_width_px: int | None = None,
+    image_height_px: int | None = None,
+    orbit_pitch_deg: float = 45.0,
+    orbit_yaw_deg: float = 45.0,
     view_index: int = 0,
     manifest_path: str | Path | None = None,
     workspace_root: Path | str | None = None,
@@ -516,18 +528,18 @@ def pick_preview_pixel(
     if request is None:
         if bundle_path is None:
             raise ValueError("bundle_path is required")
-        if pixel_x is None or pixel_y is None:
-            raise ValueError("pixel_x and pixel_y are required")
-        if image_width is None or image_height is None:
-            raise ValueError("image_width and image_height are required")
+        if pixel_x_px is None or pixel_y_px is None:
+            raise ValueError("pixel_x_px and pixel_y_px are required")
+        if image_width_px is None or image_height_px is None:
+            raise ValueError("image_width_px and image_height_px are required")
         request = RenderBundlePointPickRequest(
             bundle_path=str(bundle_path),
-            pixel_x=pixel_x,
-            pixel_y=pixel_y,
-            image_width=image_width,
-            image_height=image_height,
-            orbit_pitch=orbit_pitch,
-            orbit_yaw=orbit_yaw,
+            pixel_x_px=pixel_x_px,
+            pixel_y_px=pixel_y_px,
+            image_width_px=image_width_px,
+            image_height_px=image_height_px,
+            orbit_pitch_deg=orbit_pitch_deg,
+            orbit_yaw_deg=orbit_yaw_deg,
             view_index=view_index,
             manifest_path=str(manifest_path) if manifest_path is not None else None,
         )

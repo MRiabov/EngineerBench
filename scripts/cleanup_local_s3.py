@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import os
 import sys
-import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -53,20 +52,14 @@ def _is_missing_bucket_error(exc: ClientError) -> bool:
     return code in {"NoSuchBucket", "404", "NotFound", "NoSuchKey"}
 
 
-def _wait_for_bucket(client, bucket_name: str, *, timeout_s: float = 30.0) -> None:
-    deadline = time.monotonic() + timeout_s
-    while True:
-        try:
-            client.head_bucket(Bucket=bucket_name)
-            return
-        except ClientError as exc:
-            if not _is_missing_bucket_error(exc):
-                raise
-            if time.monotonic() >= deadline:
-                raise RuntimeError(
-                    f"Timed out waiting for S3 bucket to exist: {bucket_name}"
-                ) from exc
-            time.sleep(0.5)
+def _bucket_exists(client, bucket_name: str) -> bool:
+    try:
+        client.head_bucket(Bucket=bucket_name)
+        return True
+    except ClientError as exc:
+        if _is_missing_bucket_error(exc):
+            return False
+        raise
 
 
 def _delete_objects(client, bucket_name: str, objects: list[dict[str, str]]) -> int:
@@ -156,7 +149,9 @@ def _abort_multipart_uploads(client, bucket_name: str) -> int:
 
 
 def purge_bucket(client, bucket_name: str) -> None:
-    _wait_for_bucket(client, bucket_name)
+    if not _bucket_exists(client, bucket_name):
+        logger.info("s3_bucket_missing", bucket=bucket_name)
+        return
     aborted = _abort_multipart_uploads(client, bucket_name)
     versioned_deleted = _purge_versioned_objects(client, bucket_name)
     current_deleted = _purge_current_objects(client, bucket_name)
@@ -173,7 +168,7 @@ def main() -> int:
     s3_config = get_s3_config()
     if "endpoint_url" not in s3_config:
         raise RuntimeError(
-            "Missing S3_ENDPOINT for local cleanup; cannot clear local object storage."
+            "Missing S3_ENDPOINT or S3_ENDPOINT_URL for local cleanup; cannot clear local object storage."
         )
 
     client = boto3.client("s3", **s3_config)

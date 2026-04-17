@@ -385,7 +385,7 @@ def _boxes_intersect(
 
 
 def _validate_bounding_box_order(label: str, box: Any) -> str | None:
-    for axis, min_value, max_value in zip(("x", "y", "z"), box.min, box.max):
+    for axis, min_value, max_value in zip(("x", "y", "z"), box.min_mm, box.max_mm):
         if min_value > max_value:
             return _benchmark_refusal_error(
                 BenchmarkRefusalReason.INVALID_OBJECTIVES,
@@ -424,7 +424,10 @@ def _validate_box_within(
 ) -> str | None:
     """Fail closed when one box is not fully contained in another."""
     for i, axis in enumerate(("x", "y", "z")):
-        if inner_box.min[i] < outer_box.min[i] or inner_box.max[i] > outer_box.max[i]:
+        if (
+            inner_box.min_mm[i] < outer_box.min_mm[i]
+            or inner_box.max_mm[i] > outer_box.max_mm[i]
+        ):
             return _benchmark_refusal_error(
                 BenchmarkRefusalReason.UNSOLVABLE_SCENARIO,
                 f"{inner_label} exceeds {outer_label} on axis {axis}",

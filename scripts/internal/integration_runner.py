@@ -1558,6 +1558,23 @@ def _prepare_parts_db(repo_root: Path) -> None:
     return
 
 
+def _seed_local_integration_env() -> None:
+    os.environ["S3_ENDPOINT"] = "http://127.0.0.1:19000"
+    os.environ["S3_ENDPOINT_URL"] = "http://127.0.0.1:19000"
+    os.environ["S3_ACCESS_KEY"] = "minioadmin"
+    os.environ["S3_SECRET_KEY"] = "minioadmin"
+    os.environ["AWS_ACCESS_KEY_ID"] = "minioadmin"
+    os.environ["AWS_SECRET_ACCESS_KEY"] = "minioadmin"
+    os.environ["AWS_DEFAULT_REGION"] = "us-east-1"
+    os.environ["WORKER_URL"] = "http://127.0.0.1:18001"
+    os.environ["WORKER_HEAVY_URL"] = "http://127.0.0.1:18002"
+    os.environ["WORKER_RENDERER_URL"] = "http://127.0.0.1:18003"
+    os.environ["ASSET_S3_BUCKET"] = "problemologist"
+    os.environ["BACKUP_S3_BUCKET"] = "problemologist-backup"
+    os.environ["BENCHMARK_SOURCE_BUCKET"] = "benchmarks-source"
+    os.environ["BENCHMARK_ASSETS_BUCKET"] = "benchmarks-assets"
+
+
 def _integration_infra_reachable_without_docker() -> bool:
     minio_ok = False
     try:
@@ -1619,6 +1636,7 @@ def _bring_up_infra_and_migrate(
         )
     )
 
+    _seed_local_integration_env()
     _runner_status("Purging local S3 buckets before the run...")
     _run_quietly(["uv", "run", "python", "scripts/cleanup_local_s3.py"])
 
@@ -2130,20 +2148,7 @@ def _run_integration_command(
         f"postgresql+asyncpg://postgres:postgres@127.0.0.1:15432/{integration_db_name}"
     )
 
-    os.environ["S3_ENDPOINT"] = "http://127.0.0.1:19000"
-    os.environ["S3_ENDPOINT_URL"] = "http://127.0.0.1:19000"
-    os.environ["S3_ACCESS_KEY"] = "minioadmin"
-    os.environ["S3_SECRET_KEY"] = "minioadmin"
-    os.environ["AWS_ACCESS_KEY_ID"] = "minioadmin"
-    os.environ["AWS_SECRET_ACCESS_KEY"] = "minioadmin"
-    os.environ["AWS_DEFAULT_REGION"] = "us-east-1"
-    os.environ["WORKER_URL"] = "http://127.0.0.1:18001"
-    os.environ["WORKER_HEAVY_URL"] = "http://127.0.0.1:18002"
-    os.environ["WORKER_RENDERER_URL"] = "http://127.0.0.1:18003"
-    os.environ["ASSET_S3_BUCKET"] = "problemologist"
-    os.environ["BACKUP_S3_BUCKET"] = "problemologist-backup"
-    os.environ["BENCHMARK_SOURCE_BUCKET"] = "benchmarks-source"
-    os.environ["BENCHMARK_ASSETS_BUCKET"] = "benchmarks-assets"
+    _seed_local_integration_env()
     os.environ["GENESIS_FORCE_CPU"] = "1"
 
     sessions_dir = tempfile.mkdtemp(prefix="pb-sessions-")
@@ -2160,19 +2165,7 @@ def _run_integration_command(
     )
     os.environ["IS_INTEGRATION_TEST"] = "true"
     os.environ["SMOKE_TEST_MODE"] = "true"
-    os.environ["S3_ENDPOINT"] = "http://127.0.0.1:19000"
-    os.environ["S3_ENDPOINT_URL"] = "http://127.0.0.1:19000"
-    os.environ["S3_ACCESS_KEY"] = "minioadmin"
-    os.environ["S3_SECRET_KEY"] = "minioadmin"
-    os.environ["AWS_ACCESS_KEY_ID"] = "minioadmin"
-    os.environ["AWS_SECRET_ACCESS_KEY"] = "minioadmin"
-    os.environ["AWS_DEFAULT_REGION"] = "us-east-1"
-    os.environ["WORKER_URL"] = "http://127.0.0.1:18001"
-    os.environ["WORKER_HEAVY_URL"] = "http://127.0.0.1:18002"
-    os.environ["ASSET_S3_BUCKET"] = "problemologist"
-    os.environ["BACKUP_S3_BUCKET"] = "problemologist-backup"
-    os.environ["BENCHMARK_SOURCE_BUCKET"] = "benchmarks-source"
-    os.environ["BENCHMARK_ASSETS_BUCKET"] = "benchmarks-assets"
+    _seed_local_integration_env()
     os.environ["GENESIS_FORCE_CPU"] = "1"
     os.environ["WORKER_SESSIONS_DIR"] = sessions_dir
 

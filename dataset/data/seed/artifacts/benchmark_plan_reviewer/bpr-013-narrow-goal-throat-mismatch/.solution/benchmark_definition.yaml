@@ -24,22 +24,22 @@ benchmark_parts:
 - part_id: capture_bowl
   label: capture_bowl
   metadata:
-    is_fixed: true
+    fixed: true
     material_id: hdpe
 - part_id: throat_left
   label: throat_left
   metadata:
-    is_fixed: true
+    fixed: true
     material_id: aluminum_6061
 - part_id: throat_right
   label: throat_right
   metadata:
-    is_fixed: true
+    fixed: true
     material_id: aluminum_6061
 - part_id: goal_sleeve
   label: goal_sleeve
   metadata:
-    is_fixed: true
+    fixed: true
     material_id: hdpe
 physics:
   backend: GENESIS

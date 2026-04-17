@@ -24,22 +24,22 @@ benchmark_parts:
 - part_id: ballast_base
   label: ballast_base
   metadata:
-    is_fixed: true
+    fixed: true
     material_id: steel_cold_rolled
 - part_id: transfer_chute
   label: transfer_chute
   metadata:
-    is_fixed: true
+    fixed: true
     material_id: hdpe
 - part_id: counterweight_fin
   label: counterweight_fin
   metadata:
-    is_fixed: true
+    fixed: true
     material_id: steel_cold_rolled
 - part_id: goal_cradle
   label: goal_cradle
   metadata:
-    is_fixed: true
+    fixed: true
     material_id: hdpe
 physics:
   backend: GENESIS

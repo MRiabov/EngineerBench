@@ -25,9 +25,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
 
-import numpy as np
 import mujoco
-
+import numpy as np
 
 DEFAULT_MODEL_PATH = Path("tests/worker/minimal.xml")
 LATEST_JSON = Path(__file__).with_name("latest-mujoco-parallel-step.json")
@@ -105,7 +104,9 @@ def _batch_initial_state(model: mujoco.MjModel, batch_size: int) -> np.ndarray:
     return np.repeat(base_state[None, :], batch_size, axis=0)
 
 
-def _run_batched_python_loop(model: mujoco.MjModel, batch_size: int, steps: int) -> float:
+def _run_batched_python_loop(
+    model: mujoco.MjModel, batch_size: int, steps: int
+) -> float:
     datas = [_reset_data(model) for _ in range(batch_size)]
     for _ in range(steps):
         for data in datas:
@@ -275,9 +276,7 @@ def run_experiment(
             persistent_pool=True,
         )
     except Exception as exc:  # pragma: no cover - runtime feature probe
-        rollout_persistent_pool_probe = {
-            "error": f"{type(exc).__name__}: {exc}"
-        }
+        rollout_persistent_pool_probe = {"error": f"{type(exc).__name__}: {exc}"}
 
     try:
         rollout_object = _measure(

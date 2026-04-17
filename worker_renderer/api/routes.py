@@ -525,22 +525,28 @@ def _resolve_single_preview_group_key(
 
 
 def _normalize_preview_views(
-    orbit_pitch: float | list[float], orbit_yaw: float | list[float]
+    orbit_pitch_deg: float | list[float], orbit_yaw_deg: float | list[float]
 ) -> list[PreviewViewSpec]:
-    pitch_values = orbit_pitch if isinstance(orbit_pitch, list) else [orbit_pitch]
-    yaw_values = orbit_yaw if isinstance(orbit_yaw, list) else [orbit_yaw]
+    pitch_values = (
+        orbit_pitch_deg if isinstance(orbit_pitch_deg, list) else [orbit_pitch_deg]
+    )
+    yaw_values = orbit_yaw_deg if isinstance(orbit_yaw_deg, list) else [orbit_yaw_deg]
     if len(pitch_values) == 1 and len(yaw_values) > 1:
         pitch_values = pitch_values * len(yaw_values)
     elif len(yaw_values) == 1 and len(pitch_values) > 1:
         yaw_values = yaw_values * len(pitch_values)
     elif len(pitch_values) != len(yaw_values):
         raise ValueError(
-            "orbit_pitch and orbit_yaw must broadcast or have matching lengths"
+            "orbit_pitch_deg and orbit_yaw_deg must broadcast or have matching lengths"
         )
     if len(pitch_values) > 64:
         raise ValueError("preview requests are capped at 64 views")
     return [
-        PreviewViewSpec(view_index=index, orbit_pitch=pitch, orbit_yaw=yaw)
+        PreviewViewSpec(
+            view_index=index,
+            orbit_pitch_deg=pitch,
+            orbit_yaw_deg=yaw,
+        )
         for index, (pitch, yaw) in enumerate(zip(pitch_values, yaw_values))
     ]
 
@@ -571,7 +577,7 @@ def _render_single_preview(
         width = default_width if width is None else width
         height = default_height if height is None else height
 
-    center = scene.center
+    center = scene.center_mm
     distance = _preview_camera_distance(scene, width=width, height=height)
     camera_position = camera_position_from_orbit(center, distance, pitch, yaw)
     workspace_root = output_dir.parent.parent
@@ -633,8 +639,8 @@ def _render_single_preview(
             modality="rgb",
             group_key=group_key,
             view_index=view_index,
-            orbit_pitch=pitch,
-            orbit_yaw=yaw,
+            orbit_pitch_deg=pitch,
+            orbit_yaw_deg=yaw,
             siblings=RenderSiblingPaths(
                 rgb=str(image_path.relative_to(workspace_root)),
                 depth=str(
@@ -708,8 +714,8 @@ def _render_single_preview(
             modality="depth",
             group_key=group_key,
             view_index=view_index,
-            orbit_pitch=pitch,
-            orbit_yaw=yaw,
+            orbit_pitch_deg=pitch,
+            orbit_yaw_deg=yaw,
             siblings=RenderSiblingPaths(
                 rgb=str((output_dir / f"{group_key}.png").relative_to(workspace_root)),
                 depth=str(image_path.relative_to(workspace_root)),
@@ -785,8 +791,8 @@ def _render_single_preview(
             modality="segmentation",
             group_key=group_key,
             view_index=view_index,
-            orbit_pitch=pitch,
-            orbit_yaw=yaw,
+            orbit_pitch_deg=pitch,
+            orbit_yaw_deg=yaw,
             siblings=RenderSiblingPaths(
                 rgb=str((output_dir / f"{group_key}.png").relative_to(workspace_root)),
                 depth=str(
@@ -824,8 +830,8 @@ def _build_preview_manifest(
             view_metadata_by_path.get(rel_path) if view_metadata_by_path else None
         )
         view_index = view_spec.view_index if view_spec is not None else None
-        orbit_pitch = view_spec.orbit_pitch if view_spec is not None else None
-        orbit_yaw = view_spec.orbit_yaw if view_spec is not None else None
+        orbit_pitch_deg = view_spec.orbit_pitch_deg if view_spec is not None else None
+        orbit_yaw_deg = view_spec.orbit_yaw_deg if view_spec is not None else None
         rgb_candidate_jpg = (
             render_dir
             / f"{stem.removesuffix('_depth').removesuffix('_segmentation')}.jpg"
@@ -848,8 +854,8 @@ def _build_preview_manifest(
                 modality="depth",
                 group_key=group_key,
                 view_index=view_index,
-                orbit_pitch=orbit_pitch,
-                orbit_yaw=orbit_yaw,
+                orbit_pitch_deg=orbit_pitch_deg,
+                orbit_yaw_deg=orbit_yaw_deg,
                 siblings=RenderSiblingPaths(
                     rgb=str(render_dir / rgb_sibling),
                     depth=str(render_dir / f"{group_key}_depth.png"),
@@ -870,8 +876,8 @@ def _build_preview_manifest(
                 modality="segmentation",
                 group_key=group_key,
                 view_index=view_index,
-                orbit_pitch=orbit_pitch,
-                orbit_yaw=orbit_yaw,
+                orbit_pitch_deg=orbit_pitch_deg,
+                orbit_yaw_deg=orbit_yaw_deg,
                 siblings=RenderSiblingPaths(
                     rgb=str(render_dir / rgb_sibling),
                     depth=str(render_dir / f"{group_key}_depth.png"),
@@ -885,8 +891,8 @@ def _build_preview_manifest(
                 modality="rgb",
                 group_key=group_key,
                 view_index=view_index,
-                orbit_pitch=orbit_pitch,
-                orbit_yaw=orbit_yaw,
+                orbit_pitch_deg=orbit_pitch_deg,
+                orbit_yaw_deg=orbit_yaw_deg,
                 siblings=RenderSiblingPaths(
                     rgb=str(render_dir / rgb_sibling),
                     depth=str(render_dir / f"{group_key}_depth.png"),
@@ -1018,7 +1024,7 @@ async def api_preview(
                         )
 
                     view_specs = _normalize_preview_views(
-                        request.orbit_pitch, request.orbit_yaw
+                        request.orbit_pitch_deg, request.orbit_yaw_deg
                     )
                     if not view_specs:
                         raise ValueError(
@@ -1070,8 +1076,8 @@ async def api_preview(
                             group_key = _resolve_single_preview_group_key(
                                 renders_dir,
                                 _preview_scene_label(preview_scene),
-                                view_spec.orbit_pitch,
-                                view_spec.orbit_yaw,
+                                view_spec.orbit_pitch_deg,
+                                view_spec.orbit_yaw_deg,
                                 view_index=view_spec.view_index,
                                 view_count=len(view_specs),
                             )
@@ -1080,8 +1086,8 @@ async def api_preview(
                                     _render_single_preview,
                                     preview_scene,
                                     output_dir=renders_dir,
-                                    pitch=view_spec.orbit_pitch,
-                                    yaw=view_spec.orbit_yaw,
+                                    pitch=view_spec.orbit_pitch_deg,
+                                    yaw=view_spec.orbit_yaw_deg,
                                     view_index=view_spec.view_index,
                                     view_count=len(view_specs),
                                     rendering_type=modality,
@@ -1183,11 +1189,11 @@ async def api_preview(
                     artifact_path=str(first_image_path.relative_to(root)),
                     manifest_path=manifest_path,
                     rendering_type=resolved_rendering_type,
-                    pitch=request.orbit_pitch
-                    if isinstance(request.orbit_pitch, float)
+                    orbit_pitch_deg=request.orbit_pitch_deg
+                    if isinstance(request.orbit_pitch_deg, float)
                     else None,
-                    yaw=request.orbit_yaw
-                    if isinstance(request.orbit_yaw, float)
+                    orbit_yaw_deg=request.orbit_yaw_deg
+                    if isinstance(request.orbit_yaw_deg, float)
                     else None,
                     image_path=str(first_image_path.relative_to(root)),
                     image_bytes_base64=(
@@ -1223,10 +1229,12 @@ async def api_preview(
                     else PreviewRenderingType.SEGMENTATION
                 )
             ),
-            pitch=request.orbit_pitch
-            if isinstance(request.orbit_pitch, float)
+            orbit_pitch_deg=request.orbit_pitch_deg
+            if isinstance(request.orbit_pitch_deg, float)
             else None,
-            yaw=request.orbit_yaw if isinstance(request.orbit_yaw, float) else None,
+            orbit_yaw_deg=request.orbit_yaw_deg
+            if isinstance(request.orbit_yaw_deg, float)
+            else None,
         )
 
 

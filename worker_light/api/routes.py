@@ -234,7 +234,11 @@ async def api_inspect_topology(
             local_p = Path(request.script_path)
 
         props = inspect_topology(target_id=request.target_id, script_path=str(local_p))
-        return InspectTopologyResponse(success=True, properties=props)
+        return InspectTopologyResponse(
+            success=props.success,
+            properties=props.properties,
+            message=props.message,
+        )
     except Exception as e:
         logger.warning("api_inspect_topology_failed", error=str(e))
         return InspectTopologyResponse(success=False, message=str(e))
@@ -272,8 +276,8 @@ async def api_preview(
             depth=request.depth,
             segmentation=request.segmentation,
             payload_path=request.payload_path,
-            orbit_pitch=request.orbit_pitch,
-            orbit_yaw=request.orbit_yaw,
+            orbit_pitch=request.orbit_pitch_deg,
+            orbit_yaw=request.orbit_yaw_deg,
         )
         bundle_base64 = (
             request.bundle_base64
@@ -284,8 +288,8 @@ async def api_preview(
             render_preview,
             bundle_base64=bundle_base64,
             script_path=request.script_path,
-            orbit_pitch=request.orbit_pitch,
-            orbit_yaw=request.orbit_yaw,
+            orbit_pitch=request.orbit_pitch_deg,
+            orbit_yaw=request.orbit_yaw_deg,
             rgb=request.rgb,
             depth=request.depth,
             segmentation=request.segmentation,
@@ -294,7 +298,7 @@ async def api_preview(
             session_id=x_session_id,
             agent_role=x_agent_role,
             script_content=request.script_content,
-            smoke_test_mode=request.smoke_test_mode,
+            smoke_test_mode=bool(request.smoke_test_mode),
         )
         if not response.success:
             raise RuntimeError(response.message or "preview request failed")
@@ -373,10 +377,12 @@ async def api_preview(
             artifact_path=artifact_path,
             manifest_path=manifest_path,
             rendering_type=response.rendering_type,
-            pitch=request.orbit_pitch
-            if isinstance(request.orbit_pitch, float)
+            orbit_pitch_deg=request.orbit_pitch_deg
+            if isinstance(request.orbit_pitch_deg, float)
             else None,
-            yaw=request.orbit_yaw if isinstance(request.orbit_yaw, float) else None,
+            orbit_yaw_deg=request.orbit_yaw_deg
+            if isinstance(request.orbit_yaw_deg, float)
+            else None,
             image_path=artifact_path,
             image_bytes_base64=response.image_bytes_base64,
             render_blobs_base64=response.render_blobs_base64,
@@ -391,10 +397,12 @@ async def api_preview(
             status_text="Preview generation failed",
             message=str(exc),
             rendering_type=(request.rendering_type or PreviewRenderingType.RGB),
-            pitch=request.orbit_pitch
-            if isinstance(request.orbit_pitch, float)
+            orbit_pitch_deg=request.orbit_pitch_deg
+            if isinstance(request.orbit_pitch_deg, float)
             else None,
-            yaw=request.orbit_yaw if isinstance(request.orbit_yaw, float) else None,
+            orbit_yaw_deg=request.orbit_yaw_deg
+            if isinstance(request.orbit_yaw_deg, float)
+            else None,
         )
 
 
@@ -419,7 +427,7 @@ async def api_validate(
                 session_root=root,
                 script_content=request.script_content,
                 output_dir=root,
-                smoke_test_mode=request.smoke_test_mode,
+                smoke_test_mode=bool(request.smoke_test_mode),
                 session_id=x_session_id,
                 particle_budget=request.particle_budget,
             )
@@ -820,7 +828,7 @@ async def _handle_light_rpc_action(
         props = inspect_topology(
             target_id=payload["target_id"], script_path=str(local_p)
         )
-        return {"success": True, "properties": props}
+        return props.model_dump(mode="json")
 
     raise HTTPException(
         status_code=400, detail=f"Unsupported worker RPC action: {action}"

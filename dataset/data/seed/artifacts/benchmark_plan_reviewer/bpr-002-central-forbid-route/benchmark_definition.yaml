@@ -33,27 +33,27 @@ benchmark_parts:
 - part_id: left_launch_pad
   label: left_launch_pad
   metadata:
-    is_fixed: true
+    fixed: true
     material_id: aluminum_6061
 - part_id: central_blocker
   label: central_blocker
   metadata:
-    is_fixed: true
+    fixed: true
     material_id: aluminum_6061
 - part_id: upper_route_wall
   label: upper_route_wall
   metadata:
-    is_fixed: true
+    fixed: true
     material_id: hdpe
 - part_id: lower_route_wall
   label: lower_route_wall
   metadata:
-    is_fixed: true
+    fixed: true
     material_id: hdpe
 - part_id: goal_catch_tray
   label: goal_catch_tray
   metadata:
-    is_fixed: true
+    fixed: true
     material_id: hdpe
 physics:
   backend: GENESIS

@@ -33,22 +33,22 @@ benchmark_parts:
 - part_id: upper_start_ledge
   label: upper_start_ledge
   metadata:
-    is_fixed: true
+    fixed: true
     material_id: aluminum_6061
 - part_id: deflector_ramp
   label: deflector_ramp
   metadata:
-    is_fixed: true
+    fixed: true
     material_id: hdpe
 - part_id: direct_drop_shield
   label: direct_drop_shield
   metadata:
-    is_fixed: true
+    fixed: true
     material_id: aluminum_6061
 - part_id: lower_bin
   label: lower_bin
   metadata:
-    is_fixed: true
+    fixed: true
     material_id: hdpe
 physics:
   backend: GENESIS
