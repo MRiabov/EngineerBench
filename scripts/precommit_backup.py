@@ -133,10 +133,7 @@ def main() -> int:
         return 0
 
     commit, history_ref = create_snapshot(repo_root)
-    print(
-        "pre-commit backup saved to "
-        f"{LATEST_REF} and {history_ref} ({commit[:12]})"
-    )
+    print(f"pre-commit backup saved to {LATEST_REF} and {history_ref} ({commit[:12]})")
     return 0
 
 

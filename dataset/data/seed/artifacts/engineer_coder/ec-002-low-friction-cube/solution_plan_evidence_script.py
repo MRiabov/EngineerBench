@@ -1,4 +1,13 @@
-from build123d import Axis, BuildLine, BuildPart, BuildSketch, Compound, Plane, Polyline, Rectangle, sweep
+from build123d import (
+    BuildLine,
+    BuildPart,
+    BuildSketch,
+    Compound,
+    Plane,
+    Polyline,
+    Rectangle,
+    sweep,
+)
 
 from utils.metadata import CompoundMetadata, PartMetadata
 
