@@ -1,0 +1,1840 @@
+{
+  "args": {
+    "adaptive_leaf_step_deg": 5.0,
+    "adaptive_max_cells": 24,
+    "adaptive_max_depth": 3,
+    "adaptive_max_exact_checks": 8,
+    "fixture_step": "",
+    "naive_step_deg": 5.0,
+    "no_center_payload": false,
+    "output_json": "scripts/experiments/performance/payload-rotation-envelope-pruning/results-20260408T095646Z.json",
+    "payload_step": "",
+    "repetitions": 1,
+    "scenario": "all"
+  },
+  "experiment": "payload_rotation_envelope_pruning",
+  "generated_at_utc": "2026-04-08T10:08:21.393052+00:00",
+  "metadata": {
+    "geometry_cache_contract": {
+      "payload_trimesh_loaded_once_per_scenario": true,
+      "search_loop_exports_or_imports_meshes": false,
+      "search_loop_io_bound": false,
+      "search_loop_reinitializes_trimesh": false
+    },
+    "hypothesis": {
+      "baseline": "Uniform pitch/yaw/roll grid, exact intersection at every sample, stop when the first collision is found or the grid is exhausted.",
+      "candidate": "Widest-axis recursive subdivision with a bounding-box broad phase, exact checks only at leaf cells, and hard caps on cells, depth, and exact booleans.",
+      "statement": "An adaptive rotation-envelope search with conservative broad-phase pruning and recursive subdivision should reduce exact build123d intersection checks versus a naive uniform grid over the same admissible rotation window.",
+      "what_to_watch": [
+        "elapsed_speedup_over_naive > 1.0 means the adaptive search is faster",
+        "exact_check_reduction_pct > 0 means the adaptive search uses fewer exact booleans",
+        "budget_exhausted = true means the proof failed closed before the search completed"
+      ]
+    },
+    "search_contract": {
+      "adaptive_leaf_step_deg": 5.0,
+      "adaptive_max_cells": 24,
+      "adaptive_max_depth": 3,
+      "adaptive_max_exact_checks": 8,
+      "naive_step_deg": 5.0,
+      "window_deg": [
+        15.0,
+        15.0,
+        15.0
+      ]
+    }
+  },
+  "repo_root": "/home/maksym/Work/proj/Problemologist/Problemologist-AI",
+  "rows": [
+    {
+      "budget_exhausted": null,
+      "elapsed_sec": 0.03380684499279596,
+      "exact_checks": 1,
+      "first_hit_exact_volume_mm3": 75492.107872,
+      "first_hit_rotation_deg": [
+        75.0,
+        75.0,
+        75.0
+      ],
+      "hit_found": true,
+      "mode": "naive_grid",
+      "repetition": 1,
+      "samples_examined": 1,
+      "scenario": "demo_immediate_hit"
+    },
+    {
+      "broad_phase_rejected": 0,
+      "budget_exhausted": false,
+      "cells_visited": 8,
+      "elapsed_sec": 0.05301882998901419,
+      "exact_checks": 1,
+      "first_hit_exact_volume_mm3": 72220.387101,
+      "first_hit_rotation_deg": [
+        82.5,
+        82.5,
+        82.5
+      ],
+      "hit_found": true,
+      "mode": "adaptive_pruning",
+      "repetition": 1,
+      "scenario": "demo_immediate_hit",
+      "subdivisions": 7
+    },
+    {
+      "budget_exhausted": null,
+      "elapsed_sec": 1.856684829981532,
+      "exact_checks": 343,
+      "first_hit_exact_volume_mm3": null,
+      "first_hit_rotation_deg": null,
+      "hit_found": false,
+      "mode": "naive_grid",
+      "repetition": 1,
+      "samples_examined": 343,
+      "scenario": "demo_recursive_prune"
+    },
+    {
+      "broad_phase_rejected": 8,
+      "budget_exhausted": false,
+      "cells_visited": 15,
+      "elapsed_sec": 0.027000889007467777,
+      "exact_checks": 0,
+      "first_hit_exact_volume_mm3": null,
+      "first_hit_rotation_deg": null,
+      "hit_found": false,
+      "mode": "adaptive_pruning",
+      "repetition": 1,
+      "scenario": "demo_recursive_prune",
+      "subdivisions": 7
+    },
+    {
+      "budget_exhausted": null,
+      "elapsed_sec": 2.4798418930149637,
+      "exact_checks": 343,
+      "first_hit_exact_volume_mm3": null,
+      "first_hit_rotation_deg": null,
+      "hit_found": false,
+      "mode": "naive_grid",
+      "repetition": 1,
+      "samples_examined": 343,
+      "scenario": "demo_far_miss"
+    },
+    {
+      "broad_phase_rejected": 1,
+      "budget_exhausted": false,
+      "cells_visited": 1,
+      "elapsed_sec": 0.004059516999404877,
+      "exact_checks": 0,
+      "first_hit_exact_volume_mm3": null,
+      "first_hit_rotation_deg": null,
+      "hit_found": false,
+      "mode": "adaptive_pruning",
+      "repetition": 1,
+      "scenario": "demo_far_miss",
+      "subdivisions": 0
+    }
+  ],
+  "scenarios": [
+    {
+      "adaptive": {
+        "first_hit_exact_volume_mm3": 72220.387101,
+        "first_hit_rotation_deg": [
+          82.5,
+          82.5,
+          82.5
+        ],
+        "max_elapsed_sec": 0.05301882998901419,
+        "max_exact_checks": 1.0,
+        "mean_broad_phase_rejected": 0.0,
+        "mean_cells_visited": 8.0,
+        "mean_elapsed_sec": 0.05301882998901419,
+        "mean_exact_checks": 1.0,
+        "mean_subdivisions": 7.0,
+        "median_elapsed_sec": 0.05301882998901419,
+        "median_exact_checks": 1.0,
+        "min_elapsed_sec": 0.05301882998901419,
+        "min_exact_checks": 1.0,
+        "mode": "adaptive_pruning",
+        "runs": 1,
+        "runs_budget_exhausted": 0,
+        "runs_hit_found": 1
+      },
+      "adaptive_trace": [
+        {
+          "broad_phase_bbox_max_mm": [
+            73.182389,
+            93.182389,
+            111.182389
+          ],
+          "broad_phase_bbox_min_mm": [
+            -73.182389,
+            -93.182389,
+            -111.182389
+          ],
+          "cell_id": 1,
+          "center_deg": [
+            90.0,
+            90.0,
+            90.0
+          ],
+          "depth": 0,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            105.0,
+            105.0,
+            105.0
+          ],
+          "min_deg": [
+            75.0,
+            75.0,
+            75.0
+          ],
+          "note": "split the widest rotation axis 0",
+          "rotation_pad_mm": 51.182389,
+          "span_deg": [
+            30.0,
+            30.0,
+            30.0
+          ],
+          "split_axis": 0,
+          "status": "subdivided"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            64.991252,
+            86.850881,
+            105.871625
+          ],
+          "broad_phase_bbox_min_mm": [
+            -64.991252,
+            -86.850881,
+            -105.871625
+          ],
+          "cell_id": 2,
+          "center_deg": [
+            82.5,
+            90.0,
+            90.0
+          ],
+          "depth": 1,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            90.0,
+            105.0,
+            105.0
+          ],
+          "min_deg": [
+            75.0,
+            75.0,
+            75.0
+          ],
+          "note": "split the widest rotation axis 1",
+          "rotation_pad_mm": 42.991252,
+          "span_deg": [
+            15.0,
+            30.0,
+            30.0
+          ],
+          "split_axis": 1,
+          "status": "subdivided"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            64.991252,
+            86.850881,
+            105.871625
+          ],
+          "broad_phase_bbox_min_mm": [
+            -64.991252,
+            -86.850881,
+            -105.871625
+          ],
+          "cell_id": 3,
+          "center_deg": [
+            97.5,
+            90.0,
+            90.0
+          ],
+          "depth": 1,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            105.0,
+            105.0,
+            105.0
+          ],
+          "min_deg": [
+            90.0,
+            75.0,
+            75.0
+          ],
+          "note": "split the widest rotation axis 1",
+          "rotation_pad_mm": 42.991252,
+          "span_deg": [
+            15.0,
+            30.0,
+            30.0
+          ],
+          "split_axis": 1,
+          "status": "subdivided"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            58.385699,
+            79.284092,
+            97.705877
+          ],
+          "broad_phase_bbox_min_mm": [
+            -58.385699,
+            -79.284092,
+            -97.705877
+          ],
+          "cell_id": 4,
+          "center_deg": [
+            82.5,
+            82.5,
+            90.0
+          ],
+          "depth": 2,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            90.0,
+            90.0,
+            105.0
+          ],
+          "min_deg": [
+            75.0,
+            75.0,
+            75.0
+          ],
+          "note": "split the widest rotation axis 2",
+          "rotation_pad_mm": 34.616019,
+          "span_deg": [
+            15.0,
+            15.0,
+            30.0
+          ],
+          "split_axis": 2,
+          "status": "subdivided"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            58.385699,
+            79.284092,
+            97.705877
+          ],
+          "broad_phase_bbox_min_mm": [
+            -58.385699,
+            -79.284092,
+            -97.705877
+          ],
+          "cell_id": 5,
+          "center_deg": [
+            82.5,
+            97.5,
+            90.0
+          ],
+          "depth": 2,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            90.0,
+            105.0,
+            105.0
+          ],
+          "min_deg": [
+            75.0,
+            90.0,
+            75.0
+          ],
+          "note": "split the widest rotation axis 2",
+          "rotation_pad_mm": 34.616019,
+          "span_deg": [
+            15.0,
+            15.0,
+            30.0
+          ],
+          "split_axis": 2,
+          "status": "subdivided"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            58.385699,
+            79.284092,
+            97.705877
+          ],
+          "broad_phase_bbox_min_mm": [
+            -58.385699,
+            -79.284092,
+            -97.705877
+          ],
+          "cell_id": 6,
+          "center_deg": [
+            97.5,
+            82.5,
+            90.0
+          ],
+          "depth": 2,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            105.0,
+            90.0,
+            105.0
+          ],
+          "min_deg": [
+            90.0,
+            75.0,
+            75.0
+          ],
+          "note": "split the widest rotation axis 2",
+          "rotation_pad_mm": 34.616019,
+          "span_deg": [
+            15.0,
+            15.0,
+            30.0
+          ],
+          "split_axis": 2,
+          "status": "subdivided"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            58.385699,
+            79.284092,
+            97.705877
+          ],
+          "broad_phase_bbox_min_mm": [
+            -58.385699,
+            -79.284092,
+            -97.705877
+          ],
+          "cell_id": 7,
+          "center_deg": [
+            97.5,
+            97.5,
+            90.0
+          ],
+          "depth": 2,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            105.0,
+            105.0,
+            105.0
+          ],
+          "min_deg": [
+            90.0,
+            90.0,
+            75.0
+          ],
+          "note": "split the widest rotation axis 2",
+          "rotation_pad_mm": 34.616019,
+          "span_deg": [
+            15.0,
+            15.0,
+            30.0
+          ],
+          "split_axis": 2,
+          "status": "subdivided"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            49.99882,
+            71.854035,
+            90.99588
+          ],
+          "broad_phase_bbox_min_mm": [
+            -49.99882,
+            -71.854035,
+            -90.99588
+          ],
+          "cell_id": 8,
+          "center_deg": [
+            82.5,
+            82.5,
+            82.5
+          ],
+          "depth": 3,
+          "exact_checked": true,
+          "exact_hit": true,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            90.0,
+            90.0,
+            90.0
+          ],
+          "min_deg": [
+            75.0,
+            75.0,
+            75.0
+          ],
+          "note": "first exact collision discovered in the search window",
+          "rotation_pad_mm": 26.092556,
+          "span_deg": [
+            15.0,
+            15.0,
+            15.0
+          ],
+          "split_axis": null,
+          "status": "sample_hit"
+        }
+      ],
+      "config": {
+        "adaptive_leaf_step_deg": 5.0,
+        "adaptive_max_cells": 24,
+        "adaptive_max_depth": 3,
+        "adaptive_max_exact_checks": 8,
+        "fixture_bbox_max_mm": [
+          46.0,
+          35.0,
+          18.0
+        ],
+        "fixture_bbox_min_mm": [
+          -46.0,
+          -35.0,
+          -18.0
+        ],
+        "naive_step_deg": 5.0,
+        "payload_max_radius_mm": 66.873014,
+        "payload_rotation_deg": [
+          90.0,
+          90.0,
+          90.0
+        ],
+        "payload_translation_mm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotation_window_deg": [
+          15.0,
+          15.0,
+          15.0
+        ]
+      },
+      "description": "Payload and fixture overlap at the nominal pose, so both modes find a collision immediately.",
+      "fixture": {
+        "bbox_max_mm": [
+          46.0,
+          35.0,
+          18.0
+        ],
+        "bbox_min_mm": [
+          -46.0,
+          -35.0,
+          -18.0
+        ],
+        "bbox_size_mm": [
+          92.0,
+          70.0,
+          36.0
+        ],
+        "label": "fixture",
+        "solid_count": 1,
+        "source": "demo",
+        "volume_mm3": 231840.0
+      },
+      "naive": {
+        "first_hit_exact_volume_mm3": 75492.107872,
+        "first_hit_rotation_deg": [
+          75.0,
+          75.0,
+          75.0
+        ],
+        "max_elapsed_sec": 0.03380684499279596,
+        "max_exact_checks": 1.0,
+        "mean_elapsed_sec": 0.03380684499279596,
+        "mean_exact_checks": 1.0,
+        "mean_samples_examined": 1.0,
+        "median_elapsed_sec": 0.03380684499279596,
+        "median_exact_checks": 1.0,
+        "min_elapsed_sec": 0.03380684499279596,
+        "min_exact_checks": 1.0,
+        "mode": "naive_grid",
+        "runs": 1,
+        "runs_budget_exhausted": 0,
+        "runs_hit_found": 1
+      },
+      "payload": {
+        "bbox_max_mm": [
+          60.0,
+          42.0,
+          22.0
+        ],
+        "bbox_min_mm": [
+          -60.0,
+          -42.0,
+          -22.0
+        ],
+        "bbox_size_mm": [
+          120.0,
+          84.0,
+          44.0
+        ],
+        "label": "payload",
+        "solid_count": 1,
+        "source": "demo",
+        "volume_mm3": 202944.0
+      },
+      "scenario": "demo_immediate_hit",
+      "setup_sec": 0.13223894199472852,
+      "speedups": {
+        "elapsed_savings_pct": -56.82868365951391,
+        "elapsed_speedup_over_naive": 0.6376384578799821,
+        "exact_check_ratio_naive_over_adaptive": 1.0,
+        "exact_check_reduction_pct": 0.0
+      }
+    },
+    {
+      "adaptive": {
+        "max_elapsed_sec": 0.027000889007467777,
+        "max_exact_checks": 0.0,
+        "mean_broad_phase_rejected": 8.0,
+        "mean_cells_visited": 15.0,
+        "mean_elapsed_sec": 0.027000889007467777,
+        "mean_exact_checks": 0.0,
+        "mean_subdivisions": 7.0,
+        "median_elapsed_sec": 0.027000889007467777,
+        "median_exact_checks": 0.0,
+        "min_elapsed_sec": 0.027000889007467777,
+        "min_exact_checks": 0.0,
+        "mode": "adaptive_pruning",
+        "runs": 1,
+        "runs_budget_exhausted": 0,
+        "runs_hit_found": 0
+      },
+      "adaptive_trace": [
+        {
+          "broad_phase_bbox_max_mm": [
+            173.182389,
+            93.182389,
+            111.182389
+          ],
+          "broad_phase_bbox_min_mm": [
+            26.817611,
+            -93.182389,
+            -111.182389
+          ],
+          "cell_id": 1,
+          "center_deg": [
+            90.0,
+            90.0,
+            90.0
+          ],
+          "depth": 0,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            105.0,
+            105.0,
+            105.0
+          ],
+          "min_deg": [
+            75.0,
+            75.0,
+            75.0
+          ],
+          "note": "split the widest rotation axis 0",
+          "rotation_pad_mm": 51.182389,
+          "span_deg": [
+            30.0,
+            30.0,
+            30.0
+          ],
+          "split_axis": 0,
+          "status": "subdivided"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            164.991252,
+            86.850881,
+            105.871625
+          ],
+          "broad_phase_bbox_min_mm": [
+            35.008748,
+            -86.850881,
+            -105.871625
+          ],
+          "cell_id": 2,
+          "center_deg": [
+            82.5,
+            90.0,
+            90.0
+          ],
+          "depth": 1,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            90.0,
+            105.0,
+            105.0
+          ],
+          "min_deg": [
+            75.0,
+            75.0,
+            75.0
+          ],
+          "note": "split the widest rotation axis 1",
+          "rotation_pad_mm": 42.991252,
+          "span_deg": [
+            15.0,
+            30.0,
+            30.0
+          ],
+          "split_axis": 1,
+          "status": "subdivided"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            164.991252,
+            86.850881,
+            105.871625
+          ],
+          "broad_phase_bbox_min_mm": [
+            35.008748,
+            -86.850881,
+            -105.871625
+          ],
+          "cell_id": 3,
+          "center_deg": [
+            97.5,
+            90.0,
+            90.0
+          ],
+          "depth": 1,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            105.0,
+            105.0,
+            105.0
+          ],
+          "min_deg": [
+            90.0,
+            75.0,
+            75.0
+          ],
+          "note": "split the widest rotation axis 1",
+          "rotation_pad_mm": 42.991252,
+          "span_deg": [
+            15.0,
+            30.0,
+            30.0
+          ],
+          "split_axis": 1,
+          "status": "subdivided"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            158.385699,
+            79.284092,
+            97.705877
+          ],
+          "broad_phase_bbox_min_mm": [
+            41.614301,
+            -79.284092,
+            -97.705877
+          ],
+          "cell_id": 4,
+          "center_deg": [
+            82.5,
+            82.5,
+            90.0
+          ],
+          "depth": 2,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            90.0,
+            90.0,
+            105.0
+          ],
+          "min_deg": [
+            75.0,
+            75.0,
+            75.0
+          ],
+          "note": "split the widest rotation axis 2",
+          "rotation_pad_mm": 34.616019,
+          "span_deg": [
+            15.0,
+            15.0,
+            30.0
+          ],
+          "split_axis": 2,
+          "status": "subdivided"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            158.385699,
+            79.284092,
+            97.705877
+          ],
+          "broad_phase_bbox_min_mm": [
+            41.614301,
+            -79.284092,
+            -97.705877
+          ],
+          "cell_id": 5,
+          "center_deg": [
+            82.5,
+            97.5,
+            90.0
+          ],
+          "depth": 2,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            90.0,
+            105.0,
+            105.0
+          ],
+          "min_deg": [
+            75.0,
+            90.0,
+            75.0
+          ],
+          "note": "split the widest rotation axis 2",
+          "rotation_pad_mm": 34.616019,
+          "span_deg": [
+            15.0,
+            15.0,
+            30.0
+          ],
+          "split_axis": 2,
+          "status": "subdivided"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            158.385699,
+            79.284092,
+            97.705877
+          ],
+          "broad_phase_bbox_min_mm": [
+            41.614301,
+            -79.284092,
+            -97.705877
+          ],
+          "cell_id": 6,
+          "center_deg": [
+            97.5,
+            82.5,
+            90.0
+          ],
+          "depth": 2,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            105.0,
+            90.0,
+            105.0
+          ],
+          "min_deg": [
+            90.0,
+            75.0,
+            75.0
+          ],
+          "note": "split the widest rotation axis 2",
+          "rotation_pad_mm": 34.616019,
+          "span_deg": [
+            15.0,
+            15.0,
+            30.0
+          ],
+          "split_axis": 2,
+          "status": "subdivided"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            158.385699,
+            79.284092,
+            97.705877
+          ],
+          "broad_phase_bbox_min_mm": [
+            41.614301,
+            -79.284092,
+            -97.705877
+          ],
+          "cell_id": 7,
+          "center_deg": [
+            97.5,
+            97.5,
+            90.0
+          ],
+          "depth": 2,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            105.0,
+            105.0,
+            105.0
+          ],
+          "min_deg": [
+            90.0,
+            90.0,
+            75.0
+          ],
+          "note": "split the widest rotation axis 2",
+          "rotation_pad_mm": 34.616019,
+          "span_deg": [
+            15.0,
+            15.0,
+            30.0
+          ],
+          "split_axis": 2,
+          "status": "subdivided"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            149.99882,
+            71.854035,
+            90.99588
+          ],
+          "broad_phase_bbox_min_mm": [
+            50.00118,
+            -71.854035,
+            -90.99588
+          ],
+          "cell_id": 8,
+          "center_deg": [
+            82.5,
+            82.5,
+            82.5
+          ],
+          "depth": 3,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            90.0,
+            90.0,
+            90.0
+          ],
+          "min_deg": [
+            75.0,
+            75.0,
+            75.0
+          ],
+          "note": "expanded cell envelope misses the fixture bounding box",
+          "rotation_pad_mm": 26.092556,
+          "span_deg": [
+            15.0,
+            15.0,
+            15.0
+          ],
+          "split_axis": null,
+          "status": "broad_phase_rejected"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            149.99882,
+            68.922869,
+            86.351115
+          ],
+          "broad_phase_bbox_min_mm": [
+            50.00118,
+            -68.922869,
+            -86.351115
+          ],
+          "cell_id": 9,
+          "center_deg": [
+            82.5,
+            82.5,
+            97.5
+          ],
+          "depth": 3,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            90.0,
+            90.0,
+            105.0
+          ],
+          "min_deg": [
+            75.0,
+            75.0,
+            90.0
+          ],
+          "note": "expanded cell envelope misses the fixture bounding box",
+          "rotation_pad_mm": 26.092556,
+          "span_deg": [
+            15.0,
+            15.0,
+            15.0
+          ],
+          "split_axis": null,
+          "status": "broad_phase_rejected"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            149.99882,
+            71.854035,
+            90.99588
+          ],
+          "broad_phase_bbox_min_mm": [
+            50.00118,
+            -71.854035,
+            -90.99588
+          ],
+          "cell_id": 10,
+          "center_deg": [
+            82.5,
+            97.5,
+            82.5
+          ],
+          "depth": 3,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            90.0,
+            105.0,
+            90.0
+          ],
+          "min_deg": [
+            75.0,
+            90.0,
+            75.0
+          ],
+          "note": "expanded cell envelope misses the fixture bounding box",
+          "rotation_pad_mm": 26.092556,
+          "span_deg": [
+            15.0,
+            15.0,
+            15.0
+          ],
+          "split_axis": null,
+          "status": "broad_phase_rejected"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            149.99882,
+            68.922869,
+            86.351115
+          ],
+          "broad_phase_bbox_min_mm": [
+            50.00118,
+            -68.922869,
+            -86.351115
+          ],
+          "cell_id": 11,
+          "center_deg": [
+            82.5,
+            97.5,
+            97.5
+          ],
+          "depth": 3,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            90.0,
+            105.0,
+            105.0
+          ],
+          "min_deg": [
+            75.0,
+            90.0,
+            90.0
+          ],
+          "note": "expanded cell envelope misses the fixture bounding box",
+          "rotation_pad_mm": 26.092556,
+          "span_deg": [
+            15.0,
+            15.0,
+            15.0
+          ],
+          "split_axis": null,
+          "status": "broad_phase_rejected"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            149.99882,
+            68.922869,
+            86.351115
+          ],
+          "broad_phase_bbox_min_mm": [
+            50.00118,
+            -68.922869,
+            -86.351115
+          ],
+          "cell_id": 12,
+          "center_deg": [
+            97.5,
+            82.5,
+            82.5
+          ],
+          "depth": 3,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            105.0,
+            90.0,
+            90.0
+          ],
+          "min_deg": [
+            90.0,
+            75.0,
+            75.0
+          ],
+          "note": "expanded cell envelope misses the fixture bounding box",
+          "rotation_pad_mm": 26.092556,
+          "span_deg": [
+            15.0,
+            15.0,
+            15.0
+          ],
+          "split_axis": null,
+          "status": "broad_phase_rejected"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            149.99882,
+            71.854035,
+            90.99588
+          ],
+          "broad_phase_bbox_min_mm": [
+            50.00118,
+            -71.854035,
+            -90.99588
+          ],
+          "cell_id": 13,
+          "center_deg": [
+            97.5,
+            82.5,
+            97.5
+          ],
+          "depth": 3,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            105.0,
+            90.0,
+            105.0
+          ],
+          "min_deg": [
+            90.0,
+            75.0,
+            90.0
+          ],
+          "note": "expanded cell envelope misses the fixture bounding box",
+          "rotation_pad_mm": 26.092556,
+          "span_deg": [
+            15.0,
+            15.0,
+            15.0
+          ],
+          "split_axis": null,
+          "status": "broad_phase_rejected"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            149.99882,
+            68.922869,
+            86.351115
+          ],
+          "broad_phase_bbox_min_mm": [
+            50.00118,
+            -68.922869,
+            -86.351115
+          ],
+          "cell_id": 14,
+          "center_deg": [
+            97.5,
+            97.5,
+            82.5
+          ],
+          "depth": 3,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            105.0,
+            105.0,
+            90.0
+          ],
+          "min_deg": [
+            90.0,
+            90.0,
+            75.0
+          ],
+          "note": "expanded cell envelope misses the fixture bounding box",
+          "rotation_pad_mm": 26.092556,
+          "span_deg": [
+            15.0,
+            15.0,
+            15.0
+          ],
+          "split_axis": null,
+          "status": "broad_phase_rejected"
+        },
+        {
+          "broad_phase_bbox_max_mm": [
+            149.99882,
+            71.854035,
+            90.99588
+          ],
+          "broad_phase_bbox_min_mm": [
+            50.00118,
+            -71.854035,
+            -90.99588
+          ],
+          "cell_id": 15,
+          "center_deg": [
+            97.5,
+            97.5,
+            97.5
+          ],
+          "depth": 3,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            105.0,
+            105.0,
+            105.0
+          ],
+          "min_deg": [
+            90.0,
+            90.0,
+            90.0
+          ],
+          "note": "expanded cell envelope misses the fixture bounding box",
+          "rotation_pad_mm": 26.092556,
+          "span_deg": [
+            15.0,
+            15.0,
+            15.0
+          ],
+          "split_axis": null,
+          "status": "broad_phase_rejected"
+        }
+      ],
+      "config": {
+        "adaptive_leaf_step_deg": 5.0,
+        "adaptive_max_cells": 24,
+        "adaptive_max_depth": 3,
+        "adaptive_max_exact_checks": 8,
+        "fixture_bbox_max_mm": [
+          46.0,
+          35.0,
+          18.0
+        ],
+        "fixture_bbox_min_mm": [
+          -46.0,
+          -35.0,
+          -18.0
+        ],
+        "naive_step_deg": 5.0,
+        "payload_max_radius_mm": 66.873014,
+        "payload_rotation_deg": [
+          90.0,
+          90.0,
+          90.0
+        ],
+        "payload_translation_mm": [
+          100.0,
+          0.0,
+          0.0
+        ],
+        "rotation_window_deg": [
+          15.0,
+          15.0,
+          15.0
+        ]
+      },
+      "description": "Payload is translated so the naive grid still works hard, while the adaptive search needs recursive subdivision to prove the envelope.",
+      "fixture": {
+        "bbox_max_mm": [
+          46.0,
+          35.0,
+          18.0
+        ],
+        "bbox_min_mm": [
+          -46.0,
+          -35.0,
+          -18.0
+        ],
+        "bbox_size_mm": [
+          92.0,
+          70.0,
+          36.0
+        ],
+        "label": "fixture",
+        "solid_count": 1,
+        "source": "demo",
+        "volume_mm3": 231840.0
+      },
+      "naive": {
+        "max_elapsed_sec": 1.856684829981532,
+        "max_exact_checks": 343.0,
+        "mean_elapsed_sec": 1.856684829981532,
+        "mean_exact_checks": 343.0,
+        "mean_samples_examined": 343.0,
+        "median_elapsed_sec": 1.856684829981532,
+        "median_exact_checks": 343.0,
+        "min_elapsed_sec": 1.856684829981532,
+        "min_exact_checks": 343.0,
+        "mode": "naive_grid",
+        "runs": 1,
+        "runs_budget_exhausted": 0,
+        "runs_hit_found": 0
+      },
+      "payload": {
+        "bbox_max_mm": [
+          60.0,
+          42.0,
+          22.0
+        ],
+        "bbox_min_mm": [
+          -60.0,
+          -42.0,
+          -22.0
+        ],
+        "bbox_size_mm": [
+          120.0,
+          84.0,
+          44.0
+        ],
+        "label": "payload",
+        "solid_count": 1,
+        "source": "demo",
+        "volume_mm3": 202944.0
+      },
+      "scenario": "demo_recursive_prune",
+      "setup_sec": 0.12684614397585392,
+      "speedups": {
+        "elapsed_savings_pct": 98.5457473141666,
+        "elapsed_speedup_over_naive": 68.76384068198713,
+        "exact_check_ratio_naive_over_adaptive": null,
+        "exact_check_reduction_pct": 100.0
+      }
+    },
+    {
+      "adaptive": {
+        "max_elapsed_sec": 0.004059516999404877,
+        "max_exact_checks": 0.0,
+        "mean_broad_phase_rejected": 1.0,
+        "mean_cells_visited": 1.0,
+        "mean_elapsed_sec": 0.004059516999404877,
+        "mean_exact_checks": 0.0,
+        "mean_subdivisions": 0.0,
+        "median_elapsed_sec": 0.004059516999404877,
+        "median_exact_checks": 0.0,
+        "min_elapsed_sec": 0.004059516999404877,
+        "min_exact_checks": 0.0,
+        "mode": "adaptive_pruning",
+        "runs": 1,
+        "runs_budget_exhausted": 0,
+        "runs_hit_found": 0
+      },
+      "adaptive_trace": [
+        {
+          "broad_phase_bbox_max_mm": [
+            253.182389,
+            93.182389,
+            111.182389
+          ],
+          "broad_phase_bbox_min_mm": [
+            106.817611,
+            -93.182389,
+            -111.182389
+          ],
+          "cell_id": 1,
+          "center_deg": [
+            90.0,
+            90.0,
+            90.0
+          ],
+          "depth": 0,
+          "exact_checked": false,
+          "exact_hit": null,
+          "fixture_bbox_max_mm": [
+            46.0,
+            35.0,
+            18.0
+          ],
+          "fixture_bbox_min_mm": [
+            -46.0,
+            -35.0,
+            -18.0
+          ],
+          "max_deg": [
+            105.0,
+            105.0,
+            105.0
+          ],
+          "min_deg": [
+            75.0,
+            75.0,
+            75.0
+          ],
+          "note": "expanded cell envelope misses the fixture bounding box",
+          "rotation_pad_mm": 51.182389,
+          "span_deg": [
+            30.0,
+            30.0,
+            30.0
+          ],
+          "split_axis": null,
+          "status": "broad_phase_rejected"
+        }
+      ],
+      "config": {
+        "adaptive_leaf_step_deg": 5.0,
+        "adaptive_max_cells": 24,
+        "adaptive_max_depth": 3,
+        "adaptive_max_exact_checks": 8,
+        "fixture_bbox_max_mm": [
+          46.0,
+          35.0,
+          18.0
+        ],
+        "fixture_bbox_min_mm": [
+          -46.0,
+          -35.0,
+          -18.0
+        ],
+        "naive_step_deg": 5.0,
+        "payload_max_radius_mm": 66.873014,
+        "payload_rotation_deg": [
+          90.0,
+          90.0,
+          90.0
+        ],
+        "payload_translation_mm": [
+          180.0,
+          0.0,
+          0.0
+        ],
+        "rotation_window_deg": [
+          15.0,
+          15.0,
+          15.0
+        ]
+      },
+      "description": "Payload is translated far enough away that the adaptive search can reject the whole rotation cell with broad-phase bounds.",
+      "fixture": {
+        "bbox_max_mm": [
+          46.0,
+          35.0,
+          18.0
+        ],
+        "bbox_min_mm": [
+          -46.0,
+          -35.0,
+          -18.0
+        ],
+        "bbox_size_mm": [
+          92.0,
+          70.0,
+          36.0
+        ],
+        "label": "fixture",
+        "solid_count": 1,
+        "source": "demo",
+        "volume_mm3": 231840.0
+      },
+      "naive": {
+        "max_elapsed_sec": 2.4798418930149637,
+        "max_exact_checks": 343.0,
+        "mean_elapsed_sec": 2.4798418930149637,
+        "mean_exact_checks": 343.0,
+        "mean_samples_examined": 343.0,
+        "median_elapsed_sec": 2.4798418930149637,
+        "median_exact_checks": 343.0,
+        "min_elapsed_sec": 2.4798418930149637,
+        "min_exact_checks": 343.0,
+        "mode": "naive_grid",
+        "runs": 1,
+        "runs_budget_exhausted": 0,
+        "runs_hit_found": 0
+      },
+      "payload": {
+        "bbox_max_mm": [
+          60.0,
+          42.0,
+          22.0
+        ],
+        "bbox_min_mm": [
+          -60.0,
+          -42.0,
+          -22.0
+        ],
+        "bbox_size_mm": [
+          120.0,
+          84.0,
+          44.0
+        ],
+        "label": "payload",
+        "solid_count": 1,
+        "source": "demo",
+        "volume_mm3": 202944.0
+      },
+      "scenario": "demo_far_miss",
+      "setup_sec": 0.10033056998508982,
+      "speedups": {
+        "elapsed_savings_pct": 99.83629936203435,
+        "elapsed_speedup_over_naive": 610.8711685105659,
+        "exact_check_ratio_naive_over_adaptive": null,
+        "exact_check_reduction_pct": 100.0
+      }
+    }
+  ],
+  "summary": {
+    "by_scenario": {
+      "demo_far_miss": {
+        "modes": {
+          "adaptive_pruning": {
+            "max_elapsed_sec": 0.004059516999404877,
+            "max_exact_checks": 0.0,
+            "mean_broad_phase_rejected": 1.0,
+            "mean_cells_visited": 1.0,
+            "mean_elapsed_sec": 0.004059516999404877,
+            "mean_exact_checks": 0.0,
+            "mean_subdivisions": 0.0,
+            "median_elapsed_sec": 0.004059516999404877,
+            "median_exact_checks": 0.0,
+            "min_elapsed_sec": 0.004059516999404877,
+            "min_exact_checks": 0.0,
+            "runs": 1,
+            "runs_budget_exhausted": 0,
+            "runs_hit_found": 0
+          },
+          "naive_grid": {
+            "max_elapsed_sec": 2.4798418930149637,
+            "max_exact_checks": 343.0,
+            "mean_elapsed_sec": 2.4798418930149637,
+            "mean_exact_checks": 343.0,
+            "mean_samples_examined": 343.0,
+            "median_elapsed_sec": 2.4798418930149637,
+            "median_exact_checks": 343.0,
+            "min_elapsed_sec": 2.4798418930149637,
+            "min_exact_checks": 343.0,
+            "runs": 1,
+            "runs_budget_exhausted": 0,
+            "runs_hit_found": 0
+          }
+        },
+        "speedups": {
+          "elapsed_savings_pct": 99.83629936203435,
+          "elapsed_speedup_over_naive": 610.8711685105659,
+          "exact_check_ratio_naive_over_adaptive": null,
+          "exact_check_reduction_pct": 100.0
+        }
+      },
+      "demo_immediate_hit": {
+        "modes": {
+          "adaptive_pruning": {
+            "max_elapsed_sec": 0.05301882998901419,
+            "max_exact_checks": 1.0,
+            "mean_broad_phase_rejected": 0.0,
+            "mean_cells_visited": 8.0,
+            "mean_elapsed_sec": 0.05301882998901419,
+            "mean_exact_checks": 1.0,
+            "mean_subdivisions": 7.0,
+            "median_elapsed_sec": 0.05301882998901419,
+            "median_exact_checks": 1.0,
+            "min_elapsed_sec": 0.05301882998901419,
+            "min_exact_checks": 1.0,
+            "runs": 1,
+            "runs_budget_exhausted": 0,
+            "runs_hit_found": 1
+          },
+          "naive_grid": {
+            "max_elapsed_sec": 0.03380684499279596,
+            "max_exact_checks": 1.0,
+            "mean_elapsed_sec": 0.03380684499279596,
+            "mean_exact_checks": 1.0,
+            "mean_samples_examined": 1.0,
+            "median_elapsed_sec": 0.03380684499279596,
+            "median_exact_checks": 1.0,
+            "min_elapsed_sec": 0.03380684499279596,
+            "min_exact_checks": 1.0,
+            "runs": 1,
+            "runs_budget_exhausted": 0,
+            "runs_hit_found": 1
+          }
+        },
+        "speedups": {
+          "elapsed_savings_pct": -56.82868365951391,
+          "elapsed_speedup_over_naive": 0.6376384578799821,
+          "exact_check_ratio_naive_over_adaptive": 1.0,
+          "exact_check_reduction_pct": 0.0
+        }
+      },
+      "demo_recursive_prune": {
+        "modes": {
+          "adaptive_pruning": {
+            "max_elapsed_sec": 0.027000889007467777,
+            "max_exact_checks": 0.0,
+            "mean_broad_phase_rejected": 8.0,
+            "mean_cells_visited": 15.0,
+            "mean_elapsed_sec": 0.027000889007467777,
+            "mean_exact_checks": 0.0,
+            "mean_subdivisions": 7.0,
+            "median_elapsed_sec": 0.027000889007467777,
+            "median_exact_checks": 0.0,
+            "min_elapsed_sec": 0.027000889007467777,
+            "min_exact_checks": 0.0,
+            "runs": 1,
+            "runs_budget_exhausted": 0,
+            "runs_hit_found": 0
+          },
+          "naive_grid": {
+            "max_elapsed_sec": 1.856684829981532,
+            "max_exact_checks": 343.0,
+            "mean_elapsed_sec": 1.856684829981532,
+            "mean_exact_checks": 343.0,
+            "mean_samples_examined": 343.0,
+            "median_elapsed_sec": 1.856684829981532,
+            "median_exact_checks": 343.0,
+            "min_elapsed_sec": 1.856684829981532,
+            "min_exact_checks": 343.0,
+            "runs": 1,
+            "runs_budget_exhausted": 0,
+            "runs_hit_found": 0
+          }
+        },
+        "speedups": {
+          "elapsed_savings_pct": 98.5457473141666,
+          "elapsed_speedup_over_naive": 68.76384068198713,
+          "exact_check_ratio_naive_over_adaptive": null,
+          "exact_check_reduction_pct": 100.0
+        }
+      }
+    },
+    "overall": {
+      "elapsed_savings_pct": 98.07613687404255,
+      "elapsed_speedup_over_naive": 51.978749761749604,
+      "mean_adaptive_elapsed_sec": 0.028026411998628948,
+      "mean_naive_elapsed_sec": 1.4567778559964306
+    }
+  }
+}

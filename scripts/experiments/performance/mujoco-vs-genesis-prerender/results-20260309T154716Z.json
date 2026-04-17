@@ -1,0 +1,85 @@
+{
+  "timestamp_utc": "2026-03-09T15:47:16.924059+00:00",
+  "repo_root": "/home/maksym/Work/proj/Problemologist/Problemologist-AI",
+  "args": {
+    "mode": "prerender",
+    "scenario": "int101_like",
+    "backend": "all",
+    "repetitions": 1,
+    "smoke_test_mode": false,
+    "isolate_cache": true,
+    "force_cpu": true,
+    "mujoco_gl": "egl",
+    "timeout_sec": 180,
+    "output_json": "",
+    "child": false,
+    "session_root": ""
+  },
+  "summary": [
+    {
+      "scenario": "int101_like",
+      "mode": "prerender",
+      "backend": "GENESIS",
+      "runs_total": 1,
+      "runs_ok": 1,
+      "runs_success": 1,
+      "runs_usable": 1,
+      "mean_sec_success": 69.25621266601956,
+      "mean_sec_usable": 69.25621266601956,
+      "median_sec_usable": 69.25621266601956,
+      "min_sec_usable": 69.25621266601956,
+      "max_sec_usable": 69.25621266601956
+    },
+    {
+      "scenario": "int101_like",
+      "mode": "prerender",
+      "backend": "MUJOCO",
+      "runs_total": 1,
+      "runs_ok": 1,
+      "runs_success": 1,
+      "runs_usable": 1,
+      "mean_sec_success": 5.4477807600051165,
+      "mean_sec_usable": 5.4477807600051165,
+      "median_sec_usable": 5.4477807600051165,
+      "min_sec_usable": 5.4477807600051165,
+      "max_sec_usable": 5.4477807600051165
+    }
+  ],
+  "speedups": [
+    {
+      "scenario": "int101_like",
+      "mode": "prerender",
+      "mujoco_mean_sec": 5.4477807600051165,
+      "genesis_mean_sec": 69.25621266601956,
+      "mujoco_speedup_over_genesis": 12.712738584207365
+    }
+  ],
+  "rows": [
+    {
+      "scenario": "int101_like",
+      "backend": "MUJOCO",
+      "mode": "prerender",
+      "repetition": 1,
+      "ok": true,
+      "elapsed_sec": 5.4477807600051165,
+      "parent_wall_sec": 10.170877956988988,
+      "success": true,
+      "render_count": 24,
+      "message": "prerender_complete",
+      "runtime_error": null
+    },
+    {
+      "scenario": "int101_like",
+      "backend": "GENESIS",
+      "mode": "prerender",
+      "repetition": 1,
+      "ok": true,
+      "elapsed_sec": 69.25621266601956,
+      "parent_wall_sec": 74.85998036700767,
+      "success": true,
+      "render_count": 24,
+      "message": "prerender_complete",
+      "runtime_error": null
+    }
+  ]
+}

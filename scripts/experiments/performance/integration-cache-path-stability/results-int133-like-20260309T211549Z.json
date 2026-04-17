@@ -1,0 +1,207 @@
+{
+  "backend": "GENESIS",
+  "base_root": "/tmp/problemologist-cache-path-stability",
+  "experiment": "integration_cache_path_stability",
+  "force_cpu": true,
+  "generated_at": "2026-03-09T21:21:50.131838+00:00",
+  "modes": [
+    "random_workspace_random_session",
+    "stable_workspace_random_session",
+    "random_workspace_stable_session",
+    "stable_workspace_stable_session"
+  ],
+  "repetitions": 2,
+  "rows": [
+    {
+      "child_returncode": 0,
+      "elapsed_sec": 64.92800411200733,
+      "failure_reason": null,
+      "int_prefix": "INT-133",
+      "mode": "random_workspace_random_session",
+      "repetition": 1,
+      "scenario": "int133_like",
+      "session_id": "INT-133-ef366cf1",
+      "session_root": "/tmp/problemologist-cache-path-stability/run-20260309T211549Z/workspaces/int133_like/random_workspace_random_session/random-workspaces/int-133-rep1-eb2ec6db",
+      "session_strategy": "random_session",
+      "success": true,
+      "summary": "Goal achieved.",
+      "workspace_strategy": "random_workspace"
+    },
+    {
+      "child_returncode": 0,
+      "elapsed_sec": 11.29312071899767,
+      "failure_reason": null,
+      "int_prefix": "INT-133",
+      "mode": "random_workspace_random_session",
+      "repetition": 2,
+      "scenario": "int133_like",
+      "session_id": "INT-133-556d26ea",
+      "session_root": "/tmp/problemologist-cache-path-stability/run-20260309T211549Z/workspaces/int133_like/random_workspace_random_session/random-workspaces/int-133-rep2-7f79e51f",
+      "session_strategy": "random_session",
+      "success": true,
+      "summary": "Goal achieved.",
+      "workspace_strategy": "random_workspace"
+    },
+    {
+      "child_returncode": 0,
+      "elapsed_sec": 68.10477566398913,
+      "failure_reason": null,
+      "int_prefix": "INT-133",
+      "mode": "stable_workspace_random_session",
+      "repetition": 1,
+      "scenario": "int133_like",
+      "session_id": "INT-133-731a32cd",
+      "session_root": "/tmp/problemologist-cache-path-stability/run-20260309T211549Z/workspaces/int133_like/stable_workspace_random_session/stable-workspaces/int-133",
+      "session_strategy": "random_session",
+      "success": true,
+      "summary": "Goal achieved.",
+      "workspace_strategy": "stable_workspace"
+    },
+    {
+      "child_returncode": 0,
+      "elapsed_sec": 12.128658725006972,
+      "failure_reason": null,
+      "int_prefix": "INT-133",
+      "mode": "stable_workspace_random_session",
+      "repetition": 2,
+      "scenario": "int133_like",
+      "session_id": "INT-133-b4cbbb1c",
+      "session_root": "/tmp/problemologist-cache-path-stability/run-20260309T211549Z/workspaces/int133_like/stable_workspace_random_session/stable-workspaces/int-133",
+      "session_strategy": "random_session",
+      "success": true,
+      "summary": "Goal achieved.",
+      "workspace_strategy": "stable_workspace"
+    },
+    {
+      "child_returncode": 0,
+      "elapsed_sec": 69.65463934000582,
+      "failure_reason": null,
+      "int_prefix": "INT-133",
+      "mode": "random_workspace_stable_session",
+      "repetition": 1,
+      "scenario": "int133_like",
+      "session_id": "INT-133",
+      "session_root": "/tmp/problemologist-cache-path-stability/run-20260309T211549Z/workspaces/int133_like/random_workspace_stable_session/random-workspaces/int-133-rep1-8c0accea",
+      "session_strategy": "stable_session",
+      "success": true,
+      "summary": "Goal achieved.",
+      "workspace_strategy": "random_workspace"
+    },
+    {
+      "child_returncode": 0,
+      "elapsed_sec": 11.92861506898771,
+      "failure_reason": null,
+      "int_prefix": "INT-133",
+      "mode": "random_workspace_stable_session",
+      "repetition": 2,
+      "scenario": "int133_like",
+      "session_id": "INT-133",
+      "session_root": "/tmp/problemologist-cache-path-stability/run-20260309T211549Z/workspaces/int133_like/random_workspace_stable_session/random-workspaces/int-133-rep2-c29ea06f",
+      "session_strategy": "stable_session",
+      "success": true,
+      "summary": "Goal achieved.",
+      "workspace_strategy": "random_workspace"
+    },
+    {
+      "child_returncode": 0,
+      "elapsed_sec": 69.68109170199023,
+      "failure_reason": null,
+      "int_prefix": "INT-133",
+      "mode": "stable_workspace_stable_session",
+      "repetition": 1,
+      "scenario": "int133_like",
+      "session_id": "INT-133",
+      "session_root": "/tmp/problemologist-cache-path-stability/run-20260309T211549Z/workspaces/int133_like/stable_workspace_stable_session/stable-workspaces/int-133",
+      "session_strategy": "stable_session",
+      "success": true,
+      "summary": "Goal achieved.",
+      "workspace_strategy": "stable_workspace"
+    },
+    {
+      "child_returncode": 0,
+      "elapsed_sec": 12.082000195980072,
+      "failure_reason": null,
+      "int_prefix": "INT-133",
+      "mode": "stable_workspace_stable_session",
+      "repetition": 2,
+      "scenario": "int133_like",
+      "session_id": "INT-133",
+      "session_root": "/tmp/problemologist-cache-path-stability/run-20260309T211549Z/workspaces/int133_like/stable_workspace_stable_session/stable-workspaces/int-133",
+      "session_strategy": "stable_session",
+      "success": true,
+      "summary": "Goal achieved.",
+      "workspace_strategy": "stable_workspace"
+    }
+  ],
+  "run_root": "/tmp/problemologist-cache-path-stability/run-20260309T211549Z",
+  "scenarios": [
+    "int133_like"
+  ],
+  "smoke_test_mode": true,
+  "summary": {
+    "by_scenario_mode": {
+      "int133_like": {
+        "random_workspace_random_session": {
+          "failures": 0,
+          "first_elapsed_sec": 64.92800411200733,
+          "last_elapsed_sec": 11.29312071899767,
+          "max_elapsed_sec": 64.92800411200733,
+          "mean_elapsed_sec": 38.1105624155025,
+          "median_elapsed_sec": 38.1105624155025,
+          "min_elapsed_sec": 11.29312071899767,
+          "repeat_last_elapsed_sec": 11.29312071899767,
+          "repeat_mean_elapsed_sec": 11.29312071899767,
+          "runs": 2,
+          "successes": 2
+        },
+        "random_workspace_stable_session": {
+          "failures": 0,
+          "first_elapsed_sec": 69.65463934000582,
+          "last_elapsed_sec": 11.92861506898771,
+          "max_elapsed_sec": 69.65463934000582,
+          "mean_elapsed_sec": 40.79162720449676,
+          "median_elapsed_sec": 40.79162720449676,
+          "min_elapsed_sec": 11.92861506898771,
+          "repeat_last_elapsed_sec": 11.92861506898771,
+          "repeat_mean_elapsed_sec": 11.92861506898771,
+          "runs": 2,
+          "successes": 2
+        },
+        "stable_workspace_random_session": {
+          "failures": 0,
+          "first_elapsed_sec": 68.10477566398913,
+          "last_elapsed_sec": 12.128658725006972,
+          "max_elapsed_sec": 68.10477566398913,
+          "mean_elapsed_sec": 40.11671719449805,
+          "median_elapsed_sec": 40.11671719449805,
+          "min_elapsed_sec": 12.128658725006972,
+          "repeat_last_elapsed_sec": 12.128658725006972,
+          "repeat_mean_elapsed_sec": 12.128658725006972,
+          "runs": 2,
+          "successes": 2
+        },
+        "stable_workspace_stable_session": {
+          "failures": 0,
+          "first_elapsed_sec": 69.68109170199023,
+          "last_elapsed_sec": 12.082000195980072,
+          "max_elapsed_sec": 69.68109170199023,
+          "mean_elapsed_sec": 40.88154594898515,
+          "median_elapsed_sec": 40.88154594898515,
+          "min_elapsed_sec": 12.082000195980072,
+          "repeat_last_elapsed_sec": 12.082000195980072,
+          "repeat_mean_elapsed_sec": 12.082000195980072,
+          "runs": 2,
+          "successes": 2
+        }
+      }
+    },
+    "speedups_vs_current_like": {
+      "int133_like": {
+        "random_workspace_random_session": 1.0,
+        "random_workspace_stable_session": 0.9467252194563464,
+        "stable_workspace_random_session": 0.9311104364502745,
+        "stable_workspace_stable_session": 0.9347062188225359
+      }
+    }
+  }
+}

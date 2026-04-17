@@ -1,0 +1,39 @@
+{
+  "timestamp_utc": "2026-03-09T14:36:15.399212+00:00",
+  "repo_root": "/home/maksym/Work/proj/Problemologist/Problemologist-AI",
+  "args": {
+    "mode": "validate",
+    "scenario": "int133_like",
+    "repetitions": 1,
+    "smoke_test_mode": true,
+    "isolate_cache": true,
+    "output_json": "",
+    "timeout_sec": 60,
+    "child": false,
+    "session_root": "",
+    "compile_kernels": false
+  },
+  "summary": [],
+  "rows": [
+    {
+      "scenario": "int133_like",
+      "mode": "validate",
+      "compile_kernels": false,
+      "repetition": 1,
+      "ok": false,
+      "timed_out": true,
+      "elapsed_sec": 60.12838770201779,
+      "error": "Child run timed out after 60s. stdout_tail=b\" idx: \\x1b[38;5;121m1\\x1b[0m\\x1b[38;5;159m, uid: \\x1b[38;5;121m\\x1b[3m<3d8bd5d>\\x1b[0m\\x1b[38;5;159m, morph: \\x1b[38;5;121m<gs.morphs.Mesh(file='/tmp/tmp7a8uu2ls/assets/obstacle.obj')>\\x1b[0m\\x1b[38;5;159m, material: \\x1b[38;5;121m<gs.materials.Rigid>\\x1b[0m\\x1b[38;5;159m.\\x1b[0m\\n2026-03-09 14:34:26 [info     ] genesis_building_scene_for_render_only\\n2026-03-09 14:34:26 [info     ] genesis_scene_build_compile_kernels_override compile_kernels=False render_only=True session_id=exp-f714fcd287\\n2026-03-09 14:34:26 [info     ] genesis_building_scene\\n\\x1b[38;5;226m[Genesis] [14:34:26] [WARNING] `compile_kernels` is deprecated and will be removed in future release.\\x1b[0m\\n\\x1b[38;5;159m[Genesis] [14:34:26] [INFO] Building scene \\x1b[38;5;121m\\x1b[3m<0cb320f>\\x1b[0m\\x1b[38;5;159m...\\x1b[0m\\n\\x1b[38;5;159m[Genesis] [14:34:31] [INFO] Compiling simulation kernels...\\x1b[0m\\n\" stderr_tail=b'libEGL warning: failed to open /dev/dri/renderD128: Permission denied\\n\\nlibEGL warning: failed to open /dev/dri/renderD128: Permission denied\\n\\nlibEGL warning: failed to open /dev/dri/card1: Permission denied\\n\\n'"
+    },
+    {
+      "scenario": "int133_like",
+      "mode": "validate",
+      "compile_kernels": true,
+      "repetition": 1,
+      "ok": false,
+      "timed_out": true,
+      "elapsed_sec": 60.12325319999945,
+      "error": "Child run timed out after 60s. stdout_tail=b\". idx: \\x1b[38;5;121m1\\x1b[0m\\x1b[38;5;159m, uid: \\x1b[38;5;121m\\x1b[3m<964a761>\\x1b[0m\\x1b[38;5;159m, morph: \\x1b[38;5;121m<gs.morphs.Mesh(file='/tmp/tmp52r4jlfb/assets/obstacle.obj')>\\x1b[0m\\x1b[38;5;159m, material: \\x1b[38;5;121m<gs.materials.Rigid>\\x1b[0m\\x1b[38;5;159m.\\x1b[0m\\n2026-03-09 14:35:26 [info     ] genesis_building_scene_for_render_only\\n2026-03-09 14:35:26 [info     ] genesis_scene_build_compile_kernels_override compile_kernels=True render_only=True session_id=exp-b898817567\\n2026-03-09 14:35:26 [info     ] genesis_building_scene\\n\\x1b[38;5;226m[Genesis] [14:35:26] [WARNING] `compile_kernels` is deprecated and will be removed in future release.\\x1b[0m\\n\\x1b[38;5;159m[Genesis] [14:35:26] [INFO] Building scene \\x1b[38;5;121m\\x1b[3m<838c98a>\\x1b[0m\\x1b[38;5;159m...\\x1b[0m\\n\\x1b[38;5;159m[Genesis] [14:35:32] [INFO] Compiling simulation kernels...\\x1b[0m\\n\" stderr_tail=b'libEGL warning: failed to open /dev/dri/renderD128: Permission denied\\n\\nlibEGL warning: failed to open /dev/dri/renderD128: Permission denied\\n\\nlibEGL warning: failed to open /dev/dri/card1: Permission denied\\n\\n'"
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "analysis": {
+    "all_intersections_valid": true,
+    "first_case_build_s": 67.99745169398375,
+    "first_case_create_s": 5.905817908002064,
+    "first_case_name": "random_intersection_box_1",
+    "per_case_vs_first": {
+      "random_intersection_box_2": {
+        "build_delta_vs_first_s": -67.18563198696938,
+        "build_ratio_vs_first": 0.011938972517203803,
+        "create_delta_vs_first_s": -5.870930100005353,
+        "create_ratio_vs_first": 0.005907362627865595
+      },
+      "random_intersection_box_3": {
+        "build_delta_vs_first_s": -67.19387258798815,
+        "build_ratio_vs_first": 0.011817782666503872,
+        "create_delta_vs_first_s": -5.873196811007801,
+        "create_ratio_vs_first": 0.0055235527919109
+      },
+      "random_intersection_box_4": {
+        "build_delta_vs_first_s": -67.19663442898309,
+        "build_ratio_vs_first": 0.01177716583563549,
+        "create_delta_vs_first_s": -5.872488799999701,
+        "create_ratio_vs_first": 0.005643436442089356
+      }
+    },
+    "unique_geometry_count": 4
+  },
+  "backend_request": "cpu",
+  "case_count": 4,
+  "env": {
+    "GENESIS_FORCE_CPU": "1",
+    "PYGLET_HEADLESS": "1",
+    "PYOPENGL_PLATFORM": "egl"
+  },
+  "init_s": 1.3209249550127424,
+  "resolved_backend": "cpu",
+  "seed": 20260309,
+  "sequence": [
+    {
+      "geometry": {
+        "box1_dims": [
+          0.82,
+          1.6657,
+          1.0609
+        ],
+        "box1_volume": 1.4490557265999997,
+        "box2_dims": [
+          1.4826,
+          1.2021,
+          1.2885
+        ],
+        "box2_volume": 2.2964078132099996,
+        "intersection_strictly_smaller_than_each_input": true,
+        "intersection_volume": 0.5455131663484614,
+        "name": "random_intersection_box_1",
+        "obj_path": "/tmp/genesis-randomized-intersection-boxes-nuzpkrth/assets/random_intersection_box_1.obj",
+        "offset": [
+          -0.7235,
+          -0.0987,
+          -0.0717
+        ],
+        "solids_count": 1
+      },
+      "name": "random_intersection_box_1",
+      "scene_build_s": 67.99745169398375,
+      "scene_create_s": 5.905817908002064,
+      "scene_step_s": 0.0011701220064423978
+    },
+    {
+      "geometry": {
+        "box1_dims": [
+          1.0533,
+          1.4599,
+          1.641
+        ],
+        "box1_volume": 2.5233864914699997,
+        "box2_dims": [
+          1.3167,
+          0.95,
+          1.0259
+        ],
+        "box2_volume": 1.2832624034999998,
+        "intersection_strictly_smaller_than_each_input": true,
+        "intersection_volume": 0.7097394097853297,
+        "name": "random_intersection_box_2",
+        "obj_path": "/tmp/genesis-randomized-intersection-boxes-nuzpkrth/assets/random_intersection_box_2.obj",
+        "offset": [
+          0.4568,
+          -0.0966,
+          0.007
+        ],
+        "solids_count": 1
+      },
+      "name": "random_intersection_box_2",
+      "scene_build_s": 0.8118197070143651,
+      "scene_create_s": 0.03488780799671076,
+      "scene_step_s": 0.000781048001954332
+    },
+    {
+      "geometry": {
+        "box1_dims": [
+          0.8859,
+          1.4288,
+          1.1376
+        ],
+        "box1_volume": 1.4399444113920001,
+        "box2_dims": [
+          0.8664,
+          1.2392,
+          1.429
+        ],
+        "box2_volume": 1.5342356755200002,
+        "intersection_strictly_smaller_than_each_input": true,
+        "intersection_volume": 0.955085848576203,
+        "name": "random_intersection_box_3",
+        "obj_path": "/tmp/genesis-randomized-intersection-boxes-nuzpkrth/assets/random_intersection_box_3.obj",
+        "offset": [
+          -0.1973,
+          0.0343,
+          -0.1479
+        ],
+        "solids_count": 1
+      },
+      "name": "random_intersection_box_3",
+      "scene_build_s": 0.8035791059955955,
+      "scene_create_s": 0.03262109699426219,
+      "scene_step_s": 0.0007841819897294044
+    },
+    {
+      "geometry": {
+        "box1_dims": [
+          1.6807,
+          1.1711,
+          1.1414
+        ],
+        "box1_volume": 2.246580832678,
+        "box2_dims": [
+          1.2963,
+          1.621,
+          1.5083
+        ],
+        "box2_volume": 3.16939425909,
+        "intersection_strictly_smaller_than_each_input": true,
+        "intersection_volume": 0.8880753386086412,
+        "name": "random_intersection_box_4",
+        "obj_path": "/tmp/genesis-randomized-intersection-boxes-nuzpkrth/assets/random_intersection_box_4.obj",
+        "offset": [
+          0.8241,
+          0.0813,
+          -0.0216
+        ],
+        "solids_count": 1
+      },
+      "name": "random_intersection_box_4",
+      "scene_build_s": 0.80081726500066,
+      "scene_create_s": 0.03332910800236277,
+      "scene_step_s": 0.0007890129927545786
+    }
+  ],
+  "timestamp_utc": "2026-03-09T15:22:22.206345+00:00"
+}

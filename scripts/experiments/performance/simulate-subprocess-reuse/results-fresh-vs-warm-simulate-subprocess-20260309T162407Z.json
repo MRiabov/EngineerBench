@@ -1,0 +1,219 @@
+{
+  "comparisons": {
+    "A_then_B": {
+      "fresh_avg_total_sec": 125.8094418339897,
+      "fresh_second_task_sec": 32.0603717789927,
+      "second_task_speedup_ratio": 13.153694172979597,
+      "total_speedup_ratio": 1.5694758396166517,
+      "warm_avg_total_sec": 80.16016472398769,
+      "warm_second_task_sec": 2.437366366997594
+    },
+    "B_then_A": {
+      "fresh_avg_total_sec": 127.87169164902298,
+      "fresh_second_task_sec": 31.409269144001883,
+      "second_task_speedup_ratio": 12.568623105311595,
+      "total_speedup_ratio": 1.580075285592207,
+      "warm_avg_total_sec": 80.9275942830136,
+      "warm_second_task_sec": 2.4990222780033946
+    }
+  },
+  "force_cpu": true,
+  "orders": [
+    "A_then_B",
+    "B_then_A"
+  ],
+  "repetitions": 1,
+  "runs": [
+    {
+      "env": {
+        "GENESIS_FORCE_CPU": "1",
+        "HOME": "/tmp/simulate-subprocess-fresh_child_per_task-A_then_B-f0tfc7x_/cache-root/home",
+        "PYGLET_HEADLESS": "1",
+        "PYOPENGL_PLATFORM": "egl",
+        "XDG_CACHE_HOME": "/tmp/simulate-subprocess-fresh_child_per_task-A_then_B-f0tfc7x_/cache-root/xdg-cache"
+      },
+      "mode": "fresh_child_per_task",
+      "order": "A_then_B",
+      "parent_return_code": 0,
+      "parent_wall_clock_elapsed_sec": 126.58472290600184,
+      "repetition": 1,
+      "rows": [
+        {
+          "elapsed_sec": 45.87438595099957,
+          "failure_reason": null,
+          "position": 1,
+          "scenario": "bundle_a_int101_like",
+          "session_id": "fresh-bundle_a_int101_like-f782a7f6",
+          "success": true,
+          "summary": "Goal achieved.",
+          "wall_clock_elapsed_sec": 89.84025456599193
+        },
+        {
+          "elapsed_sec": 3.372855037014233,
+          "failure_reason": null,
+          "position": 2,
+          "scenario": "bundle_b_int133_like",
+          "session_id": "fresh-bundle_b_int133_like-bc1b90d6",
+          "success": true,
+          "summary": "Goal achieved.",
+          "wall_clock_elapsed_sec": 32.0603717789927
+        }
+      ],
+      "success": true,
+      "total_wall_clock_elapsed_sec": 125.8094418339897
+    },
+    {
+      "env": {
+        "GENESIS_FORCE_CPU": "1",
+        "HOME": "/tmp/simulate-subprocess-reused_child-A_then_B-ea9djk_b/cache-root/home",
+        "PYGLET_HEADLESS": "1",
+        "PYOPENGL_PLATFORM": "egl",
+        "XDG_CACHE_HOME": "/tmp/simulate-subprocess-reused_child-A_then_B-ea9djk_b/cache-root/xdg-cache"
+      },
+      "mode": "reused_child",
+      "order": "A_then_B",
+      "parent_return_code": 0,
+      "parent_wall_clock_elapsed_sec": 80.93801143800374,
+      "repetition": 1,
+      "rows": [
+        {
+          "elapsed_sec": 46.093137145013316,
+          "failure_reason": null,
+          "position": 1,
+          "scenario": "bundle_a_int101_like",
+          "session_id": "warm-bundle_a_int101_like-bf6f334d",
+          "success": true,
+          "summary": "Goal achieved.",
+          "wall_clock_elapsed_sec": 72.51935582997976
+        },
+        {
+          "elapsed_sec": 2.436879229004262,
+          "failure_reason": null,
+          "position": 2,
+          "scenario": "bundle_b_int133_like",
+          "session_id": "warm-bundle_b_int133_like-603d6d4a",
+          "success": true,
+          "summary": "Goal achieved.",
+          "wall_clock_elapsed_sec": 2.437366366997594
+        }
+      ],
+      "success": true,
+      "total_wall_clock_elapsed_sec": 80.16016472398769
+    },
+    {
+      "env": {
+        "GENESIS_FORCE_CPU": "1",
+        "HOME": "/tmp/simulate-subprocess-fresh_child_per_task-B_then_A-tmhf2yd0/cache-root/home",
+        "PYGLET_HEADLESS": "1",
+        "PYOPENGL_PLATFORM": "egl",
+        "XDG_CACHE_HOME": "/tmp/simulate-subprocess-fresh_child_per_task-B_then_A-tmhf2yd0/cache-root/xdg-cache"
+      },
+      "mode": "fresh_child_per_task",
+      "order": "B_then_A",
+      "parent_return_code": 0,
+      "parent_wall_clock_elapsed_sec": 128.6561700940074,
+      "repetition": 1,
+      "rows": [
+        {
+          "elapsed_sec": 49.19114111998351,
+          "failure_reason": null,
+          "position": 1,
+          "scenario": "bundle_b_int133_like",
+          "session_id": "fresh-bundle_b_int133_like-faea8db8",
+          "success": true,
+          "summary": "Goal achieved.",
+          "wall_clock_elapsed_sec": 92.9809999630088
+        },
+        {
+          "elapsed_sec": 3.2788892750104424,
+          "failure_reason": null,
+          "position": 2,
+          "scenario": "bundle_a_int101_like",
+          "session_id": "fresh-bundle_a_int101_like-bc4ae0f9",
+          "success": true,
+          "summary": "Goal achieved.",
+          "wall_clock_elapsed_sec": 31.409269144001883
+        }
+      ],
+      "success": true,
+      "total_wall_clock_elapsed_sec": 127.87169164902298
+    },
+    {
+      "env": {
+        "GENESIS_FORCE_CPU": "1",
+        "HOME": "/tmp/simulate-subprocess-reused_child-B_then_A-yts8hrpl/cache-root/home",
+        "PYGLET_HEADLESS": "1",
+        "PYOPENGL_PLATFORM": "egl",
+        "XDG_CACHE_HOME": "/tmp/simulate-subprocess-reused_child-B_then_A-yts8hrpl/cache-root/xdg-cache"
+      },
+      "mode": "reused_child",
+      "order": "B_then_A",
+      "parent_return_code": 0,
+      "parent_wall_clock_elapsed_sec": 81.71270985199953,
+      "repetition": 1,
+      "rows": [
+        {
+          "elapsed_sec": 46.741718309989665,
+          "failure_reason": null,
+          "position": 1,
+          "scenario": "bundle_b_int133_like",
+          "session_id": "warm-bundle_b_int133_like-ef3fb43d",
+          "success": true,
+          "summary": "Goal achieved.",
+          "wall_clock_elapsed_sec": 73.25324522500159
+        },
+        {
+          "elapsed_sec": 2.49850054300623,
+          "failure_reason": null,
+          "position": 2,
+          "scenario": "bundle_a_int101_like",
+          "session_id": "warm-bundle_a_int101_like-078f4d1f",
+          "success": true,
+          "summary": "Goal achieved.",
+          "wall_clock_elapsed_sec": 2.4990222780033946
+        }
+      ],
+      "success": true,
+      "total_wall_clock_elapsed_sec": 80.9275942830136
+    }
+  ],
+  "scenarios": {
+    "bundle_a_int101_like": {
+      "name": "bundle_a_int101_like"
+    },
+    "bundle_b_int133_like": {
+      "name": "bundle_b_int133_like"
+    }
+  },
+  "summary": {
+    "fresh_child_per_task::A_then_B": {
+      "all_success": true,
+      "avg_first_task_wall_clock_elapsed_sec": 89.84025456599193,
+      "avg_second_task_wall_clock_elapsed_sec": 32.0603717789927,
+      "avg_total_wall_clock_elapsed_sec": 125.8094418339897,
+      "runs": 1
+    },
+    "fresh_child_per_task::B_then_A": {
+      "all_success": true,
+      "avg_first_task_wall_clock_elapsed_sec": 92.9809999630088,
+      "avg_second_task_wall_clock_elapsed_sec": 31.409269144001883,
+      "avg_total_wall_clock_elapsed_sec": 127.87169164902298,
+      "runs": 1
+    },
+    "reused_child::A_then_B": {
+      "all_success": true,
+      "avg_first_task_wall_clock_elapsed_sec": 72.51935582997976,
+      "avg_second_task_wall_clock_elapsed_sec": 2.437366366997594,
+      "avg_total_wall_clock_elapsed_sec": 80.16016472398769,
+      "runs": 1
+    },
+    "reused_child::B_then_A": {
+      "all_success": true,
+      "avg_first_task_wall_clock_elapsed_sec": 73.25324522500159,
+      "avg_second_task_wall_clock_elapsed_sec": 2.4990222780033946,
+      "avg_total_wall_clock_elapsed_sec": 80.9275942830136,
+      "runs": 1
+    }
+  },
+  "timestamp_utc": "2026-03-09T16:24:07.823643+00:00"
+}

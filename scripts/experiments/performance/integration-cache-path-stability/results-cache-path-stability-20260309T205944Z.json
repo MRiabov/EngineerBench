@@ -1,0 +1,204 @@
+{
+  "backend": "GENESIS",
+  "base_root": "/tmp/problemologist-cache-path-stability",
+  "experiment": "integration_cache_path_stability",
+  "force_cpu": true,
+  "generated_at": "2026-03-09T20:59:45.136074+00:00",
+  "modes": [
+    "random_workspace_random_session",
+    "stable_workspace_random_session",
+    "random_workspace_stable_session",
+    "stable_workspace_stable_session"
+  ],
+  "repetitions": 3,
+  "rows": [
+    {
+      "child_returncode": 1,
+      "int_prefix": "INT-101",
+      "mode": "random_workspace_random_session",
+      "repetition": 1,
+      "runtime_error": "Child process exited non-zero",
+      "scenario": "int101_like",
+      "session_strategy": "random_session",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 565, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 560, in main\n    return _run_child_command(args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 237, in _run_child_command\n    payload = _run_child_once(\n              ^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 199, in _run_child_once\n    from shared.simulation.schemas import SimulatorBackendType\nModuleNotFoundError: No module named 'shared'\n",
+      "stdout": "",
+      "success": false,
+      "workspace_strategy": "random_workspace"
+    },
+    {
+      "child_returncode": 1,
+      "int_prefix": "INT-101",
+      "mode": "random_workspace_random_session",
+      "repetition": 2,
+      "runtime_error": "Child process exited non-zero",
+      "scenario": "int101_like",
+      "session_strategy": "random_session",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 565, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 560, in main\n    return _run_child_command(args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 237, in _run_child_command\n    payload = _run_child_once(\n              ^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 199, in _run_child_once\n    from shared.simulation.schemas import SimulatorBackendType\nModuleNotFoundError: No module named 'shared'\n",
+      "stdout": "",
+      "success": false,
+      "workspace_strategy": "random_workspace"
+    },
+    {
+      "child_returncode": 1,
+      "int_prefix": "INT-101",
+      "mode": "random_workspace_random_session",
+      "repetition": 3,
+      "runtime_error": "Child process exited non-zero",
+      "scenario": "int101_like",
+      "session_strategy": "random_session",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 565, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 560, in main\n    return _run_child_command(args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 237, in _run_child_command\n    payload = _run_child_once(\n              ^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 199, in _run_child_once\n    from shared.simulation.schemas import SimulatorBackendType\nModuleNotFoundError: No module named 'shared'\n",
+      "stdout": "",
+      "success": false,
+      "workspace_strategy": "random_workspace"
+    },
+    {
+      "child_returncode": 1,
+      "int_prefix": "INT-101",
+      "mode": "stable_workspace_random_session",
+      "repetition": 1,
+      "runtime_error": "Child process exited non-zero",
+      "scenario": "int101_like",
+      "session_strategy": "random_session",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 565, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 560, in main\n    return _run_child_command(args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 237, in _run_child_command\n    payload = _run_child_once(\n              ^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 199, in _run_child_once\n    from shared.simulation.schemas import SimulatorBackendType\nModuleNotFoundError: No module named 'shared'\n",
+      "stdout": "",
+      "success": false,
+      "workspace_strategy": "stable_workspace"
+    },
+    {
+      "child_returncode": 1,
+      "int_prefix": "INT-101",
+      "mode": "stable_workspace_random_session",
+      "repetition": 2,
+      "runtime_error": "Child process exited non-zero",
+      "scenario": "int101_like",
+      "session_strategy": "random_session",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 565, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 560, in main\n    return _run_child_command(args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 237, in _run_child_command\n    payload = _run_child_once(\n              ^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 199, in _run_child_once\n    from shared.simulation.schemas import SimulatorBackendType\nModuleNotFoundError: No module named 'shared'\n",
+      "stdout": "",
+      "success": false,
+      "workspace_strategy": "stable_workspace"
+    },
+    {
+      "child_returncode": 1,
+      "int_prefix": "INT-101",
+      "mode": "stable_workspace_random_session",
+      "repetition": 3,
+      "runtime_error": "Child process exited non-zero",
+      "scenario": "int101_like",
+      "session_strategy": "random_session",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 565, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 560, in main\n    return _run_child_command(args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 237, in _run_child_command\n    payload = _run_child_once(\n              ^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 199, in _run_child_once\n    from shared.simulation.schemas import SimulatorBackendType\nModuleNotFoundError: No module named 'shared'\n",
+      "stdout": "",
+      "success": false,
+      "workspace_strategy": "stable_workspace"
+    },
+    {
+      "child_returncode": 1,
+      "int_prefix": "INT-101",
+      "mode": "random_workspace_stable_session",
+      "repetition": 1,
+      "runtime_error": "Child process exited non-zero",
+      "scenario": "int101_like",
+      "session_strategy": "stable_session",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 565, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 560, in main\n    return _run_child_command(args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 237, in _run_child_command\n    payload = _run_child_once(\n              ^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 199, in _run_child_once\n    from shared.simulation.schemas import SimulatorBackendType\nModuleNotFoundError: No module named 'shared'\n",
+      "stdout": "",
+      "success": false,
+      "workspace_strategy": "random_workspace"
+    },
+    {
+      "child_returncode": 1,
+      "int_prefix": "INT-101",
+      "mode": "random_workspace_stable_session",
+      "repetition": 2,
+      "runtime_error": "Child process exited non-zero",
+      "scenario": "int101_like",
+      "session_strategy": "stable_session",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 565, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 560, in main\n    return _run_child_command(args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 237, in _run_child_command\n    payload = _run_child_once(\n              ^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 199, in _run_child_once\n    from shared.simulation.schemas import SimulatorBackendType\nModuleNotFoundError: No module named 'shared'\n",
+      "stdout": "",
+      "success": false,
+      "workspace_strategy": "random_workspace"
+    },
+    {
+      "child_returncode": 1,
+      "int_prefix": "INT-101",
+      "mode": "random_workspace_stable_session",
+      "repetition": 3,
+      "runtime_error": "Child process exited non-zero",
+      "scenario": "int101_like",
+      "session_strategy": "stable_session",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 565, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 560, in main\n    return _run_child_command(args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 237, in _run_child_command\n    payload = _run_child_once(\n              ^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 199, in _run_child_once\n    from shared.simulation.schemas import SimulatorBackendType\nModuleNotFoundError: No module named 'shared'\n",
+      "stdout": "",
+      "success": false,
+      "workspace_strategy": "random_workspace"
+    },
+    {
+      "child_returncode": 1,
+      "int_prefix": "INT-101",
+      "mode": "stable_workspace_stable_session",
+      "repetition": 1,
+      "runtime_error": "Child process exited non-zero",
+      "scenario": "int101_like",
+      "session_strategy": "stable_session",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 565, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 560, in main\n    return _run_child_command(args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 237, in _run_child_command\n    payload = _run_child_once(\n              ^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 199, in _run_child_once\n    from shared.simulation.schemas import SimulatorBackendType\nModuleNotFoundError: No module named 'shared'\n",
+      "stdout": "",
+      "success": false,
+      "workspace_strategy": "stable_workspace"
+    },
+    {
+      "child_returncode": 1,
+      "int_prefix": "INT-101",
+      "mode": "stable_workspace_stable_session",
+      "repetition": 2,
+      "runtime_error": "Child process exited non-zero",
+      "scenario": "int101_like",
+      "session_strategy": "stable_session",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 565, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 560, in main\n    return _run_child_command(args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 237, in _run_child_command\n    payload = _run_child_once(\n              ^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 199, in _run_child_once\n    from shared.simulation.schemas import SimulatorBackendType\nModuleNotFoundError: No module named 'shared'\n",
+      "stdout": "",
+      "success": false,
+      "workspace_strategy": "stable_workspace"
+    },
+    {
+      "child_returncode": 1,
+      "int_prefix": "INT-101",
+      "mode": "stable_workspace_stable_session",
+      "repetition": 3,
+      "runtime_error": "Child process exited non-zero",
+      "scenario": "int101_like",
+      "session_strategy": "stable_session",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 565, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 560, in main\n    return _run_child_command(args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 237, in _run_child_command\n    payload = _run_child_once(\n              ^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 199, in _run_child_once\n    from shared.simulation.schemas import SimulatorBackendType\nModuleNotFoundError: No module named 'shared'\n",
+      "stdout": "",
+      "success": false,
+      "workspace_strategy": "stable_workspace"
+    }
+  ],
+  "run_root": "/tmp/problemologist-cache-path-stability/run-20260309T205944Z",
+  "scenarios": [
+    "int101_like"
+  ],
+  "smoke_test_mode": true,
+  "summary": {
+    "by_scenario_mode": {
+      "int101_like": {
+        "random_workspace_random_session": {
+          "failures": 3,
+          "runs": 3,
+          "successes": 0
+        },
+        "random_workspace_stable_session": {
+          "failures": 3,
+          "runs": 3,
+          "successes": 0
+        },
+        "stable_workspace_random_session": {
+          "failures": 3,
+          "runs": 3,
+          "successes": 0
+        },
+        "stable_workspace_stable_session": {
+          "failures": 3,
+          "runs": 3,
+          "successes": 0
+        }
+      }
+    },
+    "speedups_vs_current_like": {}
+  }
+}

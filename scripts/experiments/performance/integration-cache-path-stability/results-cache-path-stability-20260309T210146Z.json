@@ -1,0 +1,72 @@
+{
+  "backend": "GENESIS",
+  "base_root": "/tmp/problemologist-cache-path-stability",
+  "experiment": "integration_cache_path_stability",
+  "force_cpu": true,
+  "generated_at": "2026-03-09T21:03:14.458648+00:00",
+  "modes": [
+    "random_workspace_random_session"
+  ],
+  "repetitions": 2,
+  "rows": [
+    {
+      "child_returncode": 0,
+      "elapsed_sec": 67.75544537298265,
+      "int_prefix": "INT-101",
+      "mode": "random_workspace_random_session",
+      "repetition": 1,
+      "runtime_error": "PermissionError: [Errno 13] Permission denied: '/dev/shm/tmpci8b2t_v.stl'",
+      "scenario": "int101_like",
+      "session_id": "INT-101-65a4b23a",
+      "session_root": "/tmp/problemologist-cache-path-stability/run-20260309T210146Z/workspaces/int101_like/random_workspace_random_session/random-workspaces/int-101-rep1-6bef3dfd",
+      "session_strategy": "random_session",
+      "success": false,
+      "traceback": "Traceback (most recent call last):\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 205, in _run_child_once\n    result = simulate_subprocess(\n             ^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/worker_heavy/utils/validation.py\", line 529, in simulate_subprocess\n    return simulate(\n           ^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/worker_heavy/utils/validation.py\", line 747, in simulate\n    loop = SimulationLoop(\n           ^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/worker_heavy/simulation/loop.py\", line 155, in __init__\n    self.validation_report = validate_and_price(\n                             ^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/worker_heavy/utils/dfm.py\", line 141, in validate_and_price\n    result = analyze_cnc(part, config, quantity=quantity)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<@beartype(worker_heavy.workbenches.cnc.analyze_cnc) at 0x7710cb39e840>\", line 85, in analyze_cnc\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/worker_heavy/workbenches/cnc.py\", line 225, in analyze_cnc\n    mesh = part_to_trimesh(part)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/worker_heavy/workbenches/analysis_utils.py\", line 16, in part_to_trimesh\n    with tempfile.NamedTemporaryFile(suffix=\".stl\", dir=temp_dir, delete=False) as tmp:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/tempfile.py\", line 721, in NamedTemporaryFile\n    file = _io.open(dir, mode, buffering=buffering,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/tempfile.py\", line 718, in opener\n    fd, name = _mkstemp_inner(dir, prefix, suffix, flags, output_type)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/tempfile.py\", line 395, in _mkstemp_inner\n    fd = _os.open(file, flags, 0o600)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nPermissionError: [Errno 13] Permission denied: '/dev/shm/tmpci8b2t_v.stl'\n",
+      "workspace_strategy": "random_workspace"
+    },
+    {
+      "child_returncode": 0,
+      "elapsed_sec": 9.928383610007586,
+      "int_prefix": "INT-101",
+      "mode": "random_workspace_random_session",
+      "repetition": 2,
+      "runtime_error": "PermissionError: [Errno 13] Permission denied: '/dev/shm/tmpxt_beww4.stl'",
+      "scenario": "int101_like",
+      "session_id": "INT-101-00f82c99",
+      "session_root": "/tmp/problemologist-cache-path-stability/run-20260309T210146Z/workspaces/int101_like/random_workspace_random_session/random-workspaces/int-101-rep2-870530d7",
+      "session_strategy": "random_session",
+      "success": false,
+      "traceback": "Traceback (most recent call last):\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/experiments/integration-cache-path-stability/benchmark_integration_cache_path_stability.py\", line 205, in _run_child_once\n    result = simulate_subprocess(\n             ^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/worker_heavy/utils/validation.py\", line 529, in simulate_subprocess\n    return simulate(\n           ^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/worker_heavy/utils/validation.py\", line 747, in simulate\n    loop = SimulationLoop(\n           ^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/worker_heavy/simulation/loop.py\", line 155, in __init__\n    self.validation_report = validate_and_price(\n                             ^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/worker_heavy/utils/dfm.py\", line 141, in validate_and_price\n    result = analyze_cnc(part, config, quantity=quantity)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<@beartype(worker_heavy.workbenches.cnc.analyze_cnc) at 0x73fafbd38e00>\", line 85, in analyze_cnc\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/worker_heavy/workbenches/cnc.py\", line 225, in analyze_cnc\n    mesh = part_to_trimesh(part)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/worker_heavy/workbenches/analysis_utils.py\", line 16, in part_to_trimesh\n    with tempfile.NamedTemporaryFile(suffix=\".stl\", dir=temp_dir, delete=False) as tmp:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/tempfile.py\", line 721, in NamedTemporaryFile\n    file = _io.open(dir, mode, buffering=buffering,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/tempfile.py\", line 718, in opener\n    fd, name = _mkstemp_inner(dir, prefix, suffix, flags, output_type)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/tempfile.py\", line 395, in _mkstemp_inner\n    fd = _os.open(file, flags, 0o600)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nPermissionError: [Errno 13] Permission denied: '/dev/shm/tmpxt_beww4.stl'\n",
+      "workspace_strategy": "random_workspace"
+    }
+  ],
+  "run_root": "/tmp/problemologist-cache-path-stability/run-20260309T210146Z",
+  "scenarios": [
+    "int101_like"
+  ],
+  "smoke_test_mode": true,
+  "summary": {
+    "by_scenario_mode": {
+      "int101_like": {
+        "random_workspace_random_session": {
+          "failures": 2,
+          "first_elapsed_sec": 67.75544537298265,
+          "last_elapsed_sec": 9.928383610007586,
+          "max_elapsed_sec": 67.75544537298265,
+          "mean_elapsed_sec": 38.84191449149512,
+          "median_elapsed_sec": 38.84191449149512,
+          "min_elapsed_sec": 9.928383610007586,
+          "repeat_last_elapsed_sec": 9.928383610007586,
+          "repeat_mean_elapsed_sec": 9.928383610007586,
+          "runs": 2,
+          "successes": 0
+        }
+      }
+    },
+    "speedups_vs_current_like": {
+      "int101_like": {
+        "random_workspace_random_session": 1.0
+      }
+    }
+  }
+}

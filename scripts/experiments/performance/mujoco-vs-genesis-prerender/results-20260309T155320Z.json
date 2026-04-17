@@ -1,0 +1,85 @@
+{
+  "timestamp_utc": "2026-03-09T15:53:20.837997+00:00",
+  "repo_root": "/home/maksym/Work/proj/Problemologist/Problemologist-AI",
+  "args": {
+    "mode": "prerender",
+    "scenario": "multi_part_like",
+    "backend": "all",
+    "repetitions": 1,
+    "smoke_test_mode": false,
+    "isolate_cache": true,
+    "force_cpu": true,
+    "mujoco_gl": "egl",
+    "timeout_sec": 180,
+    "output_json": "",
+    "child": false,
+    "session_root": ""
+  },
+  "summary": [
+    {
+      "scenario": "multi_part_like",
+      "mode": "prerender",
+      "backend": "GENESIS",
+      "runs_total": 1,
+      "runs_ok": 1,
+      "runs_success": 1,
+      "runs_usable": 1,
+      "mean_sec_success": 71.19971009201254,
+      "mean_sec_usable": 71.19971009201254,
+      "median_sec_usable": 71.19971009201254,
+      "min_sec_usable": 71.19971009201254,
+      "max_sec_usable": 71.19971009201254
+    },
+    {
+      "scenario": "multi_part_like",
+      "mode": "prerender",
+      "backend": "MUJOCO",
+      "runs_total": 1,
+      "runs_ok": 1,
+      "runs_success": 1,
+      "runs_usable": 1,
+      "mean_sec_success": 6.398151408997364,
+      "mean_sec_usable": 6.398151408997364,
+      "median_sec_usable": 6.398151408997364,
+      "min_sec_usable": 6.398151408997364,
+      "max_sec_usable": 6.398151408997364
+    }
+  ],
+  "speedups": [
+    {
+      "scenario": "multi_part_like",
+      "mode": "prerender",
+      "mujoco_mean_sec": 6.398151408997364,
+      "genesis_mean_sec": 71.19971009201254,
+      "mujoco_speedup_over_genesis": 11.128168988293767
+    }
+  ],
+  "rows": [
+    {
+      "scenario": "multi_part_like",
+      "backend": "MUJOCO",
+      "mode": "prerender",
+      "repetition": 1,
+      "ok": true,
+      "elapsed_sec": 6.398151408997364,
+      "parent_wall_sec": 11.797984439996071,
+      "success": true,
+      "render_count": 24,
+      "message": "prerender_complete",
+      "runtime_error": null
+    },
+    {
+      "scenario": "multi_part_like",
+      "backend": "GENESIS",
+      "mode": "prerender",
+      "repetition": 1,
+      "ok": true,
+      "elapsed_sec": 71.19971009201254,
+      "parent_wall_sec": 76.90903406598954,
+      "success": true,
+      "render_count": 24,
+      "message": "prerender_complete",
+      "runtime_error": null
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "backend_request": "cpu",
+  "env": {
+    "GENESIS_FORCE_CPU": "1",
+    "PYGLET_HEADLESS": "1",
+    "PYOPENGL_PLATFORM": "egl"
+  },
+  "init_s": 1.191305949992966,
+  "mesh_analysis": {
+    "box_after_diff_vs_diff": {
+      "build_delta_s": -0.11530781496549025,
+      "build_ratio": 0.8673135717303821,
+      "create_delta_s": 0.0020970739715266973,
+      "create_ratio": 1.06515929677687
+    },
+    "box_after_diff_vs_first": {
+      "build_delta_s": -0.05168795998906717,
+      "build_ratio": 0.9358236480699885,
+      "create_delta_s": 0.0032461509690620005,
+      "create_ratio": 1.1045973780498555
+    },
+    "box_after_diff_vs_same": {
+      "build_delta_s": 0.07258234999608248,
+      "build_ratio": 1.1065609230030768,
+      "create_delta_s": 0.00034471097751520574,
+      "create_ratio": 1.0101576288113168
+    },
+    "diff_vs_first": {
+      "build_delta_s": 0.06361985497642308,
+      "build_ratio": 1.0789911268227033,
+      "create_delta_s": 0.0011490769975353032,
+      "create_ratio": 1.037025524156174
+    },
+    "diff_vs_same": {
+      "build_delta_s": 0.18789016496157274,
+      "build_ratio": 1.27584873461091,
+      "create_delta_s": -0.0017523629940114915,
+      "create_ratio": 0.9483629649274187
+    },
+    "same_vs_first": {
+      "build_delta_s": -0.12427030998514965,
+      "build_ratio": 0.8457045867210571,
+      "create_delta_s": 0.0029014399915467948,
+      "create_ratio": 1.0934901113895152
+    }
+  },
+  "mesh_sequence": [
+    {
+      "name": "mesh_box_1",
+      "scene_build_s": 0.8054050820064731,
+      "scene_create_s": 0.03103472600923851,
+      "scene_step_s": 0.0007348469807766378
+    },
+    {
+      "name": "mesh_box_2_same",
+      "scene_build_s": 0.6811347720213234,
+      "scene_create_s": 0.033936166000785306,
+      "scene_step_s": 0.000973513990174979
+    },
+    {
+      "name": "mesh_sphere_1_diff",
+      "scene_build_s": 0.8690249369828962,
+      "scene_create_s": 0.032183803006773815,
+      "scene_step_s": 0.0006807339959777892
+    },
+    {
+      "name": "mesh_box_3_after_sphere",
+      "scene_build_s": 0.7537171220174059,
+      "scene_create_s": 0.03428087697830051,
+      "scene_step_s": 0.0006884119939059019
+    }
+  ],
+  "primitive_analysis": {
+    "box_after_diff_vs_diff": {
+      "build_delta_s": -0.22231515200110152,
+      "build_ratio": 0.7440518839444143,
+      "create_delta_s": -0.007814714015694335,
+      "create_ratio": 0.7748372527504832
+    },
+    "box_after_diff_vs_first": {
+      "build_delta_s": -1.9741848659759853,
+      "build_ratio": 0.24662783845913114,
+      "create_delta_s": -1.9556166369875427,
+      "create_ratio": 0.013564753358134224
+    },
+    "box_after_diff_vs_same": {
+      "build_delta_s": -7.387978257611394e-06,
+      "build_ratio": 0.9999885685769486,
+      "create_delta_s": -0.0005458469968289137,
+      "create_ratio": 0.9801062327231981
+    },
+    "diff_vs_first": {
+      "build_delta_s": -1.7518697139748838,
+      "build_ratio": 0.3314659149193901,
+      "create_delta_s": -1.9478019229718484,
+      "create_ratio": 0.017506583879366485
+    },
+    "diff_vs_same": {
+      "build_delta_s": 0.2223077640228439,
+      "build_ratio": 1.3439769324630249,
+      "create_delta_s": 0.007268867018865421,
+      "create_ratio": 1.2649188319793092
+    },
+    "same_vs_first": {
+      "build_delta_s": -1.9741774779977277,
+      "build_ratio": 0.2466306577985179,
+      "create_delta_s": -1.9550707899907138,
+      "create_ratio": 0.01384008478391667
+    }
+  },
+  "primitive_sequence": [
+    {
+      "name": "primitive_box_1",
+      "scene_build_s": 2.620464315987192,
+      "scene_create_s": 1.982508880988462,
+      "scene_step_s": 0.0008225390047300607
+    },
+    {
+      "name": "primitive_box_2_same",
+      "scene_build_s": 0.6462868379894644,
+      "scene_create_s": 0.027438090997748077,
+      "scene_step_s": 0.0007223429856821895
+    },
+    {
+      "name": "primitive_sphere_1_diff",
+      "scene_build_s": 0.8685946020123083,
+      "scene_create_s": 0.0347069580166135,
+      "scene_step_s": 0.0006595870072487742
+    },
+    {
+      "name": "primitive_box_3_after_sphere",
+      "scene_build_s": 0.6462794500112068,
+      "scene_create_s": 0.026892244000919163,
+      "scene_step_s": 0.0007631519983988255
+    }
+  ],
+  "resolved_backend": "cpu",
+  "timestamp_utc": "2026-03-09T15:12:15.845193+00:00"
+}

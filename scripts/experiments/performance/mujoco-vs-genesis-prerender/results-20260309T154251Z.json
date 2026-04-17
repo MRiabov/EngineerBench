@@ -1,0 +1,50 @@
+{
+  "timestamp_utc": "2026-03-09T15:42:51.122585+00:00",
+  "repo_root": "/home/maksym/Work/proj/Problemologist/Problemologist-AI",
+  "args": {
+    "mode": "prerender",
+    "scenario": "int101_like",
+    "backend": "MUJOCO",
+    "repetitions": 1,
+    "smoke_test_mode": false,
+    "isolate_cache": true,
+    "force_cpu": true,
+    "mujoco_gl": "egl",
+    "timeout_sec": 120,
+    "output_json": "",
+    "child": false,
+    "session_root": ""
+  },
+  "summary": [
+    {
+      "scenario": "int101_like",
+      "mode": "prerender",
+      "backend": "MUJOCO",
+      "runs_total": 1,
+      "runs_ok": 1,
+      "runs_success": 1,
+      "runs_usable": 1,
+      "mean_sec_success": 8.568557822000002,
+      "mean_sec_usable": 8.568557822000002,
+      "median_sec_usable": 8.568557822000002,
+      "min_sec_usable": 8.568557822000002,
+      "max_sec_usable": 8.568557822000002
+    }
+  ],
+  "speedups": [],
+  "rows": [
+    {
+      "scenario": "int101_like",
+      "backend": "MUJOCO",
+      "mode": "prerender",
+      "repetition": 1,
+      "ok": true,
+      "elapsed_sec": 8.568557822000002,
+      "parent_wall_sec": 15.183820463978918,
+      "success": true,
+      "render_count": 24,
+      "message": "prerender_complete",
+      "runtime_error": null
+    }
+  ]
+}

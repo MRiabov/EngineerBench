@@ -1,0 +1,91 @@
+{
+  "backend_request": "cpu",
+  "env": {
+    "GENESIS_FORCE_CPU": "1",
+    "PYGLET_HEADLESS": "1",
+    "PYOPENGL_PLATFORM": "egl"
+  },
+  "init_s": 1.2404830439772923,
+  "mesh_analysis": {
+    "diff_vs_first": {
+      "build_delta_s": -0.00924116198439151,
+      "build_ratio": 0.9894269701871081,
+      "create_delta_s": 0.004620258987415582,
+      "create_ratio": 1.1415320668966398
+    },
+    "diff_vs_same": {
+      "build_delta_s": -0.012538537994259968,
+      "build_ratio": 0.9857082820923703,
+      "create_delta_s": -0.001281851000385359,
+      "create_ratio": 0.9667455224872162
+    },
+    "same_vs_first": {
+      "build_delta_s": 0.003297376009868458,
+      "build_ratio": 1.0037726051026417,
+      "create_delta_s": 0.005902109987800941,
+      "create_ratio": 1.1807989179610965
+    }
+  },
+  "mesh_sequence": [
+    {
+      "name": "mesh_box_1",
+      "scene_build_s": 0.8740315829927567,
+      "scene_create_s": 0.03264460901846178,
+      "scene_step_s": 0.0012958879815414548
+    },
+    {
+      "name": "mesh_box_2_same",
+      "scene_build_s": 0.8773289590026252,
+      "scene_create_s": 0.03854671900626272,
+      "scene_step_s": 0.0009568459936417639
+    },
+    {
+      "name": "mesh_sphere_1_diff",
+      "scene_build_s": 0.8647904210083652,
+      "scene_create_s": 0.03726486800587736,
+      "scene_step_s": 0.0009009219938889146
+    }
+  ],
+  "primitive_analysis": {
+    "diff_vs_first": {
+      "build_delta_s": -48.48058301699348,
+      "build_ratio": 0.19392522510902072,
+      "create_delta_s": -2.4148022109875455,
+      "create_ratio": 0.016146788721567662
+    },
+    "diff_vs_same": {
+      "build_delta_s": 10.83760714600794,
+      "build_ratio": 14.123182197532104,
+      "create_delta_s": 0.008844928990583867,
+      "create_ratio": 1.2873009145482313
+    },
+    "same_vs_first": {
+      "build_delta_s": -59.31819016300142,
+      "build_ratio": 0.013730986572056498,
+      "create_delta_s": -2.4236471399781294,
+      "create_ratio": 0.012543134661901689
+    }
+  },
+  "primitive_sequence": [
+    {
+      "name": "primitive_box_1",
+      "scene_build_s": 60.14402698999038,
+      "scene_create_s": 2.4544334289967082,
+      "scene_step_s": 0.001113636011723429
+    },
+    {
+      "name": "primitive_box_2_same",
+      "scene_build_s": 0.8258368269889615,
+      "scene_create_s": 0.030786289018578827,
+      "scene_step_s": 0.0010471770074218512
+    },
+    {
+      "name": "primitive_sphere_1_diff",
+      "scene_build_s": 11.663443972996902,
+      "scene_create_s": 0.039631218009162694,
+      "scene_step_s": 0.0008485250000376254
+    }
+  ],
+  "resolved_backend": "cpu",
+  "timestamp_utc": "2026-03-09T15:04:19.537969+00:00"
+}

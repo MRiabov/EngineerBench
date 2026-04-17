@@ -1,0 +1,54 @@
+{
+  "timestamp_utc": "2026-03-09T14:22:47.152440+00:00",
+  "repo_root": "/home/maksym/Work/proj/Problemologist/Problemologist-AI",
+  "args": {
+    "mode": "both",
+    "scenario": "int101_like",
+    "repetitions": 1,
+    "smoke_test_mode": false,
+    "isolate_cache": true,
+    "output_json": "",
+    "child": false,
+    "session_root": "",
+    "compile_kernels": false
+  },
+  "summary": [],
+  "rows": [
+    {
+      "scenario": "int101_like",
+      "mode": "validate",
+      "compile_kernels": false,
+      "repetition": 1,
+      "ok": false,
+      "elapsed_sec": 0.10908818698953837,
+      "error": "Traceback (most recent call last):\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/experiments/no-compile-experiment/benchmark_compile_kernels.py\", line 391, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/experiments/no-compile-experiment/benchmark_compile_kernels.py\", line 386, in main\n    return _run_child_command(args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/experiments/no-compile-experiment/benchmark_compile_kernels.py\", line 175, in _run_child_command\n    payload = asyncio.run(\n              ^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/runners.py\", line 194, in run\n    return runner.run(main)\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/runners.py\", line 118, in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/base_events.py\", line 687, in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/experiments/no-compile-experiment/benchmark_compile_kernels.py\", line 124, in _run_child_once\n    from shared.simulation.schemas import SimulatorBackendType\nModuleNotFoundError: No module named 'shared'"
+    },
+    {
+      "scenario": "int101_like",
+      "mode": "simulate",
+      "compile_kernels": false,
+      "repetition": 1,
+      "ok": false,
+      "elapsed_sec": 0.1019718479947187,
+      "error": "Traceback (most recent call last):\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/experiments/no-compile-experiment/benchmark_compile_kernels.py\", line 391, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/experiments/no-compile-experiment/benchmark_compile_kernels.py\", line 386, in main\n    return _run_child_command(args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/experiments/no-compile-experiment/benchmark_compile_kernels.py\", line 175, in _run_child_command\n    payload = asyncio.run(\n              ^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/runners.py\", line 194, in run\n    return runner.run(main)\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/runners.py\", line 118, in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/base_events.py\", line 687, in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/experiments/no-compile-experiment/benchmark_compile_kernels.py\", line 124, in _run_child_once\n    from shared.simulation.schemas import SimulatorBackendType\nModuleNotFoundError: No module named 'shared'"
+    },
+    {
+      "scenario": "int101_like",
+      "mode": "validate",
+      "compile_kernels": true,
+      "repetition": 1,
+      "ok": false,
+      "elapsed_sec": 0.10075311499531381,
+      "error": "Traceback (most recent call last):\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/experiments/no-compile-experiment/benchmark_compile_kernels.py\", line 391, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/experiments/no-compile-experiment/benchmark_compile_kernels.py\", line 386, in main\n    return _run_child_command(args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/experiments/no-compile-experiment/benchmark_compile_kernels.py\", line 175, in _run_child_command\n    payload = asyncio.run(\n              ^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/runners.py\", line 194, in run\n    return runner.run(main)\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/runners.py\", line 118, in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/base_events.py\", line 687, in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/experiments/no-compile-experiment/benchmark_compile_kernels.py\", line 124, in _run_child_once\n    from shared.simulation.schemas import SimulatorBackendType\nModuleNotFoundError: No module named 'shared'"
+    },
+    {
+      "scenario": "int101_like",
+      "mode": "simulate",
+      "compile_kernels": true,
+      "repetition": 1,
+      "ok": false,
+      "elapsed_sec": 0.10271627001930028,
+      "error": "Traceback (most recent call last):\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/experiments/no-compile-experiment/benchmark_compile_kernels.py\", line 391, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/experiments/no-compile-experiment/benchmark_compile_kernels.py\", line 386, in main\n    return _run_child_command(args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/experiments/no-compile-experiment/benchmark_compile_kernels.py\", line 175, in _run_child_command\n    payload = asyncio.run(\n              ^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/runners.py\", line 194, in run\n    return runner.run(main)\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/runners.py\", line 118, in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/base_events.py\", line 687, in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/experiments/no-compile-experiment/benchmark_compile_kernels.py\", line 124, in _run_child_once\n    from shared.simulation.schemas import SimulatorBackendType\nModuleNotFoundError: No module named 'shared'"
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "timestamp_utc": "2026-03-09T15:55:33.593370+00:00",
+  "repo_root": "/home/maksym/Work/proj/Problemologist/Problemologist-AI",
+  "args": {
+    "mode": "validate",
+    "scenario": "int101_like",
+    "backend": "all",
+    "repetitions": 1,
+    "smoke_test_mode": true,
+    "isolate_cache": true,
+    "force_cpu": true,
+    "mujoco_gl": "egl",
+    "timeout_sec": 120,
+    "output_json": "",
+    "child": false,
+    "session_root": ""
+  },
+  "summary": [
+    {
+      "scenario": "int101_like",
+      "mode": "validate",
+      "backend": "GENESIS",
+      "runs_total": 1,
+      "runs_ok": 1,
+      "runs_success": 1,
+      "runs_usable": 1,
+      "mean_sec_success": 68.579912192974,
+      "mean_sec_usable": 68.579912192974,
+      "median_sec_usable": 68.579912192974,
+      "min_sec_usable": 68.579912192974,
+      "max_sec_usable": 68.579912192974
+    },
+    {
+      "scenario": "int101_like",
+      "mode": "validate",
+      "backend": "MUJOCO",
+      "runs_total": 1,
+      "runs_ok": 1,
+      "runs_success": 1,
+      "runs_usable": 1,
+      "mean_sec_success": 0.863644511991879,
+      "mean_sec_usable": 0.863644511991879,
+      "median_sec_usable": 0.863644511991879,
+      "min_sec_usable": 0.863644511991879,
+      "max_sec_usable": 0.863644511991879
+    }
+  ],
+  "speedups": [
+    {
+      "scenario": "int101_like",
+      "mode": "validate",
+      "mujoco_mean_sec": 0.863644511991879,
+      "genesis_mean_sec": 68.579912192974,
+      "mujoco_speedup_over_genesis": 79.40757017583975
+    }
+  ],
+  "rows": [
+    {
+      "scenario": "int101_like",
+      "backend": "MUJOCO",
+      "mode": "validate",
+      "repetition": 1,
+      "ok": true,
+      "elapsed_sec": 0.863644511991879,
+      "parent_wall_sec": 5.666812373005087,
+      "success": true,
+      "render_count": 1,
+      "message": null,
+      "runtime_error": null
+    },
+    {
+      "scenario": "int101_like",
+      "backend": "GENESIS",
+      "mode": "validate",
+      "repetition": 1,
+      "ok": true,
+      "elapsed_sec": 68.579912192974,
+      "parent_wall_sec": 74.22561760700773,
+      "success": true,
+      "render_count": 1,
+      "message": null,
+      "runtime_error": null
+    }
+  ]
+}

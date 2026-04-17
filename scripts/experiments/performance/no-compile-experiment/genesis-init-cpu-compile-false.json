@@ -1,0 +1,183 @@
+{
+  "backend_request": "cpu",
+  "compile_kernels_request": "false",
+  "env": {
+    "GENESIS_FORCE_CPU": "1",
+    "PYGLET_HEADLESS": "",
+    "PYOPENGL_PLATFORM": ""
+  },
+  "same_process_reuse": {
+    "first_init_s": 0.19387860500137322,
+    "gs_initialized_flag": true,
+    "resolved_backend": "cpu",
+    "reuse_scene_build": {
+      "max_s": 2.0059537430061027,
+      "mean_s": 1.3068045809923206,
+      "median_s": 1.3068045809923206,
+      "min_s": 0.6076554189785384,
+      "name": "reuse_scene_build",
+      "rounds": 2,
+      "values_s": [
+        2.0059537430061027,
+        0.6076554189785384
+      ]
+    },
+    "reuse_scene_create": {
+      "max_s": 2.2268470670096576,
+      "mean_s": 1.1262122975167586,
+      "median_s": 1.1262122975167586,
+      "min_s": 0.025577528023859486,
+      "name": "reuse_scene_create",
+      "rounds": 2,
+      "values_s": [
+        2.2268470670096576,
+        0.025577528023859486
+      ]
+    },
+    "reuse_scene_step": {
+      "max_s": 0.09896435399423353,
+      "mean_s": 0.05446405100519769,
+      "median_s": 0.05446405100519769,
+      "min_s": 0.009963748016161844,
+      "name": "reuse_scene_step",
+      "rounds": 2,
+      "values_s": [
+        0.09896435399423353,
+        0.009963748016161844
+      ]
+    },
+    "second_init_error": "GenesisException: Genesis already initialized.",
+    "second_init_s": null
+  },
+  "spawned_init_only": {
+    "child_init_only": {
+      "max_s": 0.17875973900663666,
+      "mean_s": 0.17796215749694966,
+      "median_s": 0.17796215749694966,
+      "min_s": 0.17716457598726265,
+      "name": "child_init_only",
+      "rounds": 2,
+      "values_s": [
+        0.17716457598726265,
+        0.17875973900663666
+      ]
+    },
+    "child_total_work": {
+      "max_s": 3.2364956630044617,
+      "mean_s": 3.2339550589967985,
+      "median_s": 3.2339550589967985,
+      "min_s": 3.2314144549891353,
+      "name": "child_total_work",
+      "rounds": 2,
+      "values_s": [
+        3.2314144549891353,
+        3.2364956630044617
+      ]
+    },
+    "resolved_backend": "cpu",
+    "wall_process_roundtrip": {
+      "max_s": 4.00996302900603,
+      "mean_s": 4.0018467094923835,
+      "median_s": 4.0018467094923835,
+      "min_s": 3.9937303899787366,
+      "name": "wall_process_roundtrip",
+      "rounds": 2,
+      "values_s": [
+        3.9937303899787366,
+        4.00996302900603
+      ]
+    }
+  },
+  "spawned_init_plus_tiny_scene": {
+    "child_init_only": {
+      "max_s": 0.20358194498112425,
+      "mean_s": 0.1892782484937925,
+      "median_s": 0.1892782484937925,
+      "min_s": 0.17497455200646073,
+      "name": "child_init_only",
+      "rounds": 2,
+      "values_s": [
+        0.17497455200646073,
+        0.20358194498112425
+      ]
+    },
+    "child_scene_build": {
+      "max_s": 1.9545116499939468,
+      "mean_s": 1.9358185829914873,
+      "median_s": 1.9358185829914873,
+      "min_s": 1.917125515989028,
+      "name": "child_scene_build",
+      "rounds": 2,
+      "values_s": [
+        1.9545116499939468,
+        1.917125515989028
+      ]
+    },
+    "child_scene_create": {
+      "max_s": 2.2166312499903142,
+      "mean_s": 2.167787672500708,
+      "median_s": 2.167787672500708,
+      "min_s": 2.118944095011102,
+      "name": "child_scene_create",
+      "rounds": 2,
+      "values_s": [
+        2.2166312499903142,
+        2.118944095011102
+      ]
+    },
+    "child_scene_step": {
+      "max_s": 0.09891942300600931,
+      "mean_s": 0.09692238199932035,
+      "median_s": 0.09692238199932035,
+      "min_s": 0.09492534099263139,
+      "name": "child_scene_step",
+      "rounds": 2,
+      "values_s": [
+        0.09891942300600931,
+        0.09492534099263139
+      ]
+    },
+    "child_total_work": {
+      "max_s": 7.652510016021552,
+      "mean_s": 7.532942376012215,
+      "median_s": 7.532942376012215,
+      "min_s": 7.413374736002879,
+      "name": "child_total_work",
+      "rounds": 2,
+      "values_s": [
+        7.652510016021552,
+        7.413374736002879
+      ]
+    },
+    "resolved_backend": "cpu",
+    "wall_process_roundtrip": {
+      "max_s": 8.647042541997507,
+      "mean_s": 8.514275837995228,
+      "median_s": 8.514275837995228,
+      "min_s": 8.38150913399295,
+      "name": "wall_process_roundtrip",
+      "rounds": 2,
+      "values_s": [
+        8.647042541997507,
+        8.38150913399295
+      ]
+    }
+  },
+  "thread_reuse_probe": {
+    "init_inside_worker_thread_fresh_process": {
+      "ok": true,
+      "scene_build_s": 1.949028219009051,
+      "scene_create_s": 2.101562408992322,
+      "scene_step_s": 0.09677275500143878,
+      "thread_backend": "cpu",
+      "thread_init_s": 0.16675667397794314
+    },
+    "main_thread_init_s": 0.18160736199934036,
+    "resolved_backend": "cpu",
+    "scene_in_worker_thread_after_main_init": {
+      "error": "RuntimeError: [llvm_context.cpp:add_struct_module@687] Assertion failure: std::this_thread::get_id() == main_thread_id_",
+      "ok": false,
+      "traceback": "Traceback (most recent call last):\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/genesis_init_benchmark.py\", line 310, in _thread_scene_worker\n    result.update(_tiny_scene_round(gs))\n                  ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/scripts/throwaway/genesis_init_benchmark.py\", line 93, in _tiny_scene_round\n    scene.build(**build_kwargs)\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/.venv/lib/python3.12/site-packages/genesis/utils/misc.py\", line 138, in wrapper\n    return method(self, *args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/.venv/lib/python3.12/site-packages/genesis/engine/scene.py\", line 849, in build\n    self._sim.build()\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/.venv/lib/python3.12/site-packages/genesis/engine/simulator.py\", line 203, in build\n    solver.build()\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/.venv/lib/python3.12/site-packages/genesis/engine/solvers/rigid/rigid_solver.py\", line 349, in build\n    super().build()\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/.venv/lib/python3.12/site-packages/genesis/engine/solvers/kinematic_solver.py\", line 150, in build\n    super().build()\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/.venv/lib/python3.12/site-packages/genesis/engine/solvers/base_solver.py\", line 43, in build\n    self._gravity.from_numpy(gravity)\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/.venv/lib/python3.12/site-packages/quadrants/lang/util.py\", line 301, in wrapped\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/.venv/lib/python3.12/site-packages/quadrants/lang/matrix.py\", line 1818, in from_numpy\n    self._ndarray_matrix_from_numpy(arr, as_vector=1)\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/.venv/lib/python3.12/site-packages/quadrants/lang/util.py\", line 301, in wrapped\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/.venv/lib/python3.12/site-packages/quadrants/lang/_ndarray.py\", line 195, in _ndarray_matrix_from_numpy\n    ext_arr_to_ndarray_matrix(arr, self, layout_is_aos, as_vector)\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/.venv/lib/python3.12/site-packages/quadrants/lang/_quadrants_callable.py\", line 96, in __call__\n    return self.wrapper.__call__(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/.venv/lib/python3.12/site-packages/quadrants/lang/kernel_impl.py\", line 141, in wrapped_func\n    return primal(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/.venv/lib/python3.12/site-packages/quadrants/lang/kernel.py\", line 570, in __call__\n    key = self.ensure_compiled(*py_args)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/.venv/lib/python3.12/site-packages/quadrants/lang/kernel.py\", line 541, in ensure_compiled\n    self.materialize(key=key, py_args=py_args, arg_features=arg_features)\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/.venv/lib/python3.12/site-packages/quadrants/lang/kernel.py\", line 369, in materialize\n    self.runtime.materialize()\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/.venv/lib/python3.12/site-packages/quadrants/lang/impl.py\", line 509, in materialize\n    self.materialize_root_fb(not self.materialized)\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/.venv/lib/python3.12/site-packages/quadrants/lang/impl.py\", line 448, in materialize_root_fb\n    root.finalize(raise_warning=not is_first_call)\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/.venv/lib/python3.12/site-packages/quadrants/_snode/fields_builder.py\", line 172, in finalize\n    return self._finalize(raise_warning, compile_only=False)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/maksym/Work/proj/Problemologist/Problemologist-AI/.venv/lib/python3.12/site-packages/quadrants/_snode/fields_builder.py\", line 181, in _finalize\n    _qd_core.finalize_snode_tree(_snode_registry, self.ptr, impl.get_runtime()._prog, compile_only)\nRuntimeError: [llvm_context.cpp:add_struct_module@687] Assertion failure: std::this_thread::get_id() == main_thread_id_\n"
+    }
+  }
+}

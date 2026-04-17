@@ -1,0 +1,37 @@
+{
+  "timestamp_utc": "2026-03-09T14:33:54.659707+00:00",
+  "repo_root": "/home/maksym/Work/proj/Problemologist/Problemologist-AI",
+  "args": {
+    "mode": "simulate",
+    "scenario": "int101_like",
+    "repetitions": 1,
+    "smoke_test_mode": true,
+    "isolate_cache": true,
+    "output_json": "",
+    "timeout_sec": 150,
+    "child": false,
+    "session_root": "",
+    "compile_kernels": false
+  },
+  "summary": [],
+  "rows": [
+    {
+      "scenario": "int101_like",
+      "mode": "simulate",
+      "compile_kernels": false,
+      "repetition": 1,
+      "ok": false,
+      "elapsed_sec": 72.02522498098551,
+      "error": "libEGL warning: failed to open /dev/dri/renderD128: Permission denied\n\nlibEGL warning: failed to open /dev/dri/renderD128: Permission denied\n\nlibEGL warning: failed to open /dev/dri/card1: Permission denied\n\nlibEGL warning: failed to open /dev/dri/renderD128: Permission denied\n\nlibEGL warning: failed to open /dev/dri/renderD128: Permission denied\n\nlibEGL warning: failed to open /dev/dri/card1: Permission denied"
+    },
+    {
+      "scenario": "int101_like",
+      "mode": "simulate",
+      "compile_kernels": true,
+      "repetition": 1,
+      "ok": false,
+      "elapsed_sec": 73.5355120160093,
+      "error": "libEGL warning: failed to open /dev/dri/renderD128: Permission denied\n\nlibEGL warning: failed to open /dev/dri/renderD128: Permission denied\n\nlibEGL warning: failed to open /dev/dri/card1: Permission denied\n\nlibEGL warning: failed to open /dev/dri/renderD128: Permission denied\n\nlibEGL warning: failed to open /dev/dri/renderD128: Permission denied\n\nlibEGL warning: failed to open /dev/dri/card1: Permission denied"
+    }
+  ]
+}
