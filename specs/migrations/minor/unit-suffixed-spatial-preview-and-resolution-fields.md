@@ -73,6 +73,8 @@ represents a measurable quantity.
 | `config/prompts.yaml` and related docs | Prompt text that still instructs agents to write `simulation_bounds`, `radius`, `runtime_jitter`, `start_position`, or bare preview fields | Prompted agent output is part of the public contract, so the wording must match the new serialized names. |
 | `worker_heavy/utils/file_validation.py` and `worker_heavy/utils/validation.py` | Validation logic and error strings that reference the current bare names | The runtime gate must validate the renamed fields and continue to fail closed on malformed geometry. |
 
+<!--Human note: I think pixel_x/y is straightforward?-->
+
 ## Proposed Target State
 
 1. Every benchmark-facing physical length field is named with `_mm`.
@@ -190,11 +192,11 @@ The safe order is:
 ### Runtime consumers
 
 - [ ] Update `worker_heavy/utils/file_validation.py` to validate the renamed
-      benchmark contract.
+  benchmark contract.
 - [ ] Update `worker_heavy/utils/validation.py` and any scene-builder helpers
-      that still read the bare geometry names.
+  that still read the bare geometry names.
 - [ ] Update any controller or worker request/response helpers that still
-      surface the bare preview field names.
+  surface the bare preview field names.
 
 ### Fixtures and docs
 
@@ -208,7 +210,7 @@ The safe order is:
 - [ ] Add regression coverage for legacy-name compatibility.
 - [ ] Add regression coverage for suffixed serialization.
 - [ ] Run the narrowest relevant integration slice that exercises benchmark
-      YAML validation and the agent preview/render contract.
+  YAML validation and the agent preview/render contract.
 
 ## File-Level Change Set
 
@@ -231,4 +233,3 @@ The safe order is:
 - `tests/integration/mock_responses/**/benchmark_definition.yaml`
 - `tests/integration/mock_responses/**/assembly_definition.yaml`
 - `tests/integration/mock_responses/**/benchmark_assembly_definition.yaml`
-

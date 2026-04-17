@@ -188,6 +188,8 @@ The rule is:
 
 10. If a backend cannot satisfy the selected render path, the failure should surface as a validation/runtime contract error rather than being hidden behind an unrelated global fallback.
 
+11. Last but not least: all static rendering, ever, should be worker-renderer, and not scattered around the codebase. Omitting this rule often caused errors like EGL or OSMesa misconfigurations. As such, just use the containerized workers.
+
 Any renderer-emitted file that crosses the `worker-renderer` boundary should already be backed by S3, with worker-light or controller code using the object key to re-materialize it locally if needed.
 
 This keeps MuJoCo and Genesis distinct while still allowing each backend to use its own canonical default view when the runtime resolver allows that.

@@ -20,11 +20,13 @@ added_at: '2026-04-17T00:00:00Z'
 ## Purpose
 
 This migration defines a synthetic corpus-generation policy for rigid-body-only
-benchmarks and engineer solutions. The source input is the full benchmark-owned
-bundle plus a predefined path / waypoint trace. The generator may use a
-tube-like corridor as an intermediate scaffold while it builds a waypoint
-chain, derives the wall-contact cloud, and tests contact order, but the
-published dataset must not keep the tube as a final artifact.
+benchmarks and engineer solutions. The source input is an engineer-coder seed
+contract plus a predefined path / waypoint trace. `ec-002-low-friction-cube`
+is an acceptable starting point for the prototype, but the migration is not
+exclusive to that row. The generator may use a tube-like corridor as an
+intermediate scaffold while it builds a waypoint chain, derives the
+wall-contact cloud, and tests contact order, but the published dataset must
+not keep the tube as a final artifact.
 
 The build zone for each synthetic candidate is expanded to cover the full
 waypoint length plus the tube envelope before acceptance runs begin. That
@@ -124,8 +126,13 @@ input, planner geometry, and coder implementation geometry.
 
 - Author a self-contained Jupyter notebook prototype for exploratory corpus
   generation.
-- Start from the benchmark-owned input bundle and a manually supplied path
-  trace, not from a prior engineer row.
+- Start from an `engineer_coder` input contract and a manually supplied path
+  trace. `ec-002-low-friction-cube` is a valid starting seed for the first
+  pass, and other `engineer_coder` rows with the same contract may also be used
+  later.
+- Do not source the corpus from `benchmark_coder` rows in this migration. Those
+  benchmark fields are intentionally blank in the evaluation setup and do not
+  satisfy the input contract for this generator.
 - Generate waypoints, a wall-contact point cloud, and a tube-scaffold candidate
   in scratch state.
 - Export only the decomposed primitive geometry and the final trajectory
@@ -156,14 +163,17 @@ input, planner geometry, and coder implementation geometry.
 
 ### Input Bundle Contract
 
-- Consume the benchmark-owned bundle as the source of objectives, fixtures,
-  build-zone context, and benchmark geometry.
+- Consume an `engineer_coder` seed bundle that satisfies the input contract.
+- Read objectives, fixtures, build-zone context, benchmark geometry, and
+  runtime metadata from that engineer-coder input contract.
 - Consume a manually authored route trace or waypoint list as the source of the
   path shape.
 - Treat the planner row as the first exportable synthesis of that input bundle.
 - Treat the coder row as the second exportable synthesis of the planner row.
 - Keep the input bundle separate from both row outputs so the path trace can be
   revised without rewriting the benchmark-owned fixtures.
+- Allow solved `.solution/` content to be written back into the source seed
+  bundle only behind an explicit switch or manual backfill step.
 
 ### Point-Cloud Contract
 
@@ -310,7 +320,8 @@ input, planner geometry, and coder implementation geometry.
 ## Sequencing
 
 1. Prototype the notebook-level generator and wall-contact cloud capture from
-   the benchmark-owned input bundle.
+   an `engineer_coder` input contract, using `ec-002-low-friction-cube` as the
+   initial seed.
 2. Add the planner-stage geometry export and the batched MuJoCo or Genesis
    acceptance loop with the >80% threshold.
 3. Add the coder-stage primitive lowering pass and rerun logic.
@@ -368,7 +379,8 @@ input, planner geometry, and coder implementation geometry.
   publication shape.
 - [ ] Keep the wall-contact cloud and contact order in notebook-local or sidecar form
   only.
-- [ ] Define the benchmark-owned input bundle and the manual path trace source.
+- [ ] Define the engineer-coder input contract and the manual path trace
+  source, with `ec-002-low-friction-cube` as the initial seed example.
 - [ ] Split the export surface into planner-stage and coder-stage row bundles.
 - [ ] Extend the build-zone derivation to cover the full waypoint and tube
   envelope.
