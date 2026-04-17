@@ -202,6 +202,12 @@ We operate in a real-world-like scenario, with rigid bodies, gravity, real-world
 
 Benchmark-owned fixtures are validated against their explicit motion contract and evidence. That benchmark-side contract can be weaker than the engineer-solution contract, but it still must stay deterministic, reviewable, and compatible with the simulation evidence path. Benchmark-side simulation validates the declared fixture motion and stability; it does not ask the benchmark generator to solve the benchmark. The benchmark payload observation window is policy-driven through `config/agents_config.yaml`, and the late-drift exception applies only to the payload, not to benchmark-owned fixtures or simulation bounds. Engineer-authored objects remain physically realistic and must satisfy the normal constraint rules.
 
+<!--FIXME!!!: Bad performance regression: mujoco which is meant to be paralel is currently sequential:   
+"""
+- In MuJoCo, verify_with_jitter() creates num_scenes separate MjData instances, then steps them in a Python loop: for idx, data in enumerate(datas): mujoco.mj_step(model, data) in worker_heavy/simulation/verification.py:247-281.
+"""
+-->
+
 ### Physically-realistic constraints
 
 In the end, our systems should be transferrable to the real world.
