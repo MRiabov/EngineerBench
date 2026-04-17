@@ -11,11 +11,12 @@ This reference documents integration-run helpers and implicit dependencies that 
   - In heavy worker config, defaults to `true` during integration unless explicitly set.
   - Runner flag `--no-smoke` sets `SMOKE_TEST_MODE=false` for high-fidelity runs.
 
-## Deterministic mock LLM scenarios
+## Legacy replay corpus
 
-- `tests/integration/mock_responses.yaml`
-  - Loaded by `controller/agent/mock_llm.py` (`MockDSPyLM`) for integration-mode agent responses.
-  - Keep scenario entries aligned with tests that rely on deterministic mock outcomes.
+- `tests/integration/mock_responses/`
+  - Loaded by `controller/agent/mock_llm.py` (`MockDSPyLM`) for deterministic agent-response replay in integration mode.
+  - Compatibility material only; new fixture meaning should be authored in typed schema-backed helpers and shared serializers.
+  - Keep scenario entries aligned with the `INT-###` tests they replay.
 
 ## Runner preflight and data prerequisites
 
