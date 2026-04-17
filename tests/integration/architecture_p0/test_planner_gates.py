@@ -64,7 +64,7 @@ def _default_benchmark_parts():
             "part_id": "environment_fixture",
             "label": "environment_fixture",
             "metadata": {
-                "fixed": True,
+                "is_fixed": True,
                 "material_id": "aluminum_6061",
             },
         }
@@ -155,20 +155,24 @@ def valid_todo():
 def valid_objectives():
     return BenchmarkDefinition(
         objectives=ObjectivesSection(
-            goal_zone=BoundingBox(min=(10.0, 10.0, 10.0), max=(20.0, 20.0, 20.0)),
+            goal_zone_mm=BoundingBox(
+                min_mm=(10.0, 10.0, 10.0), max_mm=(20.0, 20.0, 20.0)
+            ),
             forbid_zones=[],
-            build_zone=BoundingBox(min=(-50.0, -50.0, 0.0), max=(50.0, 50.0, 90.0)),
+            build_zone_mm=BoundingBox(
+                min_mm=(-50.0, -50.0, 0.0), max_mm=(50.0, 50.0, 90.0)
+            ),
         ),
         benchmark_parts=_default_benchmark_parts(),
-        simulation_bounds=BoundingBox(
-            min=(-100.0, -100.0, 0.0), max=(100.0, 100.0, 100.0)
+        simulation_bounds_mm=BoundingBox(
+            min_mm=(-100.0, -100.0, 0.0), max_mm=(100.0, 100.0, 100.0)
         ),
         payload=Payload(
             label="ball",
             shape="sphere",
             material_id="aluminum_6061",
-            start_position=(0.0, 0.0, 50.0),
-            runtime_jitter=(0.0, 0.0, 0.0),
+            start_position_mm=(0.0, 0.0, 50.0),
+            runtime_jitter_mm=(0.0, 0.0, 0.0),
         ),
         constraints=Constraints(max_unit_cost=50.0, max_weight_g=1000.0),
     )
@@ -1065,7 +1069,7 @@ async def test_int_008_objectives_validation(
 
         # 1. Template placeholders present (e.g., x_min)
         template_content = valid_objectives.model_dump(mode="json")
-        template_content["objectives"]["goal_zone"]["min"] = [
+        template_content["objectives"]["goal_zone_mm"]["min_mm"] = [
             "x_min",
             "y_min",
             "z_min",
@@ -1088,7 +1092,7 @@ async def test_int_008_objectives_validation(
 
         # 2. Schema violation (wrong type)
         invalid_obj = valid_objectives.model_dump(mode="json")
-        invalid_obj["objectives"]["goal_zone"]["min"] = "not_a_list"
+        invalid_obj["objectives"]["goal_zone_mm"]["min_mm"] = "not_a_list"
         await setup_workspace(
             client,
             base_headers,
@@ -1153,7 +1157,7 @@ def build():
         # 5. Unknown extra fields must fail closed (top-level and nested)
         extra_obj = valid_objectives.model_dump(mode="json")
         extra_obj["unknown_top_level"] = "forbidden"
-        extra_obj["objectives"]["goal_zone"]["unexpected_key"] = 123
+        extra_obj["objectives"]["goal_zone_mm"]["unexpected_key"] = 123
         await setup_workspace(
             client,
             base_headers,

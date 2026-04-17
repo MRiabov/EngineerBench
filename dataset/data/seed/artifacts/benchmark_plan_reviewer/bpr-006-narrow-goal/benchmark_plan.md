@@ -14,18 +14,18 @@ Test whether an engineer can widen capture upstream and then funnel a ball into 
 - Shape: `sphere`
 - Label: `projectile_ball`
 - Static randomization:
-  - radius in `[18, 20]` mm
+  - radius_mm in `[18, 20]` mm
 - Nominal start position: `[-80, 0, 145]`
 - Runtime jitter: `[10, 10, 5]` mm
 
 ## 4. Objectives
 
-- `goal_zone`: min `[500, -12, 10]`, max `[530, 12, 60]`
-- `build_zone`: min `[-140, -160, 0]`, max `[560, 160, 220]`
+- `goal_zone_mm`: min_mm `[500, -12, 10]`, max_mm `[530, 12, 60]`
+- `build_zone_mm`: min_mm `[-140, -160, 0]`, max_mm `[560, 160, 220]`
 
 ## 5. Simulation Bounds
 
-- min `[-200, -200, -10]`, max `[620, 200, 260]`
+- min_mm `[-200, -200, -10]`, max_mm `[620, 200, 260]`
 
 ## 6. Constraints Handed To Engineering
 
@@ -34,8 +34,8 @@ Test whether an engineer can widen capture upstream and then funnel a ball into 
 
 ## 7. Success Criteria
 
-- Success if the ball reaches the narrow `goal_zone` after being captured by the upstream funnel geometry.
-- Fail if the ball exits `simulation_bounds` or if the plan relies on undeclared moving benchmark parts to squeeze into the sleeve.
+- Success if the ball reaches the narrow `goal_zone_mm` after being captured by the upstream funnel geometry.
+- Fail if the ball exits `simulation_bounds_mm` or if the plan relies on undeclared moving benchmark parts to squeeze into the sleeve.
 
 ## 8. Planner Artifacts
 

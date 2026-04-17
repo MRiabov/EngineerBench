@@ -8,12 +8,12 @@
       "instance_name": "ground_plane",
       "object_type": "part",
       "object_id": 0,
-      "pos": [
+      "pos_mm": [
         0.0,
         0.0,
         0.0
       ],
-      "euler": [
+      "euler_deg": [
         -0.0,
         0.0,
         -0.0
@@ -21,7 +21,7 @@
       "mesh_paths": [
         "meshes/ground_plane.obj"
       ],
-      "box_size": null,
+      "box_size_mm": null,
       "material_id": "hdpe",
       "body_name": "ground_plane",
       "geom_name": "ground_plane",
@@ -46,12 +46,12 @@
       "instance_name": "platform_left",
       "object_type": "part",
       "object_id": 1,
-      "pos": [
+      "pos_mm": [
         -0.5,
         0.0,
         0.0
       ],
-      "euler": [
+      "euler_deg": [
         -0.0,
         0.0,
         -0.0
@@ -59,7 +59,7 @@
       "mesh_paths": [
         "meshes/platform_left.obj"
       ],
-      "box_size": null,
+      "box_size_mm": null,
       "material_id": "aluminum_6061",
       "body_name": "platform_left",
       "geom_name": "platform_left",
@@ -84,12 +84,12 @@
       "instance_name": "platform_right",
       "object_type": "part",
       "object_id": 2,
-      "pos": [
+      "pos_mm": [
         0.5,
         0.0,
         0.0
       ],
-      "euler": [
+      "euler_deg": [
         -0.0,
         0.0,
         -0.0
@@ -97,7 +97,7 @@
       "mesh_paths": [
         "meshes/platform_right.obj"
       ],
-      "box_size": null,
+      "box_size_mm": null,
       "material_id": "aluminum_6061",
       "body_name": "platform_right",
       "geom_name": "platform_right",
@@ -122,12 +122,12 @@
       "instance_name": "guide_rail_lower",
       "object_type": "part",
       "object_id": 3,
-      "pos": [
+      "pos_mm": [
         0.0,
         -0.06,
         0.1
       ],
-      "euler": [
+      "euler_deg": [
         -0.0,
         0.0,
         -0.0
@@ -135,7 +135,7 @@
       "mesh_paths": [
         "meshes/guide_rail_lower.obj"
       ],
-      "box_size": null,
+      "box_size_mm": null,
       "material_id": "steel_cold_rolled",
       "body_name": "guide_rail_lower",
       "geom_name": "guide_rail_lower",
@@ -160,12 +160,12 @@
       "instance_name": "guide_rail_upper",
       "object_type": "part",
       "object_id": 4,
-      "pos": [
+      "pos_mm": [
         0.0,
         0.06,
         0.1
       ],
-      "euler": [
+      "euler_deg": [
         -0.0,
         0.0,
         -0.0
@@ -173,7 +173,7 @@
       "mesh_paths": [
         "meshes/guide_rail_upper.obj"
       ],
-      "box_size": null,
+      "box_size_mm": null,
       "material_id": "steel_cold_rolled",
       "body_name": "guide_rail_upper",
       "geom_name": "guide_rail_upper",
@@ -198,12 +198,12 @@
       "instance_name": "projectile_ball",
       "object_type": "part",
       "object_id": 5,
-      "pos": [
+      "pos_mm": [
         0.0,
         0.0,
         0.0
       ],
-      "euler": [
+      "euler_deg": [
         -0.0,
         0.0,
         -0.0
@@ -211,7 +211,7 @@
       "mesh_paths": [
         "meshes/projectile_ball.obj"
       ],
-      "box_size": null,
+      "box_size_mm": null,
       "material_id": "steel_bearing",
       "body_name": "projectile_ball",
       "geom_name": "projectile_ball",
@@ -236,18 +236,18 @@
       "instance_name": "zone_goal",
       "object_type": "zone",
       "object_id": 6,
-      "pos": [
+      "pos_mm": [
         0.5,
         0.0,
         0.08
       ],
-      "euler": [
+      "euler_deg": [
         0.0,
         0.0,
         0.0
       ],
       "mesh_paths": [],
-      "box_size": [
+      "box_size_mm": [
         0.060000000000000026,
         0.05,
         0.060000000000000005
@@ -276,18 +276,18 @@
       "instance_name": "zone_build",
       "object_type": "zone",
       "object_id": 7,
-      "pos": [
+      "pos_mm": [
         0.0,
         0.0,
         0.09
       ],
-      "euler": [
+      "euler_deg": [
         0.0,
         0.0,
         0.0
       ],
       "mesh_paths": [],
-      "box_size": [
+      "box_size_mm": [
         0.58,
         0.1,
         0.09
@@ -310,17 +310,17 @@
       "include_in_segmentation": false
     }
   ],
-  "bounds_min": [
+  "bounds_min_mm": [
     -0.7,
     -0.15,
     -0.04
   ],
-  "bounds_max": [
+  "bounds_max_mm": [
     0.7,
     0.15,
     0.18
   ],
-  "center": [
+  "center_mm": [
     0.0,
     0.0,
     0.06999999999999999

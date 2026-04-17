@@ -8,12 +8,12 @@
       "instance_name": "projectile_ball",
       "object_type": "part",
       "object_id": 0,
-      "pos": [
+      "pos_mm": [
         -0.02,
         0.0,
         0.22
       ],
-      "euler": [
+      "euler_deg": [
         -0.0,
         0.0,
         -0.0
@@ -21,7 +21,7 @@
       "mesh_paths": [
         "meshes/projectile_ball.obj"
       ],
-      "box_size": null,
+      "box_size_mm": null,
       "material_id": "abs",
       "body_name": "projectile_ball",
       "geom_name": "projectile_ball",
@@ -46,18 +46,18 @@
       "instance_name": "zone_goal",
       "object_type": "zone",
       "object_id": 1,
-      "pos": [
+      "pos_mm": [
         0.27,
         0.0,
         0.0475
       ],
-      "euler": [
+      "euler_deg": [
         0.0,
         0.0,
         0.0
       ],
       "mesh_paths": [],
-      "box_size": [
+      "box_size_mm": [
         0.05,
         0.045,
         0.037500000000000006
@@ -86,18 +86,18 @@
       "instance_name": "zone_forbid_0_direct_drop_dead_zone",
       "object_type": "zone",
       "object_id": 2,
-      "pos": [
+      "pos_mm": [
         0.0,
         0.0,
         0.065
       ],
-      "euler": [
+      "euler_deg": [
         0.0,
         0.0,
         0.0
       ],
       "mesh_paths": [],
-      "box_size": [
+      "box_size_mm": [
         0.06,
         0.045,
         0.065
@@ -126,18 +126,18 @@
       "instance_name": "zone_build",
       "object_type": "zone",
       "object_id": 3,
-      "pos": [
+      "pos_mm": [
         0.12,
         0.0,
         0.14
       ],
-      "euler": [
+      "euler_deg": [
         0.0,
         0.0,
         0.0
       ],
       "mesh_paths": [],
-      "box_size": [
+      "box_size_mm": [
         0.24,
         0.16,
         0.14
@@ -160,17 +160,17 @@
       "include_in_segmentation": false
     }
   ],
-  "bounds_min": [
+  "bounds_min_mm": [
     -0.12,
     -0.16,
     0.0
   ],
-  "bounds_max": [
+  "bounds_max_mm": [
     0.36,
     0.16,
     0.28
   ],
-  "center": [
+  "center_mm": [
     0.12,
     0.0,
     0.14

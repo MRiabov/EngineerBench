@@ -8,12 +8,12 @@
       "instance_name": "environment_fixture",
       "object_type": "part",
       "object_id": 0,
-      "pos": [
+      "pos_mm": [
         0.0,
         0.0,
         0.0
       ],
-      "euler": [
+      "euler_deg": [
         -0.0,
         0.0,
         -0.0
@@ -21,7 +21,7 @@
       "mesh_paths": [
         "meshes/environment_fixture.obj"
       ],
-      "box_size": null,
+      "box_size_mm": null,
       "material_id": "aluminum_6061",
       "body_name": "environment_fixture",
       "geom_name": "environment_fixture",
@@ -46,12 +46,12 @@
       "instance_name": "projectile_ball",
       "object_type": "part",
       "object_id": 1,
-      "pos": [
+      "pos_mm": [
         -250.0,
         0.0,
         70.0
       ],
-      "euler": [
+      "euler_deg": [
         0.0,
         0.0,
         0.0
@@ -59,7 +59,7 @@
       "mesh_paths": [
         "meshes/benchmark_payload__projectile_ball.obj"
       ],
-      "box_size": null,
+      "box_size_mm": null,
       "material_id": "abs",
       "body_name": "benchmark_payload__projectile_ball",
       "geom_name": "benchmark_payload__projectile_ball",
@@ -84,18 +84,18 @@
       "instance_name": "zone_goal",
       "object_type": "zone",
       "object_id": 2,
-      "pos": [
+      "pos_mm": [
         260.0,
         0.0,
         65.0
       ],
-      "euler": [
+      "euler_deg": [
         0.0,
         0.0,
         0.0
       ],
       "mesh_paths": [],
-      "box_size": [
+      "box_size_mm": [
         50.0,
         55.0,
         45.0
@@ -124,18 +124,18 @@
       "instance_name": "zone_build",
       "object_type": "zone",
       "object_id": 3,
-      "pos": [
+      "pos_mm": [
         10.0,
         0.0,
         110.0
       ],
-      "euler": [
+      "euler_deg": [
         0.0,
         0.0,
         0.0
       ],
       "mesh_paths": [],
-      "box_size": [
+      "box_size_mm": [
         330.0,
         180.0,
         110.0
@@ -158,17 +158,17 @@
       "include_in_segmentation": false
     }
   ],
-  "bounds_min": [
+  "bounds_min_mm": [
     -320.0,
     -180.0,
     0.0
   ],
-  "bounds_max": [
+  "bounds_max_mm": [
     340.0,
     180.0,
     220.0
   ],
-  "center": [
+  "center_mm": [
     10.0,
     0.0,
     110.0

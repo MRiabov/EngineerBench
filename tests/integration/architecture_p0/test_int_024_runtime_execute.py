@@ -33,7 +33,7 @@ def _default_benchmark_parts():
             "part_id": "environment_fixture",
             "label": "environment_fixture",
             "metadata": {
-                "fixed": True,
+                "is_fixed": True,
                 "material_id": "aluminum_6061",
             },
         }
@@ -162,7 +162,7 @@ from utils.submission import validate_benchmark
 def build():
     p = Box(4, 4, 4).move(Location((0, 0, 4)))
     p.label = "target_box"
-    p.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
+    p.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
     return p
 
 result = build()
@@ -173,46 +173,50 @@ print(f"VALIDATE_MESSAGE={message}")
 
     invalid_objectives = BenchmarkDefinition(
         objectives=ObjectivesSection(
-            goal_zone=BoundingBox(min=(0.0, 0.0, 0.0), max=(10.0, 10.0, 10.0)),
+            goal_zone_mm=BoundingBox(min_mm=(0.0, 0.0, 0.0), max_mm=(10.0, 10.0, 10.0)),
             forbid_zones=[
                 {
                     "name": "goal_overlap",
-                    "min": (5.0, 5.0, 5.0),
-                    "max": (12.0, 12.0, 12.0),
+                    "min_mm": (5.0, 5.0, 5.0),
+                    "max_mm": (12.0, 12.0, 12.0),
                 }
             ],
-            build_zone=BoundingBox(min=(-20.0, -20.0, 0.0), max=(20.0, 20.0, 30.0)),
+            build_zone_mm=BoundingBox(
+                min_mm=(-20.0, -20.0, 0.0), max_mm=(20.0, 20.0, 30.0)
+            ),
         ),
         benchmark_parts=_default_benchmark_parts(),
-        simulation_bounds=BoundingBox(
-            min=(-50.0, -50.0, -10.0), max=(50.0, 50.0, 50.0)
+        simulation_bounds_mm=BoundingBox(
+            min_mm=(-50.0, -50.0, -10.0), max_mm=(50.0, 50.0, 50.0)
         ),
         payload=Payload(
             label="target_box",
             shape="sphere",
             material_id="aluminum_6061",
-            start_position=(0.0, 0.0, 4.0),
-            runtime_jitter=(0.0, 0.0, 0.0),
+            start_position_mm=(0.0, 0.0, 4.0),
+            runtime_jitter_mm=(0.0, 0.0, 0.0),
         ),
         constraints=Constraints(max_unit_cost=100.0, max_weight_g=1000.0),
     )
 
     valid_objectives = BenchmarkDefinition(
         objectives=ObjectivesSection(
-            goal_zone=BoundingBox(min=(8.0, 8.0, 0.0), max=(12.0, 12.0, 8.0)),
+            goal_zone_mm=BoundingBox(min_mm=(8.0, 8.0, 0.0), max_mm=(12.0, 12.0, 8.0)),
             forbid_zones=[],
-            build_zone=BoundingBox(min=(-20.0, -20.0, 0.0), max=(20.0, 20.0, 30.0)),
+            build_zone_mm=BoundingBox(
+                min_mm=(-20.0, -20.0, 0.0), max_mm=(20.0, 20.0, 30.0)
+            ),
         ),
         benchmark_parts=_default_benchmark_parts(),
-        simulation_bounds=BoundingBox(
-            min=(-50.0, -50.0, -10.0), max=(50.0, 50.0, 50.0)
+        simulation_bounds_mm=BoundingBox(
+            min_mm=(-50.0, -50.0, -10.0), max_mm=(50.0, 50.0, 50.0)
         ),
         payload=Payload(
             label="target_box",
             shape="sphere",
             material_id="aluminum_6061",
-            start_position=(0.0, 0.0, 4.0),
-            runtime_jitter=(0.0, 0.0, 0.0),
+            start_position_mm=(0.0, 0.0, 4.0),
+            runtime_jitter_mm=(0.0, 0.0, 0.0),
         ),
         constraints=Constraints(max_unit_cost=100.0, max_weight_g=1000.0),
     )
@@ -254,7 +258,7 @@ print(f"VALIDATE_MESSAGE={message}")
         invalid_data = ExecuteResponse.model_validate(invalid_exec.json())
         assert invalid_data.exit_code == 0
         assert "VALIDATE_SUCCESS=False" in invalid_data.stdout
-        assert "goal_zone overlaps forbid zone" in invalid_data.stdout
+        assert "goal_zone_mm overlaps forbid zone" in invalid_data.stdout
         assert "Temporary failure in name resolution" not in invalid_data.stdout
 
         write_valid = await client.post(
@@ -314,9 +318,13 @@ print(f"VALIDATE_MESSAGE={message}")
 
     overlap_objectives = BenchmarkDefinition(
         objectives=ObjectivesSection(
-            goal_zone=BoundingBox(min=(20.0, 20.0, 0.0), max=(24.0, 24.0, 4.0)),
+            goal_zone_mm=BoundingBox(
+                min_mm=(20.0, 20.0, 0.0), max_mm=(24.0, 24.0, 4.0)
+            ),
             forbid_zones=[],
-            build_zone=BoundingBox(min=(-20.0, -20.0, 0.0), max=(20.0, 20.0, 30.0)),
+            build_zone_mm=BoundingBox(
+                min_mm=(-20.0, -20.0, 0.0), max_mm=(20.0, 20.0, 30.0)
+            ),
         ),
         benchmark_parts=[
             BenchmarkPartDefinition(
@@ -328,16 +336,16 @@ print(f"VALIDATE_MESSAGE={message}")
                 ),
             )
         ],
-        simulation_bounds=BoundingBox(
-            min=(-50.0, -50.0, -10.0), max=(50.0, 50.0, 50.0)
+        simulation_bounds_mm=BoundingBox(
+            min_mm=(-50.0, -50.0, -10.0), max_mm=(50.0, 50.0, 50.0)
         ),
         payload=Payload(
             label="projectile_ball",
             shape="sphere",
             material_id="abs",
-            static_randomization=StaticRandomization(radius=(0.25, 0.25)),
-            start_position=(0.0, 0.0, 5.0),
-            runtime_jitter=(0.0, 0.0, 0.0),
+            static_randomization=StaticRandomization(radius_mm=(0.25, 0.25)),
+            start_position_mm=(0.0, 0.0, 5.0),
+            runtime_jitter_mm=(0.0, 0.0, 0.0),
         ),
         constraints=Constraints(max_unit_cost=100.0, max_weight_g=1000.0),
     )
@@ -470,11 +478,11 @@ def build():
         Box(0.4, 0.4, 0.4, align=(Align.CENTER, Align.CENTER, Align.MIN))
     ball = ball_builder.part
     ball.label = "target_box"
-    ball.metadata = PartMetadata(material_id="steel_bearing", fixed=False)
+    ball.metadata = PartMetadata(material_id="steel_bearing", is_fixed=False)
 
     benchmark = Compound(children=[ground, ball])
     benchmark.label = "benchmark_assembly"
-    benchmark.metadata = CompoundMetadata(fixed=True)
+    benchmark.metadata = CompoundMetadata(is_fixed=True)
     return benchmark
 
 result = build()
@@ -485,20 +493,22 @@ print(f"VALIDATE_MESSAGE={message}")
 
     objectives = BenchmarkDefinition(
         objectives=ObjectivesSection(
-            goal_zone=BoundingBox(min=(8.0, 8.0, 0.0), max=(12.0, 12.0, 8.0)),
+            goal_zone_mm=BoundingBox(min_mm=(8.0, 8.0, 0.0), max_mm=(12.0, 12.0, 8.0)),
             forbid_zones=[],
-            build_zone=BoundingBox(min=(-20.0, -20.0, 0.0), max=(20.0, 20.0, 30.0)),
+            build_zone_mm=BoundingBox(
+                min_mm=(-20.0, -20.0, 0.0), max_mm=(20.0, 20.0, 30.0)
+            ),
         ),
         benchmark_parts=_default_benchmark_parts(),
-        simulation_bounds=BoundingBox(
-            min=(-50.0, -50.0, -10.0), max=(50.0, 50.0, 50.0)
+        simulation_bounds_mm=BoundingBox(
+            min_mm=(-50.0, -50.0, -10.0), max_mm=(50.0, 50.0, 50.0)
         ),
         payload=Payload(
             label="target_box",
             shape="box",
             material_id="aluminum_6061",
-            start_position=(0.0, 0.0, 0.2),
-            runtime_jitter=(0.0, 0.0, 0.0),
+            start_position_mm=(0.0, 0.0, 0.2),
+            runtime_jitter_mm=(0.0, 0.0, 0.0),
         ),
         constraints=Constraints(max_unit_cost=100.0, max_weight_g=1000.0),
     )
@@ -567,19 +577,19 @@ def build():
         Box(4, 4, 0.2, align=(Align.CENTER, Align.CENTER, Align.MIN))
     ground = ground_builder.part
     ground.label = "ground_plane"
-    ground.metadata = PartMetadata(material_id="hdpe", fixed=True)
+    ground.metadata = PartMetadata(material_id="hdpe", is_fixed=True)
 
     with BuildPart() as platform_builder:
         Box(1, 1, 1, align=(Align.CENTER, Align.CENTER, Align.MIN))
     platform = platform_builder.part.translate((8, 0, 0))
     platform.label = "platform_left"
-    platform.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
+    platform.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
 
     with BuildPart() as ball_builder:
         Box(0.4, 0.4, 0.4, align=(Align.CENTER, Align.CENTER, Align.MIN))
     ball = ball_builder.part.translate((8, 0, 1.2))
     ball.label = "target_box"
-    ball.metadata = PartMetadata(material_id="steel_bearing", fixed=False)
+    ball.metadata = PartMetadata(material_id="steel_bearing", is_fixed=False)
 
     benchmark = Compound(children=[ground, platform, ball])
     benchmark.label = "benchmark_assembly"
@@ -594,20 +604,22 @@ print(f"VALIDATE_MESSAGE={message}")
 
     objectives = BenchmarkDefinition(
         objectives=ObjectivesSection(
-            goal_zone=BoundingBox(min=(10.0, -2.0, 0.0), max=(12.0, 2.0, 4.0)),
+            goal_zone_mm=BoundingBox(min_mm=(10.0, -2.0, 0.0), max_mm=(12.0, 2.0, 4.0)),
             forbid_zones=[],
-            build_zone=BoundingBox(min=(-20.0, -20.0, 0.0), max=(20.0, 20.0, 30.0)),
+            build_zone_mm=BoundingBox(
+                min_mm=(-20.0, -20.0, 0.0), max_mm=(20.0, 20.0, 30.0)
+            ),
         ),
         benchmark_parts=_default_benchmark_parts(),
-        simulation_bounds=BoundingBox(
-            min=(-50.0, -50.0, -10.0), max=(50.0, 50.0, 50.0)
+        simulation_bounds_mm=BoundingBox(
+            min_mm=(-50.0, -50.0, -10.0), max_mm=(50.0, 50.0, 50.0)
         ),
         payload=Payload(
             label="target_box",
             shape="box",
             material_id="aluminum_6061",
-            start_position=(8.0, 0.0, 1.2),
-            runtime_jitter=(0.0, 0.0, 0.0),
+            start_position_mm=(8.0, 0.0, 1.2),
+            runtime_jitter_mm=(0.0, 0.0, 0.0),
         ),
         constraints=Constraints(max_unit_cost=100.0, max_weight_g=1000.0),
     )
@@ -681,7 +693,7 @@ from utils.submission import validate_benchmark
 def build():
     part = Box(1, 1, 1, align=(Align.CENTER, Align.CENTER, Align.MIN))
     part.label = "   "
-    part.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
+    part.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
 
     scene = Compound(children=[part])
     scene.label = "benchmark_assembly"
@@ -743,7 +755,7 @@ from utils.submission import validate_benchmark
 def build():
     ground = Box(40, 40, 1, align=(Align.CENTER, Align.CENTER, Align.MIN))
     ground.label = "ground_plane"
-    ground.metadata = PartMetadata(material_id="hdpe", fixed=True)
+    ground.metadata = PartMetadata(material_id="hdpe", is_fixed=True)
     return ground
 
 result = build()
@@ -754,20 +766,22 @@ print(f"VALIDATE_MESSAGE={message}")
 
     objectives = BenchmarkDefinition(
         objectives=ObjectivesSection(
-            goal_zone=BoundingBox(min=(-2.0, -2.0, 0.0), max=(2.0, 2.0, 8.0)),
+            goal_zone_mm=BoundingBox(min_mm=(-2.0, -2.0, 0.0), max_mm=(2.0, 2.0, 8.0)),
             forbid_zones=[],
-            build_zone=BoundingBox(min=(-5.0, -5.0, 0.0), max=(5.0, 5.0, 10.0)),
+            build_zone_mm=BoundingBox(
+                min_mm=(-5.0, -5.0, 0.0), max_mm=(5.0, 5.0, 10.0)
+            ),
         ),
         benchmark_parts=_default_benchmark_parts(),
-        simulation_bounds=BoundingBox(
-            min=(-50.0, -50.0, -10.0), max=(50.0, 50.0, 50.0)
+        simulation_bounds_mm=BoundingBox(
+            min_mm=(-50.0, -50.0, -10.0), max_mm=(50.0, 50.0, 50.0)
         ),
         payload=Payload(
             label="ground_plane",
             shape="box",
             material_id="aluminum_6061",
-            start_position=(0.0, 0.0, 0.5),
-            runtime_jitter=(0.0, 0.0, 0.0),
+            start_position_mm=(0.0, 0.0, 0.5),
+            runtime_jitter_mm=(0.0, 0.0, 0.0),
         ),
         constraints=Constraints(max_unit_cost=100.0, max_weight_g=1000.0),
     )

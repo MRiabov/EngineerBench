@@ -36,7 +36,7 @@ def build():
     top_face = rail.faces().sort_by(Axis.Z)[-1]
     rail = offset(rail, amount=-6.0, openings=top_face)
     rail.label = "solution_plan_evidence"
-    rail.metadata = PartMetadata(material_id="hdpe", fixed=True)
+    rail.metadata = PartMetadata(material_id="hdpe", is_fixed=True)
     return rail
 
 

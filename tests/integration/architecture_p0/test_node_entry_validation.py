@@ -90,9 +90,9 @@ async def test_int_current_role_manifest_wins_over_mixed_workspace_files():
                 {
                     "constraints": {"max_unit_cost": 100.0, "max_weight_g": 1000.0},
                     "objectives": {
-                        "goal_zone": {"min": [0, 0, 0], "max": [1, 1, 1]},
+                        "goal_zone_mm": {"min_mm": [0, 0, 0], "max_mm": [1, 1, 1]},
                         "forbid_zones": [],
-                        "build_zone": {"min": [0, 0, 0], "max": [1, 1, 1]},
+                        "build_zone_mm": {"min_mm": [0, 0, 0], "max_mm": [1, 1, 1]},
                     },
                 },
                 sort_keys=False,
@@ -276,7 +276,7 @@ def _make_box(
         Location(center)
     )
     part.label = label
-    part.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
+    part.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
     return part
 
 
@@ -378,7 +378,7 @@ def build() -> Compound:
         0.5, 0.5, 0.5, align=(Align.CENTER, Align.CENTER, Align.CENTER)
     ).move(Location((10.25, 0.0, 0.0)))
     fixed_block.label = "fixed_block"
-    fixed_block.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
+    fixed_block.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
 
     scene = Compound(children=[fixed_block])
     scene.label = "benchmark_scene"
@@ -402,7 +402,7 @@ def build() -> Compound:
         10, 10, 10, align=(Align.CENTER, Align.CENTER, Align.CENTER)
     )
     payload.label = "payload_body"
-    payload.metadata = PartMetadata(material_id="abs", fixed=False)
+    payload.metadata = PartMetadata(material_id="abs", is_fixed=False)
 
     scene = Compound(children=[payload])
     scene.label = "solution_assembly"
@@ -418,32 +418,35 @@ result = build()
     benchmark_definition_text = yaml.safe_dump(
         {
             "objectives": {
-                "goal_zone": {"min": [40.1, -10.0, -10.0], "max": [500.0, 10.0, 10.0]},
+                "goal_zone_mm": {
+                    "min_mm": [40.1, -10.0, -10.0],
+                    "max_mm": [500.0, 10.0, 10.0],
+                },
                 "forbid_zones": [],
-                "build_zone": {
-                    "min": [-10.0, -10.0, -10.0],
-                    "max": [500.0, 10.0, 10.0],
+                "build_zone_mm": {
+                    "min_mm": [-10.0, -10.0, -10.0],
+                    "max_mm": [500.0, 10.0, 10.0],
                 },
             },
             "benchmark_parts": [
                 {
                     "part_id": "environment_fixture",
                     "label": "environment_fixture",
-                    "metadata": {"fixed": True, "material_id": "aluminum_6061"},
+                    "metadata": {"is_fixed": True, "material_id": "aluminum_6061"},
                 }
             ],
             "physics": {"backend": "GENESIS", "compute_target": "auto"},
-            "simulation_bounds": {
-                "min": [-10.0, -10.0, -10.0],
-                "max": [500.0, 10.0, 10.0],
+            "simulation_bounds_mm": {
+                "min_mm": [-10.0, -10.0, -10.0],
+                "max_mm": [500.0, 10.0, 10.0],
             },
             "payload": {
                 "label": "payload_body",
                 "shape": "cube",
                 "material_id": "abs",
-                "static_randomization": {"radius": [0.0, 0.0]},
-                "start_position": [0.0, 0.0, 0.0],
-                "runtime_jitter": [0.0, 0.0, 0.0],
+                "static_randomization": {"radius_mm": [0.0, 0.0]},
+                "start_position_mm": [0.0, 0.0, 0.0],
+                "runtime_jitter_mm": [0.0, 0.0, 0.0],
             },
             "constraints": {"max_unit_cost": 50.0, "max_weight_g": 980.0},
             "randomization": {
@@ -507,7 +510,7 @@ result = build()
 
     assert not is_valid, "Expected the segment sampler to reject the crossing path."
     assert any(
-        "fixed geometry" in error or "intersects" in error or "goal_zone" in error
+        "fixed geometry" in error or "intersects" in error or "goal_zone_mm" in error
         for error in payload_result
     ), payload_result
 
@@ -637,21 +640,23 @@ def test_int_engineer_planner_payload_trajectory_clearance_validation_runs(
 
     benchmark_definition = BenchmarkDefinition(
         objectives=ObjectivesSection(
-            goal_zone=BoundingBox(min=(-5.0, -5.0, -5.0), max=(5.0, 5.0, 5.0)),
+            goal_zone_mm=BoundingBox(min_mm=(-5.0, -5.0, -5.0), max_mm=(5.0, 5.0, 5.0)),
             forbid_zones=[],
-            build_zone=BoundingBox(min=(-10.0, -10.0, -10.0), max=(10.0, 10.0, 10.0)),
+            build_zone_mm=BoundingBox(
+                min_mm=(-10.0, -10.0, -10.0), max_mm=(10.0, 10.0, 10.0)
+            ),
         ),
         benchmark_parts=[],
-        simulation_bounds=BoundingBox(
-            min=(-20.0, -20.0, -20.0),
-            max=(20.0, 20.0, 20.0),
+        simulation_bounds_mm=BoundingBox(
+            min_mm=(-20.0, -20.0, -20.0),
+            max_mm=(20.0, 20.0, 20.0),
         ),
         payload=Payload(
             label="payload",
             shape="sphere",
             material_id="aluminum_6061",
-            start_position=(0.0, 0.0, 0.0),
-            runtime_jitter=(0.0, 0.0, 0.0),
+            start_position_mm=(0.0, 0.0, 0.0),
+            runtime_jitter_mm=(0.0, 0.0, 0.0),
         ),
         constraints=Constraints(max_unit_cost=50.0, max_weight_g=1000.0),
     )

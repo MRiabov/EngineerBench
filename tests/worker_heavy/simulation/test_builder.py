@@ -51,7 +51,7 @@ def test_simulation_builder(tmp_path):
     box1.label = "part_1"
     box1.metadata = PartMetadata(
         material_id="aluminum_6061",
-        fixed=False,
+        is_fixed=False,
         joint=JointMetadata(type="hinge", axis=(0, 0, 1), range=(-90, 90)),
     )
 
@@ -87,7 +87,7 @@ def test_compound_metadata_resolution():
     box = Box(0.1, 0.1, 0.1)
     box.label = "compound_part"
     box.metadata = CompoundMetadata(
-        fixed=False, joint=JointMetadata(type="slide", axis=(1, 0, 0))
+        is_fixed=False, joint=JointMetadata(type="slide", axis=(1, 0, 0))
     )
 
     parts_data = CommonAssemblyTraverser.traverse(box)

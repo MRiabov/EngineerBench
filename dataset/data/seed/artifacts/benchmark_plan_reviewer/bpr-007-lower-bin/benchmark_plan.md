@@ -14,20 +14,20 @@ Test whether an engineer can redirect a falling ball into a lower bin while avoi
 - Shape: `sphere`
 - Label: `projectile_ball`
 - Static randomization:
-  - radius in `[28, 30]` mm
+  - radius_mm in `[28, 30]` mm
 - Nominal start position: `[-20, 0, 220]`
 - Runtime jitter: `[8, 8, 6]` mm
 
 ## 4. Objectives
 
-- `goal_zone`: min `[220, -45, 10]`, max `[320, 45, 85]`
+- `goal_zone_mm`: min_mm `[220, -45, 10]`, max_mm `[320, 45, 85]`
 - `forbid_zones`:
-  - `direct_drop_dead_zone`: min `[-60, -45, 0]`, max `[60, 45, 130]`
-- `build_zone`: min `[-120, -160, 0]`, max `[360, 160, 280]`
+  - `direct_drop_dead_zone`: min_mm `[-60, -45, 0]`, max_mm `[60, 45, 130]`
+- `build_zone_mm`: min_mm `[-120, -160, 0]`, max_mm `[360, 160, 280]`
 
 ## 5. Simulation Bounds
 
-- min `[-180, -200, -10]`, max `[420, 200, 320]`
+- min_mm `[-180, -200, -10]`, max_mm `[420, 200, 320]`
 
 ## 6. Constraints Handed To Engineering
 
@@ -36,8 +36,8 @@ Test whether an engineer can redirect a falling ball into a lower bin while avoi
 
 ## 7. Success Criteria
 
-- Success if the payload reaches `goal_zone` without entering `direct_drop_dead_zone`.
-- Fail if the ball exits `simulation_bounds` or if planner artifacts imply undeclared active redirection hardware.
+- Success if the payload reaches `goal_zone_mm` without entering `direct_drop_dead_zone`.
+- Fail if the ball exits `simulation_bounds_mm` or if planner artifacts imply undeclared active redirection hardware.
 
 ## 8. Planner Artifacts
 

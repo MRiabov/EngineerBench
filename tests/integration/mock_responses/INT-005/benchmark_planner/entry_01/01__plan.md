@@ -18,19 +18,19 @@
 - Input object:
   - Shape: `sphere`
   - Label: `projectile_ball`
-  - Static randomization: radius in `[1, 2]` mm
+  - Static randomization: radius_mm in `[1, 2]` mm
   - Nominal start position: `[0, 0, 0]`
   - Runtime jitter: `[0.5, 0.5, 0.5]`
-- Goal zone: `min [6, -2, 0]`, `max [10, 2, 4]`
-- Forbid zone: `min [3, -3, 0]`, `max [4, 3, 4]`
-- Build zone: `min [-10, -10, -10]`, `max [10, 10, 10]`
-- Simulation bounds: `min [-30, -30, -30]`, `max [30, 30, 30]`
+- Goal zone: `min_mm [6, -2, 0]`, `max_mm [10, 2, 4]`
+- Forbid zone: `min_mm [3, -3, 0]`, `max_mm [4, 3, 4]`
+- Build zone: `min_mm [-10, -10, -10]`, `max_mm [10, 10, 10]`
+- Simulation bounds: `min_mm [-30, -30, -30]`, `max_mm [30, 30, 30]`
 - Success requires the sphere to reach the goal zone without crossing the
   forbid zone.
 
 ## 4. Randomization
 
-- Static randomization is limited to the moved sphere radius.
+- Static randomization is limited to the moved sphere radius_mm.
 - Runtime jitter is limited to the sphere spawn position.
 - The passive fixture remains fixed so the benchmark stays reproducible.
 

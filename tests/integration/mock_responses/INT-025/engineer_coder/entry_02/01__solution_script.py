@@ -10,7 +10,7 @@ def build():
     support.label = "goal_platform"
     support.metadata = PartMetadata(
         material_id="aluminum_6061",
-        fixed=True,
+        is_fixed=True,
         manufacturing_method=ManufacturingMethod.THREE_DP,
     )
 
@@ -19,11 +19,11 @@ def build():
     projectile_ball.label = "projectile_ball"
     projectile_ball.metadata = PartMetadata(
         material_id="abs",
-        fixed=False,
+        is_fixed=False,
         manufacturing_method=ManufacturingMethod.THREE_DP,
     )
 
     scene = Compound(children=[support, projectile_ball])
     scene.label = "benchmark_scene"
-    scene.metadata = CompoundMetadata(fixed=False)
+    scene.metadata = CompoundMetadata(is_fixed=False)
     return scene

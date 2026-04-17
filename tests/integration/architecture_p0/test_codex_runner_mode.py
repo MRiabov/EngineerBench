@@ -2296,7 +2296,7 @@ def test_run_evals_codex_env_supports_repo_root_imports(tmp_path):
     workspace_dir.mkdir()
     (workspace_dir / "script.py").write_text(
         "from shared.models.schemas import PartMetadata\n"
-        "print(PartMetadata(material_id='aluminum_6061', fixed=True).model_dump())\n",
+        "print(PartMetadata(material_id='aluminum_6061', is_fixed=True).model_dump())\n",
         encoding="utf-8",
     )
 
@@ -2469,7 +2469,7 @@ def test_run_evals_codex_vtk_preview_renders_headlessly(tmp_path, monkeypatch):
     component.metadata = PartMetadata(
         manufacturing_method=ManufacturingMethod.CNC,
         material_id="aluminum_6061",
-        fixed=True,
+        is_fixed=True,
     )
 
     output_path = tmp_path / "renders" / "preview.png"
@@ -2505,7 +2505,7 @@ def test_preview_scene_bundle_carries_current_role_manifest(tmp_path):
     component.metadata = PartMetadata(
         manufacturing_method=ManufacturingMethod.CNC,
         material_id="aluminum_6061",
-        fixed=True,
+        is_fixed=True,
     )
 
     bundle_base64 = export_preview_scene_bundle(

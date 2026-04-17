@@ -16,7 +16,7 @@
 ## Phase 3: Assemble
 
 - [ ] Position parts according to Assembly Strategy
-- [ ] Verify all parts within build_zone bounds
+- [ ] Verify all parts within build_zone_mm bounds
 - [ ] Check for geometric intersections
 
 ## Phase 4: Validate

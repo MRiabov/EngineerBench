@@ -9,7 +9,7 @@ def build():
     p.label = "projectile_ball"
     p.metadata = PartMetadata(
         material_id="abs",
-        fixed=False,
+        is_fixed=False,
         manufacturing_method=ManufacturingMethod.THREE_DP,
     )
     return p

@@ -10,12 +10,12 @@ def build():
     part.label = "render_cube"
     part.metadata = PartMetadata(
         material_id="abs",
-        fixed=False,
+        is_fixed=False,
         manufacturing_method=ManufacturingMethod.THREE_DP,
     )
     scene = Compound(children=[part])
     scene.label = "render_cube_scene"
-    scene.metadata = CompoundMetadata(fixed=False)
+    scene.metadata = CompoundMetadata(is_fixed=False)
     return scene
 
 

@@ -36,28 +36,28 @@ def build() -> Compound:
     bp = Box(*BASE_PLATE_SIZE, align=(Align.CENTER, Align.CENTER, Align.MIN))
     bp = bp.move(Location(BASE_PLATE_POS))
     bp.label = "base_plate"
-    bp.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
+    bp.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
     children.append(bp)
 
     # deflector_ramp x1
     dr = Box(*DEFLECTOR_RAMP_SIZE, align=(Align.CENTER, Align.CENTER, Align.CENTER))
     dr = dr.move(Location(DEFLECTOR_RAMP_POS))
     dr.label = "deflector_ramp"
-    dr.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
+    dr.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
     children.append(dr)
 
     # side_goal_wall x1
     sgw = Box(*SIDE_GOAL_WALL_SIZE, align=(Align.CENTER, Align.CENTER, Align.CENTER))
     sgw = sgw.move(Location(SIDE_GOAL_WALL_POS))
     sgw.label = "side_goal_wall"
-    sgw.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
+    sgw.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
     children.append(sgw)
 
     # catch_bin x1
     cb = Box(*CATCH_BIN_SIZE, align=(Align.CENTER, Align.CENTER, Align.MIN))
     cb = cb.move(Location(CATCH_BIN_POS))
     cb.label = "catch_bin"
-    cb.metadata = PartMetadata(material_id="hdpe", fixed=True)
+    cb.metadata = PartMetadata(material_id="hdpe", is_fixed=True)
     children.append(cb)
 
     asm = Compound(children=children)

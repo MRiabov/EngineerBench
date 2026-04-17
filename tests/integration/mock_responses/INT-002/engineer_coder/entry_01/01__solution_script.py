@@ -14,12 +14,12 @@ def build():
     p.label = "projectile_ball"
     p.metadata = PartMetadata(
         material_id="abs",
-        fixed=False,
+        is_fixed=False,
         manufacturing_method=ManufacturingMethod.THREE_DP,
     )
     scene = Compound(children=[p])
     scene.label = "projectile_ball_scene"
-    scene.metadata = CompoundMetadata(fixed=False)
+    scene.metadata = CompoundMetadata(is_fixed=False)
     return scene
 
 

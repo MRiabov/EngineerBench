@@ -12,16 +12,16 @@
 
 - Shape: `sphere`
 - Label: `projectile_ball`
-- Static randomization: radius in `[4, 6]` mm
+- Static randomization: radius_mm in `[4, 6]` mm
 - Nominal start position: `[0, 0, 48]`
 - Runtime jitter:
   - Position: `[2, 2, 1]` mm
 
 ## 4. Objectives
 
-- Goal zone: `min [22, 8, 2]`, `max [34, 20, 12]`
-- Forbid zone: `central_baffle`, `min [-8, -8, 0]`, `max [8, 8, 16]`
-- Build zone: `min [-36, -28, 0]`, `max [36, 28, 60]`
+- Goal zone: `min_mm [22, 8, 2]`, `max_mm [34, 20, 12]`
+- Forbid zone: `central_baffle`, `min_mm [-8, -8, 0]`, `max_mm [8, 8, 16]`
+- Build zone: `min_mm [-36, -28, 0]`, `max_mm [36, 28, 60]`
 
 ## 5. Design
 

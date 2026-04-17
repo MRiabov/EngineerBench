@@ -14,7 +14,7 @@ def _make_fixture(
         Location(center)
     )
     fixture.label = label
-    fixture.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
+    fixture.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
     return fixture
 
 

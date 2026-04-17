@@ -16,7 +16,7 @@ Move a 40 mm steel sphere one meter sideways into the goal zone using only fixed
 
 ## 4. Randomization
 
-- No runtime randomization beyond the fixed sphere radius and deterministic
+- No runtime randomization beyond the fixed sphere radius_mm and deterministic
   start pose declared in `benchmark_definition.yaml`.
 
 ## 5. Implementation Notes

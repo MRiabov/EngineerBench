@@ -22,7 +22,7 @@ Use a freestanding bridge deck with shallow side fences to move `transfer_cube` 
 1. Place `base_frame` centered in the build zone so the support footprint stays clear of the `floor_gap` keep-out volume and aligned with `left_start_deck`.
 2. Mount `bridge_deck` along the x-axis with its span centered over the gap corridor and its far end pointing at `right_goal_deck`.
 3. Mount `left_fence` and `right_fence` along the deck edges with enough clearance for the jittered cube to pass without climbing the rails.
-4. Position `landing_pocket` so its mouth overlaps the `goal_zone` and captures the cube before it can rebound off the right deck.
+4. Position `landing_pocket` so its mouth overlaps the `goal_zone_mm` and captures the cube before it can rebound off the right deck.
 5. Keep every part label grounded in `engineering_plan.md`, `todo.md`, and `assembly_definition.yaml`, and keep the benchmark fixtures unchanged.
 6. The callouts `1`-`5` track the base frame, bridge deck, left fence, right fence, and landing pocket, respectively.
 

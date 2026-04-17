@@ -46,7 +46,7 @@ def _default_benchmark_parts():
         {
             "part_id": "environment_fixture",
             "label": "environment_fixture",
-            "metadata": {"fixed": True, "material_id": "aluminum_6061"},
+            "metadata": {"is_fixed": True, "material_id": "aluminum_6061"},
         }
     ]
 
@@ -67,26 +67,30 @@ def build():
 def _zone_video_objectives() -> BenchmarkDefinition:
     return BenchmarkDefinition(
         objectives=ObjectivesSection(
-            goal_zone=BoundingBox(min=(10.0, -20.0, 0.0), max=(20.0, 20.0, 20.0)),
+            goal_zone_mm=BoundingBox(
+                min_mm=(10.0, -20.0, 0.0), max_mm=(20.0, 20.0, 20.0)
+            ),
             forbid_zones=[
                 ForbidZone(
                     name="video_blocker",
-                    min=(-20.0, -20.0, 0.0),
-                    max=(-10.0, 20.0, 20.0),
+                    min_mm=(-20.0, -20.0, 0.0),
+                    max_mm=(-10.0, 20.0, 20.0),
                 )
             ],
-            build_zone=BoundingBox(min=(-25.0, -25.0, 0.0), max=(25.0, 25.0, 35.0)),
+            build_zone_mm=BoundingBox(
+                min_mm=(-25.0, -25.0, 0.0), max_mm=(25.0, 25.0, 35.0)
+            ),
         ),
         physics=PhysicsConfig(backend=SimulatorBackendType.MUJOCO),
-        simulation_bounds=BoundingBox(
-            min=(-40.0, -40.0, -10.0), max=(40.0, 40.0, 40.0)
+        simulation_bounds_mm=BoundingBox(
+            min_mm=(-40.0, -40.0, -10.0), max_mm=(40.0, 40.0, 40.0)
         ),
         payload=Payload(
             label="target_ball",
             shape="sphere",
             material_id="aluminum_6061",
-            start_position=(0.0, 0.0, 10.0),
-            runtime_jitter=(0.0, 0.0, 0.0),
+            start_position_mm=(0.0, 0.0, 10.0),
+            runtime_jitter_mm=(0.0, 0.0, 0.0),
         ),
         constraints=Constraints(max_unit_cost=100.0, max_weight_g=1000.0),
         benchmark_parts=_default_benchmark_parts(),

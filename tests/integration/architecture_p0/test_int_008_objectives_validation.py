@@ -25,7 +25,7 @@ def _default_benchmark_parts():
             "part_id": "environment_fixture",
             "label": "environment_fixture",
             "metadata": {
-                "fixed": True,
+                "is_fixed": True,
                 "material_id": "aluminum_6061",
             },
         }
@@ -139,22 +139,22 @@ def _objective_validation_payload(
 ) -> dict:
     return {
         "objectives": {
-            "goal_zone": {"min": goal_zone_min, "max": goal_zone_max},
+            "goal_zone_mm": {"min_mm": goal_zone_min, "max_mm": goal_zone_max},
             "forbid_zones": forbid_zones or [],
-            "build_zone": {"min": build_zone_min, "max": build_zone_max},
+            "build_zone_mm": {"min_mm": build_zone_min, "max_mm": build_zone_max},
         },
         "physics": {"backend": "GENESIS"},
-        "simulation_bounds": {
-            "min": simulation_bounds_min or [-30.0, -30.0, -10.0],
-            "max": simulation_bounds_max or [30.0, 30.0, 30.0],
+        "simulation_bounds_mm": {
+            "min_mm": simulation_bounds_min or [-30.0, -30.0, -10.0],
+            "max_mm": simulation_bounds_max or [30.0, 30.0, 30.0],
         },
         "payload": {
             "label": "projectile_ball",
             "shape": "sphere",
             "material_id": "abs",
-            "static_randomization": {"radius": radius},
-            "start_position": start_position,
-            "runtime_jitter": runtime_jitter,
+            "static_randomization": {"radius_mm": radius},
+            "start_position_mm": start_position,
+            "runtime_jitter_mm": runtime_jitter,
         },
         "constraints": {"max_unit_cost": 50.0, "max_weight_g": 1200.0},
         "benchmark_parts": _default_benchmark_parts(),
@@ -251,28 +251,28 @@ def build():
 """
     overlapping_objectives = {
         "objectives": {
-            "goal_zone": {"min": [1.0, -1.0, 0.0], "max": [2.0, 1.0, 1.0]},
+            "goal_zone_mm": {"min_mm": [1.0, -1.0, 0.0], "max_mm": [2.0, 1.0, 1.0]},
             "forbid_zones": [
                 {
                     "name": "out_of_bounds",
-                    "min": [0.0, -2.0, 0.0],
-                    "max": [3.0, 2.0, 2.0],
+                    "min_mm": [0.0, -2.0, 0.0],
+                    "max_mm": [3.0, 2.0, 2.0],
                 }
             ],
-            "build_zone": {"min": [-5.0, -5.0, 0.0], "max": [5.0, 5.0, 15.0]},
+            "build_zone_mm": {"min_mm": [-5.0, -5.0, 0.0], "max_mm": [5.0, 5.0, 15.0]},
         },
         "physics": {"backend": "GENESIS"},
-        "simulation_bounds": {
-            "min": [-30.0, -30.0, -10.0],
-            "max": [30.0, 30.0, 30.0],
+        "simulation_bounds_mm": {
+            "min_mm": [-30.0, -30.0, -10.0],
+            "max_mm": [30.0, 30.0, 30.0],
         },
         "payload": {
             "label": "projectile_ball",
             "shape": "sphere",
             "material_id": "abs",
-            "static_randomization": {"radius": [0.25, 0.25]},
-            "start_position": [0.0, 0.0, 12.0],
-            "runtime_jitter": [0.1, 0.1, 0.1],
+            "static_randomization": {"radius_mm": [0.25, 0.25]},
+            "start_position_mm": [0.0, 0.0, 12.0],
+            "runtime_jitter_mm": [0.1, 0.1, 0.1],
         },
         "constraints": {"max_unit_cost": 50.0, "max_weight_g": 1200.0},
         "benchmark_parts": _default_benchmark_parts(),
@@ -303,7 +303,7 @@ def build():
         )
         assert resp.status_code == 200, resp.text
         data = BenchmarkToolResponse.model_validate(resp.json())
-        assert "goal_zone overlaps forbid zone" in data.message
+        assert "goal_zone_mm overlaps forbid zone" in data.message
 
 
 @pytest.mark.integration_p0
@@ -326,18 +326,18 @@ async def test_int_008_objectives_semantic_validation_rejects_runtime_envelope_f
         _objective_validation_artifacts()
     )
     collision_objectives = _objective_validation_payload(
-        goal_zone_min=[1.0, -1.0, 0.0],
-        goal_zone_max=[2.0, 1.0, 1.0],
-        build_zone_min=[-5.0, -5.0, 0.0],
-        build_zone_max=[5.0, 5.0, 15.0],
-        start_position=[0.0, 0.0, 5.0],
-        runtime_jitter=[0.25, 0.25, 0.25],
+        goal_zone_min_mm=[1.0, -1.0, 0.0],
+        goal_zone_max_mm=[2.0, 1.0, 1.0],
+        build_zone_min_mm=[-5.0, -5.0, 0.0],
+        build_zone_max_mm=[5.0, 5.0, 15.0],
+        start_position_mm=[0.0, 0.0, 5.0],
+        runtime_jitter_mm=[0.25, 0.25, 0.25],
         radius=[0.1, 0.1],
         forbid_zones=[
             {
                 "name": "clearance_window",
-                "min": [-0.25, -0.25, 4.5],
-                "max": [0.25, 0.25, 5.5],
+                "min_mm": [-0.25, -0.25, 4.5],
+                "max_mm": [0.25, 0.25, 5.5],
             }
         ],
     )
@@ -389,12 +389,12 @@ async def test_int_008_objectives_semantic_validation_rejects_goal_zone_outside_
         _objective_validation_artifacts()
     )
     obstructed_objectives = _objective_validation_payload(
-        goal_zone_min=[20.0, 20.0, 0.0],
-        goal_zone_max=[25.0, 25.0, 5.0],
-        build_zone_min=[-5.0, -5.0, 0.0],
-        build_zone_max=[5.0, 5.0, 15.0],
-        start_position=[0.0, 0.0, 5.0],
-        runtime_jitter=[0.25, 0.25, 0.25],
+        goal_zone_min_mm=[20.0, 20.0, 0.0],
+        goal_zone_max_mm=[25.0, 25.0, 5.0],
+        build_zone_min_mm=[-5.0, -5.0, 0.0],
+        build_zone_max_mm=[5.0, 5.0, 15.0],
+        start_position_mm=[0.0, 0.0, 5.0],
+        runtime_jitter_mm=[0.25, 0.25, 0.25],
         radius=[0.1, 0.1],
     )
 
@@ -421,7 +421,7 @@ async def test_int_008_objectives_semantic_validation_rejects_goal_zone_outside_
         data = BenchmarkToolResponse.model_validate(resp.json())
         assert data.success is False
         assert "UNSOLVABLE_SCENARIO" in data.message
-        assert "goal_zone does not overlap build_zone" in data.message
+        assert "goal_zone_mm does not overlap build_zone_mm" in data.message
 
 
 @pytest.mark.integration_p0
@@ -444,15 +444,15 @@ async def test_int_008_objectives_semantic_validation_rejects_build_zone_outside
         _objective_validation_artifacts()
     )
     out_of_bounds_objectives = _objective_validation_payload(
-        goal_zone_min=[1.0, -1.0, 0.0],
-        goal_zone_max=[2.0, 1.0, 1.0],
-        build_zone_min=[-5.0, -5.0, 0.0],
-        build_zone_max=[13.0, 5.0, 10.0],
-        start_position=[0.0, 0.0, 5.0],
-        runtime_jitter=[0.25, 0.25, 0.25],
+        goal_zone_min_mm=[1.0, -1.0, 0.0],
+        goal_zone_max_mm=[2.0, 1.0, 1.0],
+        build_zone_min_mm=[-5.0, -5.0, 0.0],
+        build_zone_max_mm=[13.0, 5.0, 10.0],
+        start_position_mm=[0.0, 0.0, 5.0],
+        runtime_jitter_mm=[0.25, 0.25, 0.25],
         radius=[0.1, 0.1],
-        simulation_bounds_min=[-12.0, -12.0, -1.0],
-        simulation_bounds_max=[12.0, 12.0, 12.0],
+        simulation_bounds_min_mm=[-12.0, -12.0, -1.0],
+        simulation_bounds_max_mm=[12.0, 12.0, 12.0],
     )
 
     async with httpx.AsyncClient(timeout=300.0) as client:
@@ -478,7 +478,7 @@ async def test_int_008_objectives_semantic_validation_rejects_build_zone_outside
         data = BenchmarkToolResponse.model_validate(resp.json())
         assert data.success is False
         assert "UNSOLVABLE_SCENARIO" in data.message
-        assert "build_zone exceeds simulation_bounds" in data.message
+        assert "build_zone_mm exceeds simulation_bounds_mm" in data.message
         assert "axis x" in data.message
 
 
@@ -502,12 +502,12 @@ async def test_int_008_objectives_semantic_validation_rejects_runtime_envelope_e
         _objective_validation_artifacts()
     )
     build_zone_objectives = _objective_validation_payload(
-        goal_zone_min=[1.0, -1.0, 0.0],
-        goal_zone_max=[2.0, 1.0, 1.0],
-        build_zone_min=[0.0, 0.0, 0.0],
-        build_zone_max=[10.0, 10.0, 10.0],
-        start_position=[9.6, 5.0, 5.0],
-        runtime_jitter=[0.6, 0.1, 0.1],
+        goal_zone_min_mm=[1.0, -1.0, 0.0],
+        goal_zone_max_mm=[2.0, 1.0, 1.0],
+        build_zone_min_mm=[0.0, 0.0, 0.0],
+        build_zone_max_mm=[10.0, 10.0, 10.0],
+        start_position_mm=[9.6, 5.0, 5.0],
+        runtime_jitter_mm=[0.6, 0.1, 0.1],
         radius=[0.2, 0.2],
     )
 
@@ -534,7 +534,7 @@ async def test_int_008_objectives_semantic_validation_rejects_runtime_envelope_e
         data = BenchmarkToolResponse.model_validate(resp.json())
         assert data.success is False
         assert "UNSOLVABLE_SCENARIO" in data.message
-        assert "build_zone" in data.message
+        assert "build_zone_mm" in data.message
         assert "axis x" in data.message
 
 
@@ -548,8 +548,13 @@ async def test_int_008_objectives_semantic_validation_rejects_runtime_envelope_e
 @pytest.mark.parametrize(
     ("case_name", "runtime_jitter", "radius", "expected_phrase"),
     [
-        ("negative_jitter", [-0.1, 0.1, 0.1], [0.25, 0.25], "runtime_jitter"),
-        ("negative_radius", [0.1, 0.1, 0.1], [-0.25, 0.25], "radius"),
+        (
+            "negative_jitter",
+            [-0.1, 0.1, 0.1],
+            [0.25, 0.25],
+            "runtime_jitter_mm",
+        ),
+        ("negative_radius", [0.1, 0.1, 0.1], [-0.25, 0.25], "radius_mm"),
     ],
 )
 @pytest.mark.asyncio
@@ -570,12 +575,12 @@ async def test_int_008_objectives_semantic_validation_rejects_negative_runtime_j
         _objective_validation_artifacts()
     )
     negative_objectives = _objective_validation_payload(
-        goal_zone_min=[1.0, -1.0, 0.0],
-        goal_zone_max=[2.0, 1.0, 1.0],
-        build_zone_min=[-5.0, -5.0, 0.0],
-        build_zone_max=[5.0, 5.0, 15.0],
-        start_position=[0.0, 0.0, 5.0],
-        runtime_jitter=runtime_jitter,
+        goal_zone_min_mm=[1.0, -1.0, 0.0],
+        goal_zone_max_mm=[2.0, 1.0, 1.0],
+        build_zone_min_mm=[-5.0, -5.0, 0.0],
+        build_zone_max_mm=[5.0, 5.0, 15.0],
+        start_position_mm=[0.0, 0.0, 5.0],
+        runtime_jitter_mm=runtime_jitter,
         radius=radius,
     )
 
@@ -661,22 +666,22 @@ def build():
 """
     missing_benchmark_parts = {
         "objectives": {
-            "goal_zone": {"min": [1.0, -1.0, 0.0], "max": [2.0, 1.0, 1.0]},
+            "goal_zone_mm": {"min_mm": [1.0, -1.0, 0.0], "max_mm": [2.0, 1.0, 1.0]},
             "forbid_zones": [],
-            "build_zone": {"min": [-5.0, -5.0, 0.0], "max": [5.0, 5.0, 15.0]},
+            "build_zone_mm": {"min_mm": [-5.0, -5.0, 0.0], "max_mm": [5.0, 5.0, 15.0]},
         },
         "physics": {"backend": "GENESIS"},
-        "simulation_bounds": {
-            "min": [-30.0, -30.0, -10.0],
-            "max": [30.0, 30.0, 30.0],
+        "simulation_bounds_mm": {
+            "min_mm": [-30.0, -30.0, -10.0],
+            "max_mm": [30.0, 30.0, 30.0],
         },
         "payload": {
             "label": "projectile_ball",
             "shape": "sphere",
             "material_id": "abs",
-            "static_randomization": {"radius": [0.25, 0.25]},
-            "start_position": [-4.0, 0.0, 0.5],
-            "runtime_jitter": [0.1, 0.1, 0.1],
+            "static_randomization": {"radius_mm": [0.25, 0.25]},
+            "start_position_mm": [-4.0, 0.0, 0.5],
+            "runtime_jitter_mm": [0.1, 0.1, 0.1],
         },
         "constraints": {"max_unit_cost": 50.0, "max_weight_g": 1200.0},
         "randomization": {
@@ -756,23 +761,23 @@ def build():
 """
     valid_objectives = {
         "objectives": {
-            "goal_zone": {"min": [1.0, -1.0, 0.0], "max": [2.0, 1.0, 1.0]},
+            "goal_zone_mm": {"min_mm": [1.0, -1.0, 0.0], "max_mm": [2.0, 1.0, 1.0]},
             "forbid_zones": [],
-            "build_zone": {"min": [-5.0, -5.0, 0.0], "max": [5.0, 5.0, 15.0]},
+            "build_zone_mm": {"min_mm": [-5.0, -5.0, 0.0], "max_mm": [5.0, 5.0, 15.0]},
         },
         "benchmark_parts": _default_benchmark_parts(),
         "physics": {"backend": "GENESIS"},
-        "simulation_bounds": {
-            "min": [-30.0, -30.0, -10.0],
-            "max": [30.0, 30.0, 30.0],
+        "simulation_bounds_mm": {
+            "min_mm": [-30.0, -30.0, -10.0],
+            "max_mm": [30.0, 30.0, 30.0],
         },
         "payload": {
             "label": "projectile_ball",
             "shape": "sphere",
             "material_id": "abs",
-            "static_randomization": {"radius": [0.25, 0.25]},
-            "start_position": [-4.0, 0.0, 0.5],
-            "runtime_jitter": [0.1, 0.1, 0.1],
+            "static_randomization": {"radius_mm": [0.25, 0.25]},
+            "start_position_mm": [-4.0, 0.0, 0.5],
+            "runtime_jitter_mm": [0.1, 0.1, 0.1],
         },
         "constraints": {"max_unit_cost": 50.0, "max_weight_g": 1200.0},
         "randomization": {
@@ -859,28 +864,28 @@ def build():
 
     forbid_collision_objectives = {
         "objectives": {
-            "goal_zone": {"min": [3.0, 3.0, 3.0], "max": [4.0, 4.0, 4.0]},
+            "goal_zone_mm": {"min_mm": [3.0, 3.0, 3.0], "max_mm": [4.0, 4.0, 4.0]},
             "forbid_zones": [
                 {
                     "name": "center_block",
-                    "min": [-1.0, -1.0, 0.0],
-                    "max": [1.0, 1.0, 2.0],
+                    "min_mm": [-1.0, -1.0, 0.0],
+                    "max_mm": [1.0, 1.0, 2.0],
                 }
             ],
-            "build_zone": {"min": [-5.0, -5.0, 0.0], "max": [5.0, 5.0, 10.0]},
+            "build_zone_mm": {"min_mm": [-5.0, -5.0, 0.0], "max_mm": [5.0, 5.0, 10.0]},
         },
         "physics": {"backend": "GENESIS"},
-        "simulation_bounds": {
-            "min": [-30.0, -30.0, -10.0],
-            "max": [30.0, 30.0, 30.0],
+        "simulation_bounds_mm": {
+            "min_mm": [-30.0, -30.0, -10.0],
+            "max_mm": [30.0, 30.0, 30.0],
         },
         "payload": {
             "label": "projectile_ball",
             "shape": "sphere",
             "material_id": "abs",
-            "static_randomization": {"radius": [0.25, 0.25]},
-            "start_position": [0.0, 0.0, 1.0],
-            "runtime_jitter": [0.5, 0.5, 0.5],
+            "static_randomization": {"radius_mm": [0.25, 0.25]},
+            "start_position_mm": [0.0, 0.0, 1.0],
+            "runtime_jitter_mm": [0.5, 0.5, 0.5],
         },
         "constraints": {"max_unit_cost": 50.0, "max_weight_g": 1200.0},
         "benchmark_parts": _default_benchmark_parts(),
@@ -972,22 +977,22 @@ def build():
 
     base_objectives = {
         "objectives": {
-            "goal_zone": {"min": [3.0, 3.0, 3.0], "max": [4.0, 4.0, 4.0]},
+            "goal_zone_mm": {"min_mm": [3.0, 3.0, 3.0], "max_mm": [4.0, 4.0, 4.0]},
             "forbid_zones": [],
-            "build_zone": {"min": [-5.0, -5.0, 0.0], "max": [5.0, 5.0, 10.0]},
+            "build_zone_mm": {"min_mm": [-5.0, -5.0, 0.0], "max_mm": [5.0, 5.0, 10.0]},
         },
         "physics": {"backend": "GENESIS"},
-        "simulation_bounds": {
-            "min": [-30.0, -30.0, -10.0],
-            "max": [30.0, 30.0, 30.0],
+        "simulation_bounds_mm": {
+            "min_mm": [-30.0, -30.0, -10.0],
+            "max_mm": [30.0, 30.0, 30.0],
         },
         "payload": {
             "label": "projectile_ball",
             "shape": "sphere",
             "material_id": "abs",
-            "static_randomization": {"radius": [0.25, 0.25]},
-            "start_position": [0.0, 0.0, 1.0],
-            "runtime_jitter": [0.5, 0.5, 0.5],
+            "static_randomization": {"radius_mm": [0.25, 0.25]},
+            "start_position_mm": [0.0, 0.0, 1.0],
+            "runtime_jitter_mm": [0.5, 0.5, 0.5],
         },
         "constraints": {"max_unit_cost": 50.0, "max_weight_g": 1200.0},
         "benchmark_parts": _default_benchmark_parts(),
@@ -1000,7 +1005,7 @@ def build():
     async with httpx.AsyncClient(timeout=300.0) as client:
         # 1. Negative runtime jitter must fail closed.
         negative_jitter = yaml.safe_load(yaml.safe_dump(base_objectives))
-        negative_jitter["payload"]["runtime_jitter"] = [-0.5, 0.5, 0.5]
+        negative_jitter["payload"]["runtime_jitter_mm"] = [-0.5, 0.5, 0.5]
         await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
         await _write_workspace_file(client, headers, "todo.md", valid_todo)
         await _write_workspace_file(
@@ -1023,11 +1028,11 @@ def build():
         data = BenchmarkToolResponse.model_validate(resp.json())
         assert not data.success
         assert "INVALID_OBJECTIVES" in data.message
-        assert "runtime_jitter" in data.message
+        assert "runtime_jitter_mm" in data.message
 
         # 2. Negative static randomization radius must also fail closed.
         negative_radius = yaml.safe_load(yaml.safe_dump(base_objectives))
-        negative_radius["payload"]["static_randomization"]["radius"] = [
+        negative_radius["payload"]["static_randomization"]["radius_mm"] = [
             -0.25,
             0.25,
         ]
@@ -1046,4 +1051,4 @@ def build():
         data = BenchmarkToolResponse.model_validate(resp.json())
         assert not data.success
         assert "INVALID_OBJECTIVES" in data.message
-        assert "static_randomization.radius" in data.message
+        assert "static_randomization.radius_mm" in data.message

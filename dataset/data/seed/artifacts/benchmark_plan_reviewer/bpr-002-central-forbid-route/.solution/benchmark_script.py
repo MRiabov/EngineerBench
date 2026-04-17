@@ -18,9 +18,9 @@ def _build_payload(payload_spec: dict):
     label = str(payload_spec.get("label", "")).strip()
     if not label:
         raise ValueError("payload.label must be a non-empty string")
-    start = payload_spec.get("start_position", [0.0, 0.0, 0.0])
+    start = payload_spec.get("start_position_mm", [0.0, 0.0, 0.0])
     radius_range = payload_spec.get("static_randomization", {}).get(
-        "radius", [0.01, 0.01]
+        "radius_mm", [0.01, 0.01]
     )
     radius = float(max(radius_range)) if radius_range else 0.01
     shape = str(payload_spec.get("shape", "sphere")).strip().lower()
@@ -50,7 +50,7 @@ def _build_payload(payload_spec: dict):
         Location((float(start[0]), float(start[1]), float(start[2])))
     )
     payload_part.label = label
-    payload_part.metadata = PartMetadata(material_id=material_id, fixed=False)
+    payload_part.metadata = PartMetadata(material_id=material_id, is_fixed=False)
     return payload_part
 
 

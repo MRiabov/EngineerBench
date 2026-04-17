@@ -185,7 +185,7 @@ async def test_benchmark_planner_cad_reviewer_path():
         assert benchmark_definition.payload.material_id
         assert benchmark_definition.randomization.runtime_jitter_enabled is True
         assert "randomization:" in benchmark_definition_resp.text
-        assert "runtime_jitter:" in benchmark_definition_resp.text
+        assert "runtime_jitter_mm:" in benchmark_definition_resp.text
         plan_paths = [p for p in artifact_paths if p == Path("benchmark_plan.md")]
         plan_resp = await client.get(
             f"/api/episodes/{session_id}/assets/{plan_paths[0]}"

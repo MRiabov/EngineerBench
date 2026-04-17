@@ -1,29 +1,29 @@
 objectives:
-  goal_zone:
-    min:
+  goal_zone_mm:
+    min_mm:
     - 420.0
     - -60.0
     - 15.0
-    max:
+    max_mm:
     - 520.0
     - 60.0
     - 110.0
   forbid_zones:
   - name: central_blocker
-    min:
+    min_mm:
     - 120.0
     - -130.0
     - 0.0
-    max:
+    max_mm:
     - 260.0
     - 130.0
     - 150.0
-  build_zone:
-    min:
+  build_zone_mm:
+    min_mm:
     - -240.0
     - -180.0
     - 0.0
-    max:
+    max_mm:
     - 560.0
     - 180.0
     - 240.0
@@ -33,39 +33,39 @@ benchmark_parts:
 - part_id: left_launch_pad
   label: left_launch_pad
   metadata:
-    fixed: true
+    is_fixed: true
     material_id: aluminum_6061
 - part_id: central_blocker
   label: central_blocker
   metadata:
-    fixed: true
+    is_fixed: true
     material_id: aluminum_6061
 - part_id: upper_route_wall
   label: upper_route_wall
   metadata:
-    fixed: true
+    is_fixed: true
     material_id: hdpe
 - part_id: lower_route_wall
   label: lower_route_wall
   metadata:
-    fixed: true
+    is_fixed: true
     material_id: hdpe
 - part_id: goal_catch_tray
   label: goal_catch_tray
   metadata:
-    fixed: true
+    is_fixed: true
     material_id: hdpe
 physics:
   backend: GENESIS
   fem_enabled: false
   compute_target: auto
 fluids: []
-simulation_bounds:
-  min:
+simulation_bounds_mm:
+  min_mm:
   - -300.0
   - -220.0
   - -10.0
-  max:
+  max_mm:
   - 620.0
   - 220.0
   - 280.0
@@ -74,14 +74,14 @@ payload:
   shape: sphere
   material_id: abs
   static_randomization:
-    radius:
+    radius_mm:
     - 28.0
     - 30.0
-  start_position:
+  start_position_mm:
   - -180.0
   - 0.0
   - 110.0
-  runtime_jitter:
+  runtime_jitter_mm:
   - 14.0
   - 10.0
   - 6.0

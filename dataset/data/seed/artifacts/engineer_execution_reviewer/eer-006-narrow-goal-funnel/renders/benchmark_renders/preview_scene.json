@@ -8,12 +8,12 @@
       "instance_name": "projectile_ball",
       "object_type": "part",
       "object_id": 0,
-      "pos": [
+      "pos_mm": [
         -80.0,
         0.0,
         145.0
       ],
-      "euler": [
+      "euler_deg": [
         -0.0,
         0.0,
         -0.0
@@ -21,7 +21,7 @@
       "mesh_paths": [
         "meshes/projectile_ball.obj"
       ],
-      "box_size": null,
+      "box_size_mm": null,
       "material_id": "abs",
       "body_name": "projectile_ball",
       "geom_name": "projectile_ball",
@@ -46,18 +46,18 @@
       "instance_name": "zone_goal",
       "object_type": "zone",
       "object_id": 1,
-      "pos": [
+      "pos_mm": [
         187.5,
         0.0,
         35.0
       ],
-      "euler": [
+      "euler_deg": [
         0.0,
         0.0,
         0.0
       ],
       "mesh_paths": [],
-      "box_size": [
+      "box_size_mm": [
         37.5,
         18.0,
         25.0
@@ -86,18 +86,18 @@
       "instance_name": "zone_build",
       "object_type": "zone",
       "object_id": 2,
-      "pos": [
+      "pos_mm": [
         155.0,
         0.0,
         110.0
       ],
-      "euler": [
+      "euler_deg": [
         0.0,
         0.0,
         0.0
       ],
       "mesh_paths": [],
-      "box_size": [
+      "box_size_mm": [
         405.0,
         160.0,
         110.0
@@ -120,17 +120,17 @@
       "include_in_segmentation": false
     }
   ],
-  "bounds_min": [
+  "bounds_min_mm": [
     -250.0,
     -160.0,
     0.0
   ],
-  "bounds_max": [
+  "bounds_max_mm": [
     560.0,
     160.0,
     220.0
   ],
-  "center": [
+  "center_mm": [
     155.0,
     0.0,
     110.0

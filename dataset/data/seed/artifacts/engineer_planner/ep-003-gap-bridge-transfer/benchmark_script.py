@@ -9,7 +9,7 @@ def _build_environment_fixture() -> Box:
     """Build the seeded environment fixture declared in benchmark_definition.yaml."""
     part = Box(200.0, 200.0, 20.0, align=(Align.CENTER, Align.CENTER, Align.MIN))
     part.label = "environment_fixture"
-    part.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
+    part.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
     return part
 
 

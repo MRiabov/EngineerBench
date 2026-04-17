@@ -8,12 +8,12 @@
       "instance_name": "solution_plan_evidence",
       "object_type": "part",
       "object_id": 0,
-      "pos": [
+      "pos_mm": [
         0.0,
         0.0,
         0.0
       ],
-      "euler": [
+      "euler_deg": [
         -0.0,
         0.0,
         -0.0
@@ -21,7 +21,7 @@
       "mesh_paths": [
         "meshes/solution_plan_evidence.obj"
       ],
-      "box_size": null,
+      "box_size_mm": null,
       "material_id": "aluminum_6061",
       "body_name": "solution_plan_evidence",
       "geom_name": "solution_plan_evidence",
@@ -46,12 +46,12 @@
       "instance_name": "projectile_ball",
       "object_type": "part",
       "object_id": 1,
-      "pos": [
+      "pos_mm": [
         -180.0,
         0.0,
         110.0
       ],
-      "euler": [
+      "euler_deg": [
         0.0,
         0.0,
         0.0
@@ -59,7 +59,7 @@
       "mesh_paths": [
         "meshes/benchmark_payload__projectile_ball.obj"
       ],
-      "box_size": null,
+      "box_size_mm": null,
       "material_id": "abs",
       "body_name": "benchmark_payload__projectile_ball",
       "geom_name": "benchmark_payload__projectile_ball",
@@ -84,18 +84,18 @@
       "instance_name": "zone_goal",
       "object_type": "zone",
       "object_id": 2,
-      "pos": [
+      "pos_mm": [
         470.0,
         0.0,
         62.5
       ],
-      "euler": [
+      "euler_deg": [
         0.0,
         0.0,
         0.0
       ],
       "mesh_paths": [],
-      "box_size": [
+      "box_size_mm": [
         50.0,
         60.0,
         47.5
@@ -124,18 +124,18 @@
       "instance_name": "zone_forbid_0_central_blocker",
       "object_type": "zone",
       "object_id": 3,
-      "pos": [
+      "pos_mm": [
         190.0,
         0.0,
         75.0
       ],
-      "euler": [
+      "euler_deg": [
         0.0,
         0.0,
         0.0
       ],
       "mesh_paths": [],
-      "box_size": [
+      "box_size_mm": [
         70.0,
         130.0,
         75.0
@@ -164,18 +164,18 @@
       "instance_name": "zone_build",
       "object_type": "zone",
       "object_id": 4,
-      "pos": [
+      "pos_mm": [
         160.0,
         0.0,
         120.0
       ],
-      "euler": [
+      "euler_deg": [
         0.0,
         0.0,
         0.0
       ],
       "mesh_paths": [],
-      "box_size": [
+      "box_size_mm": [
         400.0,
         180.0,
         120.0
@@ -198,17 +198,17 @@
       "include_in_segmentation": false
     }
   ],
-  "bounds_min": [
+  "bounds_min_mm": [
     -240.0,
     -180.0,
     -2.0
   ],
-  "bounds_max": [
+  "bounds_max_mm": [
     560.0,
     180.0,
     240.0
   ],
-  "center": [
+  "center_mm": [
     160.0,
     0.0,
     119.0

@@ -10,7 +10,7 @@ def build():
     p = Box(10, 10, 10)
     p.label = "box"
     p.metadata = PartMetadata(
-        material_id="abs", fixed=True, manufacturing_method=ManufacturingMethod.THREE_DP
+        material_id="abs", is_fixed=True, manufacturing_method=ManufacturingMethod.THREE_DP
     )
     return p
 

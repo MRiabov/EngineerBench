@@ -10,10 +10,10 @@ def build() -> Compound:
         Box(10.0, 10.0, 10.0, align=(Align.CENTER, Align.CENTER, Align.MIN))
     part = part_builder.part
     part.label = "fixture_box"
-    part.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
+    part.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
 
     assembly = Compound(children=[part], label="fixture_assembly")
-    assembly.metadata = CompoundMetadata(fixed=True)
+    assembly.metadata = CompoundMetadata(is_fixed=True)
     return assembly
 
 

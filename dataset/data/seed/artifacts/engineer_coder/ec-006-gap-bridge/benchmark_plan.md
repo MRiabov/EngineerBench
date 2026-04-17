@@ -19,14 +19,14 @@ Test whether an engineer can bridge or hand off a low-friction cube across a flo
 
 ## 4. Objectives
 
-- `goal_zone`: min `[210, -70, 25]`, max `[320, 70, 120]`
+- `goal_zone_mm`: min_mm `[210, -70, 25]`, max_mm `[320, 70, 120]`
 - `forbid_zones`:
-  - `floor_gap`: min `[-70, -150, -5]`, max `[90, 150, 45]`
-- `build_zone`: min `[-340, -180, 0]`, max `[360, 180, 260]`
+  - `floor_gap`: min_mm `[-70, -150, -5]`, max_mm `[90, 150, 45]`
+- `build_zone_mm`: min_mm `[-340, -180, 0]`, max_mm `[360, 180, 260]`
 
 ## 5. Simulation Bounds
 
-- min `[-380, -220, -20]`, max `[420, 220, 320]`
+- min_mm `[-380, -220, -20]`, max_mm `[420, 220, 320]`
 
 ## 6. Constraints Handed To Engineering
 
@@ -35,8 +35,8 @@ Test whether an engineer can bridge or hand off a low-friction cube across a flo
 
 ## 7. Success Criteria
 
-- Success if the cube ends inside `goal_zone` without entering `floor_gap`.
-- Fail if the cube leaves `simulation_bounds` or if the benchmark requires undeclared motion to span the gap.
+- Success if the cube ends inside `goal_zone_mm` without entering `floor_gap`.
+- Fail if the cube leaves `simulation_bounds_mm` or if the benchmark requires undeclared motion to span the gap.
 
 ## 8. Planner Artifacts
 

@@ -38,7 +38,7 @@ def _default_benchmark_parts():
         {
             "part_id": "environment_fixture",
             "label": "environment_fixture",
-            "metadata": {"fixed": True, "material_id": "aluminum_6061"},
+            "metadata": {"is_fixed": True, "material_id": "aluminum_6061"},
         }
     ]
 
@@ -180,16 +180,18 @@ async def test_int_026_mandatory_event_families(tmp_path: Path):
         # 1. Setup benchmark_definition.yaml
         objectives = BenchmarkDefinition(
             objectives=ObjectivesSection(
-                goal_zone=BoundingBox(min=(8, 8, 8), max=(12, 12, 12)),
-                build_zone=BoundingBox(min=(0, 0, 0), max=(20, 20, 20)),
+                goal_zone_mm=BoundingBox(min_mm=(8, 8, 8), max_mm=(12, 12, 12)),
+                build_zone_mm=BoundingBox(min_mm=(0, 0, 0), max_mm=(20, 20, 20)),
             ),
-            simulation_bounds=BoundingBox(min=(-10, -10, -10), max=(30, 30, 30)),
+            simulation_bounds_mm=BoundingBox(
+                min_mm=(-10, -10, -10), max_mm=(30, 30, 30)
+            ),
             payload=Payload(
                 label="test_obj",
                 shape="sphere",
                 material_id="aluminum_6061",
-                start_position=(0, 0, 5),
-                runtime_jitter=(0, 0, 0),
+                start_position_mm=(0, 0, 5),
+                runtime_jitter_mm=(0, 0, 0),
             ),
             constraints=Constraints(max_unit_cost=100.0, max_weight_g=10.0),
             benchmark_parts=_default_benchmark_parts(),
@@ -211,7 +213,7 @@ def build():
     )
     p = Box(1, 1, 1)
     p.label = "test_part"
-    p.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
+    p.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
     return p
 """
         await _seed_workspace_file(

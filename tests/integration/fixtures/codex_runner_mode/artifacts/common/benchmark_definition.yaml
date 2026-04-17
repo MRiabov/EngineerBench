@@ -1,26 +1,26 @@
 objectives:
-  goal_zone:
-    min: [20.0, 20.0, 0.0]
-    max: [30.0, 30.0, 20.0]
+  goal_zone_mm:
+    min_mm: [20.0, 20.0, 0.0]
+    max_mm: [30.0, 30.0, 20.0]
   forbid_zones: []
-  build_zone:
-    min: [-40.0, -40.0, 0.0]
-    max: [40.0, 40.0, 40.0]
+  build_zone_mm:
+    min_mm: [-40.0, -40.0, 0.0]
+    max_mm: [40.0, 40.0, 40.0]
 benchmark_parts:
   - part_id: fixture_fixture
     label: fixture_fixture
     metadata:
       fixed: true
       material_id: aluminum_6061
-simulation_bounds:
-  min: [-50.0, -50.0, -10.0]
-  max: [50.0, 50.0, 50.0]
+simulation_bounds_mm:
+  min_mm: [-50.0, -50.0, -10.0]
+  max_mm: [50.0, 50.0, 50.0]
 payload:
   label: fixture_payload
   shape: box
   material_id: aluminum_6061
-  start_position: [0.0, 0.0, 0.0]
-  runtime_jitter: [0.0, 0.0, 0.0]
+  start_position_mm: [0.0, 0.0, 0.0]
+  runtime_jitter_mm: [0.0, 0.0, 0.0]
 constraints:
   estimated_solution_cost_usd: 66.666666666667
   estimated_solution_weight_g: 666.666666666667

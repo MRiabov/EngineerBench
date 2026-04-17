@@ -17,7 +17,7 @@ from shared.models.schemas import PartMetadata
 def build():
     b = Box(10, 10, 10)
     b.label = "test_box"
-    b.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
+    b.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
     return b
 """
 

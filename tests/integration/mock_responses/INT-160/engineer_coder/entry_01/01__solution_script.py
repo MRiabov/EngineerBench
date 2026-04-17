@@ -9,7 +9,7 @@ def build():
     part.label = "guide_block"
     part.metadata = PartMetadata(
         material_id="abs",
-        fixed=True,
+        is_fixed=True,
         manufacturing_method=ManufacturingMethod.THREE_DP,
     )
     return part

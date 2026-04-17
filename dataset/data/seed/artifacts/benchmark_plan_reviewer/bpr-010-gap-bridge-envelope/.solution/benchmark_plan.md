@@ -14,18 +14,18 @@ Test whether an engineer can solve a freestanding transfer benchmark that stays 
 - Shape: `sphere`
 - Label: `projectile_ball`
 - Static randomization:
-  - radius in `[22, 24]` mm
+  - radius_mm in `[22, 24]` mm
 - Nominal start position: `[-250, 0, 70]`
 - Runtime jitter: `[10, 8, 4]` mm
 
 ## 4. Objectives
 
-- `goal_zone`: min `[210, -55, 20]`, max `[310, 55, 110]`
-- `build_zone`: min `[-320, -180, 0]`, max `[340, 180, 220]`
+- `goal_zone_mm`: min_mm `[210, -55, 20]`, max_mm `[310, 55, 110]`
+- `build_zone_mm`: min_mm `[-320, -180, 0]`, max_mm `[340, 180, 220]`
 
 ## 5. Simulation Bounds
 
-- min `[-380, -220, -10]`, max `[400, 220, 280]`
+- min_mm `[-380, -220, -10]`, max_mm `[400, 220, 280]`
 
 ## 6. Constraints Handed To Engineering
 
@@ -34,8 +34,8 @@ Test whether an engineer can solve a freestanding transfer benchmark that stays 
 
 ## 7. Success Criteria
 
-- Success if the ball ends within `goal_zone` while the freestanding benchmark geometry remains inside `build_zone`.
-- Fail if any solution depends on undeclared support or if the payload exits `simulation_bounds`.
+- Success if the ball ends within `goal_zone_mm` while the freestanding benchmark geometry remains inside `build_zone_mm`.
+- Fail if any solution depends on undeclared support or if the payload exits `simulation_bounds_mm`.
 
 ## 8. Planner Artifacts
 

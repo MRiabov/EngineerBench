@@ -53,7 +53,7 @@ transcript:
       reasoning: Creating a simple path planning task.
       params:
         wall_height: 5
-        goal_pos:
+        goal_position_mm:
         - 10
         - 10
         - 0

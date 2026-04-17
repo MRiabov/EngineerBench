@@ -9,7 +9,7 @@ def build():
     panel.label = "door_panel"
     panel.metadata = PartMetadata(
         material_id="abs",
-        fixed=False,
+        is_fixed=False,
         manufacturing_method=ManufacturingMethod.THREE_DP,
     )
     return panel

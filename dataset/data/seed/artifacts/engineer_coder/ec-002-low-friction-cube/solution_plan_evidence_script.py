@@ -33,7 +33,7 @@ def _make_fixed_rail() -> Compound:
 
     rail = route.part
     rail.label = "guide_rail"
-    rail.metadata = PartMetadata(material_id="hdpe", fixed=True)
+    rail.metadata = PartMetadata(material_id="hdpe", is_fixed=True)
     return rail
 
 

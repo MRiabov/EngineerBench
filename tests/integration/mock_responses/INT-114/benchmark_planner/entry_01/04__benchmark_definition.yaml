@@ -1,29 +1,29 @@
 objectives:
-  goal_zone:
-    min:
+  goal_zone_mm:
+    min_mm:
     - 22.0
     - 8.0
     - 2.0
-    max:
+    max_mm:
     - 34.0
     - 20.0
     - 12.0
   forbid_zones:
   - name: central_baffle
-    min:
+    min_mm:
     - -8.0
     - -8.0
     - 0.0
-    max:
+    max_mm:
     - 8.0
     - 8.0
     - 16.0
-  build_zone:
-    min:
+  build_zone_mm:
+    min_mm:
     - -36.0
     - -28.0
     - 0.0
-    max:
+    max_mm:
     - 36.0
     - 28.0
     - 60.0
@@ -35,12 +35,12 @@ benchmark_parts:
     material_id: aluminum_6061
 physics:
   backend: GENESIS
-simulation_bounds:
-  min:
+simulation_bounds_mm:
+  min_mm:
   - -48.0
   - -36.0
   - 0.0
-  max:
+  max_mm:
   - 48.0
   - 36.0
   - 72.0
@@ -49,14 +49,14 @@ payload:
   shape: sphere
   material_id: abs
   static_randomization:
-    radius:
+    radius_mm:
     - 4.0
     - 6.0
-  start_position:
+  start_position_mm:
   - 0.0
   - 0.0
   - 48.0
-  runtime_jitter:
+  runtime_jitter_mm:
   - 2.0
   - 2.0
   - 1.0

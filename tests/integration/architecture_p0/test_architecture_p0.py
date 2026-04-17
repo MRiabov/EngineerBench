@@ -61,7 +61,7 @@ def _default_benchmark_parts():
             "part_id": "environment_fixture",
             "label": "environment_fixture",
             "metadata": {
-                "fixed": True,
+                "is_fixed": True,
                 "material_id": "aluminum_6061",
             },
         }
@@ -167,21 +167,25 @@ async def test_int_217_static_preview_prefers_benchmark_bucket_when_workspace_al
     async with httpx.AsyncClient(timeout=300.0) as client:
         benchmark_definition = BenchmarkDefinition(
             objectives=ObjectivesSection(
-                goal_zone=BoundingBox(min=(0.5, 0.5, 0.0), max=(1.5, 1.5, 1.5)),
+                goal_zone_mm=BoundingBox(
+                    min_mm=(0.5, 0.5, 0.0), max_mm=(1.5, 1.5, 1.5)
+                ),
                 forbid_zones=[],
-                build_zone=BoundingBox(min=(-2.0, -2.0, -2.0), max=(2.0, 2.0, 2.0)),
+                build_zone_mm=BoundingBox(
+                    min_mm=(-2.0, -2.0, -2.0), max_mm=(2.0, 2.0, 2.0)
+                ),
             ),
             benchmark_parts=_default_benchmark_parts(),
-            simulation_bounds=BoundingBox(
-                min=(-5.0, -5.0, -5.0),
-                max=(5.0, 5.0, 5.0),
+            simulation_bounds_mm=BoundingBox(
+                min_mm=(-5.0, -5.0, -5.0),
+                max_mm=(5.0, 5.0, 5.0),
             ),
             payload=Payload(
                 label="delegate_preview_box",
                 shape="box",
                 material_id="aluminum_6061",
-                start_position=(0.0, 0.0, 0.0),
-                runtime_jitter=(0.0, 0.0, 0.0),
+                start_position_mm=(0.0, 0.0, 0.0),
+                runtime_jitter_mm=(0.0, 0.0, 0.0),
             ),
             constraints=Constraints(max_unit_cost=100.0, max_weight_g=1000.0),
             physics=PhysicsConfig(backend=SimulatorBackendType.MUJOCO),
@@ -198,7 +202,7 @@ from shared.models.schemas import PartMetadata
 def build():
     part = Box(1, 1, 1, align=(Align.CENTER, Align.CENTER, Align.CENTER))
     part.label = "delegate_preview_box"
-    part.metadata = PartMetadata(material_id="aluminum_6061", fixed=False)
+    part.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=False)
     return part
 """,
                 overwrite=True,
@@ -310,7 +314,7 @@ from shared.models.schemas import PartMetadata
 def build():
     part = Box(1, 1, 1, align=(Align.CENTER, Align.CENTER, Align.CENTER))
     part.label = "simulation_video_smoke_box"
-    part.metadata = PartMetadata(material_id="aluminum_6061", fixed=False)
+    part.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=False)
     return part
 """
 
@@ -517,7 +521,7 @@ from shared.models.schemas import PartMetadata
 def build():
     b = Box(1, 1, 1, align=(Align.CENTER, Align.CENTER, Align.MIN))
     b.label = "target_box"
-    b.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
+    b.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
     return b
 """
         req_write = WriteFileRequest(path="box.py", content=script)
@@ -631,26 +635,30 @@ async def test_int_020_simulation_failure_taxonomy():
         # 1. Setup minimal benchmark_definition.yaml
         objectives = BenchmarkDefinition(
             objectives=ObjectivesSection(
-                goal_zone=BoundingBox(min=(10.5, 10.5, 10.5), max=(12.5, 12.5, 12.5)),
+                goal_zone_mm=BoundingBox(
+                    min_mm=(10.5, 10.5, 10.5), max_mm=(12.5, 12.5, 12.5)
+                ),
                 forbid_zones=[
                     {
                         "name": "zone_forbid_test",
-                        "min": (2.5, 2.5, 2.5),
-                        "max": (4.5, 4.5, 4.5),
+                        "min_mm": (2.5, 2.5, 2.5),
+                        "max_mm": (4.5, 4.5, 4.5),
                     }
                 ],
-                build_zone=BoundingBox(min=(0.5, 0.5, 0.5), max=(20.5, 20.5, 20.5)),
+                build_zone_mm=BoundingBox(
+                    min_mm=(0.5, 0.5, 0.5), max_mm=(20.5, 20.5, 20.5)
+                ),
             ),
             benchmark_parts=_default_benchmark_parts(),
-            simulation_bounds=BoundingBox(
-                min=(-20.5, -20.5, -20.5), max=(20.5, 20.5, 20.5)
+            simulation_bounds_mm=BoundingBox(
+                min_mm=(-20.5, -20.5, -20.5), max_mm=(20.5, 20.5, 20.5)
             ),
             payload=Payload(
                 label="target_box",
                 shape="sphere",
                 material_id="aluminum_6061",
-                start_position=(0.5, 0.5, 0.5),
-                runtime_jitter=(0.0, 0.0, 0.0),
+                start_position_mm=(0.5, 0.5, 0.5),
+                runtime_jitter_mm=(0.0, 0.0, 0.0),
             ),
             constraints=Constraints(max_unit_cost=20.5, max_weight_g=10.5),
         )
@@ -674,7 +682,7 @@ def build():
         Box(2, 2, 2, align=(Align.CENTER, Align.CENTER, Align.CENTER))
     p.part.move(Location((3.5, 3.5, 3.5)))
     p.part.label = "target_box"
-    p.part.metadata = PartMetadata(material_id="aluminum_6061", fixed=False)
+    p.part.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=False)
     return p.part
 """
 
@@ -750,8 +758,8 @@ run()
         # Success path for taxonomy: explicit goal completion signal.
         success_objectives = objectives.model_copy(deep=True)
         success_objectives.objectives.forbid_zones = []
-        success_objectives.objectives.goal_zone = BoundingBox(
-            min=(3.0, 3.0, 3.0), max=(4.0, 4.0, 4.0)
+        success_objectives.objectives.goal_zone_mm = BoundingBox(
+            min_mm=(3.0, 3.0, 3.0), max_mm=(4.0, 4.0, 4.0)
         )
         req_write_success_obj = WriteFileRequest(
             path="benchmark_definition.yaml",
@@ -794,17 +802,19 @@ async def test_int_021_runtime_randomization_robustness():
 
         objectives = BenchmarkDefinition(
             objectives=ObjectivesSection(
-                goal_zone=BoundingBox(min=(-10, -10, -10), max=(10, 10, 10)),
-                build_zone=BoundingBox(min=(-20, -20, -20), max=(20, 20, 20)),
+                goal_zone_mm=BoundingBox(min_mm=(-10, -10, -10), max_mm=(10, 10, 10)),
+                build_zone_mm=BoundingBox(min_mm=(-20, -20, -20), max_mm=(20, 20, 20)),
             ),
             benchmark_parts=_default_benchmark_parts(),
-            simulation_bounds=BoundingBox(min=(-20, -20, -20), max=(20, 20, 20)),
+            simulation_bounds_mm=BoundingBox(
+                min_mm=(-20, -20, -20), max_mm=(20, 20, 20)
+            ),
             payload=Payload(
                 label="target_box",
                 shape="sphere",
                 material_id="aluminum_6061",
-                start_position=(0, 0, 0.5),
-                runtime_jitter=(0.1, 0.1, 0),
+                start_position_mm=(0, 0, 0.5),
+                runtime_jitter_mm=(0.1, 0.1, 0),
             ),
             constraints=Constraints(max_unit_cost=20.0, max_weight_g=10.0),
         )
@@ -826,7 +836,7 @@ def build():
     with BuildPart() as p:
         Box(0.1, 0.1, 0.1, align=(Align.CENTER, Align.CENTER, Align.CENTER))
     p.part.label = "target_box"
-    p.part.metadata = PartMetadata(material_id="aluminum_6061", fixed=False)
+    p.part.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=False)
     return p.part
 """
         req_write_script = WriteFileRequest(path="script.py", content=script_content)
@@ -907,7 +917,7 @@ from shared.models.schemas import PartMetadata
 def build():
     p = Box(10, 10, 10).move(Location((0, 0, 5)))
     p.label = "target_box"
-    p.metadata = PartMetadata(material_id="aluminum_6061", fixed=True)
+    p.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
     return p
 """
         await client.post(
@@ -920,26 +930,30 @@ def build():
 
         overlap_objectives = BenchmarkDefinition(
             objectives=ObjectivesSection(
-                goal_zone=BoundingBox(min=(0.0, 0.0, 0.0), max=(10.0, 10.0, 10.0)),
+                goal_zone_mm=BoundingBox(
+                    min_mm=(0.0, 0.0, 0.0), max_mm=(10.0, 10.0, 10.0)
+                ),
                 forbid_zones=[
                     {
                         "name": "goal_overlap",
-                        "min": (5.0, 5.0, 5.0),
-                        "max": (12.0, 12.0, 12.0),
+                        "min_mm": (5.0, 5.0, 5.0),
+                        "max_mm": (12.0, 12.0, 12.0),
                     }
                 ],
-                build_zone=BoundingBox(min=(-20.0, -20.0, 0.0), max=(20.0, 20.0, 30.0)),
+                build_zone_mm=BoundingBox(
+                    min_mm=(-20.0, -20.0, 0.0), max_mm=(20.0, 20.0, 30.0)
+                ),
             ),
             benchmark_parts=_default_benchmark_parts(),
-            simulation_bounds=BoundingBox(
-                min=(-50.0, -50.0, -10.0), max=(50.0, 50.0, 50.0)
+            simulation_bounds_mm=BoundingBox(
+                min_mm=(-50.0, -50.0, -10.0), max_mm=(50.0, 50.0, 50.0)
             ),
             payload=Payload(
                 label="target_box",
                 shape="sphere",
                 material_id="aluminum_6061",
-                start_position=(0.0, 0.0, 10.0),
-                runtime_jitter=(0.0, 0.0, 0.0),
+                start_position_mm=(0.0, 0.0, 10.0),
+                runtime_jitter_mm=(0.0, 0.0, 0.0),
             ),
             constraints=Constraints(max_unit_cost=100.0, max_weight_g=1000.0),
         )
@@ -962,33 +976,33 @@ def build():
         assert overlap_resp.status_code == 200
         overlap_data = BenchmarkToolResponse.model_validate(overlap_resp.json())
         assert overlap_data.success is False
-        assert "goal_zone overlaps forbid zone" in (overlap_data.message or "")
+        assert "goal_zone_mm overlaps forbid zone" in (overlap_data.message or "")
 
         jitter_conflict_objectives = overlap_objectives.model_copy(
             update={
                 "objectives": ObjectivesSection(
-                    goal_zone=BoundingBox(
-                        min=(12.0, 12.0, 0.0),
-                        max=(16.0, 16.0, 6.0),
+                    goal_zone_mm=BoundingBox(
+                        min_mm=(12.0, 12.0, 0.0),
+                        max_mm=(16.0, 16.0, 6.0),
                     ),
                     forbid_zones=[
                         {
                             "name": "spawn_conflict",
-                            "min": (-3.0, -3.0, 0.0),
-                            "max": (3.0, 3.0, 6.0),
+                            "min_mm": (-3.0, -3.0, 0.0),
+                            "max_mm": (3.0, 3.0, 6.0),
                         }
                     ],
-                    build_zone=BoundingBox(
-                        min=(-20.0, -20.0, 0.0),
-                        max=(20.0, 20.0, 30.0),
+                    build_zone_mm=BoundingBox(
+                        min_mm=(-20.0, -20.0, 0.0),
+                        max_mm=(20.0, 20.0, 30.0),
                     ),
                 ),
                 "payload": Payload(
                     label="target_box",
                     shape="sphere",
                     material_id="aluminum_6061",
-                    start_position=(0.0, 0.0, 3.0),
-                    runtime_jitter=(2.0, 2.0, 1.0),
+                    start_position_mm=(0.0, 0.0, 3.0),
+                    runtime_jitter_mm=(2.0, 2.0, 1.0),
                 ),
             }
         )

@@ -612,8 +612,8 @@ async def test_engineering_full_loop():
             if entity.label == benchmark_definition.payload.label
         )
         assert payload_entity.body_name == payload_scene_name(payload_entity.label)
-        assert payload_entity.pos == tuple(
-            float(value) for value in benchmark_definition.payload.start_position
+        assert payload_entity.pos_mm == tuple(
+            float(value) for value in benchmark_definition.payload.start_position_mm
         )
 
         execution_comments = yaml.safe_load(

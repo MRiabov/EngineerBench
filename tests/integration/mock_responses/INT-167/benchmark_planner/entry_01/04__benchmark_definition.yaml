@@ -1,31 +1,31 @@
 objectives:
-  goal_zone:
-    min: [5, 5, 5]
-    max: [10, 10, 10]
+  goal_zone_mm:
+    min_mm: [5, 5, 5]
+    max_mm: [10, 10, 10]
   forbid_zones:
     - name: "obstacle_collision_zone"
-      min: [3, -3, 0]
-      max: [4, 3, 4]
-  build_zone:
-    min: [-10, -10, -10]
-    max: [10, 10, 10]
+      min_mm: [3, -3, 0]
+      max_mm: [4, 3, 4]
+  build_zone_mm:
+    min_mm: [-10, -10, -10]
+    max_mm: [10, 10, 10]
 payload:
   label: "projectile_ball"
   shape: "sphere"
   material_id: abs
   static_randomization:
-    radius: [1, 2]
-  start_position: [0, 0, 0]
-  runtime_jitter: [0.5, 0.5, 0.5]
+    radius_mm: [1, 2]
+  start_position_mm: [0, 0, 0]
+  runtime_jitter_mm: [0.5, 0.5, 0.5]
 benchmark_parts:
   - part_id: environment_fixture
     label: environment_fixture
     metadata:
       fixed: true
       material_id: aluminum_6061
-simulation_bounds:
-  min: [-30, -30, -30]
-  max: [30, 30, 30]
+simulation_bounds_mm:
+  min_mm: [-30, -30, -30]
+  max_mm: [30, 30, 30]
 constraints:
   max_unit_cost: 200
   max_weight_g: 1200.0

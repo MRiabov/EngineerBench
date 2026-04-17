@@ -1,25 +1,25 @@
 objectives:
-  goal_zone:
-    min: [12.0, -2.0, 0.0]
-    max: [16.0, 2.0, 4.0]
+  goal_zone_mm:
+    min_mm: [12.0, -2.0, 0.0]
+    max_mm: [16.0, 2.0, 4.0]
   forbid_zones: []
-  build_zone:
-    min: [-18.0, -8.0, 0.0]
-    max: [18.0, 8.0, 12.0]
+  build_zone_mm:
+    min_mm: [-18.0, -8.0, 0.0]
+    max_mm: [18.0, 8.0, 12.0]
 physics:
   backend: GENESIS
   fem_enabled: false
-simulation_bounds:
-  min: [-20.0, -10.0, 0.0]
-  max: [20.0, 10.0, 12.0]
+simulation_bounds_mm:
+  min_mm: [-20.0, -10.0, 0.0]
+  max_mm: [20.0, 10.0, 12.0]
 payload:
   label: projectile_ball
   shape: sphere
   material_id: abs
   static_randomization:
-    radius: [0.5, 0.5]
-  start_position: [-12.0, 0.0, 2.0]
-  runtime_jitter: [0.0, 0.0, 0.0]
+    radius_mm: [0.5, 0.5]
+  start_position_mm: [-12.0, 0.0, 2.0]
+  runtime_jitter_mm: [0.0, 0.0, 0.0]
 benchmark_parts:
   - part_id: open_corridor_frame
     label: open_corridor_frame

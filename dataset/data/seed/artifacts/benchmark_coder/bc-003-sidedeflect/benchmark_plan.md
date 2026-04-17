@@ -18,31 +18,31 @@ Test passive gravity-driven redirection: a ball dropped from height must strike 
 
 ### Goal zone
 
-- AABB min: `[140, -35, 5]`
-- AABB max: `[200, 35, 25]`
+- AABB min_mm: `[140, -35, 5]`
+- AABB max_mm: `[200, 35, 25]`
 - Success when the projectile ball center enters this volume.
 
 ### Forbid zone: `direct_drop_trap`
 
-- AABB min: `[-20, -25, 0]`
-- AABB max: `[20, 25, 50]`
+- AABB min_mm: `[-20, -25, 0]`
+- AABB max_mm: `[20, 25, 50]`
 - Any contact with this zone by any simulation object = failure.
 
 ### Build zone
 
-- AABB min: `[-180, -120, 0]`
-- AABB max: `[240, 120, 160]`
+- AABB min_mm: `[-180, -120, 0]`
+- AABB max_mm: `[240, 120, 160]`
 - The engineer may only build within these bounds.
 
 ### Simulation bounds
 
-- AABB min: `[-220, -160, -10]`
-- AABB max: `[280, 160, 200]`
+- AABB min_mm: `[-220, -160, -10]`
+- AABB max_mm: `[280, 160, 200]`
 - Any object exiting this volume = failure.
 
 ## 4. Randomization
 
-- Static: projectile ball radius varies in `[18, 22]` mm per benchmark variant.
+- Static: projectile ball radius_mm varies in `[18, 22]` mm per benchmark variant.
 - Runtime: projectile ball spawn position jitters by `±[8, 6, 4]` mm per simulation run.
 - The solution must handle all positions within the jitter range robustly.
 

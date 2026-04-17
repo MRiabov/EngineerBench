@@ -106,5 +106,5 @@ planner target caps.
 ### Jitter Robustness Check
 
 - Capture area covers spawn jitter: Yes
-- Tested edge cases considered: minimum radius, maximum radius, and all four
+- Tested edge cases considered: minimum radius_mm, maximum radius_mm, and all four
   corners of the runtime spawn jitter envelope

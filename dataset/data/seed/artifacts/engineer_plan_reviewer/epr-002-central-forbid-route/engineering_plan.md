@@ -43,5 +43,5 @@ Use a passive offset rail path that routes the projectile ball around the seeded
 | Risk | Likelihood | Impact | Mitigation |
 | -- | -- | -- | -- |
 | Ball clips the blocker corner under jitter | Medium | High | Use a dedicated blocker skirt and keep the routed bend outside the forbid volume |
-| Ball exits the outer rail on the long bend | Medium | Medium | Increase rail height through the turn and keep the bend radius shallow |
+| Ball exits the outer rail on the long bend | Medium | Medium | Increase rail height through the turn and keep the bend radius_mm shallow |
 | Goal tray receives the ball too fast | Low | Medium | Drop the tray slightly below the rail exit to absorb speed |

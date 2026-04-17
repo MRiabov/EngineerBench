@@ -1,20 +1,20 @@
 objectives:
-  goal_zone:
-    min:
+  goal_zone_mm:
+    min_mm:
     - 210.0
     - -55.0
     - 20.0
-    max:
+    max_mm:
     - 310.0
     - 55.0
     - 110.0
   forbid_zones: []
-  build_zone:
-    min:
+  build_zone_mm:
+    min_mm:
     - -320.0
     - -180.0
     - 0.0
-    max:
+    max_mm:
     - 340.0
     - 180.0
     - 220.0
@@ -24,34 +24,34 @@ benchmark_parts:
 - part_id: ballast_base
   label: ballast_base
   metadata:
-    fixed: true
+    is_fixed: true
     material_id: steel_cold_rolled
 - part_id: transfer_chute
   label: transfer_chute
   metadata:
-    fixed: true
+    is_fixed: true
     material_id: hdpe
 - part_id: counterweight_fin
   label: counterweight_fin
   metadata:
-    fixed: true
+    is_fixed: true
     material_id: steel_cold_rolled
 - part_id: goal_cradle
   label: goal_cradle
   metadata:
-    fixed: true
+    is_fixed: true
     material_id: hdpe
 physics:
   backend: GENESIS
   fem_enabled: false
   compute_target: auto
 fluids: []
-simulation_bounds:
-  min:
+simulation_bounds_mm:
+  min_mm:
   - -380.0
   - -220.0
   - -10.0
-  max:
+  max_mm:
   - 400.0
   - 220.0
   - 280.0
@@ -60,14 +60,14 @@ payload:
   shape: sphere
   material_id: abs
   static_randomization:
-    radius:
+    radius_mm:
     - 22.0
     - 24.0
-  start_position:
+  start_position_mm:
   - -250.0
   - 0.0
   - 70.0
-  runtime_jitter:
+  runtime_jitter_mm:
   - 10.0
   - 8.0
   - 4.0

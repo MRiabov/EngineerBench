@@ -48,14 +48,14 @@ transcript:
         label: projectile_ball
         shape: sphere
         static_randomization:
-          radius:
+          radius_mm:
           - 4.0
           - 6.0
-        start_position:
+        start_position_mm:
         - 0.0
         - 0.0
         - 48.0
-        runtime_jitter:
+        runtime_jitter_mm:
         - 2.0
         - 2.0
         - 1.0

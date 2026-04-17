@@ -9,7 +9,7 @@ def build():
     part.label = "obj"
     part.metadata = PartMetadata(
         material_id="abs",
-        fixed=False,
+        is_fixed=False,
         manufacturing_method=ManufacturingMethod.THREE_DP,
     )
     return part

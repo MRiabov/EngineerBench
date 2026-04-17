@@ -1,28 +1,28 @@
 objectives:
-  goal_zone:
-    min:
+  goal_zone_mm:
+    min_mm:
     - 0
     - 0
     - 0
-    max:
+    max_mm:
     - 1
     - 1
     - 1
-  build_zone:
-    min:
+  build_zone_mm:
+    min_mm:
     - -10
     - -10
     - -10
-    max:
+    max_mm:
     - 10
     - 10
     - 10
-simulation_bounds:
-  min:
+simulation_bounds_mm:
+  min_mm:
   - -20
   - -20
   - -20
-  max:
+  max_mm:
   - 20
   - 20
   - 20
@@ -30,11 +30,11 @@ payload:
   label: obj
   shape: sphere
   material_id: abs
-  start_position:
+  start_position_mm:
   - 0
   - 0
   - 0
-  runtime_jitter:
+  runtime_jitter_mm:
   - 0
   - 0
   - 0

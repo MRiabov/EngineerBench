@@ -12,12 +12,12 @@ def build():
     p.label = "obj"
     p.metadata = PartMetadata(
         material_id="abs",
-        fixed=True,
+        is_fixed=True,
         manufacturing_method=ManufacturingMethod.THREE_DP,
     )
     scene = Compound(children=[p])
     scene.label = "obj_scene"
-    scene.metadata = CompoundMetadata(fixed=False)
+    scene.metadata = CompoundMetadata(is_fixed=False)
     return scene
 
 
