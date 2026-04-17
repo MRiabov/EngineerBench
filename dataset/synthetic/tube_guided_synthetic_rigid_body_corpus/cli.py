@@ -6,8 +6,8 @@ import shutil
 from pathlib import Path
 from typing import Any
 
-from build123d import Compound
 import structlog
+from build123d import Compound
 
 from shared.enums import AgentName
 from shared.models.schemas import (
@@ -35,14 +35,15 @@ from .contract import (
 )
 from .geometry import (
     compound_from_specs,
+    parts_from_specs,
     validate_geometry,
     validate_route_clearance,
     validate_route_positions,
 )
 from .models import ContactHit, PartSpec, RoutePoint, ScenarioConfig
 from .paths import (
-    NotebookLogCapture,
     REPO_ROOT,
+    NotebookLogCapture,
     load_benchmark_build_fn,
     payload_scene_name,
     progress_iter,
@@ -546,10 +547,20 @@ def synthesize(config: ScenarioConfig) -> dict[str, Any]:
         shutil.copytree(coder_root, final_coder_root)
 
         planner_row_path = (
-            REPO_ROOT / "dataset" / "data" / "seed" / "role_based" / "engineer_planner.json"
+            REPO_ROOT
+            / "dataset"
+            / "data"
+            / "seed"
+            / "role_based"
+            / "engineer_planner.json"
         )
         coder_row_path = (
-            REPO_ROOT / "dataset" / "data" / "seed" / "role_based" / "engineer_coder.json"
+            REPO_ROOT
+            / "dataset"
+            / "data"
+            / "seed"
+            / "role_based"
+            / "engineer_coder.json"
         )
         planner_row = role_row(
             row_id=config.planner_row_id,
@@ -641,5 +652,7 @@ if __name__ == "__main__":
         summary = main()
         print(json.dumps(summary, indent=2))
     except Exception:
-        structlog.get_logger(__name__).exception("tube_guided_synthetic_corpus_main_failed")
+        structlog.get_logger(__name__).exception(
+            "tube_guided_synthetic_corpus_main_failed"
+        )
         raise

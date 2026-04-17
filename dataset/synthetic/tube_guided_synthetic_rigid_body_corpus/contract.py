@@ -1,21 +1,17 @@
 from __future__ import annotations
 
-import json
-import textwrap
-from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
 import numpy as np
-from build123d import Compound
 
 from shared.enums import ManufacturingMethod
-from shared.models.schemas import BenchmarkDefinition, PayloadTrajectoryDefinition
+from shared.models.schemas import BenchmarkDefinition
 from shared.simulation.schemas import SimulatorBackendType
 from shared.workers.workbench_models import ManufacturingConfig
 
 from .geometry import route_bbox
-from .models import PartSpec, RoutePoint
+from .models import RoutePoint
 from .paths import REPO_ROOT, load_yaml
 
 
@@ -490,21 +486,9 @@ def payload_trajectory_dict(
     }
 
 
-from .text_templates import (
-    build_engineering_plan_text,
-    build_evidence_script_text,
-    build_markdown_templates,
-    build_route_lowering_script_text,
-    build_journal_text,
-    build_payload_trajectory_template_text,
-    build_solution_description_text,
-    build_solution_script_text,
-    build_todo_text,
-    selected_side_map_literal,
-)
-
-
 def load_manufacturing_config() -> ManufacturingConfig:
-    config_path = REPO_ROOT / "worker_heavy" / "workbenches" / "manufacturing_config.yaml"
+    config_path = (
+        REPO_ROOT / "worker_heavy" / "workbenches" / "manufacturing_config.yaml"
+    )
     data = load_yaml(config_path)
     return ManufacturingConfig.model_validate(data or {})

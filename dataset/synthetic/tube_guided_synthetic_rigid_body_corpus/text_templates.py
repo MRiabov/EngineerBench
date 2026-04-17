@@ -88,24 +88,19 @@ def build_route_lowering_script_text(
             up = normalize(as_np(up_hint))
             if abs(float(np.dot(x_axis, up))) > 0.95:
                 up = np.array([0.0, 1.0, 0.0], dtype=float)
-            y_axis = normalize(np.cross(up, x_axis))
-            z_axis = normalize(np.cross(x_axis, y_axis))
-            frame = np.column_stack([x_axis, y_axis, z_axis])
             if previous_frame is not None:
                 previous_frame = np.asarray(previous_frame, dtype=float)
-                flipped_frame = np.column_stack([x_axis, -y_axis, -z_axis])
-                continuity_score = float(
-                    np.dot(frame[:, 1], previous_frame[:, 1])
-                    + np.dot(frame[:, 2], previous_frame[:, 2])
-                )
-                flipped_score = float(
-                    np.dot(flipped_frame[:, 1], previous_frame[:, 1])
-                    + np.dot(flipped_frame[:, 2], previous_frame[:, 2])
-                )
-                if flipped_score > continuity_score:
-                    frame = flipped_frame
-                    y_axis = -y_axis
-                    z_axis = -z_axis
+                transported_y = previous_frame[:, 1] - float(
+                    np.dot(previous_frame[:, 1], x_axis)
+                ) * x_axis
+                if float(np.linalg.norm(transported_y)) > 1e-9:
+                    y_axis = normalize(transported_y)
+                else:
+                    y_axis = normalize(np.cross(up, x_axis))
+            else:
+                y_axis = normalize(np.cross(up, x_axis))
+            z_axis = normalize(np.cross(x_axis, y_axis))
+            y_axis = normalize(np.cross(z_axis, x_axis))
             frame = np.column_stack([x_axis, y_axis, z_axis])
             euler = tuple(
                 float(value)
@@ -481,4 +476,3 @@ def build_markdown_templates() -> dict[str, str]:
         ),
         "journal.md": build_journal_text(),
     }
-

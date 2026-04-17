@@ -61,9 +61,7 @@ class ScenarioConfig:
     simulation_video_duration_s: float = 8.0
     batch_width_range: tuple[int, int] = (10, 20)
     success_threshold: float = 0.8
-    backend_order: tuple[SimulatorBackendType, ...] = (
-        SimulatorBackendType.MUJOCO,
-    )
+    backend_order: tuple[SimulatorBackendType, ...] = (SimulatorBackendType.MUJOCO,)
     retry_seeds: tuple[int, ...] = (11, 19, 29)
     clearance_mm: float = 2.0
     wall_thickness_mm: float = 2.0

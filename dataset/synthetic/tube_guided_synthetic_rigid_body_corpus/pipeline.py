@@ -3,8 +3,6 @@ from __future__ import annotations
 import base64
 import json
 import os
-import random
-import re
 import shutil
 import tempfile
 from collections import Counter, defaultdict
@@ -21,31 +19,19 @@ from shared.models.schemas import CompoundMetadata
 from shared.simulation.backends import SimulationScene
 from shared.simulation.schemas import SimulatorBackendType
 
-from .contract import (
-    annotate_manufactured_parts,
-    build_engineering_plan_text,
-    build_evidence_script_text,
-    build_markdown_templates,
-    build_solution_script_text,
-    build_todo_text,
-    coarse_payload_trajectory_dict,
-    load_benchmark_definition,
-    make_planner_constraints,
-    payload_extent_mm,
-    payload_trajectory_dict,
-    scale_benchmark_definition_to_mm,
-    synthetic_benchmark_definition,
-)
 from .geometry import (
     box_part_specs_for_route,
-    compound_from_specs,
     parts_from_specs,
-    validate_geometry,
-    validate_route_clearance,
-    validate_route_positions,
 )
 from .models import ContactHit, PartSpec, RoutePoint, ScenarioConfig
-from .paths import REPO_ROOT, copy_tree, dump_yaml, load_benchmark_build_fn, payload_scene_name, progress_iter, write_json, write_text
+from .paths import (
+    REPO_ROOT,
+    copy_tree,
+    dump_yaml,
+    payload_scene_name,
+    write_json,
+    write_text,
+)
 
 logger = structlog.get_logger(__name__)
 
@@ -500,17 +486,25 @@ def render_simulation_video_preview(
 
     with tempfile.TemporaryDirectory() as staging_dir:
         staging_root = Path(staging_dir)
-        for rel_path in (
-            ".manifests/current_role.json",
-            "benchmark_definition.yaml",
-            "payload_trajectory_definition.yaml",
-            "assembly_definition.yaml",
-        ):
-            source = REPO_ROOT / rel_path
-            if source.exists():
-                target = staging_root / rel_path
-                target.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(source, target)
+        required_sources = {
+            ".manifests/current_role.json": REPO_ROOT
+            / ".manifests"
+            / "current_role.json",
+            "benchmark_definition.yaml": workspace_root / "benchmark_definition.yaml",
+            "payload_trajectory_definition.yaml": (
+                workspace_root / "payload_trajectory_definition.yaml"
+            ),
+            "assembly_definition.yaml": workspace_root / "assembly_definition.yaml",
+        }
+        for rel_path, source in required_sources.items():
+            if not source.exists():
+                raise FileNotFoundError(
+                    f"render_simulation_video_preview missing required artifact: "
+                    f"{source}"
+                )
+            target = staging_root / rel_path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, target)
 
         response = simulate_benchmark_script_content(
             script_content=script_content,
@@ -679,4 +673,3 @@ def backfill_source_solution(
         source_solution_root=str(source_solution_root),
         solved_solution_root=str(solved_solution_root),
     )
-

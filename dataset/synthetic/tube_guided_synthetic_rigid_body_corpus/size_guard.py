@@ -3,9 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 
-def assert_generator_tree_line_limits(
-    root: Path, *, max_lines: int = 800
-) -> None:
+def assert_generator_tree_line_limits(root: Path, *, max_lines: int = 800) -> None:
     oversize: list[str] = []
     for path in root.rglob("*.py"):
         if path.name == "__init__.py":
@@ -18,4 +16,3 @@ def assert_generator_tree_line_limits(
             "Generator tree exceeds the file-size cap of "
             f"{max_lines} lines: {', '.join(oversize)}"
         )
-

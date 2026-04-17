@@ -155,4 +155,3 @@ class NotebookLogCapture:
             self._log_handle.close()
             self._log_handle = None
         return False
-
