@@ -11,9 +11,9 @@
 
 Rendering is split by artifact family:
 
-1. explicit preview renders and preview-style image post-processing run in a dedicated headless `worker-renderer` container,
+1. explicit preview renders, preview-style image post-processing, and the scene-surface point-cloud debug path run in a dedicated headless `worker-renderer` container,
 2. simulation-video rendering is a switchable contract between `worker-heavy` and `worker-renderer`,
-3. selection snapshots, depth renders, segmentation renders, and preview-manifest generation remain in `worker-renderer`.
+3. selection snapshots, depth renders, segmentation renders, point-cloud debug renders, and preview-manifest generation remain in `worker-renderer`.
 
 Static validation no longer produces preview artifacts by default; explicit preview requests use the same renderer worker boundary instead.
 
@@ -170,11 +170,11 @@ The rule is:
 
 01. Simulation video is intended to be a backend/service switch. Today it runs on `worker-heavy`/MuJoCo because that path already exists, avoids another HTTP hop, and was the lowest-overhead implementation; moving it later requires a renderer-side video backend such as VTK or an equivalent.
 
-02. The renderer backend exposes a typed capability record that states what artifact modes and view policies it supports.
+02. The renderer backend exposes a typed capability record that states what artifact modes and view policies it supports, including the point-cloud backend selector used by the scene-surface debug path.
 
 03. The runtime-selected simulation render choice is serialized in `simulation_result.json` so reviewers can replay the exact evidence path.
 
-04. Explicit preview remains a separate preview contract, executed by the renderer worker, and continues to live in the preview manifest path.
+04. Explicit preview remains a separate preview contract, executed by the renderer worker, and continues to live in the preview manifest path. The renderer-owned `render_point_cloud(...)` helper is a sibling scene-surface debug path with its own backend selector, and it may use `vtk`, `matplotlib`, or both.
 
 05. `render_cad(...)` is the ephemeral on-demand path. It normalizes scalar/list camera inputs into zip-paired views, renders a composed `Part | Compound` at the requested camera and modality set, streams queued/view-ready status over the websocket control path, and writes the resulting files into `renders/current-episode/` for the active stage. The canonical RGB preview artifact stem is `{part_name}_render_{angle_1}_{angle_2}`, and the persisted file is `<stem>.png`; `part_name` comes from the rendered component label, so previewing `Part(Box(), label="test_part")` at the default 45/45 orbit uses the unchanged `e45_a45` angle family and produces `test_part_render_e45_a45.png`. Scratch previews are separate from simulation evidence, validation results, and the persisted 24-view handoff bundles.
 
