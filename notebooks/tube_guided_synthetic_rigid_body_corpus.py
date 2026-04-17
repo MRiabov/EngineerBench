@@ -16,10 +16,10 @@ import runpy
 import shutil
 import sys
 import textwrap
-from contextlib import redirect_stderr, redirect_stdout
-from io import StringIO
 from collections import Counter, defaultdict
+from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import dataclass
+from io import StringIO
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -53,11 +53,7 @@ from shared.simulation.backends import SimulationScene
 from shared.simulation.schemas import SimulatorBackendType
 from shared.workers.workbench_models import ManufacturingConfig
 
-
 logger = structlog.get_logger(__name__)
-
-NOTEBOOK_LOG_DIR = ROOT / "logs" / "notebook"
-NOTEBOOK_LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def notebook_log_path(scenario_id: str) -> Path:
@@ -96,7 +92,9 @@ class NotebookLogCapture:
             append_notebook_log(self.path, "--- stderr ---")
             append_notebook_log(self.path, stderr_value)
         if exc_type is not None:
-            append_notebook_log(self.path, f"=== notebook run failed: {exc_type.__name__}: {exc} ===")
+            append_notebook_log(
+                self.path, f"=== notebook run failed: {exc_type.__name__}: {exc} ==="
+            )
         else:
             append_notebook_log(self.path, "=== notebook run completed ===")
         return False
@@ -122,6 +120,9 @@ def find_repo_root(start: Path | None = None) -> Path:
 ROOT = find_repo_root(Path(__file__).resolve().parent)
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+
+NOTEBOOK_LOG_DIR = ROOT / "logs" / "notebook"
+NOTEBOOK_LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 
 @dataclass(frozen=True)
@@ -175,7 +176,7 @@ class ScenarioConfig:
     batch_width_range: tuple[int, int] = (10, 20)
     success_threshold: float = 0.8
     backend_order: tuple[SimulatorBackendType, ...] = (SimulatorBackendType.MUJOCO,)
-    retry_seeds: tuple[int, ...] = (11, 19, 29, 47)
+    retry_seeds: tuple[int, ...] = (11, 19, 29)
     clearance_mm: float = 2.0
     wall_thickness_mm: float = 2.0
     max_segment_mm: float = 72.0
@@ -492,6 +493,89 @@ def payload_extent_mm(benchmark_definition: BenchmarkDefinition) -> float:
     if shape == "cylinder":
         return 2.0 * (radius if radius is not None else 1.0)
     return 2.0 * (radius if radius is not None else 1.0)
+
+
+def scale_benchmark_definition_to_mm(
+    benchmark_definition: BenchmarkDefinition,
+    *,
+    scale: float = 1000.0,
+) -> BenchmarkDefinition:
+    data = benchmark_definition.model_dump(mode="json")
+
+    def scale_point(point: list[float] | tuple[float, float, float] | None):
+        if point is None:
+            return None
+        return [float(value) * scale for value in point]
+
+    def scale_bbox(box: dict[str, list[float]] | None):
+        if not isinstance(box, dict):
+            return box
+        scaled = dict(box)
+        if "min" in scaled:
+            scaled["min"] = scale_point(scaled["min"])
+        if "max" in scaled:
+            scaled["max"] = scale_point(scaled["max"])
+        return scaled
+
+    objectives = (
+        data.get("objectives") if isinstance(data.get("objectives"), dict) else {}
+    )
+    payload = data.get("payload") if isinstance(data.get("payload"), dict) else {}
+    constraints = (
+        data.get("constraints") if isinstance(data.get("constraints"), dict) else {}
+    )
+    simulation_bounds = data.get("simulation_bounds")
+
+    if isinstance(objectives, dict):
+        if "goal_zone" in objectives:
+            objectives["goal_zone"] = scale_bbox(objectives.get("goal_zone"))
+        if "build_zone" in objectives:
+            objectives["build_zone"] = scale_bbox(objectives.get("build_zone"))
+        if "forbid_zones" in objectives and isinstance(
+            objectives["forbid_zones"], list
+        ):
+            scaled_forbid_zones = []
+            for zone in objectives["forbid_zones"]:
+                if not isinstance(zone, dict):
+                    scaled_forbid_zones.append(zone)
+                    continue
+                zone_scaled = dict(zone)
+                zone_scaled["min"] = scale_point(zone_scaled.get("min"))
+                zone_scaled["max"] = scale_point(zone_scaled.get("max"))
+                scaled_forbid_zones.append(zone_scaled)
+            objectives["forbid_zones"] = scaled_forbid_zones
+
+    if isinstance(payload, dict):
+        if payload.get("start_position") is not None:
+            payload["start_position"] = scale_point(payload.get("start_position"))
+        static_randomization = (
+            payload.get("static_randomization")
+            if isinstance(payload.get("static_randomization"), dict)
+            else {}
+        )
+        if static_randomization.get("radius") is not None:
+            static_randomization["radius"] = [
+                float(value) * scale for value in static_randomization["radius"]
+            ]
+        payload["static_randomization"] = static_randomization
+        if payload.get("runtime_jitter") is not None:
+            payload["runtime_jitter"] = [
+                float(value) * scale for value in payload["runtime_jitter"]
+            ]
+
+    if isinstance(simulation_bounds, dict):
+        data["simulation_bounds"] = scale_bbox(simulation_bounds)
+    if isinstance(constraints, dict):
+        for key in (
+            "estimated_solution_cost_usd",
+            "estimated_solution_weight_g",
+            "max_unit_cost",
+            "max_weight_g",
+            "target_quantity",
+        ):
+            constraints[key] = constraints.get(key)
+
+    return BenchmarkDefinition.model_validate(data)
 
 
 def expanded_bounding_box(
@@ -974,8 +1058,10 @@ def build_route_lowering_script_text(
                 span_key = f"{{span['segment_index']}}:{{span['split_index']}}"
                 selected_sides = SELECTED_SIDES_BY_SPAN.get(
                     span_key,
-                    ["floor", "roof", "left_wall", "right_wall"],
+                    [],
                 )
+                if not selected_sides:
+                    continue
 
                 side_defs = {{
                     "floor": (
@@ -1132,7 +1218,7 @@ def build_engineering_plan_text(
         1. Read the benchmark-owned bundle and the manual route trace.
         2. Build the scratch tube scaffold to capture the wall-contact cloud.
         3. Decompose the scaffold into four-sided box primitives along the route.
-        4. Prune unused or near-unused box sides while keeping the contact chain intact.
+        4. Prune any box side that did not register collision hits in the cloud.
         5. Export the planner and coder bundles from the resulting layout.
 
         ## 4. Assumption Register
@@ -1143,8 +1229,9 @@ def build_engineering_plan_text(
 
         ## 5. Risk Assessment
 
-        - If the decomposed box layout loses contact coverage, the notebook retries with a different split seed.
-        - If the final candidate fails the same jitter batch after pruning, the notebook tries a different segmentation.
+        - Geometry generation is seeded-random: the candidate split layout changes with the retry seed.
+        - Pruning is deterministic and depends only on collision hits in the wall-contact cloud.
+        - If a candidate fails the jittered acceptance batch, retry with a different split seed before changing the route trace or span-length threshold.
         """
     )
 
@@ -1257,9 +1344,9 @@ def build_markdown_templates() -> dict[str, str]:
     }
 
 
-def choose_batch_width(config: ScenarioConfig, rng: random.Random) -> int:
+def choose_batch_width(config: ScenarioConfig) -> int:
     lower, upper = config.batch_width_range
-    return rng.randint(lower, upper)
+    return int(round((lower + upper) / 2.0))
 
 
 def contact_body_name(contact, payload_body_name: str) -> str | None:
@@ -1337,7 +1424,7 @@ def prune_segment_specs(
     specs: list[PartSpec],
     contact_hits: list[ContactHit],
     *,
-    min_hits: int = 2,
+    min_hits: int = 1,
 ) -> list[PartSpec]:
     by_name = hits_by_part(contact_hits)
     grouped: dict[tuple[int, int], list[PartSpec]] = defaultdict(list)
@@ -1347,24 +1434,15 @@ def prune_segment_specs(
     kept: list[PartSpec] = []
     for key in sorted(grouped):
         group = grouped[key]
-        floor = [spec for spec in group if spec.side == "floor"]
-        roof = [spec for spec in group if spec.side == "roof"]
-        left = [spec for spec in group if spec.side == "left_wall"]
-        right = [spec for spec in group if spec.side == "right_wall"]
-        sorted_group = sorted(group, key=lambda spec: by_name[spec.name], reverse=True)
-        selected: list[PartSpec] = []
-
-        for spec in floor + roof + left + right:
-            if by_name[spec.name] >= min_hits:
-                selected.append(spec)
-
-        if floor and floor[0] not in selected:
-            selected.append(floor[0])
-
-        while len(selected) < 2 and sorted_group:
-            candidate = sorted_group.pop(0)
-            if candidate not in selected:
-                selected.append(candidate)
+        selected = [spec for spec in group if by_name[spec.name] >= min_hits]
+        if not selected:
+            logger.info(
+                "prune_segment_specs_drop_span",
+                segment_index=key[0],
+                split_index=key[1],
+                part_count=len(group),
+            )
+            continue
 
         kept.extend(
             sorted(
@@ -1638,12 +1716,6 @@ def validate_geometry(compound: Compound) -> None:
         )
 
 
-def intersects_any(compound: Compound) -> tuple[bool, tuple[Any, Any], float]:
-    if hasattr(compound, "do_children_intersect"):
-        return compound.do_children_intersect()
-    return False, (None, None), 0.0
-
-
 def synthesize(
     config: ScenarioConfig,
 ) -> dict[str, Any]:
@@ -1656,7 +1728,9 @@ def synthesize(
         planner_row_id=config.planner_row_id,
         coder_row_id=config.coder_row_id,
     )
-    benchmark_definition = load_benchmark_definition(config.benchmark_bundle_dir)
+    benchmark_definition = scale_benchmark_definition_to_mm(
+        load_benchmark_definition(config.benchmark_bundle_dir)
+    )
     benchmark_build = load_benchmark_build_fn(config.benchmark_bundle_dir)
     benchmark_geometry = benchmark_build()
     payload_extent = payload_extent_mm(benchmark_definition)
@@ -1704,8 +1778,7 @@ def synthesize(
 
     for retry_seed in progress_iter(config.retry_seeds, "retry seeds"):
         try:
-            rng = random.Random(retry_seed)
-            batch_width = choose_batch_width(config, rng)
+            batch_width = choose_batch_width(config)
             logger.info("retry_start", retry_seed=retry_seed, batch_width=batch_width)
             candidate_specs, candidate_compound = build_candidate_assembly(
                 route_points=config.route_points,
@@ -1746,7 +1819,8 @@ def synthesize(
                         xml_path=str(scene_path),
                         control_inputs={},
                         jitter_range=tuple(
-                            float(v) for v in benchmark_definition.payload.runtime_jitter
+                            float(v)
+                            for v in benchmark_definition.payload.runtime_jitter
                         ),
                         num_scenes=batch_width,
                         duration=8.0,
@@ -1780,7 +1854,7 @@ def synthesize(
                         continue
 
                     pruned_specs = prune_segment_specs(
-                        candidate_specs, contact_hits, min_hits=2
+                        candidate_specs, contact_hits, min_hits=1
                     )
                     pruned_compound = compound_from_specs(
                         pruned_specs, label="synthetic_route_solution"
@@ -1789,7 +1863,9 @@ def synthesize(
 
                     pruned_scene_path = build_scene_xml(
                         benchmark_definition=synthetic_benchmark,
-                        assembly=Compound(children=[benchmark_geometry, pruned_compound]),
+                        assembly=Compound(
+                            children=[benchmark_geometry, pruned_compound]
+                        ),
                         output_dir=candidate_scratch / "pruned",
                         backend_type=backend_type,
                     )
@@ -1798,7 +1874,8 @@ def synthesize(
                         xml_path=str(pruned_scene_path),
                         control_inputs={},
                         jitter_range=tuple(
-                            float(v) for v in benchmark_definition.payload.runtime_jitter
+                            float(v)
+                            for v in benchmark_definition.payload.runtime_jitter
                         ),
                         num_scenes=batch_width,
                         duration=8.0,
@@ -1893,7 +1970,7 @@ def synthesize(
         },
         "dfm_suggestions": [],
     }
-    assembly_model = AssemblyDefinition.model_validate(assembly_definition)
+    AssemblyDefinition.model_validate(assembly_definition)
 
     payload_trajectory_yaml = payload_trajectory_dict(
         payload_name=benchmark_definition.payload.label,
@@ -1990,7 +2067,9 @@ def synthesize(
     )
 
     if config.emit_debug_plots:
-        logger.info("render_debug_plots_start", output_dir=str(coder_root / "renders" / "debug"))
+        logger.info(
+            "render_debug_plots_start", output_dir=str(coder_root / "renders" / "debug")
+        )
         render_debug_plots(
             output_dir=coder_root / "renders" / "debug",
             route_points=config.route_points,
