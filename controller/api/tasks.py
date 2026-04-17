@@ -298,10 +298,10 @@ async def _copy_approved_benchmark_bundle(
         "renders/engineer_plan_renders/render_manifest.json",
         "renders/benchmark_renders/render_manifest.json",
     )
-    if await source_client.exists(root_manifest_path, bypass_agent_permissions=True):
-        root_manifest = await source_client.read_file(
-            root_manifest_path, bypass_agent_permissions=True
-        )
+    root_manifest = await source_client.read_file_optional(
+        root_manifest_path, bypass_agent_permissions=True
+    )
+    if root_manifest is not None:
         if not await destination_client.upload_files(
             [(alias_path, root_manifest.encode("utf-8")) for alias_path in alias_paths],
             bypass_agent_permissions=True,

@@ -346,19 +346,16 @@ class SimulationLoop:
         for step_idx in range(steps):
             self.current_step_idx = step_idx
 
-            if self._step_internal(
-                step_idx,
-                steps,
+            should_stop, current_time = self._step_internal(
                 dt,
                 control_inputs,
                 dynamic_controllers,
                 target_body_name,
-            ):
-                current_time = self.backend.get_state()["time"]
+            )
+            if should_stop:
                 break
 
             # Video recording
-            current_time = self.backend.get_state()["time"]
             captured_frame_index = media_recorder.update(current_time, self.backend)
             if captured_frame_index is not None:
                 object_pose_records.extend(
@@ -393,17 +390,19 @@ class SimulationLoop:
 
     def _step_internal(
         self,
-        step_idx: int,
-        steps: int,
         dt: float,
         control_inputs: dict[str, float],
         dynamic_controllers: dict[str, callable] | None,
         target_body_name: str | None,
-    ) -> bool:
-        """Internal step logic for the simulation loop. Returns True if simulation should stop."""
+    ) -> tuple[bool, float]:
+        """Internal step logic for the simulation loop.
+
+        Returns:
+            A pair of (should_stop, current_time_s).
+        """
         # Apply dynamic controllers
         if dynamic_controllers:
-            current_time = self.backend.get_state()["time"]
+            current_time = self.backend.get_time()
             self._apply_gated_controls({}, current_time, dynamic_controllers)
 
         # Step backend
@@ -411,14 +410,10 @@ class SimulationLoop:
         current_time = res.time
 
         # Check failures and update metrics
-        check_interval = 1
-        if step_idx % check_interval == 0 or step_idx == steps - 1:
-            if self._check_simulation_failure(
-                res, current_time, dt * check_interval, target_body_name
-            ):
-                return True
+        if self._check_simulation_failure(res, current_time, dt, target_body_name):
+            return True, current_time
 
-        return False
+        return False, current_time
 
     def check_goal_with_vertices(self, body_name: str) -> bool:
         """Check if any vertices of body_name are inside any of the goal sites."""

@@ -645,6 +645,9 @@ class GenesisBackend(PhysicsRendererBackend):
 
         return StepResult(time=self.current_time, success=True)
 
+    def get_time(self) -> float:
+        return float(self.current_time)
+
     def get_body_state(self, body_id: str, env_idx: int | None = None) -> BodyState:
         logger.debug("genesis_get_body_state_request", body_id=body_id, env_idx=env_idx)
         try:

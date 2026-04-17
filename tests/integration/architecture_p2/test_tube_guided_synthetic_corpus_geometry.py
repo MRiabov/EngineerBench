@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+from itertools import pairwise
 
 import numpy as np
 import pytest
@@ -11,6 +12,7 @@ from dataset.synthetic.tube_guided_synthetic_rigid_body_corpus import (
 )
 from dataset.synthetic.tube_guided_synthetic_rigid_body_corpus.geometry import (
     box_part_specs_for_route,
+    build_box_part,
     compound_from_specs,
     validate_geometry,
     validate_route_clearance,
@@ -29,6 +31,7 @@ from shared.models.schemas import (
     PhysicsConfig,
 )
 from shared.simulation.schemas import SimulatorBackendType
+from worker_heavy.workbenches.analysis_utils import part_to_trimesh
 
 pytestmark = [
     pytest.mark.integration,
@@ -63,6 +66,82 @@ def _reference_frame(start_mm: np.ndarray, end_mm: np.ndarray) -> np.ndarray:
     y_axis = np.cross(z_axis, x_axis)
     y_axis = y_axis / np.linalg.norm(y_axis)
     return np.column_stack([x_axis, y_axis, z_axis])
+
+
+def _unit(vector: np.ndarray) -> np.ndarray:
+    norm = float(np.linalg.norm(vector))
+    if norm <= 0.0:
+        raise ValueError("zero-length vector")
+    return vector / norm
+
+
+def _line_distance_to_line(
+    point_a: np.ndarray, direction_a: np.ndarray, point_b: np.ndarray
+) -> float:
+    direction_a = _unit(direction_a)
+    delta = point_b - point_a
+    return float(np.linalg.norm(delta - np.dot(delta, direction_a) * direction_a))
+
+
+def _axis_segment(
+    center_mm: np.ndarray, axis_direction: np.ndarray, length_mm: float
+) -> tuple[np.ndarray, np.ndarray]:
+    half_length = _unit(axis_direction) * (float(length_mm) / 2.0)
+    return center_mm - half_length, center_mm + half_length
+
+
+def _assert_orthonormal(frame: np.ndarray) -> None:
+    identity = np.eye(3)
+    assert np.allclose(frame.T @ frame, identity, atol=1e-6), frame.tolist()
+
+
+def _assert_frame_axes_match_up_to_permutation(
+    actual_frame: np.ndarray, expected_frame: np.ndarray
+) -> None:
+    assert np.allclose(actual_frame.T @ actual_frame, np.eye(3), atol=1e-6), (
+        actual_frame.tolist()
+    )
+    assert np.allclose(expected_frame.T @ expected_frame, np.eye(3), atol=1e-6), (
+        expected_frame.tolist()
+    )
+
+    overlap = np.abs(actual_frame.T @ expected_frame)
+    assert np.allclose(overlap.max(axis=0), 1.0, atol=1e-6), overlap.tolist()
+    assert np.allclose(overlap.max(axis=1), 1.0, atol=1e-6), overlap.tolist()
+
+
+def _projected_axis_bounds(
+    vertices: np.ndarray, axis: np.ndarray
+) -> tuple[float, float]:
+    projections = vertices @ axis
+    return float(projections.min()), float(projections.max())
+
+
+def _assert_adjacent_break_sections_are_contiguous(
+    *,
+    prev_name: str,
+    prev_vertices: np.ndarray,
+    next_name: str,
+    next_vertices: np.ndarray,
+    axis: np.ndarray,
+    tolerance_mm: float = 1e-3,
+) -> None:
+    prev_min, prev_max = _projected_axis_bounds(prev_vertices, axis)
+    next_min, next_max = _projected_axis_bounds(next_vertices, axis)
+    gap_mm = next_min - prev_max
+
+    assert np.isfinite(prev_min) and np.isfinite(prev_max)
+    assert np.isfinite(next_min) and np.isfinite(next_max)
+    assert gap_mm <= tolerance_mm, (
+        prev_name,
+        next_name,
+        gap_mm,
+        prev_min,
+        prev_max,
+        next_min,
+        next_max,
+        axis.tolist(),
+    )
 
 
 def _benchmark_definition(route_points: list) -> BenchmarkDefinition:
@@ -198,3 +277,311 @@ def test_tube_guided_synthetic_corpus_route_geometry_validates_and_fails_closed(
     overlapping_compound = compound_from_specs(overlapping_specs, "overlap_case")
     with pytest.raises(ValueError, match="self-intersects"):
         validate_geometry(overlapping_compound)
+
+
+@pytest.mark.int_id("INT-284")
+def test_tube_guided_synthetic_corpus_box_axis_lines_are_parallel_perpendicular_and_non_intersecting():
+    route_points = default_route_points()
+    tube_radius_mm = 10.0
+    clearance_mm = 2.0
+    wall_thickness_mm = 2.0
+    max_segment_mm = 32.0
+
+    specs = box_part_specs_for_route(
+        route_points,
+        tube_radius_mm=tube_radius_mm,
+        clearance_mm=clearance_mm,
+        wall_thickness_mm=wall_thickness_mm,
+        max_segment_mm=max_segment_mm,
+        seed=11,
+        material_id="aluminum_6061",
+    )
+    compound = compound_from_specs(specs, "synthetic_route")
+    validate_geometry(compound)
+
+    route_xyz = np.asarray([point.pos_mm for point in route_points], dtype=float)
+    route_directions = [
+        _unit(route_xyz[index + 1] - route_xyz[index])
+        for index in range(len(route_xyz) - 1)
+    ]
+    corridor_width_mm = 2.0 * tube_radius_mm + 2.0 * clearance_mm
+    corridor_height_mm = 2.0 * tube_radius_mm + 2.0 * clearance_mm
+    side_offsets = {
+        "floor": np.array(
+            [0.0, 0.0, -corridor_height_mm / 2.0 + wall_thickness_mm / 2.0]
+        ),
+        "roof": np.array(
+            [0.0, 0.0, corridor_height_mm / 2.0 - wall_thickness_mm / 2.0]
+        ),
+        "left_wall": np.array(
+            [0.0, -corridor_width_mm / 2.0 + wall_thickness_mm / 2.0, 0.0]
+        ),
+        "right_wall": np.array(
+            [0.0, corridor_width_mm / 2.0 - wall_thickness_mm / 2.0, 0.0]
+        ),
+    }
+
+    specs_by_segment_and_split: dict[tuple[int, int], list[PartSpec]] = {}
+    specs_by_segment_and_side: dict[tuple[int, str], list[PartSpec]] = {}
+    for spec in specs:
+        specs_by_segment_and_split.setdefault(
+            (spec.segment_index, spec.split_index), []
+        ).append(spec)
+        specs_by_segment_and_side.setdefault(
+            (spec.segment_index, spec.side), []
+        ).append(spec)
+
+    for spec in specs:
+        frame = SciPyRotation.from_euler(
+            "xyz", spec.euler_deg, degrees=True
+        ).as_matrix()
+        _assert_orthonormal(frame)
+
+        x_axis = frame[:, 0]
+        y_axis = frame[:, 1]
+        z_axis = frame[:, 2]
+        route_direction = route_directions[spec.segment_index]
+        center = np.asarray(spec.center_mm, dtype=float)
+        expected_offset = frame @ side_offsets[spec.side]
+
+        assert np.isclose(abs(float(np.dot(x_axis, route_direction))), 1.0, atol=1e-6)
+        assert np.isclose(float(np.dot(x_axis, y_axis)), 0.0, atol=1e-6)
+        assert np.isclose(float(np.dot(x_axis, z_axis)), 0.0, atol=1e-6)
+        assert np.isclose(float(np.dot(y_axis, z_axis)), 0.0, atol=1e-6)
+
+        axis_start, axis_end = _axis_segment(center, x_axis, float(spec.dims_mm[0]))
+        assert np.isfinite(axis_start).all()
+        assert np.isfinite(axis_end).all()
+
+        route_distance = _line_distance_to_line(
+            center, x_axis, route_xyz[spec.segment_index]
+        )
+        assert np.isclose(
+            route_distance, float(np.linalg.norm(expected_offset)), atol=1e-6
+        ), (spec.name, route_distance, expected_offset.tolist())
+
+    for (
+        _segment_index,
+        _split_index,
+    ), split_specs in specs_by_segment_and_split.items():
+        split_specs.sort(key=lambda spec: spec.side)
+
+        for left_index, left_spec in enumerate(split_specs):
+            left_frame = SciPyRotation.from_euler(
+                "xyz", left_spec.euler_deg, degrees=True
+            ).as_matrix()
+            left_axis = left_frame[:, 0]
+            left_center = np.asarray(left_spec.center_mm, dtype=float)
+            left_offset = side_offsets[left_spec.side]
+
+            for right_spec in split_specs[left_index + 1 :]:
+                right_frame = SciPyRotation.from_euler(
+                    "xyz", right_spec.euler_deg, degrees=True
+                ).as_matrix()
+                right_axis = right_frame[:, 0]
+                right_center = np.asarray(right_spec.center_mm, dtype=float)
+                right_offset = side_offsets[right_spec.side]
+
+                assert np.isclose(
+                    abs(float(np.dot(left_axis, right_axis))), 1.0, atol=1e-6
+                )
+
+                actual_distance = _line_distance_to_line(
+                    left_center, left_axis, right_center
+                )
+                expected_distance = float(np.linalg.norm(right_offset - left_offset))
+                assert np.isclose(actual_distance, expected_distance, atol=1e-6), (
+                    left_spec.name,
+                    right_spec.name,
+                    actual_distance,
+                    expected_distance,
+                )
+                assert actual_distance > 1e-6, (
+                    left_spec.name,
+                    right_spec.name,
+                    actual_distance,
+                )
+
+    for (_segment_index, side), side_specs in specs_by_segment_and_side.items():
+        side_specs.sort(key=lambda spec: spec.split_index)
+        for prev_spec, next_spec in pairwise(side_specs):
+            prev_frame = SciPyRotation.from_euler(
+                "xyz", prev_spec.euler_deg, degrees=True
+            ).as_matrix()
+            next_frame = SciPyRotation.from_euler(
+                "xyz", next_spec.euler_deg, degrees=True
+            ).as_matrix()
+            prev_axis = prev_frame[:, 0]
+            next_axis = next_frame[:, 0]
+            prev_center = np.asarray(prev_spec.center_mm, dtype=float)
+            next_center = np.asarray(next_spec.center_mm, dtype=float)
+            prev_start, prev_end = _axis_segment(
+                prev_center, prev_axis, float(prev_spec.dims_mm[0])
+            )
+            next_start, next_end = _axis_segment(
+                next_center, next_axis, float(next_spec.dims_mm[0])
+            )
+
+            assert np.isclose(abs(float(np.dot(prev_axis, next_axis))), 1.0, atol=1e-6)
+            assert np.linalg.norm(prev_end - next_start) <= 1e-6, (
+                prev_spec.name,
+                next_spec.name,
+                prev_end.tolist(),
+                next_start.tolist(),
+            )
+            assert _line_distance_to_line(prev_start, prev_axis, next_start) <= 1e-6
+
+
+@pytest.mark.int_id("INT-285")
+def test_tube_guided_synthetic_corpus_trimesh_export_preserves_representative_box_frames():
+    route_points = default_route_points()
+    tube_radius_mm = 10.0
+    clearance_mm = 2.0
+    wall_thickness_mm = 2.0
+    max_segment_mm = 32.0
+
+    specs = box_part_specs_for_route(
+        route_points,
+        tube_radius_mm=tube_radius_mm,
+        clearance_mm=clearance_mm,
+        wall_thickness_mm=wall_thickness_mm,
+        max_segment_mm=max_segment_mm,
+        seed=11,
+        material_id="aluminum_6061",
+    )
+
+    route_xyz = np.asarray([point.pos_mm for point in route_points], dtype=float)
+    representative_specs = [
+        next(
+            spec
+            for spec in specs
+            if spec.segment_index == segment_index
+            and spec.split_index == 0
+            and spec.side == "floor"
+        )
+        for segment_index in (0, 1, 3)
+    ]
+
+    for spec in representative_specs:
+        mesh = part_to_trimesh(build_box_part(spec))
+        assert mesh.is_watertight, spec.name
+        assert mesh.vertices.shape[0] > 0, spec.name
+
+        expected_center = np.asarray(spec.center_mm, dtype=float)
+        assert np.allclose(mesh.centroid, expected_center, atol=1e-3), (
+            spec.name,
+            mesh.centroid.tolist(),
+            expected_center.tolist(),
+        )
+
+        actual_frame = mesh.bounding_box_oriented.primitive.transform[:3, :3]
+        expected_frame = _reference_frame(
+            route_xyz[spec.segment_index], route_xyz[spec.segment_index + 1]
+        )
+        _assert_frame_axes_match_up_to_permutation(
+            actual_frame=actual_frame,
+            expected_frame=expected_frame,
+        )
+
+
+@pytest.mark.int_id("INT-286")
+def test_tube_guided_synthetic_corpus_build123d_break_sections_remain_contiguous():
+    route_points = default_route_points()
+    tube_radius_mm = 10.0
+    clearance_mm = 2.0
+    wall_thickness_mm = 2.0
+    max_segment_mm = 32.0
+
+    specs = box_part_specs_for_route(
+        route_points,
+        tube_radius_mm=tube_radius_mm,
+        clearance_mm=clearance_mm,
+        wall_thickness_mm=wall_thickness_mm,
+        max_segment_mm=max_segment_mm,
+        seed=11,
+        material_id="aluminum_6061",
+    )
+
+    specs_by_segment_and_side: dict[tuple[int, str], list[PartSpec]] = {}
+    for spec in specs:
+        specs_by_segment_and_side.setdefault(
+            (spec.segment_index, spec.side), []
+        ).append(spec)
+
+    for (_segment_index, side), side_specs in specs_by_segment_and_side.items():
+        side_specs.sort(key=lambda spec: spec.split_index)
+        for prev_spec, next_spec in pairwise(side_specs):
+            prev_part = build_box_part(prev_spec)
+            next_part = build_box_part(next_spec)
+            prev_vertices = np.asarray(
+                [[vertex.X, vertex.Y, vertex.Z] for vertex in prev_part.vertices()],
+                dtype=float,
+            )
+            next_vertices = np.asarray(
+                [[vertex.X, vertex.Y, vertex.Z] for vertex in next_part.vertices()],
+                dtype=float,
+            )
+            axis = SciPyRotation.from_euler(
+                "xyz", prev_spec.euler_deg, degrees=True
+            ).as_matrix()[:, 0]
+
+            _assert_adjacent_break_sections_are_contiguous(
+                prev_name=prev_spec.name,
+                prev_vertices=prev_vertices,
+                next_name=next_spec.name,
+                next_vertices=next_vertices,
+                axis=axis,
+            )
+
+
+@pytest.mark.int_id("INT-287")
+def test_tube_guided_synthetic_corpus_trimesh_break_sections_remain_contiguous():
+    route_points = default_route_points()
+    tube_radius_mm = 10.0
+    clearance_mm = 2.0
+    wall_thickness_mm = 2.0
+    max_segment_mm = 32.0
+
+    specs = box_part_specs_for_route(
+        route_points,
+        tube_radius_mm=tube_radius_mm,
+        clearance_mm=clearance_mm,
+        wall_thickness_mm=wall_thickness_mm,
+        max_segment_mm=max_segment_mm,
+        seed=11,
+        material_id="aluminum_6061",
+    )
+
+    segment_counts: dict[int, int] = {}
+    for spec in specs:
+        segment_counts[spec.segment_index] = (
+            segment_counts.get(spec.segment_index, 0) + 1
+        )
+    chosen_segment_index = max(segment_counts, key=segment_counts.get)
+    segment_specs = [
+        spec for spec in specs if spec.segment_index == chosen_segment_index
+    ]
+    segment_specs_by_side: dict[str, list[PartSpec]] = {}
+    for spec in segment_specs:
+        segment_specs_by_side.setdefault(spec.side, []).append(spec)
+
+    mesh_by_spec_name = {
+        spec.name: part_to_trimesh(build_box_part(spec)) for spec in segment_specs
+    }
+
+    for side, side_specs in segment_specs_by_side.items():
+        side_specs.sort(key=lambda spec: spec.split_index)
+        for prev_spec, next_spec in pairwise(side_specs):
+            prev_mesh = mesh_by_spec_name[prev_spec.name]
+            next_mesh = mesh_by_spec_name[next_spec.name]
+            axis = SciPyRotation.from_euler(
+                "xyz", prev_spec.euler_deg, degrees=True
+            ).as_matrix()[:, 0]
+
+            _assert_adjacent_break_sections_are_contiguous(
+                prev_name=prev_spec.name,
+                prev_vertices=np.asarray(prev_mesh.vertices, dtype=float),
+                next_name=next_spec.name,
+                next_vertices=np.asarray(next_mesh.vertices, dtype=float),
+                axis=axis,
+            )

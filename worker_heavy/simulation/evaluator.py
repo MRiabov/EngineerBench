@@ -19,6 +19,12 @@ class SuccessEvaluator:
         self.max_simulation_time = max_simulation_time
         self.simulation_bounds = simulation_bounds
         self.session_id = session_id
+        if self.simulation_bounds is not None:
+            self._simulation_bounds_min_mm = np.array(self.simulation_bounds.min_mm)
+            self._simulation_bounds_max_mm = np.array(self.simulation_bounds.max_mm)
+        else:
+            self._simulation_bounds_min_mm = None
+            self._simulation_bounds_max_mm = None
 
     def check_failure(
         self,
@@ -58,10 +64,10 @@ class SuccessEvaluator:
         # 3. Fell off world / Out of Bounds
         if qpos is not None and len(qpos) >= 3:
             # Always prioritize simulation_bounds if provided
-            if self.simulation_bounds:
-                b_min = np.array(self.simulation_bounds.min_mm)
-                b_max = np.array(self.simulation_bounds.max_mm)
-                if np.any(qpos < b_min) or np.any(qpos > b_max):
+            if self._simulation_bounds_min_mm is not None:
+                if np.any(qpos < self._simulation_bounds_min_mm) or np.any(
+                    qpos > self._simulation_bounds_max_mm
+                ):
                     return SimulationFailureMode.OUT_OF_BOUNDS
             else:
                 # Default safety bounds if none specified (prevents infinite falls)

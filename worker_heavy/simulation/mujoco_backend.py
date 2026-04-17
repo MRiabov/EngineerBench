@@ -140,6 +140,11 @@ class MuJoCoBackend(PhysicsRendererBackend):
 
         return StepResult(time=self.data.time, success=True)
 
+    def get_time(self) -> float:
+        if self.data is None:
+            return 0.0
+        return float(self.data.time)
+
     def get_body_state(self, body_id: str) -> BodyState:
         # MuJoCo uses integer IDs or names
         try:

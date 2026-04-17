@@ -219,6 +219,15 @@ def test_tube_guided_synthetic_corpus_render_preview_uses_workspace_payload_defi
     assert simulation_result.render_provenance.captured_frame_count > 0, (
         simulation_result.render_provenance.model_dump(mode="json")
     )
+    assert simulation_result.mjcf_content is not None, simulation_result.model_dump(
+        mode="json"
+    )
+    assert 'camera name="main"' in simulation_result.mjcf_content, (
+        simulation_result.mjcf_content
+    )
+    assert 'target="zone_build"' in simulation_result.mjcf_content, (
+        simulation_result.mjcf_content
+    )
     assert simulation_result.payload_trajectory_monitor is not None, (
         simulation_result.model_dump(mode="json")
     )

@@ -674,8 +674,16 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
                     scene_span_mm = max(
                         scene_span_mm, self._objectives_diagonal_mm(objectives)
                     )
-                # Keep the payload-centered camera far enough away to preserve
-                # overall route scale cues in the simulation video.
+                # Prefer the fixed build-zone body as the camera target when
+                # available. Tracking the payload body makes the view follow
+                # the object and hides the corridor/goal scale in the video.
+                camera_target = (
+                    "zone_build"
+                    if objectives is not None
+                    and "zone_build" in self.compiler.body_elements
+                    else moved_body_name
+                )
+                # Keep the overview far enough away to preserve route context.
                 camera_distance_mm = max(scene_span_mm * 1.1, 250.0)
                 camera_offset_mm = camera_distance_mm / math.sqrt(3.0)
                 ET.SubElement(
@@ -688,7 +696,7 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
                         f"{camera_offset_mm:.6f}"
                     ),
                     mode="trackcom",
-                    target=moved_body_name,
+                    target=camera_target,
                 )
             body_locations[moved_body_name] = (
                 list(payload_object.start_position_mm),

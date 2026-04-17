@@ -78,6 +78,17 @@ def _default_worker_heavy_url() -> str:
     return "http://127.0.0.1:18002"
 
 
+def _render_simulation_video_disabled() -> bool:
+    return os.getenv(
+        "PROBLEMOLOGIST_TUBE_GUIDED_SYNTHETIC_DISABLE_RENDER", ""
+    ).strip().lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
+
+
 def default_route_points() -> list[RoutePoint]:
     return [
         # Keep the prototype aligned with the source ec-002 route trace so the
@@ -214,33 +225,6 @@ def synthesize(config: ScenarioConfig) -> dict[str, Any]:
                 output_dir=candidate_scratch,
                 backend_type=config.backend_order[0],
             )
-
-            if (
-                config.emit_simulation_video
-                and simulation_video_summary is None
-                and (
-                    config.simulation_video_retry_seed is None
-                    or retry_seed == config.simulation_video_retry_seed
-                )
-            ):
-                simulation_video_script = build_solution_script_text(
-                    scenario_id=config.scenario_id,
-                    route_points=config.route_points,
-                    part_specs=candidate_specs,
-                    payload_name=synthetic_benchmark.payload.label,
-                    split_seed=retry_seed,
-                    tube_radius_mm=tube_radius_mm,
-                    clearance_mm=config.clearance_mm,
-                    wall_thickness_mm=config.wall_thickness_mm,
-                    max_segment_mm=config.max_segment_mm,
-                    material_id=config.material_id,
-                )
-                simulation_video_summary = render_simulation_video_preview(
-                    backend_type=config.backend_order[0],
-                    script_content=simulation_video_script,
-                    session_id=f"{config.scenario_id}-video-{retry_seed}",
-                    workspace_root=coder_root,
-                )
 
             for backend_type in progress_iter(
                 config.backend_order, f"backend {retry_seed}"
@@ -511,6 +495,14 @@ def synthesize(config: ScenarioConfig) -> dict[str, Any]:
         copy_reviews_from=copy_reviews_from,
     )
 
+    if config.emit_simulation_video and simulation_video_summary is None:
+        simulation_video_summary = render_simulation_video_preview(
+            backend_type=chosen_backend,
+            script_content=solution_script_text,
+            session_id=f"{config.scenario_id}-video-{chosen_seed}",
+            workspace_root=coder_root,
+        )
+
     if config.emit_debug_plots:
         logger.info(
             "render_debug_plots_start", output_dir=str(coder_root / "renders" / "debug")
@@ -649,6 +641,8 @@ def main(config: ScenarioConfig | None = None) -> dict[str, Any]:
             backfill_source_solution=False,
             backend_order=(SimulatorBackendType.MUJOCO,),
         )
+    if _render_simulation_video_disabled():
+        config.emit_simulation_video = False
     os.environ.setdefault("WORKER_HEAVY_URL", _default_worker_heavy_url())
     log_path = REPO_ROOT / "logs" / "notebook" / f"{config.scenario_id}.log"
     with NotebookLogCapture(log_path):
