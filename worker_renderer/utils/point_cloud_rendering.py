@@ -106,9 +106,7 @@ def _load_mesh(mesh_path: Path) -> trimesh.Trimesh:
         loaded = loaded.dump(concatenate=True)
 
     if not isinstance(loaded, trimesh.Trimesh):
-        raise RuntimeError(
-            f"failed to interpret mesh {mesh_path} as a surface mesh"
-        )
+        raise RuntimeError(f"failed to interpret mesh {mesh_path} as a surface mesh")
     if loaded.is_empty:
         raise RuntimeError(f"mesh {mesh_path} does not contain any triangles")
     return loaded.copy()
@@ -160,7 +158,9 @@ def _scene_surface_meshes(scene: PreviewScene) -> list[_SurfaceMesh]:
 def _allocate_sample_counts(
     surfaces: list[_SurfaceMesh], *, sample_limit: int
 ) -> list[int]:
-    areas = np.asarray([max(float(mesh.mesh.area), 0.0) for mesh in surfaces], dtype=float)
+    areas = np.asarray(
+        [max(float(mesh.mesh.area), 0.0) for mesh in surfaces], dtype=float
+    )
     total_area = float(areas.sum())
     if total_area <= 0.0:
         raise ValueError("preview scene surfaces do not expose any measurable area")
@@ -208,9 +208,7 @@ def _sample_mesh_surface_points(
     )
 
 
-def _transform_points(
-    points: np.ndarray, *, transform: vtk.vtkTransform
-) -> np.ndarray:
+def _transform_points(points: np.ndarray, *, transform: vtk.vtkTransform) -> np.ndarray:
     if points.size == 0:
         return points
     return np.asarray(

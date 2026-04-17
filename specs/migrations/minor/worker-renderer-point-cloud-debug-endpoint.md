@@ -79,27 +79,27 @@ scene-render path.
 
 ## Proposed Target State
 
-01. The renderer worker owns a point-cloud scene-render mode for CAD scenes.
-02. The render source is the same scene geometry used by static preview,
-    including benchmark fixtures and engineer solution geometry when present.
-03. Surface samples are taken from object surfaces after scene assembly. The
-    sampling may be area-weighted over tessellated faces or an equivalent
-    renderer-owned surface sampler, but it must be deterministic for a fixed
-    scene and budget.
-04. The point-cloud path uses the same bundle context, scene snapshot, camera
-    normalization, manifest writing, and render artifact publication as the
-    raster preview path.
-05. A dedicated renderer-owned helper or route exposes point-cloud rendering
-    for debugging and downstream reuse, but the main `render_cad(...)` helper
-    and 24-view bundle builder stay focused on raster preview.
-06. The point-cloud helper accepts a backend selector and can render through
-    `vtk`, `matplotlib`, or both. The contract is satisfied if at least one
-    renderer-owned backend is available and deterministic.
-07. If the renderer persists a sampled-point sidecar or cache, that artifact is
-    bundle-local and derived from scene geometry. It is not a pose-history
-    table.
-08. The output stays static: no animation, no playback, and no fallback to
-    `worker-heavy`.
+1. The renderer worker owns a point-cloud scene-render mode for CAD scenes.
+2. The render source is the same scene geometry used by static preview,
+   including benchmark fixtures and engineer solution geometry when present.
+3. Surface samples are taken from object surfaces after scene assembly. The
+   sampling may be area-weighted over tessellated faces or an equivalent
+   renderer-owned surface sampler, but it must be deterministic for a fixed
+   scene and budget.
+4. The point-cloud path uses the same bundle context, scene snapshot, camera
+   normalization, manifest writing, and render artifact publication as the
+   raster preview path.
+5. A dedicated renderer-owned helper or route exposes point-cloud rendering
+   for debugging and downstream reuse, but the main `render_cad(...)` helper
+   and 24-view bundle builder stay focused on raster preview.
+6. The point-cloud helper accepts a backend selector and can render through
+   `vtk`, `matplotlib`, or both. The contract is satisfied if at least one
+   renderer-owned backend is available and deterministic.
+7. If the renderer persists a sampled-point sidecar or cache, that artifact is
+   bundle-local and derived from scene geometry. It is not a pose-history
+   table.
+8. The output stays static: no animation, no playback, and no fallback to
+   `worker-heavy`.
 
 ## Required Work
 
@@ -193,58 +193,58 @@ explicitly waived with a written rationale.
 ### Contract plumbing
 
 - [ ] Update `shared/workers/schema.py` so the point-cloud request model is
-      explicitly scene-surface based, keeps the backend selector visible, and
-      does not describe `objects.parquet` or any pose-history source as the
-      contract root.
+  explicitly scene-surface based, keeps the backend selector visible, and
+  does not describe `objects.parquet` or any pose-history source as the
+  contract root.
 - [ ] Update `shared/rendering/renderer_client.py` so `render_point_cloud(...)`
-      forwards the backend selector and stays the renderer-owned entrypoint for
-      the debug path.
+  forwards the backend selector and stays the renderer-owned entrypoint for
+  the debug path.
 - [ ] Keep `render_cad(...)` and the 24-view helper surface raster-focused; do
-      not add a point-cloud switch to the public preview API.
+  not add a point-cloud switch to the public preview API.
 - [ ] Preserve the existing render response and bundle manifest shape so the
-      point-cloud route publishes through the same workspace-visible plumbing as
-      the other renderer helpers.
+  point-cloud route publishes through the same workspace-visible plumbing as
+  the other renderer helpers.
 
 ### Renderer implementation
 
 - [ ] Reuse `shared/rendering/preview_scene.py` and
-      `worker_renderer/utils/build123d_rendering.py` so point-cloud rendering
-      uses the same scene reconstruction and camera framing as raster preview.
+  `worker_renderer/utils/build123d_rendering.py` so point-cloud rendering
+  uses the same scene reconstruction and camera framing as raster preview.
 - [ ] Implement the scene-surface sampler in
-      `worker_renderer/utils/point_cloud_rendering.py` so sampled points come
-      from object surfaces and remain deterministic for a fixed scene and
-      sample budget.
+  `worker_renderer/utils/point_cloud_rendering.py` so sampled points come
+  from object surfaces and remain deterministic for a fixed scene and
+  sample budget.
 - [ ] Keep the backend choice explicit and support at least one renderer-owned
-      backend path (`vtk`, `matplotlib`, or both) behind the same public
-      request contract.
+  backend path (`vtk`, `matplotlib`, or both) behind the same public
+  request contract.
 - [ ] Keep any sampled-point cache or sidecar bundle-local and derived from the
-      scene geometry only.
+  scene geometry only.
 - [ ] Ensure the helper writes the point-cloud image through the existing
-      bundle publication flow and never falls back to `worker-heavy`.
+  bundle publication flow and never falls back to `worker-heavy`.
 
 ### Route wiring
 
 - [ ] Update `worker_renderer/api/routes.py` so `/debug/render_point_cloud`
-      calls the shared surface-sampling core through the renderer boundary.
+  calls the shared surface-sampling core through the renderer boundary.
 - [ ] Make the route resolve the same scene bundle context as static preview so
-      both paths inspect the same scene revision.
+  both paths inspect the same scene revision.
 - [ ] Fail closed when the scene cannot be resolved, the backend is unsupported,
-      or the sampled surface set is empty.
+  or the sampled surface set is empty.
 - [ ] Keep the route debug-owned and reusable by downstream callers without
-      turning it into a generic geometry export API.
+  turning it into a generic geometry export API.
 
 ### Validation and docs
 
 - [ ] Add or update the integration test in
-      `tests/integration/architecture_p0/test_architecture_p0.py` to render a
-      real scene bundle through the point-cloud route.
+  `tests/integration/architecture_p0/test_architecture_p0.py` to render a
+  real scene bundle through the point-cloud route.
 - [ ] Assert that the output image exists and the bundle manifest points at the
-      expected artifact path.
+  expected artifact path.
 - [ ] Assert that the render is deterministic for a fixed scene and sample
-      budget.
+  budget.
 - [ ] Assert that the sampled points come from the scene surface path rather
-      than pose-history data.
+  than pose-history data.
 - [ ] Verify the narrow integration slice passes through
-      `./scripts/run_integration_tests.sh`.
+  `./scripts/run_integration_tests.sh`.
 - [ ] Update architecture wording if any doc still describes the point-cloud
-      route as a pose-history debug endpoint.
+  route as a pose-history debug endpoint.

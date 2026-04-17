@@ -5,7 +5,7 @@ This is the current developer-facing renderer surface. Refresh it from `worker_r
 ## Route Map
 
 | Method | Route | Use | Request model | Response model |
-| --- | --- | --- | --- | --- |
+| -- | -- | -- | -- | -- |
 | `GET` | `/health` | Boot probe | none | health payload |
 | `GET` | `/ready` | Admission probe | none | ready/busy payload |
 | `GET` | `/` | Service root | none | service metadata |
