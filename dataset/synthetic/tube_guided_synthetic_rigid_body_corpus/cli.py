@@ -20,11 +20,6 @@ from shared.simulation.schemas import SimulatorBackendType
 
 from .contract import (
     annotate_manufactured_parts,
-    build_engineering_plan_text,
-    build_evidence_script_text,
-    build_markdown_templates,
-    build_solution_script_text,
-    build_todo_text,
     coarse_payload_trajectory_dict,
     load_benchmark_definition,
     make_planner_constraints,
@@ -64,6 +59,23 @@ from .pipeline import (
     update_dataset_row,
 )
 from .size_guard import assert_generator_tree_line_limits
+from .text_templates import (
+    build_engineering_plan_text,
+    build_evidence_script_text,
+    build_markdown_templates,
+    build_solution_script_text,
+    build_todo_text,
+)
+
+
+def _active_stack_profile() -> str:
+    return os.getenv("PROBLEMOLOGIST_STACK_PROFILE", "integration").strip().lower()
+
+
+def _default_worker_heavy_url() -> str:
+    if _active_stack_profile() == "eval":
+        return "http://127.0.0.1:28002"
+    return "http://127.0.0.1:18002"
 
 
 def default_route_points() -> list[RoutePoint]:
@@ -637,7 +649,7 @@ def main(config: ScenarioConfig | None = None) -> dict[str, Any]:
             backfill_source_solution=False,
             backend_order=(SimulatorBackendType.MUJOCO,),
         )
-    os.environ.setdefault("WORKER_HEAVY_URL", "http://127.0.0.1:28002")
+    os.environ.setdefault("WORKER_HEAVY_URL", _default_worker_heavy_url())
     log_path = REPO_ROOT / "logs" / "notebook" / f"{config.scenario_id}.log"
     with NotebookLogCapture(log_path):
         logger = structlog.get_logger(__name__)

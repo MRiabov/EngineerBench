@@ -75,6 +75,15 @@ from .dfm import (
 logger = structlog.get_logger(__name__)
 
 
+def _stack_profile_s3_endpoint() -> str | None:
+    profile = os.getenv("PROBLEMOLOGIST_STACK_PROFILE", "").strip().lower()
+    if profile == "integration":
+        return "http://127.0.0.1:19000"
+    if profile == "eval":
+        return "http://127.0.0.1:29000"
+    return None
+
+
 def _find_workspace_assembly_definition(
     root: Path, *, prefer_benchmark: bool = False
 ) -> Path | None:
@@ -174,9 +183,12 @@ def _simulation_video_s3_client() -> S3Client | None:
     if not access_key or not secret_key:
         return None
 
+    endpoint_url = _stack_profile_s3_endpoint()
+    if endpoint_url is None:
+        endpoint_url = os.getenv("S3_ENDPOINT_URL") or os.getenv("S3_ENDPOINT")
     return S3Client(
         S3Config(
-            endpoint_url=os.getenv("S3_ENDPOINT"),
+            endpoint_url=endpoint_url,
             access_key_id=access_key,
             secret_access_key=secret_key,
             bucket_name=os.getenv("ASSET_S3_BUCKET", "problemologist"),
@@ -880,6 +892,29 @@ def simulate_subprocess(
     # Ensure events are written to the session's event log
     if session_root:
         os.environ["EVENTS_FILE"] = str(Path(session_root) / "events.jsonl")
+        Path(session_root, "_env_probe.json").write_text(
+            json.dumps(
+                {
+                    "stack_profile": os.getenv("PROBLEMOLOGIST_STACK_PROFILE"),
+                    "s3_endpoint": os.getenv("S3_ENDPOINT"),
+                    "s3_endpoint_url": os.getenv("S3_ENDPOINT_URL"),
+                    "aws_access_key_id": os.getenv("AWS_ACCESS_KEY_ID"),
+                    "aws_secret_access_key_set": bool(
+                        os.getenv("AWS_SECRET_ACCESS_KEY")
+                    ),
+                },
+                sort_keys=True,
+            ),
+            encoding="utf-8",
+        )
+    logger.info(
+        "simulate_subprocess_env",
+        stack_profile=os.getenv("PROBLEMOLOGIST_STACK_PROFILE"),
+        s3_endpoint=os.getenv("S3_ENDPOINT"),
+        s3_endpoint_url=os.getenv("S3_ENDPOINT_URL"),
+        aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+        aws_secret_access_key_set=bool(os.getenv("AWS_SECRET_ACCESS_KEY")),
+    )
 
     from shared.workers.loader import load_component_from_script
     from worker_heavy.config import settings

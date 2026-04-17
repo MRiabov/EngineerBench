@@ -21,6 +21,15 @@ from shared.rendering.renderer_client import (
 logger = structlog.get_logger(__name__)
 
 
+def _stack_profile_s3_endpoint() -> str | None:
+    profile = os.getenv("PROBLEMOLOGIST_STACK_PROFILE", "").strip().lower()
+    if profile == "integration":
+        return "http://127.0.0.1:19000"
+    if profile == "eval":
+        return "http://127.0.0.1:29000"
+    return None
+
+
 @dataclass(frozen=True)
 class RenderedSimulationVideo:
     """Rendered video payload plus its optional object-store key."""
@@ -36,9 +45,19 @@ def _simulation_video_s3_client() -> S3Client | None:
         return None
 
     bucket_name = os.getenv("ASSET_S3_BUCKET", "problemologist")
+    endpoint_url = _stack_profile_s3_endpoint()
+    if endpoint_url is None:
+        endpoint_url = os.getenv("S3_ENDPOINT_URL") or os.getenv("S3_ENDPOINT")
+    logger.info(
+        "simulation_video_s3_client_config",
+        stack_profile=os.getenv("PROBLEMOLOGIST_STACK_PROFILE"),
+        endpoint_url=endpoint_url,
+        s3_endpoint=os.getenv("S3_ENDPOINT"),
+        s3_endpoint_url=os.getenv("S3_ENDPOINT_URL"),
+    )
     return S3Client(
         S3Config(
-            endpoint_url=os.getenv("S3_ENDPOINT"),
+            endpoint_url=endpoint_url,
             access_key_id=access_key,
             secret_access_key=secret_key,
             bucket_name=bucket_name,

@@ -36,6 +36,22 @@ from .paths import (
 logger = structlog.get_logger(__name__)
 
 
+def _active_stack_profile() -> str:
+    return os.getenv("PROBLEMOLOGIST_STACK_PROFILE", "integration").strip().lower()
+
+
+def _default_worker_renderer_url() -> str:
+    if _active_stack_profile() == "eval":
+        return "http://localhost:28003"
+    return "http://localhost:18003"
+
+
+def _default_s3_endpoint() -> str:
+    if _active_stack_profile() == "eval":
+        return "http://localhost:29000"
+    return "http://localhost:19000"
+
+
 def choose_batch_width(config: ScenarioConfig) -> int:
     lower, upper = config.batch_width_range
     return int(round((lower + upper) / 2.0))
@@ -422,7 +438,7 @@ def render_startup_workspace_preview(
     from shared.observability.storage import S3Client, S3Config
     from shared.rendering.renderer_client import bundle_workspace_base64, render_cad
 
-    os.environ.setdefault("WORKER_RENDERER_URL", "http://localhost:28003")
+    os.environ.setdefault("WORKER_RENDERER_URL", _default_worker_renderer_url())
 
     response = render_cad(
         bundle_base64=bundle_workspace_base64(workspace_root),
@@ -437,7 +453,7 @@ def render_startup_workspace_preview(
 
     materialized_paths: dict[str, str] = {}
     if response.object_store_keys:
-        s3_endpoint = os.getenv("S3_ENDPOINT", "http://localhost:29000")
+        s3_endpoint = os.getenv("S3_ENDPOINT", _default_s3_endpoint())
         access_key = os.getenv(
             "S3_ACCESS_KEY", os.getenv("AWS_ACCESS_KEY_ID", "minioadmin")
         )
@@ -540,7 +556,7 @@ def render_simulation_video_preview(
             base64.b64decode(render_blobs[object_pose_path])
         )
     if object_store_keys:
-        s3_endpoint = os.getenv("S3_ENDPOINT", "http://localhost:29000")
+        s3_endpoint = os.getenv("S3_ENDPOINT", _default_s3_endpoint())
         access_key = os.getenv(
             "S3_ACCESS_KEY", os.getenv("AWS_ACCESS_KEY_ID", "minioadmin")
         )

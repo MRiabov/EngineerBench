@@ -28,6 +28,15 @@ if TYPE_CHECKING:
     from shared.observability.storage import S3Client
 
 
+def _stack_profile_s3_endpoint() -> str | None:
+    profile = os.getenv("PROBLEMOLOGIST_STACK_PROFILE", "").strip().lower()
+    if profile == "integration":
+        return "http://127.0.0.1:19000"
+    if profile == "eval":
+        return "http://127.0.0.1:29000"
+    return None
+
+
 def renderer_base_url() -> str:
     return os.getenv("WORKER_RENDERER_URL", "http://worker-renderer:8003").rstrip("/")
 
@@ -64,9 +73,12 @@ def _storage_client_from_env() -> S3Client | None:
     if not access_key or not secret_key:
         return None
 
+    endpoint_url = _stack_profile_s3_endpoint()
+    if endpoint_url is None:
+        endpoint_url = os.getenv("S3_ENDPOINT_URL") or os.getenv("S3_ENDPOINT")
     return S3Client(
         S3Config(
-            endpoint_url=os.getenv("S3_ENDPOINT"),
+            endpoint_url=endpoint_url,
             access_key_id=access_key,
             secret_access_key=secret_key,
             bucket_name=os.getenv("ASSET_S3_BUCKET", "problemologist"),

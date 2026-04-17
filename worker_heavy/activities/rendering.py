@@ -21,6 +21,15 @@ import vtk
 logger = structlog.get_logger(__name__)
 
 
+def _stack_profile_s3_endpoint() -> str | None:
+    profile = os.getenv("PROBLEMOLOGIST_STACK_PROFILE", "").strip().lower()
+    if profile == "integration":
+        return "http://127.0.0.1:19000"
+    if profile == "eval":
+        return "http://127.0.0.1:29000"
+    return None
+
+
 def render_selection_snapshot(
     ids: list[str],
     view_matrix: list[list[float]],
@@ -138,8 +147,11 @@ def render_selection_snapshot(
         writer.Write()
 
         # 5. Upload to S3
+        endpoint_url = _stack_profile_s3_endpoint()
+        if endpoint_url is None:
+            endpoint_url = os.getenv("S3_ENDPOINT_URL") or os.getenv("S3_ENDPOINT")
         s3_config = S3Config(
-            endpoint_url=os.getenv("S3_ENDPOINT"),
+            endpoint_url=endpoint_url,
             access_key_id=os.getenv("S3_ACCESS_KEY", "minioadmin"),
             secret_access_key=os.getenv("S3_SECRET_KEY", "minioadmin"),
             bucket_name=os.getenv("ASSET_S3_BUCKET", "problemologist"),

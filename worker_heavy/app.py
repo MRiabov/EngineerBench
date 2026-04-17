@@ -26,6 +26,9 @@ logger.info(
     render_backend=headless_config.rendering.value,
     pyopengl_platform=os.environ.get("PYOPENGL_PLATFORM"),
     vtk_default_open_gl_window=os.environ.get("VTK_DEFAULT_OPENGL_WINDOW"),
+    stack_profile=os.environ.get("PROBLEMOLOGIST_STACK_PROFILE"),
+    s3_endpoint=os.environ.get("S3_ENDPOINT"),
+    s3_endpoint_url=os.environ.get("S3_ENDPOINT_URL"),
 )
 
 

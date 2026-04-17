@@ -55,17 +55,10 @@ def frame_from_segment(
     up = normalize(as_np(up_hint))
     if abs(float(np.dot(x_axis, up))) > 0.95:
         up = np.array([0.0, 1.0, 0.0], dtype=float)
-    if previous_frame is not None:
-        previous_frame = np.asarray(previous_frame, dtype=float)
-        transported_y = (
-            previous_frame[:, 1] - float(np.dot(previous_frame[:, 1], x_axis)) * x_axis
-        )
-        if float(np.linalg.norm(transported_y)) > 1e-9:
-            y_axis = normalize(transported_y)
-        else:
-            y_axis = normalize(np.cross(up, x_axis))
-    else:
-        y_axis = normalize(np.cross(up, x_axis))
+    # Recompute a fresh frame per span rather than carrying the previous span's
+    # roll forward. Transporting the tangent basis was accumulating twist at
+    # joins and made the corridor look over-rotated in the preview render.
+    y_axis = normalize(np.cross(up, x_axis))
     z_axis = normalize(np.cross(x_axis, y_axis))
     y_axis = normalize(np.cross(z_axis, x_axis))
     frame = np.column_stack([x_axis, y_axis, z_axis])
@@ -190,16 +183,11 @@ def box_part_specs_for_route(
     )
     spans = route_spans(route_points, max_segment_mm=max_segment_mm, seed=seed)
     specs: list[PartSpec] = []
-    previous_frame: np.ndarray | None = None
 
     for span in spans:
         start = as_np(span.start_mm)
         end = as_np(span.end_mm)
-        frame, euler = frame_from_segment(
-            start,
-            end,
-            previous_frame=previous_frame,
-        )
+        frame, euler = frame_from_segment(start, end)
         center = (start + end) * 0.5
         length_mm = float(np.linalg.norm(end - start))
 
@@ -246,7 +234,6 @@ def box_part_specs_for_route(
                     material_id=material_id,
                 )
             )
-        previous_frame = frame
 
     return specs
 

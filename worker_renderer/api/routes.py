@@ -153,8 +153,9 @@ def _renderer_storage_client():
     except ModuleNotFoundError:
         return None
 
+    endpoint_url = os.getenv("S3_ENDPOINT_URL") or os.getenv("S3_ENDPOINT")
     config = S3Config(
-        endpoint_url=os.getenv("S3_ENDPOINT"),
+        endpoint_url=endpoint_url,
         access_key_id=access_key,
         secret_access_key=secret_key,
         bucket_name=os.getenv("ASSET_S3_BUCKET", "problemologist"),
