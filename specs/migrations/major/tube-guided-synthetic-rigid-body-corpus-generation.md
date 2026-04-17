@@ -112,8 +112,10 @@ input, planner geometry, and coder implementation geometry.
    The waypoint trace must also begin at the payload spawn position and end at
    the center of the goal objective, not at an arbitrary intermediate point.
    For passive gravity-driven candidates, the spawn should be elevated enough
-   to create a real descent, typically on the order of 180-240 mm above the
-   terminal zone, so the first downward segment is not physically flat.
+   to create a real descent, typically on the order of 180-215 mm above the
+   terminal zone, while still staying inside `simulation_bounds_mm` and leaving
+   room for runtime jitter, so the first downward segment is not physically
+   flat.
 5. After a candidate passes the tube-scaffold test, the generator decomposes
    the scaffold into simpler parts and reruns the same acceptance batch on the
    decomposed geometry. If the decomposed geometry fails, the generator retries
@@ -171,8 +173,8 @@ input, planner geometry, and coder implementation geometry.
   alignment does not hold, reject the candidate before simulation.
 - Prefer a spawn height that produces at least a 25-degree initial downward
   slope toward the next waypoint for passive candidates. If that slope cannot
-  be achieved without violating the route bounds, fail closed and respecify
-  the route.
+  be achieved without violating the route bounds or the runtime jitter margin,
+  fail closed and respecify the route.
 
 ### Input Bundle Contract
 

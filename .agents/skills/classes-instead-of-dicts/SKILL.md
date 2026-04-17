@@ -31,6 +31,7 @@ Apply this skill whenever work includes any of the following:
 2. Prefer `pathlib.Path` over raw path strings.
 3. Prefer typed strategies/classes over substring matching.
 4. Keep function signatures and return types explicit; avoid dict-shaped contracts unless data is truly dynamic.
+5. If a field's dimension or unit is only implied by context, encode it in the field name so the contract is explicit.
 
 ## Planning checklist for storage and API work
 
