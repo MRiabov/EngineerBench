@@ -1766,6 +1766,67 @@ def render_debug_plots(
     plt.close(fig)
 
 
+def log_verification_failure_diagnostics(
+    *,
+    retry_seed: int,
+    backend_type: SimulatorBackendType,
+    verify_result: Any,
+    route_points: list[RoutePoint],
+) -> dict[str, Any]:
+    failed_result = next(
+        (
+            result
+            for result in getattr(verify_result, "individual_results", [])
+            if not result.success
+        ),
+        None,
+    )
+    failure_reason = None
+    failure_detail = None
+    monitor_state = None
+    stuck_body_name = None
+    stuck_position_mm: list[float] | None = None
+    stuck_position_source = "unknown"
+
+    if failed_result is not None:
+        failure_reason = str(getattr(failed_result, "fail_reason", None) or "")
+        failure = getattr(failed_result, "failure", None)
+        if failure is not None:
+            failure_detail = getattr(failure, "detail", None)
+            monitor_state = getattr(failure, "payload_trajectory_monitor", None)
+        if monitor_state is None:
+            monitor_state = getattr(failed_result, "payload_trajectory_monitor", None)
+
+    if monitor_state is not None:
+        observed_position = getattr(monitor_state, "observed_position_mm", None)
+        if observed_position is not None:
+            stuck_position_mm = [float(v) for v in observed_position]
+            stuck_position_source = "payload_trajectory_monitor"
+        stuck_body_name = getattr(monitor_state, "failure_detail", None)
+
+    if stuck_body_name is None and failure_detail:
+        stuck_body_name = str(failure_detail)
+
+    if stuck_position_mm is None:
+        stuck_position_mm = [float(v) for v in route_points[0].pos_mm]
+        stuck_position_source = "route_start_hint"
+
+    summary = {
+        "retry_seed": retry_seed,
+        "backend": backend_type.value,
+        "success_rate": float(getattr(verify_result, "success_rate", 0.0)),
+        "failure_reason": failure_reason,
+        "failure_detail": failure_detail,
+        "stuck_body_name": stuck_body_name,
+        "stuck_position_mm": stuck_position_mm,
+        "stuck_position_source": stuck_position_source,
+        "first_route_point_mm": [float(v) for v in route_points[0].pos_mm],
+        "goal_route_point_mm": [float(v) for v in route_points[-1].pos_mm],
+    }
+    logger.info("verification_stuck_summary", **summary)
+    return summary
+
+
 def render_startup_workspace_preview(
     *,
     workspace_root: Path,
@@ -2083,6 +2144,12 @@ def synthesize(
                         explicit_target_body_name=payload_body_name,
                     )
                     if verify_result.success_rate < config.success_threshold:
+                        log_verification_failure_diagnostics(
+                            retry_seed=retry_seed,
+                            backend_type=backend_type,
+                            verify_result=verify_result,
+                            route_points=config.route_points,
+                        )
                         logger.info(
                             "verification_failed",
                             retry_seed=retry_seed,
@@ -2138,6 +2205,12 @@ def synthesize(
                         explicit_target_body_name=payload_body_name,
                     )
                     if pruned_result.success_rate < config.success_threshold:
+                        log_verification_failure_diagnostics(
+                            retry_seed=retry_seed,
+                            backend_type=backend_type,
+                            verify_result=pruned_result,
+                            route_points=config.route_points,
+                        )
                         logger.info(
                             "pruned_verification_failed",
                             retry_seed=retry_seed,
@@ -2329,10 +2402,28 @@ def synthesize(
             contact_hits=chosen_contact_hits,
             part_specs=chosen_pruned_specs,
         )
+        logger.info(
+            "render_debug_plots_done",
+            output_dir=str(coder_root / "renders" / "debug"),
+            image_paths=[
+                str(coder_root / "renders" / "debug" / "route_contacts_3d.png"),
+                str(coder_root / "renders" / "debug" / "route_projections.png"),
+            ],
+        )
 
     startup_render = render_startup_workspace_preview(
         workspace_root=coder_root,
         payload_path=True,
+    )
+    logger.info(
+        "startup_render_artifacts",
+        success=bool(startup_render.get("success")),
+        status_text=startup_render.get("status_text"),
+        message=startup_render.get("message"),
+        image_path=startup_render.get("image_path"),
+        artifact_path=startup_render.get("artifact_path"),
+        manifest_path=startup_render.get("manifest_path"),
+        materialized_paths=dict(startup_render.get("materialized_paths") or {}),
     )
 
     if config.promote_to_dataset:

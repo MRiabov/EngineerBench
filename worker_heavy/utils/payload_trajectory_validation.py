@@ -65,8 +65,8 @@ class RotationCell:
 def _zone_body_from_bounds(bounds: Any, *, inflation_mm: float = 0.0) -> Any:
     from build123d import Align, Box
 
-    min_xyz = tuple(float(value) for value in bounds.min)
-    max_xyz = tuple(float(value) for value in bounds.max)
+    min_xyz = tuple(float(value) for value in bounds.min_mm)
+    max_xyz = tuple(float(value) for value in bounds.max_mm)
     size = tuple(
         max(max_xyz[i] - min_xyz[i] + 2.0 * inflation_mm, 0.0) for i in range(3)
     )
@@ -370,7 +370,7 @@ def _exact_pose_checks(
     sample_point_label: str,
 ) -> list[str]:
     spawn_z_mm = float(benchmark_definition.payload.start_position_mm[2])
-    sample_z_mm = float(transform.location.position[2])
+    sample_z_mm = float(transform.position.Z)
     if sample_z_mm - spawn_z_mm > 1e-6:
         return [
             f"{sample_point_label}: sampled payload point may not rise above "

@@ -581,14 +581,16 @@ def _benchmark_refusal_error(reason: BenchmarkRefusalReason, message: str) -> st
 
 def _point_within_bounds(point: tuple[float, float, float], bounds: Any) -> bool:
     return all(
-        float(bounds.min[index]) <= float(point[index]) <= float(bounds.max[index])
+        float(bounds.min_mm[index])
+        <= float(point[index])
+        <= float(bounds.max_mm[index])
         for index in range(3)
     )
 
 
 def _bounding_box_center(bounds: Any) -> tuple[float, float, float]:
     return tuple(
-        (float(bounds.min[index]) + float(bounds.max[index])) / 2.0
+        (float(bounds.min_mm[index]) + float(bounds.max_mm[index])) / 2.0
         for index in range(3)
     )
 
