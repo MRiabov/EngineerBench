@@ -36,7 +36,7 @@ Use this library when a role must seed or judge a concrete workspace file rather
 | [current_role.json](./current_role_json_acceptance_criteria.md) | Active role marker for the current workspace node | Stage match, node-transition freshness, and fail-closed role lookup |
 | [workbench_report.md](./workbench_report_md_acceptance_criteria.md) | Short outcome summary | Consistency with validation, simulation, and review |
 | [scene.json](./scene_json_acceptance_criteria.md) | Serialized scene snapshot | Exact identities and revision fidelity |
-| [payload_trajectory_definition.yaml](./payload_trajectory_definition_yaml_acceptance_criteria.md) | Required higher-resolution motion and contact proof | Build-safe start, goal contact, and waypoint coherence |
+| [payload_trajectory_definition.yaml](./payload_trajectory_definition_yaml_acceptance_criteria.md) | Required higher-resolution motion and contact proof | Spawn-position start, goal-center finish, and waypoint coherence |
 | [reviewer manifest](./reviewer_manifest_acceptance_criteria.md) | Stage routing gate metadata for benchmark and engineering reviewers | Latest revision, stage match, and fail-closed routing |
 | [benchmark plan review YAML](./benchmark_plan_review_yaml_acceptance_criteria.md) | Benchmark plan review decision/comments pair | Stage-canonical review output and evidence grounding |
 | [benchmark execution review YAML](./benchmark_execution_review_yaml_acceptance_criteria.md) | Benchmark execution review decision/comments pair | Latest implementation evidence and stage-canonical routing |

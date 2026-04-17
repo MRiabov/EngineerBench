@@ -14,10 +14,11 @@ It is worth being a dedicated artifact because reviewers need a strict motion pr
 - `payload_part_names` match the approved coarse motion forecast and therefore match the exact solid labels used for the payload geometry.
 - `sample_stride_s` does not exceed the coarse motion forecast stride and stays within the motion cadence budget from `config/agents_config.yaml`.
 - Ordered motion anchors include explicit positions, explicit `rot_deg` orientation, and tolerance data when an envelope is intentional.
-- The first anchor lies within `benchmark_definition.objectives.build_zone` and explicitly sets `build_zone_valid: true`.
+- The first anchor equals `benchmark_definition.payload.start_position_mm`, lies within `benchmark_definition.objectives.build_zone`, and explicitly sets `build_zone_valid: true`.
 - `initial_pose` matches the first anchor pose and reference point.
-- The file proves the terminal goal-zone entry or contact in the last anchor or `terminal_event`, not both.
+- The file proves the terminal goal-zone entry or contact in the last anchor or `terminal_event`, not both, and the final point equals the center of `benchmark_definition.objectives.goal_zone_mm`.
 - If `terminal_event` is used, its `zone_name` is `goal_zone`, its `contact_surfaces` are populated, and its position lies within the goal zone.
+- No anchor or terminal point rises above `benchmark_definition.payload.start_position_mm[2]`.
 - The file remains swept-clearance safe against fixed geometry for every admitted rotation at each checked step.
 - The file remains consistent with `benchmark_definition.yaml`, the approved coarse forecast, and any benchmark motion evidence in the workspace.
 - Deprecated aliases such as `moving_part_names`, `moving_part`, and `moved_part` are not valid forward-contract names in this artifact.
@@ -32,7 +33,7 @@ It is worth being a dedicated artifact because reviewers need a strict motion pr
 ## Reviewer Look-Fors: File Antipatterns to Look For
 
 - The file merely copies the coarse forecast without adding the required precision or terminal proof.
-- The build-safe start or goal-contact finish semantics are contradicted or loosened.
+- The spawn-position start, goal-center finish, or spawn-height ceiling are contradicted or loosened.
 - The payload names, cadence, or terminal event drift from the approved motion contract.
 - A step omits rotation metadata or leaves the swept-clearance domain under-proven.
 - The path is physically implausible, impossible, or inconsistent with the benchmark evidence.
