@@ -9,6 +9,7 @@ planner/coder row bundles plus dataset row records.
 
 from __future__ import annotations
 
+import base64
 import json
 import math
 import os
@@ -50,6 +51,7 @@ from build123d import (
     BuildSketch,
     Circle,
     Compound,
+    Extrinsic,
     Location,
     Plane,
     Polyline,
@@ -229,7 +231,7 @@ class ScenarioConfig:
     retry_seeds: tuple[int, ...] = (11, 19, 29)
     clearance_mm: float = 2.0
     wall_thickness_mm: float = 2.0
-    max_segment_mm: float = 72.0
+    max_segment_mm: float = 32.0
     route_margin_mm: float = 8.0
     material_id: str = "aluminum_6061"
     markdown_mode: str = "template"
@@ -323,6 +325,7 @@ def frame_from_segment(
     start_mm: Iterable[float],
     end_mm: Iterable[float],
     up_hint: Iterable[float] = (0.0, 0.0, 1.0),
+    previous_frame: np.ndarray | None = None,
 ) -> tuple[np.ndarray, tuple[float, float, float]]:
     start = as_np(start_mm)
     end = as_np(end_mm)
@@ -333,6 +336,21 @@ def frame_from_segment(
     y_axis = normalize(np.cross(up, x_axis))
     z_axis = normalize(np.cross(x_axis, y_axis))
     frame = np.column_stack([x_axis, y_axis, z_axis])
+    if previous_frame is not None:
+        previous_frame = np.asarray(previous_frame, dtype=float)
+        flipped_frame = np.column_stack([x_axis, -y_axis, -z_axis])
+        continuity_score = float(
+            np.dot(frame[:, 1], previous_frame[:, 1])
+            + np.dot(frame[:, 2], previous_frame[:, 2])
+        )
+        flipped_score = float(
+            np.dot(flipped_frame[:, 1], previous_frame[:, 1])
+            + np.dot(flipped_frame[:, 2], previous_frame[:, 2])
+        )
+        if flipped_score > continuity_score:
+            frame = flipped_frame
+            y_axis = -y_axis
+            z_axis = -z_axis
     euler = tuple(
         float(value)
         for value in SciPyRotation.from_matrix(frame).as_euler("xyz", degrees=True)
@@ -357,13 +375,10 @@ def subdivide_segment(
     split_count = max(1, math.ceil(distance / max_segment_mm))
     fractions = np.linspace(0.0, 1.0, split_count + 1)
     if split_count > 1:
-        jitter = min(0.10 / split_count, 0.04)
         for idx in range(1, split_count):
-            base = fractions[idx]
-            candidate = base + rng.uniform(-jitter, jitter)
             lower = fractions[idx - 1] + 1e-4
             upper = fractions[idx + 1] - 1e-4
-            fractions[idx] = min(max(candidate, lower), upper)
+            fractions[idx] = min(max(fractions[idx], lower), upper)
         fractions.sort()
 
     spans: list[SegmentSpan] = []
@@ -428,7 +443,10 @@ def build_box_part(spec: PartSpec):
             spec.dims_mm[2],
             align=(Align.CENTER, Align.CENTER, Align.CENTER),
         )
-    part = part_builder.part.moved(Location(spec.center_mm, spec.euler_deg))
+    # SciPy's lowercase 'xyz' is extrinsic, so match that ordering here.
+    part = part_builder.part.moved(
+        Location(spec.center_mm, spec.euler_deg, Extrinsic.XYZ)
+    )
     part.label = spec.name
     part.metadata = PartMetadata(
         material_id=spec.material_id,
@@ -455,11 +473,16 @@ def box_part_specs_for_route(
     )
     spans = route_spans(route_points, max_segment_mm=max_segment_mm, seed=seed)
     specs: list[PartSpec] = []
+    previous_frame: np.ndarray | None = None
 
     for span in spans:
         start = as_np(span.start_mm)
         end = as_np(span.end_mm)
-        frame, euler = frame_from_segment(start, end)
+        frame, euler = frame_from_segment(
+            start,
+            end,
+            previous_frame=previous_frame,
+        )
         center = (start + end) * 0.5
         length_mm = float(np.linalg.norm(end - start))
 
@@ -506,6 +529,7 @@ def box_part_specs_for_route(
                     material_id=material_id,
                 )
             )
+        previous_frame = frame
 
     return specs
 
@@ -1086,7 +1110,7 @@ def build_route_lowering_script_text(
         import random
 
         import numpy as np
-        from build123d import Align, Box, BuildPart, Compound, Location
+        from build123d import Align, Box, BuildPart, Compound, Extrinsic, Location
         from scipy.spatial.transform import Rotation as SciPyRotation
         from shared.models.schemas import CompoundMetadata, PartMetadata
 
@@ -1111,7 +1135,12 @@ def build_route_lowering_script_text(
                 raise ValueError("zero-length vector")
             return vector / norm
 
-        def frame_from_segment(start_mm, end_mm, up_hint=(0.0, 0.0, 1.0)):
+        def frame_from_segment(
+            start_mm,
+            end_mm,
+            up_hint=(0.0, 0.0, 1.0),
+            previous_frame=None,
+        ):
             start = as_np(start_mm)
             end = as_np(end_mm)
             x_axis = normalize(end - start)
@@ -1120,6 +1149,22 @@ def build_route_lowering_script_text(
                 up = np.array([0.0, 1.0, 0.0], dtype=float)
             y_axis = normalize(np.cross(up, x_axis))
             z_axis = normalize(np.cross(x_axis, y_axis))
+            frame = np.column_stack([x_axis, y_axis, z_axis])
+            if previous_frame is not None:
+                previous_frame = np.asarray(previous_frame, dtype=float)
+                flipped_frame = np.column_stack([x_axis, -y_axis, -z_axis])
+                continuity_score = float(
+                    np.dot(frame[:, 1], previous_frame[:, 1])
+                    + np.dot(frame[:, 2], previous_frame[:, 2])
+                )
+                flipped_score = float(
+                    np.dot(flipped_frame[:, 1], previous_frame[:, 1])
+                    + np.dot(flipped_frame[:, 2], previous_frame[:, 2])
+                )
+                if flipped_score > continuity_score:
+                    frame = flipped_frame
+                    y_axis = -y_axis
+                    z_axis = -z_axis
             frame = np.column_stack([x_axis, y_axis, z_axis])
             euler = tuple(
                 float(value)
@@ -1134,13 +1179,10 @@ def build_route_lowering_script_text(
             split_count = max(1, math.ceil(distance / max_segment_mm))
             fractions = np.linspace(0.0, 1.0, split_count + 1)
             if split_count > 1:
-                jitter = min(0.10 / split_count, 0.04)
                 for idx in range(1, split_count):
-                    base = fractions[idx]
-                    candidate = base + rng.uniform(-jitter, jitter)
                     lower = fractions[idx - 1] + 1e-4
                     upper = fractions[idx + 1] - 1e-4
-                    fractions[idx] = min(max(candidate, lower), upper)
+                    fractions[idx] = min(max(fractions[idx], lower), upper)
                 fractions.sort()
 
             spans = []
@@ -1177,7 +1219,14 @@ def build_route_lowering_script_text(
                     spec["dims_mm"][2],
                     align=(Align.CENTER, Align.CENTER, Align.CENTER),
                 )
-            part = builder.part.moved(Location(tuple(spec["center_mm"]), tuple(spec["euler_deg"])))
+            # SciPy's lowercase 'xyz' is extrinsic, so match that ordering here.
+            part = builder.part.moved(
+                Location(
+                    tuple(spec["center_mm"]),
+                    tuple(spec["euler_deg"]),
+                    Extrinsic.XYZ,
+                )
+            )
             part.label = spec["name"]
             part.metadata = PartMetadata(
                 material_id=spec["material_id"],
@@ -1192,11 +1241,16 @@ def build_route_lowering_script_text(
             inner_height_mm = max(corridor_height_mm - 2.0 * wall_thickness_mm, wall_thickness_mm)
             spans = route_spans(route_points, max_segment_mm=max_segment_mm, seed=seed)
             specs = []
+            previous_frame = None
 
             for span in spans:
                 start = as_np(span["start_mm"])
                 end = as_np(span["end_mm"])
-                frame, euler = frame_from_segment(start, end)
+                frame, euler = frame_from_segment(
+                    start,
+                    end,
+                    previous_frame=previous_frame,
+                )
                 center = (start + end) * 0.5
                 length_mm = float(np.linalg.norm(end - start))
                 span_key = f"{{span['segment_index']}}:{{span['split_index']}}"
@@ -1244,6 +1298,7 @@ def build_route_lowering_script_text(
                             "is_fixed": True,
                         }}
                     )
+                previous_frame = frame
 
             return specs
 
@@ -1933,7 +1988,9 @@ def render_simulation_video_preview(
     backend_type: SimulatorBackendType,
     script_content: str,
     session_id: str,
+    workspace_root: Path,
 ) -> dict[str, Any]:
+    from shared.observability.storage import S3Client, S3Config
     from shared.rendering.renderer_client import bundle_workspace_base64
     from shared.utils.agent import simulate_benchmark_script_content
 
@@ -1971,12 +2028,57 @@ def render_simulation_video_preview(
         (path for path in render_paths if Path(path).name == "objects.parquet"),
         None,
     )
+    render_blobs = dict(artifacts.render_blobs_base64) if artifacts else {}
+    local_video_path = None
+    if video_path and video_path in render_blobs:
+        local_video_path = workspace_root / video_path
+        local_video_path.parent.mkdir(parents=True, exist_ok=True)
+        local_video_path.write_bytes(base64.b64decode(render_blobs[video_path]))
+    local_object_pose_path = None
+    if object_pose_path and object_pose_path in render_blobs:
+        local_object_pose_path = workspace_root / object_pose_path
+        local_object_pose_path.parent.mkdir(parents=True, exist_ok=True)
+        local_object_pose_path.write_bytes(
+            base64.b64decode(render_blobs[object_pose_path])
+        )
+    if object_store_keys:
+        s3_endpoint = os.getenv("S3_ENDPOINT", "http://localhost:29000")
+        access_key = os.getenv(
+            "S3_ACCESS_KEY", os.getenv("AWS_ACCESS_KEY_ID", "minioadmin")
+        )
+        secret_key = os.getenv(
+            "S3_SECRET_KEY", os.getenv("AWS_SECRET_ACCESS_KEY", "minioadmin")
+        )
+        bucket_name = os.getenv("ASSET_S3_BUCKET", "problemologist")
+        storage = S3Client(
+            S3Config(
+                endpoint_url=s3_endpoint,
+                access_key_id=access_key,
+                secret_access_key=secret_key,
+                bucket_name=bucket_name,
+                region_name=os.getenv("AWS_REGION", "us-east-1"),
+            )
+        )
+        for rel_path, object_key in object_store_keys.items():
+            target_path = workspace_root / rel_path
+            if target_path.exists():
+                continue
+            target_path.parent.mkdir(parents=True, exist_ok=True)
+            storage.download_file(object_key, target_path)
+            if rel_path == video_path:
+                local_video_path = target_path
+            if rel_path == object_pose_path:
+                local_object_pose_path = target_path
     summary = {
         "success": bool(response.success),
         "status_text": response.message,
         "message": response.message,
         "video_path": video_path,
         "object_pose_path": object_pose_path,
+        "local_video_path": str(local_video_path) if local_video_path else None,
+        "local_object_pose_path": (
+            str(local_object_pose_path) if local_object_pose_path else None
+        ),
         "render_paths": render_paths,
         "object_store_keys": object_store_keys,
         "failure_reason": str(artifacts.failure)
@@ -2179,6 +2281,8 @@ def synthesize(
     benchmark_bundle_reviews = config.source_seed_bundle_dir / "reviews"
     scratch_root = config.scratch_root / config.scenario_id
     scratch_root.mkdir(parents=True, exist_ok=True)
+    planner_root = config.staged_planner_root
+    coder_root = config.staged_coder_root
 
     chosen_backend: SimulatorBackendType | None = None
     chosen_batch_width = None
@@ -2244,6 +2348,7 @@ def synthesize(
                     backend_type=config.backend_order[0],
                     script_content=simulation_video_script,
                     session_id=f"{config.scenario_id}-video-{retry_seed}",
+                    workspace_root=coder_root,
                 )
 
             for backend_type in progress_iter(

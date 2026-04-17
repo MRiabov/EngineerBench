@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 import tempfile
 import xml.etree.ElementTree as ET
 from abc import ABC, abstractmethod
@@ -271,7 +272,7 @@ class SceneCompiler:
             self.worldbody,
             "geom",
             name="floor",
-            size="10 10 0.1",
+            size="1000 1000 0.1",
             type="plane",
             material="grid",
         )
@@ -667,6 +668,28 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
                     payload_object.material_id, mfg_config
                 ),
             )
+            if "main" not in self.compiler.body_elements:
+                scene_span_mm = self._scene_diagonal_mm(assembly)
+                if objectives is not None:
+                    scene_span_mm = max(
+                        scene_span_mm, self._objectives_diagonal_mm(objectives)
+                    )
+                # Keep the payload-centered camera far enough away to preserve
+                # overall route scale cues in the simulation video.
+                camera_distance_mm = max(scene_span_mm * 1.1, 250.0)
+                camera_offset_mm = camera_distance_mm / math.sqrt(3.0)
+                ET.SubElement(
+                    self.compiler.worldbody,
+                    "camera",
+                    name="main",
+                    pos=(
+                        f"{camera_offset_mm:.6f} "
+                        f"{camera_offset_mm:.6f} "
+                        f"{camera_offset_mm:.6f}"
+                    ),
+                    mode="trackcom",
+                    target=moved_body_name,
+                )
             body_locations[moved_body_name] = (
                 list(payload_object.start_position_mm),
                 [0.0, 0.0, 0.0],
@@ -703,6 +726,32 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
         g = int(color[2:4], 16) / 255
         b = int(color[4:6], 16) / 255
         return f"{r:.3f} {g:.3f} {b:.3f} 1"
+
+    @staticmethod
+    def _scene_diagonal_mm(assembly: Compound) -> float:
+        bbox = assembly.bounding_box()
+        dx = float(bbox.size.X)
+        dy = float(bbox.size.Y)
+        dz = float(bbox.size.Z)
+        return math.sqrt(dx * dx + dy * dy + dz * dz)
+
+    @staticmethod
+    def _objectives_diagonal_mm(objectives: BenchmarkDefinition) -> float:
+        boxes = [
+            objectives.objectives.goal_zone_mm,
+            *objectives.objectives.forbid_zones,
+            objectives.objectives.build_zone_mm,
+        ]
+        min_x = min(box.min_mm[0] for box in boxes)
+        min_y = min(box.min_mm[1] for box in boxes)
+        min_z = min(box.min_mm[2] for box in boxes)
+        max_x = max(box.max_mm[0] for box in boxes)
+        max_y = max(box.max_mm[1] for box in boxes)
+        max_z = max(box.max_mm[2] for box in boxes)
+        dx = max_x - min_x
+        dy = max_y - min_y
+        dz = max_z - min_z
+        return math.sqrt(dx * dx + dy * dy + dz * dz)
 
 
 class GenesisSimulationBuilder(SimulationBuilderBase):
