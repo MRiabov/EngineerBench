@@ -51,6 +51,7 @@ from shared.models.schemas import (
     ReviewComments,
     ReviewFrontmatter,
 )
+from shared.skills import skill_is_projected_to_agent
 from shared.workers.filesystem.backend import FileInfo
 from worker_heavy.utils.file_validation import (
     validate_node_output,
@@ -311,13 +312,23 @@ def _copy_tree(src_root: Path, dst_root: Path) -> list[str]:
     return copied
 
 
-def _copy_skills_tree(dst_root: Path) -> list[str]:
+def _copy_skills_tree(dst_root: Path, *, agent_name: AgentName) -> list[str]:
     if not SKILL_SOURCE_ROOT.exists():
         raise FileNotFoundError(f"Skill repository not found: {SKILL_SOURCE_ROOT}")
-    return [
-        f"{SKILL_TREE_ROOT.as_posix()}/{path}"
-        for path in _copy_tree(SKILL_SOURCE_ROOT, dst_root / SKILL_TREE_ROOT)
-    ]
+    copied: list[str] = []
+    skills_root = dst_root / SKILL_TREE_ROOT
+    for skill_dir in sorted(
+        (path for path in SKILL_SOURCE_ROOT.iterdir() if path.is_dir()),
+        key=lambda path: path.name,
+    ):
+        skill_name = skill_dir.name
+        if not skill_is_projected_to_agent(skill_name, agent_name.value):
+            continue
+        copied.extend(
+            f"{SKILL_TREE_ROOT.as_posix()}/{path}"
+            for path in _copy_tree(skill_dir, skills_root / skill_name)
+        )
+    return copied
 
 
 def _write_missing_template_files(
@@ -799,7 +810,7 @@ def materialize_seed_workspace(
     copied_paths.extend(
         _write_template_files(workspace_dir, load_common_template_files())
     )
-    copied_paths.extend(_copy_skills_tree(workspace_dir))
+    copied_paths.extend(_copy_skills_tree(workspace_dir, agent_name=agent_name))
 
     if is_planner_agent(agent_name):
         copied_paths.extend(

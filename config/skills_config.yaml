@@ -1,21 +1,35 @@
 benchmark-coder:
   is_for_worker_agents: true
+  project_to_agents:
+    - benchmark_coder
 benchmark-plan-reviewer:
   is_for_worker_agents: true
+  project_to_agents:
+    - benchmark_plan_reviewer
 benchmark-planner:
   is_for_worker_agents: true
+  project_to_agents:
+    - benchmark_planner
 benchmark-reviewer:
   is_for_worker_agents: true
+  project_to_agents:
+    - benchmark_reviewer
 build123d-cad-drafting-skill:
   is_for_worker_agents: true
 commit-split-workflow:
   is_for_worker_agents: true
 engineer-coder:
   is_for_worker_agents: true
+  project_to_agents:
+    - engineer_coder
 engineer-plan-reviewer:
   is_for_worker_agents: true
+  project_to_agents:
+    - engineer_plan_reviewer
 engineer-planner:
   is_for_worker_agents: true
+  project_to_agents:
+    - engineer_planner
 eval-creation-workflow:
   is_for_worker_agents: true
 manufacturing-knowledge:

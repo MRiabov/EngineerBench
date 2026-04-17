@@ -5,11 +5,38 @@ from pathlib import Path
 from typing import Any
 
 import yaml
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+from shared.enums import AgentName
 
 ROOT = Path(__file__).resolve().parents[2]
 SKILL_ROOT = ROOT / ".agents" / "skills"
 SKILLS_CONFIG_PATH = ROOT / "config" / "skills_config.yaml"
 SKILL_OVERLAY_ENV = "PROBLEMOLOGIST_SKILL_OVERLAY_ROOT"
+
+
+class SkillProjectionPolicy(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    is_for_worker_agents: bool = True
+    project_to_agents: tuple[str, ...] = Field(default_factory=tuple)
+
+    @field_validator("project_to_agents", mode="before")
+    @classmethod
+    def _normalize_project_to_agents(cls, value: Any) -> tuple[str, ...]:
+        if value is None:
+            return ()
+        if isinstance(value, str):
+            value = [value]
+        if not isinstance(value, (list, tuple, set)):
+            raise ValueError("project_to_agents must be a sequence of strings")
+        normalized: list[str] = []
+        for agent_name in value:
+            normalized_name = str(agent_name).strip()
+            if not normalized_name:
+                continue
+            normalized.append(AgentName(normalized_name).value)
+        return tuple(normalized)
 
 
 def _normalize_skill_root(root: Path | None) -> Path:
@@ -34,7 +61,7 @@ def _skill_description(skill_path: Path) -> str:
 
 def load_skills_projection_config(
     *, config_path: Path | None = None
-) -> dict[str, dict[str, Any]]:
+) -> dict[str, SkillProjectionPolicy]:
     """Load worker projection policy keyed by skill directory name."""
 
     path = (config_path or SKILLS_CONFIG_PATH).expanduser().resolve()
@@ -45,17 +72,19 @@ def load_skills_projection_config(
     if not isinstance(raw, dict):
         raise ValueError(f"Skill projection config must be a mapping: {path}")
 
-    policies: dict[str, dict[str, Any]] = {}
+    policies: dict[str, SkillProjectionPolicy] = {}
     for skill_name, policy in raw.items():
         if not isinstance(skill_name, str) or not skill_name.strip():
             raise ValueError(f"Invalid skill projection key in {path}: {skill_name!r}")
         normalized_name = skill_name.strip()
         if policy is None:
-            policies[normalized_name] = {}
+            policies[normalized_name] = SkillProjectionPolicy()
         elif isinstance(policy, dict):
-            policies[normalized_name] = dict(policy)
+            policies[normalized_name] = SkillProjectionPolicy.model_validate(policy)
         elif isinstance(policy, bool):
-            policies[normalized_name] = {"is_for_worker_agents": policy}
+            policies[normalized_name] = SkillProjectionPolicy(
+                is_for_worker_agents=policy
+            )
         else:
             raise ValueError(
                 f"Invalid skill projection policy for {normalized_name} in {path}"
@@ -68,8 +97,27 @@ def skill_is_for_worker_agents(
 ) -> bool:
     """Return whether a skill should be projected into worker-facing runtimes."""
 
-    policy = load_skills_projection_config(config_path=config_path).get(skill_name, {})
-    return bool(policy.get("is_for_worker_agents", False))
+    policy = load_skills_projection_config(config_path=config_path).get(skill_name)
+    if policy is None:
+        return True
+    return bool(policy.is_for_worker_agents or policy.project_to_agents)
+
+
+def skill_is_projected_to_agent(
+    skill_name: str,
+    agent_name: str,
+    *,
+    config_path: Path | None = None,
+) -> bool:
+    """Return whether a skill should be copied into a specific agent workspace."""
+
+    policy = load_skills_projection_config(config_path=config_path).get(skill_name)
+    if policy is None:
+        return True
+    normalized_agent_name = str(agent_name).strip()
+    if policy.project_to_agents:
+        return normalized_agent_name in policy.project_to_agents
+    return bool(policy.is_for_worker_agents)
 
 
 def _iter_skill_catalog_entries_from_roots(
