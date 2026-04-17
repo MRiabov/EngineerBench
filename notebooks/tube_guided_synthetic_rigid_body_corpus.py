@@ -64,6 +64,7 @@ except ImportError:  # pragma: no cover - notebook import fallback
     )
 
 from shared.enums import AgentName, ManufacturingMethod
+from shared.logging import configure_logging
 from shared.models.schemas import (
     AssemblyDefinition,
     BenchmarkDefinition,
@@ -73,6 +74,8 @@ from shared.models.schemas import (
 from shared.simulation.backends import SimulationScene
 from shared.simulation.schemas import SimulatorBackendType
 from shared.workers.workbench_models import ManufacturingConfig
+
+configure_logging("tube-guided-synthetic-corpus")
 
 logger = structlog.get_logger(__name__)
 
@@ -756,9 +759,56 @@ def synthetic_benchmark_definition(
     benchmark_data["simulation_bounds_mm"] = bbox
     benchmark_data["payload"]["label"] = "slider_ball"
     benchmark_data["payload"]["shape"] = "sphere"
+    benchmark_data["payload"]["start_position_mm"] = [
+        float(v) for v in route_points[0].pos_mm
+    ]
     benchmark_data["constraints"]["estimated_solution_cost_usd"] = None
     benchmark_data["constraints"]["estimated_solution_weight_g"] = None
     return benchmark_data
+
+
+def validate_route_positions(
+    *,
+    route_points: list[RoutePoint],
+    payload_start_position_mm: Iterable[float],
+    goal_zone_mm: Any,
+) -> None:
+    spawn = np.asarray(tuple(float(v) for v in payload_start_position_mm), dtype=float)
+    first_point = np.asarray(route_points[0].pos_mm, dtype=float)
+    final_point = np.asarray(route_points[-1].pos_mm, dtype=float)
+    goal_center = np.asarray(
+        [
+            (float(goal_zone_mm.min_mm[idx]) + float(goal_zone_mm.max_mm[idx])) / 2.0
+            for idx in range(3)
+        ],
+        dtype=float,
+    )
+
+    errors: list[str] = []
+    if not np.allclose(first_point, spawn, atol=1e-6):
+        errors.append(
+            "first route point must equal the payload spawn position "
+            f"(expected {spawn.tolist()}, got {first_point.tolist()})"
+        )
+    if not np.allclose(final_point, goal_center, atol=1e-6):
+        errors.append(
+            "final route point must equal the goal-zone center "
+            f"(expected {goal_center.tolist()}, got {final_point.tolist()})"
+        )
+
+    higher_than_spawn = [
+        point.name
+        for point in route_points
+        if float(point.pos_mm[2]) > float(spawn[2]) + 1e-6
+    ]
+    if higher_than_spawn:
+        errors.append(
+            "route points cannot rise above the payload spawn height; "
+            f"offending points={higher_than_spawn}, spawn_z={float(spawn[2]):.3f}"
+        )
+
+    if errors:
+        raise RuntimeError("; ".join(errors))
 
 
 def make_planner_constraints(
@@ -1921,6 +1971,14 @@ def synthesize(
         corridor_inner_extent_mm=corridor_inner_extent_mm,
         build_zone_margin_mm=build_zone_margin_mm,
     )
+    logger.info(
+        "route_spawn_alignment",
+        payload_start_position_mm=[
+            float(v) for v in benchmark_definition.payload.start_position_mm
+        ],
+        first_route_point_mm=[float(v) for v in config.route_points[0].pos_mm],
+        goal_route_point_mm=[float(v) for v in config.route_points[-1].pos_mm],
+    )
 
     synthetic_benchmark_dict = synthetic_benchmark_definition(
         benchmark_definition,
@@ -1929,6 +1987,19 @@ def synthesize(
         margin_mm=build_zone_margin_mm,
     )
     synthetic_benchmark = BenchmarkDefinition.model_validate(synthetic_benchmark_dict)
+    logger.info(
+        "synthetic_spawn_alignment",
+        payload_start_position_mm=[
+            float(v) for v in synthetic_benchmark.payload.start_position_mm
+        ],
+        first_route_point_mm=[float(v) for v in config.route_points[0].pos_mm],
+        goal_route_point_mm=[float(v) for v in config.route_points[-1].pos_mm],
+    )
+    validate_route_positions(
+        route_points=config.route_points,
+        payload_start_position_mm=synthetic_benchmark.payload.start_position_mm,
+        goal_zone_mm=synthetic_benchmark.objectives.goal_zone_mm,
+    )
     payload_body_name = payload_scene_name(synthetic_benchmark.payload.label)
     route_clearance_errors = validate_route_clearance(
         route_points=config.route_points,
@@ -2339,12 +2410,15 @@ def synthesize(
 
 def default_route_points() -> list[RoutePoint]:
     return [
-        RoutePoint(name="build_zone_start", pos_mm=(-250.0, 0.0, 140.0), t_s=0.0),
-        RoutePoint(name="waypoint_01", pos_mm=(-220.0, 0.0, 132.0), t_s=0.8),
-        RoutePoint(name="waypoint_02", pos_mm=(-220.0, 130.0, 120.0), t_s=1.6),
-        RoutePoint(name="waypoint_03", pos_mm=(300.0, 130.0, 102.0), t_s=2.7),
-        RoutePoint(name="waypoint_04", pos_mm=(345.0, 75.0, 82.0), t_s=4.0),
-        RoutePoint(name="goal_zone_contact", pos_mm=(300.0, 0.0, 56.0), t_s=5.5),
+        # Keep the prototype aligned with the source ec-002 route trace so the
+        # scratch scaffold has a physically plausible entry lane instead of a
+        # disconnected waypoint chain.
+        RoutePoint(name="build_zone_start", pos_mm=(-280.0, 0.0, 240.0), t_s=0.0),
+        RoutePoint(name="left_capture_lane", pos_mm=(-240.0, 0.0, 220.0), t_s=1.5),
+        RoutePoint(name="bypass_corner", pos_mm=(-240.0, 110.0, 180.0), t_s=2.4),
+        RoutePoint(name="goal_lane_entry", pos_mm=(-40.0, 110.0, 130.0), t_s=3.6),
+        RoutePoint(name="goal_approach", pos_mm=(240.0, 110.0, 90.0), t_s=4.8),
+        RoutePoint(name="goal_zone_contact", pos_mm=(325.0, 0.0, 40.0), t_s=6.0),
     ]
 
 

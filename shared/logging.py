@@ -17,6 +17,7 @@ _SESSION_KEY_EVAL_RE = re.compile(r"\b([a-z]{1,12}-\d{3})\b", re.IGNORECASE)
 _TEST_NODE_INT_RE = re.compile(r"test_int_(\d{3})", re.IGNORECASE)
 _SAFE_PATH_CHARS_RE = re.compile(r"[^A-Za-z0-9._-]+")
 _SESSION_FANOUT_LOCK = threading.Lock()
+_NOISY_LOGGER_PREFIXES = ("build123d",)
 
 
 def _json_safe(value):
@@ -90,6 +91,13 @@ def _normalize_context_value(value):
     if hasattr(value, "value") and isinstance(value.value, str):
         return value.value
     return str(value)
+
+
+def _should_drop_noisy_record(record: logging.LogRecord) -> bool:
+    return any(
+        record.name == prefix or record.name.startswith(f"{prefix}.")
+        for prefix in _NOISY_LOGGER_PREFIXES
+    )
 
 
 @contextmanager
@@ -236,6 +244,7 @@ def configure_logging(service_name: str):
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(log_level_num)
     console_handler.setFormatter(logging.Formatter("%(message)s"))
+    console_handler.addFilter(lambda record: not _should_drop_noisy_record(record))
     root_logger.addHandler(console_handler)
 
     # Optional file handler for DEBUG logs
@@ -248,6 +257,7 @@ def configure_logging(service_name: str):
 
         # We use a simple formatter because structlog already formatted the message
         file_handler.setFormatter(logging.Formatter("%(message)s"))
+        file_handler.addFilter(lambda record: not _should_drop_noisy_record(record))
         root_logger.addHandler(file_handler)
 
         # If we have a debug file, root must be at least DEBUG to let messages through
@@ -263,6 +273,7 @@ def configure_logging(service_name: str):
         error_handler = logging.FileHandler(extra_error_log_abs)
         error_handler.setLevel(logging.ERROR)
         error_handler.setFormatter(logging.Formatter("%(message)s"))
+        error_handler.addFilter(lambda record: not _should_drop_noisy_record(record))
         root_logger.addHandler(error_handler)
 
     # Ensure uvicorn loggers follow the global level and propagate to root
@@ -272,8 +283,11 @@ def configure_logging(service_name: str):
         u_logger.propagate = True
         u_logger.setLevel(logging.DEBUG if extra_debug_log else log_level_num)
 
-    # Silence noisy third-party loggers that are too chatty at DEBUG level
+    # Silence noisy third-party loggers. build123d is intentionally fully
+    # suppressed because notebook runs create many transient geometry objects
+    # and the library emits very chatty construction logs.
     for noisy_logger in (
+        "build123d",
         "botocore",
         "boto3",
         "s3transfer",
@@ -281,7 +295,11 @@ def configure_logging(service_name: str):
         "httpcore",
         "httpx",
     ):
-        logging.getLogger(noisy_logger).setLevel(logging.WARNING)
+        noisy_logger_obj = logging.getLogger(noisy_logger)
+        if noisy_logger == "build123d":
+            noisy_logger_obj.disabled = True
+            noisy_logger_obj.propagate = False
+        noisy_logger_obj.setLevel(logging.WARNING)
 
     # Keep access logs at INFO for visibility during debugging unless debug file is on
     if not extra_debug_log:
