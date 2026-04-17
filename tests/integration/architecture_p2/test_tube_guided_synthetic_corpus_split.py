@@ -6,18 +6,17 @@ import pytest
 
 import dataset.synthetic.tube_guided_synthetic_rigid_body_corpus as package
 import notebooks.tube_guided_synthetic_rigid_body_corpus as notebook_wrapper
-from dataset.synthetic.tube_guided_synthetic_rigid_body_corpus.size_guard import (
-    assert_generator_tree_line_limits,
-)
 from dataset.synthetic.tube_guided_synthetic_rigid_body_corpus import (
     ContactHit,
     PartSpec,
     RoutePoint,
     ScenarioConfig,
     SegmentSpan,
-    default_route_points,
     main,
     synthesize,
+)
+from dataset.synthetic.tube_guided_synthetic_rigid_body_corpus.size_guard import (
+    assert_generator_tree_line_limits,
 )
 
 pytestmark = [pytest.mark.integration, pytest.mark.integration_p2]
@@ -25,6 +24,10 @@ pytestmark = [pytest.mark.integration, pytest.mark.integration_p2]
 
 @pytest.mark.int_id("INT-279")
 def test_tube_guided_synthetic_corpus_package_and_wrapper_exports_remain_stable():
+    from dataset.synthetic.tube_guided_synthetic_rigid_body_corpus import (
+        default_route_points,
+    )
+
     route_points = default_route_points()
 
     assert len(route_points) == 6
