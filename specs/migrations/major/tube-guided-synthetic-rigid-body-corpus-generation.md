@@ -48,6 +48,12 @@ Those migrations define motion correctness and runtime supervision. This
 migration adds the corpus-generation and publication policy that decides which
 candidate shapes are worth keeping.
 
+The implementation split that moves the generator code into `dataset/synthetic/`
+is tracked separately in
+[`tube-guided-synthetic-rigid-body-corpus-dataset-synthetic-split.md`](../minor/tube-guided-synthetic-rigid-body-corpus-dataset-synthetic-split.md).
+That document owns the source-tree boundary and file-size cap. This major
+migration keeps the corpus semantics.
+
 The role split is explicit:
 
 1. `engineer_planner` rows own the geometry plan, the evidence plan script, and
