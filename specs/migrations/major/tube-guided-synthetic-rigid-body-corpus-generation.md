@@ -109,6 +109,11 @@ input, planner geometry, and coder implementation geometry.
    candidates never rely on geometry outside that enlarged build zone, and the
    build zone spans the entire waypoint chain rather than only the terminal
    region.
+   The waypoint trace must also begin at the payload spawn position and end at
+   the center of the goal objective, not at an arbitrary intermediate point.
+   For passive gravity-driven candidates, the spawn should be elevated enough
+   to create a real descent, typically on the order of 180-240 mm above the
+   terminal zone, so the first downward segment is not physically flat.
 5. After a candidate passes the tube-scaffold test, the generator decomposes
    the scaffold into simpler parts and reruns the same acceptance batch on the
    decomposed geometry. If the decomposed geometry fails, the generator retries
@@ -160,6 +165,14 @@ input, planner geometry, and coder implementation geometry.
 - Derive a build zone that encloses the entire waypoint path, the tube radius,
   and the decomposition margin.
 - Fail closed when a candidate cannot fit inside the enlarged build zone.
+- Treat any waypoint trace that rises above the payload spawn height as
+  physically impossible. The first waypoint must equal the payload spawn
+  position and the terminal waypoint must equal the goal-zone center; if that
+  alignment does not hold, reject the candidate before simulation.
+- Prefer a spawn height that produces at least a 25-degree initial downward
+  slope toward the next waypoint for passive candidates. If that slope cannot
+  be achieved without violating the route bounds, fail closed and respecify
+  the route.
 
 ### Input Bundle Contract
 
