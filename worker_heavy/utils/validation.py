@@ -178,8 +178,12 @@ def _workspace_relative_render_paths(
 
 
 def _simulation_video_s3_client() -> S3Client | None:
-    access_key = os.getenv("S3_ACCESS_KEY", os.getenv("AWS_ACCESS_KEY_ID"))
-    secret_key = os.getenv("S3_SECRET_KEY", os.getenv("AWS_SECRET_ACCESS_KEY"))
+    access_key = (
+        os.getenv("S3_ACCESS_KEY") or os.getenv("AWS_ACCESS_KEY_ID") or "minioadmin"
+    )
+    secret_key = (
+        os.getenv("S3_SECRET_KEY") or os.getenv("AWS_SECRET_ACCESS_KEY") or "minioadmin"
+    )
     if not access_key or not secret_key:
         return None
 

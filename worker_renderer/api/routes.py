@@ -140,8 +140,12 @@ def _event_file_context(root: Path):
 
 
 def _renderer_storage_client():
-    access_key = os.getenv("S3_ACCESS_KEY", os.getenv("AWS_ACCESS_KEY_ID"))
-    secret_key = os.getenv("S3_SECRET_KEY", os.getenv("AWS_SECRET_ACCESS_KEY"))
+    access_key = (
+        os.getenv("S3_ACCESS_KEY") or os.getenv("AWS_ACCESS_KEY_ID") or "minioadmin"
+    )
+    secret_key = (
+        os.getenv("S3_SECRET_KEY") or os.getenv("AWS_SECRET_ACCESS_KEY") or "minioadmin"
+    )
     if not access_key or not secret_key:
         return None
 
@@ -328,7 +332,7 @@ def _collect_render_artifacts(
     render_blobs_base64: dict[str, str] = {}
     object_store_keys: dict[str, str] = {}
     upload_candidates: list[tuple[str, Path]] = []
-    upload_client = None
+    upload_client = _renderer_storage_client()
 
     for raw_path in render_paths:
         candidate = Path(raw_path)
@@ -356,9 +360,12 @@ def _collect_render_artifacts(
             ).decode("ascii")
 
     if upload_candidates:
-        upload_client = _renderer_storage_client()
         if upload_client is None:
             for rel_key, render_path in upload_candidates:
+                if render_path.suffix.lower() == ".mp4":
+                    raise RuntimeError(
+                        "renderer returned an object-store-backed video but S3 is not configured"
+                    )
                 render_blobs_base64[rel_key] = base64.b64encode(
                     render_path.read_bytes()
                 ).decode("ascii")
