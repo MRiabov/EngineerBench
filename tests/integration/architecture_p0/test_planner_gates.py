@@ -797,7 +797,7 @@ from build123d import *
 from shared.models.schemas import PartMetadata
 from shared.workers.workbench_models import ManufacturingMethod
 def build():
-    p = Box(40, 40, 40)
+    p = Box(130, 1, 1, align=(Align.MIN, Align.CENTER, Align.CENTER))
     p = p.move(Location((0, 0, 50)))
     p.label = "payload_ball"
     p.metadata = PartMetadata(
