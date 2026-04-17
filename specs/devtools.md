@@ -24,7 +24,7 @@ The developer instrumentation layer is split into a small set of canonical entry
 | Integration orchestration | `scripts/run_integration_tests.sh`, `scripts/internal/integration_runner.py` | Run the canonical integration suite through the real stack and the real HTTP/system boundaries | Public wrapper, internal implementation |
 | Eval orchestration | `dataset/evals/run_evals.py`, `evals/logic/runner.py` (split into reusable helpers under `evals/logic/`), `dataset/evals/materialize_seed_workspace.py` | Run evals, materialize seeded workspaces, and expose the CLI-provider-backed debug path | Public wrapper plus internal implementation |
 | Eval coordination | `scripts/internal/eval_run_lock.py`, `scripts/internal/eval_seed_renders.py` | Serialize eval runs and support deterministic seed render regeneration for maintainer tooling | Internal helper modules |
-| Seed and fixture validation | `scripts/validate_eval_seed.py`, `scripts/update_eval_seed_renders.py`, `scripts/validate_integration_mock_response_preflight.py`, `scripts/normalize_integration_mock_responses.py` | Validate seeded eval rows against the current seeded-entry contract, including the seeded-validation scope contract, update deterministic seed render bundles, validate integration mock-response compatibility fixtures, and repair deterministic drift in the compatibility corpus | Public maintenance utilities |
+| Seed and fixture validation | `scripts/validate_eval_seed.py`, `scripts/update_eval_seed_renders.py`, `scripts/validate_integration_mock_response_preflight.py`, `scripts/normalize_integration_mock_responses.py` | Validate seeded eval rows against the current seeded-entry contract, including the seeded-validation scope contract, update deterministic seed render bundles, validate the legacy integration replay corpus, and repair deterministic drift in that corpus | Public maintenance utilities |
 | Derived artifact regeneration | `scripts/persist_test_results.py` | Persist test-history outputs | Public utilities |
 | Bug-report archival | `scripts/persist_bug_reports.py` | Copy `bug_report.md` into `logs/bug_reports/` with run/session metadata | Public utility |
 | Compatibility and environment helpers | `scripts/ensure_docker_vfs.sh`, `scripts/cleanup_local_s3.py` | Make the local stack runnable in constrained environments and clear object-store state before runs | Public support scripts |
@@ -208,12 +208,12 @@ The validation helpers are developer tooling, not product behavior.
 - This script validates `tests/integration/mock_responses/*.yaml` and the referenced payload files against real node-entry and handoff contracts.
 - It replays scenario entries cumulatively rather than trusting a single fixture file in isolation.
 - It is stricter than the fixture normalizer and should be treated as a contract gate, not a convenience parser.
-- It validates the compatibility/replay corpus, not the canonical fixture-authoring surface.
+- It validates the legacy replay corpus, not the canonical fixture-authoring surface.
 - It is intentionally happy-path oriented for the current `INT-###` corpus and should not guess at future negative-test semantics.
 
 ### `scripts/normalize_integration_mock_responses.py`
 
-- This utility rewrites deterministic derived fields in integration mock-response compatibility fixtures.
+- This utility rewrites deterministic derived fields in the legacy integration replay corpus.
 - It is allowed to repair drift, but it should not alter scenario intent or narrative text.
 - It is a consistency tool for checked-in compatibility material, not a benchmark for agent behavior.
 

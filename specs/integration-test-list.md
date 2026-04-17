@@ -161,7 +161,7 @@ These runner, bootstrap, and seed-maintenance contracts are useful regression co
 - `INT-NEG-###` is reserved for explicitly negative integration tests whose correct outcome is rejection, denial, or another fail-closed result.
 - These tests still run against the real compose stack and HTTP boundaries, and they follow the same observable-boundary rules as positive integration tests.
 - Keep negative coverage in this namespace so the positive `INT-xxx` lists stay focused on success-oriented architecture coverage.
-- When a negative test uses `MockDSPyLM`, its scenario file must use the matching `INT-NEG-###.yaml` name and remain one-to-one with that test.
+- When a test uses `MockDSPyLM`, its scenario file must use the matching `INT-###.yaml` name and remain one-to-one with that test.
 
 ## Per-test Unit->Integration Implementation Map (mandatory)
 
@@ -233,13 +233,14 @@ benchmark geometry is exposed via `benchmark_script.py`, engineer code lives in
 | INT-280 | The generator-tree line-cap guard accepts the current `dataset/synthetic/tube_guided_synthetic_rigid_body_corpus` tree and fails closed on an oversized `.py` file tree that exceeds 800 lines. | Calling the guard on a temp tree with 801 lines must raise the cap error and name the violated limit. |
 | INT-281 | The generated `dataset.synthetic.tube_guided_synthetic_rigid_body_corpus` route geometry validates without false-positive adjacent-span collisions, while a deliberately overlapping non-adjacent compound still fails closed. | Route-clearance validation must succeed on the default route scaffold, and the validator must still raise on a manually overlapping non-adjacent compound. |
 | INT-282 | The corpus render-preview helper stages benchmark artifacts from the active workspace and preserves the workspace payload label in `objects.parquet`, so a `slider_ball` workspace yields `benchmark_payload__slider_ball` instead of falling back to repo-root defaults. | The helper must materialize the returned parquet sidecar and the payload body name must be present in the rendered object-pose records. |
+| INT-283 | `dataset.synthetic.tube_guided_synthetic_rigid_body_corpus` and the compatibility wrapper in `notebooks/tube_guided_synthetic_rigid_body_corpus.py` stay importable, expose the same canonical exports, and preserve the six-point `default_route_points()` scaffold plus wrapper delegation for `main()` and `synthesize()`. | Importing the wrapper or package directly is not enough unless the export aliases and route-point ordering remain intact. |
 
 ## Recommended suite organization
 
 - `tests/integration/smoke/`: INT-001..INT-004 (fast baseline).
 - `tests/integration/architecture_p0/`: INT-005..INT-021, INT-024..INT-030, INT-053, INT-055, INT-061..INT-063, INT-070..INT-073, INT-101, INT-114, INT-187, INT-218..INT-277.
 - `tests/integration/architecture_p1/`: INT-031..INT-040, INT-058..INT-060, INT-210, INT-211, INT-217.
-- `tests/integration/architecture_p2/`: INT-279..INT-282 (repo-split and tube-guided corpus regression checks).
+- `tests/integration/architecture_p2/`: INT-279..INT-283 (repo-split and tube-guided corpus regression checks).
 
 ## Notes
 

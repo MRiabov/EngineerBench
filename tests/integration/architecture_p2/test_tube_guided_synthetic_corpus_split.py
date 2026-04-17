@@ -22,7 +22,7 @@ from dataset.synthetic.tube_guided_synthetic_rigid_body_corpus.size_guard import
 pytestmark = [pytest.mark.integration, pytest.mark.integration_p2]
 
 
-@pytest.mark.int_id("INT-279")
+@pytest.mark.int_id("INT-283")
 def test_tube_guided_synthetic_corpus_package_and_wrapper_exports_remain_stable():
     from dataset.synthetic.tube_guided_synthetic_rigid_body_corpus import (
         default_route_points,
