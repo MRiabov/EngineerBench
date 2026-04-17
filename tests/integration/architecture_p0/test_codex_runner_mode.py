@@ -299,6 +299,29 @@ def _assert_skills_tree_materialized(workspace_dir: Path) -> None:
     assert (workspace_dir / ".agents" / "skills").is_dir()
 
 
+_ROLE_SCOPED_SKILLS: dict[AgentName, str] = {
+    AgentName.BENCHMARK_PLANNER: "benchmark-planner",
+    AgentName.BENCHMARK_PLAN_REVIEWER: "benchmark-plan-reviewer",
+    AgentName.BENCHMARK_CODER: "benchmark-coder",
+    AgentName.BENCHMARK_REVIEWER: "benchmark-reviewer",
+    AgentName.ENGINEER_PLANNER: "engineer-planner",
+    AgentName.ENGINEER_PLAN_REVIEWER: "engineer-plan-reviewer",
+    AgentName.ENGINEER_CODER: "engineer-coder",
+}
+
+
+def _assert_skill_projection(workspace_dir: Path, agent_name: AgentName) -> None:
+    skill_root = workspace_dir / ".agents" / "skills"
+    assert (skill_root / "runtime-script-contract" / "SKILL.md").is_file()
+    for owning_agent, skill_name in _ROLE_SCOPED_SKILLS.items():
+        skill_path = skill_root / skill_name
+        if owning_agent == agent_name:
+            assert skill_path.is_dir()
+            assert (skill_path / "SKILL.md").is_file()
+        else:
+            assert not skill_path.exists()
+
+
 class RecordingCliProvider:
     provider_name = "codex"
     binary_name = sys.executable
@@ -2996,6 +3019,8 @@ async def _assert_codex_materialized_planner_workspace_submits(
     assert "/skills/runtime-script-contract/SKILL.md" not in materialized.prompt_text
     _assert_skills_tree_materialized(workspace_dir)
     _assert_skills_tree_materialized(mirror_workspace_dir)
+    _assert_skill_projection(workspace_dir, agent_name)
+    _assert_skill_projection(mirror_workspace_dir, agent_name)
     assert any(path.startswith(".agents/skills/") for path in materialized.copied_paths)
     assert any(
         path.startswith(".agents/skills/") for path in mirror_materialized.copied_paths
@@ -3433,6 +3458,8 @@ async def test_codex_seed_workspace_materialization_is_role_specific_and_determi
     assert "/skills/runtime-script-contract/SKILL.md" not in materialized.prompt_text
     _assert_skills_tree_materialized(workspace_dir)
     _assert_skills_tree_materialized(mirror_workspace_dir)
+    _assert_skill_projection(workspace_dir, agent_name)
+    _assert_skill_projection(mirror_workspace_dir, agent_name)
     assert any(path.startswith(".agents/skills/") for path in materialized.copied_paths)
     assert any(
         path.startswith(".agents/skills/") for path in mirror_materialized.copied_paths
