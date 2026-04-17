@@ -225,12 +225,19 @@ benchmark geometry is exposed via `benchmark_script.py`, engineer code lives in
 | INT-276 | Exercise engineer planner node-output validation with a payload proof present and assert `validate_payload_trajectory_swept_clearance()` is reached for `engineer_planner` before handoff completes. | Calling the coder-only branch or mocking only the submit-time payload validator without exercising planner node-output validation. |
 | INT-277 | Exercise engineer planner handoff validation with coarse motion metadata and planner evidence geometry present, and assert `validate_planner_handoff_cross_contract()` runs the swept-clearance proof for `assembly_definition.yaml.motion_forecast` before planner handoff completes. | Calling only the payload-proof validator or bypassing the planner handoff validator. |
 
+### P2: Developer-utility and repository-contract coverage
+
+| ID | Test | Required assertions |
+| -- | -- | -- |
+| INT-279 | `dataset.synthetic.tube_guided_synthetic_rigid_body_corpus` and the compatibility wrapper in `notebooks/tube_guided_synthetic_rigid_body_corpus.py` stay importable, expose the same canonical exports, and preserve the six-point `default_route_points()` scaffold plus wrapper delegation for `main()` and `synthesize()`. | Importing the wrapper or package directly is not enough unless the export aliases and route-point ordering remain intact. |
+| INT-280 | The generator-tree line-cap guard accepts the current `dataset/synthetic/tube_guided_synthetic_rigid_body_corpus` tree and fails closed on an oversized `.py` file tree that exceeds 800 lines. | Calling the guard on a temp tree with 801 lines must raise the cap error and name the violated limit. |
+
 ## Recommended suite organization
 
 - `tests/integration/smoke/`: INT-001..INT-004 (fast baseline).
 - `tests/integration/architecture_p0/`: INT-005..INT-021, INT-024..INT-030, INT-053, INT-055, INT-061..INT-063, INT-070..INT-073, INT-101, INT-114, INT-187, INT-218..INT-277.
 - `tests/integration/architecture_p1/`: INT-031..INT-040, INT-058..INT-060, INT-210, INT-211, INT-217.
-- `tests/integration/architecture_p2/`: none retained after publication pruning.
+- `tests/integration/architecture_p2/`: INT-279..INT-280 (repo-split regression checks).
 
 ## Notes
 
