@@ -88,7 +88,7 @@ HUMAN NOTE: I've added a point cloud rendering and export endpoint on worker-ren
 
 ## 3. Payload/objective visibility is poor
 
-- [ ] still valid
+- [x] resolved
 
 - Symptom: the payload and objective elements are not clearly visible in the
   simulation video.
@@ -108,11 +108,13 @@ HUMAN NOTE: I've added a point cloud rendering and export endpoint on worker-ren
 
 - Current check:
 
-  - The fresh `main` camera does track the payload body, but the shipped framing
-    still makes the payload and goal zone hard to read.
-  - A debug camera aimed at the corridor center makes the payload and goal zone
-    visible together, so the issue is the default view selection rather than
-    absent scene content.
+  - The fresh `main` camera now tracks the fixed `zone_build` reference, so the
+    corridor and goal zone remain visible instead of the camera riding with the
+    payload.
+  - The notebook run now retains timestamped render evidence under
+    `logs/tube_guided_synthetic_rigid_body_corpus/runs/run_<timestamp>/` and
+    the simulation summary surfaces the resolved camera name and tracked body
+    names for easier inspection.
 
 ### Solution notes
 
@@ -125,10 +127,8 @@ HUMAN NOTE: I've added a point cloud rendering and export endpoint on worker-ren
 
 ## Notes
 
-- Fresh pipeline run: `main()` now fails later in bundle staging because the
-  scratch coder workspace it constructs is missing `benchmark_definition.yaml`
-  for the simulation-video preview step.
-- The OOB failures are still happening on the payload body and not just at
-  startup.
-- The retry path is still failing, so this log is for diagnosis, not acceptance.
-- Remove this file once the geometry and render issues are resolved.
+- The notebook now writes run-scoped render evidence under
+  `logs/tube_guided_synthetic_rigid_body_corpus/runs/run_<timestamp>/`.
+- The remaining render evidence is easier to inspect because the simulation
+  summary now includes camera provenance and tracked body names.
+- Remove this file once it is no longer needed for debugging history.
