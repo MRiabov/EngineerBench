@@ -42,6 +42,7 @@ from .paths import (
     load_benchmark_build_fn,
     payload_scene_name,
     progress_iter,
+    prepare_timestamped_run_dir,
 )
 from .pipeline import (
     backfill_source_solution,
@@ -103,12 +104,32 @@ def default_route_points() -> list[RoutePoint]:
     ]
 
 
-def synthesize(config: ScenarioConfig) -> dict[str, Any]:
+def generation_route_points() -> list[RoutePoint]:
+    return [
+        RoutePoint(name="build_zone_start", pos_mm=(-260.0, 0.0, 24.0), t_s=0.0),
+        RoutePoint(name="goal_zone_contact", pos_mm=(-220.0, 0.0, 24.0), t_s=6.0),
+    ]
+
+
+def _overwrite_root_starter_files(root: Path, agent_name: AgentName) -> None:
+    for rel_path, content in load_seed_starter_template_files(agent_name).items():
+        (root / rel_path).write_text(content, encoding="utf-8")
+
+
+def synthesize(
+    config: ScenarioConfig,
+    *,
+    run_log_root: Path | None = None,
+) -> dict[str, Any]:
     from worker_heavy.simulation.verification import verify_with_jitter
 
     assert_generator_tree_line_limits(
         REPO_ROOT / "dataset" / "synthetic" / "tube_guided_synthetic_rigid_body_corpus"
     )
+    if run_log_root is None:
+        run_log_root = prepare_timestamped_run_dir(
+            REPO_ROOT / "logs" / "tube_guided_synthetic_rigid_body_corpus"
+        )
     logger = structlog.get_logger(__name__)
     logger.info(
         "synthesize_start",
@@ -501,14 +522,14 @@ def synthesize(config: ScenarioConfig) -> dict[str, Any]:
             script_content=solution_script_text,
             session_id=f"{config.scenario_id}-video-{chosen_seed}",
             workspace_root=coder_root,
+            artifact_root=run_log_root,
         )
 
     if config.emit_debug_plots:
-        logger.info(
-            "render_debug_plots_start", output_dir=str(coder_root / "renders" / "debug")
-        )
+        debug_output_dir = run_log_root / "renders" / "debug"
+        logger.info("render_debug_plots_start", output_dir=str(debug_output_dir))
         render_debug_plots(
-            output_dir=coder_root / "renders" / "debug",
+            output_dir=debug_output_dir,
             route_points=config.route_points,
             tube_radius_mm=tube_radius_mm,
             contact_hits=chosen_contact_hits,
@@ -516,15 +537,16 @@ def synthesize(config: ScenarioConfig) -> dict[str, Any]:
         )
         logger.info(
             "render_debug_plots_done",
-            output_dir=str(coder_root / "renders" / "debug"),
+            output_dir=str(debug_output_dir),
             image_paths=[
-                str(coder_root / "renders" / "debug" / "route_contacts_3d.png"),
-                str(coder_root / "renders" / "debug" / "route_projections.png"),
+                str(debug_output_dir / "route_contacts_3d.png"),
+                str(debug_output_dir / "route_projections.png"),
             ],
         )
 
     startup_render = render_startup_workspace_preview(
         workspace_root=coder_root,
+        artifact_root=run_log_root,
         payload_path=True,
     )
     logger.info(
@@ -535,6 +557,7 @@ def synthesize(config: ScenarioConfig) -> dict[str, Any]:
         image_path=startup_render.get("image_path"),
         artifact_path=startup_render.get("artifact_path"),
         manifest_path=startup_render.get("manifest_path"),
+        artifact_root=startup_render.get("artifact_root"),
         materialized_paths=dict(startup_render.get("materialized_paths") or {}),
     )
 
@@ -614,6 +637,7 @@ def synthesize(config: ScenarioConfig) -> dict[str, Any]:
         "coder_root": str(coder_root),
         "startup_render": startup_render,
         "simulation_video_summary": simulation_video_summary,
+        "run_log_root": str(run_log_root),
         "total_cost": total_cost,
         "total_weight": total_weight,
         "success_rate_tube": float(chosen_verify_result.success_rate),
@@ -644,13 +668,19 @@ def main(config: ScenarioConfig | None = None) -> dict[str, Any]:
     if _render_simulation_video_disabled():
         config.emit_simulation_video = False
     os.environ.setdefault("WORKER_HEAVY_URL", _default_worker_heavy_url())
-    log_path = REPO_ROOT / "logs" / "notebook" / f"{config.scenario_id}.log"
+    run_log_root = prepare_timestamped_run_dir(
+        REPO_ROOT / "logs" / "tube_guided_synthetic_rigid_body_corpus"
+    )
+    log_path = run_log_root / "notebook.log"
     with NotebookLogCapture(log_path):
         logger = structlog.get_logger(__name__)
         logger.info("notebook_log_capture_start", log_path=str(log_path))
-        summary = synthesize(config)
+        summary = synthesize(config, run_log_root=run_log_root)
         logger.info("notebook_log_capture_done", log_path=str(log_path))
-        return summary
+    summary["run_log_root"] = str(run_log_root)
+    summary["notebook_log_path"] = str(log_path)
+    summary["render_log_root"] = str(run_log_root / "renders")
+    return summary
 
 
 if __name__ == "__main__":

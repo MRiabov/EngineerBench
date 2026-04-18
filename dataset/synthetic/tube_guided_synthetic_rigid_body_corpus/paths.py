@@ -4,6 +4,7 @@ import json
 import runpy
 import shutil
 import sys
+import time
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from typing import Any, TextIO
@@ -77,6 +78,23 @@ def copy_tree(src: Path, dst: Path) -> None:
         else:
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(path, target)
+
+
+def prepare_timestamped_run_dir(logs_root: Path) -> Path:
+    runs_root = logs_root / "runs"
+    runs_root.mkdir(parents=True, exist_ok=True)
+    run_dir = runs_root / f"run_{time.strftime('%Y%m%d_%H%M%S')}"
+    suffix = 1
+    while run_dir.exists():
+        run_dir = runs_root / f"{run_dir.name}_{suffix}"
+        suffix += 1
+    run_dir.mkdir(parents=True, exist_ok=True)
+
+    current_link = logs_root / "current"
+    if current_link.exists() or current_link.is_symlink():
+        current_link.unlink()
+    current_link.symlink_to(run_dir.relative_to(logs_root))
+    return run_dir
 
 
 def load_benchmark_build_fn(bundle_dir: Path):

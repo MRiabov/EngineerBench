@@ -431,61 +431,81 @@ def log_verification_failure_diagnostics(
 def render_startup_workspace_preview(
     *,
     workspace_root: Path,
+    artifact_root: Path | None = None,
     orbit_pitch_deg: float = 45.0,
     orbit_yaw_deg: float = 45.0,
     payload_path: bool = True,
 ) -> dict[str, Any]:
-    from shared.observability.storage import S3Client, S3Config
-    from shared.rendering.renderer_client import bundle_workspace_base64, render_cad
-
-    os.environ.setdefault("WORKER_RENDERER_URL", _default_worker_renderer_url())
-
-    response = render_cad(
-        bundle_base64=bundle_workspace_base64(workspace_root),
-        script_path="solution_script.py",
-        orbit_pitch=orbit_pitch_deg,
-        orbit_yaw=orbit_yaw_deg,
-        rgb=True,
-        depth=False,
-        segmentation=False,
-        payload_path=payload_path,
+    from shared.rendering.renderer_client import (
+        bundle_workspace_base64,
+        materialize_preview_response,
+        render_cad,
     )
 
+    os.environ.setdefault("WORKER_RENDERER_URL", _default_worker_renderer_url())
+    materialization_root = artifact_root or workspace_root
+
+    try:
+        response = render_cad(
+            bundle_base64=bundle_workspace_base64(workspace_root),
+            script_path="solution_script.py",
+            orbit_pitch=orbit_pitch_deg,
+            orbit_yaw=orbit_yaw_deg,
+            rgb=True,
+            depth=False,
+            segmentation=False,
+            payload_path=payload_path,
+        )
+    except Exception as exc:
+        logger.warning("startup_render_preview_failed", error=str(exc))
+        return {
+            "success": False,
+            "status_text": str(exc),
+            "message": str(exc),
+            "image_path": None,
+            "artifact_path": None,
+            "manifest_path": None,
+            "materialized_paths": {},
+            "artifact_root": str(materialization_root),
+        }
+
     materialized_paths: dict[str, str] = {}
+    preview_output_dir = materialization_root / "renders" / "current-episode"
+    image_path = materialize_preview_response(response, preview_output_dir)
+
+    if response.render_blobs_base64:
+        for rel_path in response.render_blobs_base64:
+            materialized_paths[rel_path] = str(materialization_root / rel_path)
     if response.object_store_keys:
-        s3_endpoint = os.getenv("S3_ENDPOINT", _default_s3_endpoint())
-        access_key = os.getenv(
-            "S3_ACCESS_KEY", os.getenv("AWS_ACCESS_KEY_ID", "minioadmin")
-        )
-        secret_key = os.getenv(
-            "S3_SECRET_KEY", os.getenv("AWS_SECRET_ACCESS_KEY", "minioadmin")
-        )
-        bucket_name = os.getenv("ASSET_S3_BUCKET", "problemologist")
-        storage = S3Client(
-            S3Config(
-                endpoint_url=s3_endpoint,
-                access_key_id=access_key,
-                secret_access_key=secret_key,
-                bucket_name=bucket_name,
-                region_name=os.getenv("AWS_REGION", "us-east-1"),
-            )
-        )
         for rel_path, object_key in response.object_store_keys.items():
-            target = workspace_root / rel_path
-            target.parent.mkdir(parents=True, exist_ok=True)
-            storage.download_file(object_key, target)
-            materialized_paths[rel_path] = str(target)
+            materialized_paths[rel_path] = str(materialization_root / rel_path)
+    if response.image_bytes_base64 and response.image_path:
+        materialized_paths[response.image_path] = str(image_path)
+    if response.render_manifest_json:
+        manifest_path = preview_output_dir / "render_manifest.json"
+        materialized_paths[str(manifest_path.relative_to(materialization_root))] = str(
+            manifest_path
+        )
 
     return {
         "success": response.success,
         "status_text": response.status_text,
         "message": response.message,
-        "image_path": response.image_path,
-        "artifact_path": response.artifact_path,
-        "manifest_path": response.manifest_path,
+        "image_path": str(image_path) if image_path is not None else response.image_path,
+        "artifact_path": (
+            str(materialization_root / response.artifact_path)
+            if response.artifact_path and not Path(response.artifact_path).is_absolute()
+            else response.artifact_path
+        ),
+        "manifest_path": (
+            str(materialization_root / response.manifest_path)
+            if response.manifest_path and not Path(response.manifest_path).is_absolute()
+            else response.manifest_path
+        ),
         "object_store_keys": response.object_store_keys,
         "render_blobs_base64": response.render_blobs_base64,
         "materialized_paths": materialized_paths,
+        "artifact_root": str(materialization_root),
     }
 
 
@@ -495,7 +515,9 @@ def render_simulation_video_preview(
     script_content: str,
     session_id: str,
     workspace_root: Path,
+    artifact_root: Path | None = None,
 ) -> dict[str, Any]:
+    from shared.models.simulation import SimulationResult
     from shared.observability.storage import S3Client, S3Config
     from shared.rendering.renderer_client import bundle_workspace_base64
     from shared.utils.agent import simulate_benchmark_script_content
@@ -601,7 +623,47 @@ def render_simulation_video_preview(
         "simulation_result_json": (
             artifacts.simulation_result_json if artifacts else None
         ),
+        "artifact_root": str(artifact_root) if artifact_root is not None else None,
     }
+    if artifacts and artifacts.simulation_result_json:
+        try:
+            simulation_result = SimulationResult.model_validate_json(
+                artifacts.simulation_result_json
+            )
+            render_provenance = simulation_result.render_provenance
+            payload_monitor = simulation_result.payload_trajectory_monitor
+            summary["render_provenance"] = (
+                render_provenance.model_dump(mode="json")
+                if render_provenance is not None
+                else None
+            )
+            summary["tracked_body_names"] = (
+                list(payload_monitor.tracked_body_names)
+                if payload_monitor is not None
+                else []
+            )
+            summary["resolved_camera_name"] = (
+                render_provenance.resolved_camera_name
+                if render_provenance is not None
+                else None
+            )
+            summary["camera_candidates"] = (
+                list(render_provenance.camera_candidates)
+                if render_provenance is not None
+                else []
+            )
+        except Exception as exc:
+            summary["simulation_result_parse_error"] = str(exc)
+    if artifact_root is not None:
+        copy_tree(workspace_root / "renders", artifact_root / "renders")
+        if (workspace_root / "simulation_result.json").exists():
+            (artifact_root / "simulation_result.json").parent.mkdir(
+                parents=True, exist_ok=True
+            )
+            shutil.copy2(
+                workspace_root / "simulation_result.json",
+                artifact_root / "simulation_result.json",
+            )
     logger.info("simulation_video_rendered", **summary)
     return summary
 
