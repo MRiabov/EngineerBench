@@ -82,6 +82,9 @@ CODEX_FIXTURE_ARTIFACT_DIR = (
     / "artifacts"
     / "common"
 )
+CODEX_FIXTURE_DATASET_DIR = (
+    ROOT / "tests" / "integration" / "fixtures" / "codex_runner_mode" / "datasets"
+)
 AGENTS_CONFIG_PATH = Path("config/agents_config.yaml")
 WORKER_LIGHT_URL = os.getenv("WORKER_LIGHT_URL", "http://127.0.0.1:18001")
 pytestmark = pytest.mark.xdist_group(name="eval_runner")
@@ -93,6 +96,7 @@ def _validate_eval_seed_env(**extra: str) -> dict[str, str]:
     env["PYTHONPATH"] = os.pathsep.join(
         [str(ROOT), pythonpath] if pythonpath else [str(ROOT)]
     )
+    env["PROBLEMOLOGIST_SEED_DATASET_ROOTS"] = str(CODEX_FIXTURE_DATASET_DIR)
     env.update(extra)
     return env
 
@@ -112,7 +116,7 @@ def _run_validate_eval_seed(
 
 
 def _load_dataset_item(_dataset_rel_path: str, row_id: str) -> EvalDatasetItem:
-    dataset_path = ROOT / _dataset_rel_path
+    dataset_path = CODEX_FIXTURE_DATASET_DIR / Path(_dataset_rel_path).name
     if not dataset_path.exists():
         raise FileNotFoundError(dataset_path)
 
@@ -120,6 +124,12 @@ def _load_dataset_item(_dataset_rel_path: str, row_id: str) -> EvalDatasetItem:
     row = next((row for row in dataset_rows if row["id"] == row_id), None)
     if row is None:
         raise KeyError(f"Row {row_id!r} not found in {dataset_path}")
+    seed_artifact_dir = row.get("seed_artifact_dir")
+    if isinstance(seed_artifact_dir, str) and seed_artifact_dir:
+        row = {
+            **row,
+            "seed_artifact_dir": str((ROOT / seed_artifact_dir).resolve()),
+        }
     return EvalDatasetItem.model_validate(
         {
             **row,
@@ -600,6 +610,7 @@ def test_materialize_seed_workspace_overrides_integration_test_env(
             **os.environ,
             "CONTROLLER_URL": "http://127.0.0.1:9",
             "IS_INTEGRATION_TEST": "true",
+            "PROBLEMOLOGIST_SEED_DATASET_ROOTS": str(CODEX_FIXTURE_DATASET_DIR),
         },
         check=False,
     )
@@ -633,7 +644,10 @@ def test_materialize_seed_workspace_requires_explicit_yolo_choice(
         cwd=ROOT,
         capture_output=True,
         text=True,
-        env=os.environ.copy(),
+        env={
+            **os.environ,
+            "PROBLEMOLOGIST_SEED_DATASET_ROOTS": str(CODEX_FIXTURE_DATASET_DIR),
+        },
         check=False,
     )
     combined_output = "\n".join(
@@ -3727,13 +3741,23 @@ def test_validate_eval_seed_removes_preview_bundles_from_all_seed_artifacts():
     assert "PASS benchmark_planner bp-001:" in completed.stdout, completed.stdout
     assert "black/empty" not in combined_output, combined_output
 
-    seed_root = ROOT / "dataset" / "data" / "seed" / "role_based"
     seed_artifact_dirs = sorted(
         {
-            ROOT / row["seed_artifact_dir"]
-            for dataset_path in seed_root.glob("*.json")
+            item.seed_artifact_dir
+            if item.seed_artifact_dir is not None
+            and Path(item.seed_artifact_dir).is_absolute()
+            else ROOT / item.seed_artifact_dir
+            for dataset_path in CODEX_FIXTURE_DATASET_DIR.glob("*.json")
             for row in json.loads(dataset_path.read_text(encoding="utf-8"))
-            if row.get("seed_artifact_dir")
+            for item in (
+                EvalDatasetItem.model_validate(
+                    {
+                        **row,
+                        "seed_dataset": dataset_path.relative_to(ROOT),
+                    }
+                ),
+            )
+            if item.seed_artifact_dir
         }
     )
 

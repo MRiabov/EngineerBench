@@ -1,0 +1,8 @@
+[
+  {
+    "id": "br-001",
+    "task": "Benchmark reviewer integration fixture row br-001.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "tests/integration/fixtures/codex_runner_mode/artifacts/common"
+  }
+]

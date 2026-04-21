@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -13,7 +14,24 @@ from evals.logic.specs import AGENT_SPECS  # noqa: E402
 from shared.enums import AgentName  # noqa: E402
 
 
-def _seed_dataset_roots(root: Path) -> tuple[Path, Path]:
+def _seed_dataset_roots(root: Path) -> tuple[Path, ...]:
+    configured_roots = os.getenv("PROBLEMOLOGIST_SEED_DATASET_ROOTS", "").strip()
+    if configured_roots:
+        roots: list[Path] = []
+        seen: set[Path] = set()
+        for raw_root in configured_roots.split(os.pathsep):
+            raw_root = raw_root.strip()
+            if not raw_root:
+                continue
+            dataset_root = Path(raw_root).expanduser()
+            if not dataset_root.is_absolute():
+                dataset_root = root / dataset_root
+            if dataset_root in seen:
+                continue
+            seen.add(dataset_root)
+            roots.append(dataset_root)
+        return tuple(roots)
+
     return (
         root / "dataset" / "evals" / "datasets",
         root / "dataset" / "data" / "seed" / "role_based",

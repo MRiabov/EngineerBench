@@ -1,0 +1,14 @@
+[
+  {
+    "id": "epr-001",
+    "task": "Engineer plan reviewer integration fixture row epr-001.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "tests/integration/fixtures/codex_runner_mode/artifacts/common"
+  },
+  {
+    "id": "epr-002",
+    "task": "Engineer plan reviewer integration fixture row epr-002.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "tests/integration/fixtures/codex_runner_mode/artifacts/common"
+  }
+]

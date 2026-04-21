@@ -56,12 +56,7 @@ from tests.integration.agent.helpers import dump_yaml_model
 
 ROOT = Path(__file__).resolve().parents[3]
 FIXTURE_DATASET_ROOT = (
-    ROOT
-    / "tests"
-    / "integration"
-    / "fixtures"
-    / "codex_runner_mode"
-    / "datasets"
+    ROOT / "tests" / "integration" / "fixtures" / "codex_runner_mode" / "datasets"
 )
 ROLE_BASED_SEED_DATASET_ROOT = ROOT / "dataset" / "data" / "seed" / "role_based"
 
@@ -447,9 +442,9 @@ async def test_int_node_entry_rejects_cross_bucket_or_empty_render_manifests(
         await worker.aclose()
 
     assert not result.ok
-    assert any(
-        expected_fragment in error.message.lower() for error in result.errors
-    ), result.errors
+    assert any(expected_fragment in error.message.lower() for error in result.errors), (
+        result.errors
+    )
 
 
 @pytest.mark.integration_p0

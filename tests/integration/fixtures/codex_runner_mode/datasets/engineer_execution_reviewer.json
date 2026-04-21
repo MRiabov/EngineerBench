@@ -1,0 +1,14 @@
+[
+  {
+    "id": "eer-001",
+    "task": "Engineer execution reviewer integration fixture row eer-001.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "tests/integration/fixtures/codex_runner_mode/artifacts/common"
+  },
+  {
+    "id": "eer-002",
+    "task": "Engineer execution reviewer integration fixture row eer-002.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "tests/integration/fixtures/codex_runner_mode/artifacts/common"
+  }
+]

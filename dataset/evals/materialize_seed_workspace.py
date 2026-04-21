@@ -53,11 +53,31 @@ from evals.logic.startup_checks import fail_closed_if_integration_test_setup
 from shared.enums import AgentName  # noqa: E402
 from shared.logging import get_logger  # noqa: E402
 
-DATASET_ROOTS = (
-    ROOT / "dataset" / "evals" / "datasets",
-    ROOT / "dataset" / "data" / "seed" / "role_based",
-)
 logger = get_logger(__name__)
+
+
+def _dataset_roots() -> tuple[Path, ...]:
+    configured_roots = os.getenv("PROBLEMOLOGIST_SEED_DATASET_ROOTS", "").strip()
+    if configured_roots:
+        roots: list[Path] = []
+        seen: set[Path] = set()
+        for raw_root in configured_roots.split(os.pathsep):
+            raw_root = raw_root.strip()
+            if not raw_root:
+                continue
+            dataset_root = Path(raw_root).expanduser()
+            if not dataset_root.is_absolute():
+                dataset_root = ROOT / dataset_root
+            if dataset_root in seen:
+                continue
+            seen.add(dataset_root)
+            roots.append(dataset_root)
+        return tuple(roots)
+
+    return (
+        ROOT / "dataset" / "evals" / "datasets",
+        ROOT / "dataset" / "data" / "seed" / "role_based",
+    )
 
 
 async def _validate_materialized_workspace(
@@ -185,16 +205,17 @@ def _parse_args() -> argparse.Namespace:
 
 
 def _load_dataset(agent: AgentName) -> tuple[Path, list[dict[str, object]]]:
+    dataset_roots = _dataset_roots()
     json_path = next(
         (
             root / f"{agent.value}.json"
-            for root in DATASET_ROOTS
+            for root in dataset_roots
             if (root / f"{agent.value}.json").exists()
         ),
         None,
     )
     if json_path is None:
-        searched = ", ".join(str(path) for path in DATASET_ROOTS)
+        searched = ", ".join(str(path) for path in dataset_roots)
         raise FileNotFoundError(
             f"Dataset for agent '{agent.value}' not found. Searched: {searched}"
         )

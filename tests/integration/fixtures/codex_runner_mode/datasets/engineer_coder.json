@@ -1,0 +1,20 @@
+[
+  {
+    "id": "ec-001",
+    "task": "Engineer coder integration fixture row ec-001.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "tests/integration/fixtures/codex_runner_mode/artifacts/common"
+  },
+  {
+    "id": "ec-002",
+    "task": "Engineer coder integration fixture row ec-002.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "tests/integration/fixtures/codex_runner_mode/artifacts/common"
+  },
+  {
+    "id": "ec-005",
+    "task": "Engineer coder integration fixture row ec-005.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "tests/integration/fixtures/codex_runner_mode/artifacts/common"
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "bc-001",
+    "task": "Benchmark coder integration fixture row bc-001.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "tests/integration/fixtures/codex_runner_mode/artifacts/common"
+  },
+  {
+    "id": "bc-002",
+    "task": "Benchmark coder integration fixture row bc-002.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "tests/integration/fixtures/codex_runner_mode/artifacts/common"
+  }
+]

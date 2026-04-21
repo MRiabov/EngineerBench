@@ -1,0 +1,14 @@
+[
+  {
+    "id": "bpr-002",
+    "task": "Benchmark plan reviewer integration fixture row bpr-002.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "tests/integration/fixtures/codex_runner_mode/artifacts/common"
+  },
+  {
+    "id": "bpr-012",
+    "task": "Benchmark plan reviewer integration fixture row bpr-012.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "tests/integration/fixtures/codex_runner_mode/artifacts/common"
+  }
+]

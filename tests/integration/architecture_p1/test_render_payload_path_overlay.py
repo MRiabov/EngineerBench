@@ -5,6 +5,15 @@ from pathlib import Path
 from worker_renderer.utils.payload_path_overlay import resolve_payload_path_points
 
 ROOT = Path(__file__).resolve().parents[3]
+FIXTURE_ARTIFACT_DIR = (
+    ROOT
+    / "tests"
+    / "integration"
+    / "fixtures"
+    / "codex_runner_mode"
+    / "artifacts"
+    / "common"
+)
 
 
 def test_resolve_payload_path_points_prefers_planner_coarse_payload_trajectory(
@@ -13,14 +22,7 @@ def test_resolve_payload_path_points_prefers_planner_coarse_payload_trajectory(
     workspace_root = tmp_path
 
     benchmark_definition = (
-        ROOT
-        / "dataset"
-        / "data"
-        / "seed"
-        / "artifacts"
-        / "engineer_coder"
-        / "ec-002-low-friction-cube"
-        / "benchmark_definition.yaml"
+        FIXTURE_ARTIFACT_DIR / "benchmark_definition.yaml"
     ).read_text(encoding="utf-8")
     workspace_root.joinpath("benchmark_definition.yaml").write_text(
         benchmark_definition,
@@ -73,14 +75,7 @@ def test_resolve_payload_path_points_does_not_invent_benchmark_line(
 ):
     workspace_root = tmp_path
     benchmark_definition = (
-        ROOT
-        / "dataset"
-        / "data"
-        / "seed"
-        / "artifacts"
-        / "engineer_coder"
-        / "ec-002-low-friction-cube"
-        / "benchmark_definition.yaml"
+        FIXTURE_ARTIFACT_DIR / "benchmark_definition.yaml"
     ).read_text(encoding="utf-8")
     workspace_root.joinpath("benchmark_definition.yaml").write_text(
         benchmark_definition,

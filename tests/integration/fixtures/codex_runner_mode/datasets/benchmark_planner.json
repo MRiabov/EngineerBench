@@ -1,0 +1,8 @@
+[
+  {
+    "id": "bp-001",
+    "task": "Benchmark planner integration fixture row bp-001.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "tests/integration/fixtures/codex_runner_mode/artifacts/common"
+  }
+]
