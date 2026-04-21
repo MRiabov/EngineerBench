@@ -5,11 +5,16 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+import yaml
 
 import worker_heavy.utils.file_validation as file_validation
 from controller.agent.node_entry_validation import (
+    NodeEntryContract,
+    ValidationGraph,
     ValidationScope,
     _run_seed_validation_engineering_gate,
+    _validate_seeded_workspace_scope_gates,
+    evaluate_node_entry_contract,
     validate_seeded_workspace_handoff_artifacts,
 )
 from controller.clients.worker import WorkerClient
@@ -64,6 +69,56 @@ def _seeded_planner_item(agent_name: AgentName, item_id: str) -> EvalDatasetItem
         seed_dataset=None,
         seed_files=load_role_template_files(agent_name),
     )
+
+
+def _engineer_starter_assembly_definition() -> AssemblyDefinition:
+    return AssemblyDefinition.model_validate(
+        yaml.safe_load(
+            load_role_template_files(AgentName.ENGINEER_PLANNER)[
+                "assembly_definition.yaml"
+            ]
+        )
+    )
+
+
+def _cross_contract_benchmark_definition() -> BenchmarkDefinition:
+    benchmark_definition = BenchmarkDefinition(
+        objectives=ObjectivesSection(
+            goal_zone_mm=BoundingBox(
+                min_mm=(40.1, -10.0, -10.0), max_mm=(500.0, 10.0, 10.0)
+            ),
+            forbid_zones=[],
+            build_zone_mm=BoundingBox(
+                min_mm=(-10.0, -10.0, -10.0), max_mm=(500.0, 10.0, 10.0)
+            ),
+        ),
+        benchmark_parts=[
+            BenchmarkPartDefinition(
+                part_id="environment_fixture",
+                label="environment_fixture",
+                metadata=BenchmarkPartMetadata(
+                    is_fixed=True,
+                    material_id="aluminum_6061",
+                ),
+            )
+        ],
+        simulation_bounds_mm=BoundingBox(
+            min_mm=(-10.0, -10.0, -10.0),
+            max_mm=(500.0, 10.0, 10.0),
+        ),
+        payload=Payload(
+            label="payload_body",
+            shape="cube",
+            material_id="abs",
+            static_randomization=StaticRandomization(radius_mm=(0.0, 0.0)),
+            start_position_mm=(0.0, 0.0, 0.0),
+            runtime_jitter_mm=(0.0, 0.0, 0.0),
+        ),
+        constraints=Constraints(max_unit_cost=50.0, max_weight_g=980.0),
+    )
+    benchmark_definition.randomization.runtime_jitter_enabled = False
+    benchmark_definition.randomization.static_variation_id = "cross_contract_drift"
+    return benchmark_definition
 
 
 @pytest.mark.integration_p0
@@ -216,6 +271,117 @@ async def test_int_current_role_manifest_wins_over_mixed_workspace_files():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+async def test_int_node_entry_rejects_missing_expected_render_bucket():
+    session_id = f"INT-RENDER-BUCKETS-{uuid.uuid4().hex[:8]}"
+    worker = InMemorySeedWorkspaceClient(session_id=session_id)
+    try:
+        await worker.write_file(
+            ".manifests/current_role.json",
+            current_role_manifest_json(AgentName.BENCHMARK_REVIEWER),
+            overwrite=True,
+            bypass_agent_permissions=True,
+        )
+
+        result = await evaluate_node_entry_contract(
+            contract=NodeEntryContract(node=AgentName.BENCHMARK_REVIEWER),
+            state={"worker_client": worker, "session_id": session_id},
+            artifact_exists=worker.exists,
+            graph=ValidationGraph.BENCHMARK,
+            integration_mode=True,
+        )
+    finally:
+        await worker.aclose()
+
+    assert not result.ok
+    assert any(
+        "renders/benchmark_renders missing" in error.message.lower()
+        or "render_manifest.json missing" in error.message.lower()
+        for error in result.errors
+    ), result.errors
+
+
+@pytest.mark.integration_p0
+@pytest.mark.asyncio
+async def test_int_node_entry_rejects_stale_render_bundle_manifest():
+    session_id = f"INT-RENDER-STALE-{uuid.uuid4().hex[:8]}"
+    worker = InMemorySeedWorkspaceClient(session_id=session_id)
+    try:
+        await worker.write_file(
+            ".manifests/current_role.json",
+            current_role_manifest_json(AgentName.BENCHMARK_REVIEWER),
+            overwrite=True,
+            bypass_agent_permissions=True,
+        )
+        await worker.write_file(
+            "renders/benchmark_renders/render_manifest.json",
+            '{"preview_evidence_paths":["renders/benchmark_renders/missing.png"],"artifacts":{}}',
+            overwrite=True,
+            bypass_agent_permissions=True,
+        )
+
+        result = await evaluate_node_entry_contract(
+            contract=NodeEntryContract(node=AgentName.BENCHMARK_REVIEWER),
+            state={"worker_client": worker, "session_id": session_id},
+            artifact_exists=worker.exists,
+            graph=ValidationGraph.BENCHMARK,
+            integration_mode=True,
+        )
+    finally:
+        await worker.aclose()
+
+    assert not result.ok
+    assert any(
+        "render image 'renders/benchmark_renders/missing.png' is missing"
+        in error.message.lower()
+        for error in result.errors
+    ), result.errors
+
+
+@pytest.mark.integration_p0
+@pytest.mark.asyncio
+async def test_int_node_entry_rejects_unexpected_render_buckets():
+    session_id = f"INT-RENDER-EXTRA-{uuid.uuid4().hex[:8]}"
+    worker = InMemorySeedWorkspaceClient(session_id=session_id)
+    try:
+        await worker.write_file(
+            ".manifests/current_role.json",
+            current_role_manifest_json(AgentName.BENCHMARK_REVIEWER),
+            overwrite=True,
+            bypass_agent_permissions=True,
+        )
+        await worker.write_file(
+            "renders/benchmark_renders/render_manifest.json",
+            "{}",
+            overwrite=True,
+            bypass_agent_permissions=True,
+        )
+        await worker.write_file(
+            "renders/engineer_plan_renders/render_manifest.json",
+            "{}",
+            overwrite=True,
+            bypass_agent_permissions=True,
+        )
+
+        result = await evaluate_node_entry_contract(
+            contract=NodeEntryContract(node=AgentName.BENCHMARK_REVIEWER),
+            state={"worker_client": worker, "session_id": session_id},
+            artifact_exists=worker.exists,
+            graph=ValidationGraph.BENCHMARK,
+            integration_mode=True,
+        )
+    finally:
+        await worker.aclose()
+
+    assert not result.ok
+    assert any(
+        "unexpected render bucket 'renders/engineer_plan_renders'"
+        in error.message.lower()
+        for error in result.errors
+    ), result.errors
+
+
+@pytest.mark.integration_p0
+@pytest.mark.asyncio
 async def test_int_benchmark_planner_seed_rejects_presolved_benchmark_plan():
     item = _seeded_planner_item(AgentName.BENCHMARK_PLANNER, "bp-starter-drift")
     item = item.model_copy(
@@ -286,6 +452,88 @@ async def test_int_engineer_planner_seed_rejects_presolved_engineering_plan():
     assert any(
         error.artifact_path == "engineering_plan.md"
         and "starter template version" in error.message.lower()
+        for error in errors
+    ), errors
+
+
+@pytest.mark.integration_p0
+@pytest.mark.asyncio
+async def test_int_engineer_planner_seed_rejects_presolved_assembly_definition():
+    item = _seeded_planner_item(AgentName.ENGINEER_PLANNER, "ep-assembly-drift")
+    assembly_definition = _engineer_starter_assembly_definition()
+    assembly_definition.constraints.benchmark_max_unit_cost_usd += 1.0
+    item = item.model_copy(
+        update={
+            "seed_files": {
+                **(item.seed_files or {}),
+                "assembly_definition.yaml": dump_yaml_model(assembly_definition),
+            }
+        }
+    )
+
+    session_id = f"INT-STARTER-{uuid.uuid4().hex[:8]}"
+    snapshot_client = InMemorySeedWorkspaceClient(session_id=session_id)
+    await materialize_seed_workspace_snapshot(
+        item=item,
+        session_id=session_id,
+        agent_name=AgentName.ENGINEER_PLANNER,
+        root=ROOT,
+        workspace_client=snapshot_client,
+        update_manifests=True,
+    )
+
+    errors = await validate_seeded_workspace_handoff_artifacts(
+        worker_client=snapshot_client,
+        target_node=AgentName.ENGINEER_PLANNER,
+        validation_scope=ValidationScope.CURRENT_NODE,
+    )
+
+    assert errors, "Expected the pre-solved engineer planner seed to fail."
+    assert any(
+        error.artifact_path == "assembly_definition.yaml"
+        and "starter template version" in error.message.lower()
+        for error in errors
+    ), errors
+
+
+@pytest.mark.integration_p0
+@pytest.mark.asyncio
+async def test_int_engineer_plan_reviewer_seed_rejects_cross_contract_drift():
+    item = _seeded_planner_item(AgentName.ENGINEER_PLANNER, "ep-cross-contract-drift")
+    benchmark_definition = _cross_contract_benchmark_definition()
+    benchmark_definition.constraints.max_unit_cost = 123.0
+    benchmark_definition.constraints.max_weight_g = 456.0
+    item = item.model_copy(
+        update={
+            "seed_files": {
+                **(item.seed_files or {}),
+                "benchmark_definition.yaml": dump_yaml_model(benchmark_definition),
+                "benchmark_script.py": "print('benchmark script')\n",
+            }
+        }
+    )
+
+    session_id = f"INT-STARTER-{uuid.uuid4().hex[:8]}"
+    snapshot_client = InMemorySeedWorkspaceClient(session_id=session_id)
+    await materialize_seed_workspace_snapshot(
+        item=item,
+        session_id=session_id,
+        agent_name=AgentName.ENGINEER_PLANNER,
+        root=ROOT,
+        workspace_client=snapshot_client,
+        update_manifests=True,
+    )
+
+    errors = await _validate_seeded_workspace_scope_gates(
+        worker_client=snapshot_client,
+        target_node=AgentName.ENGINEER_PLAN_REVIEWER,
+        validation_scope=ValidationScope.CURRENT_AND_PREVIOUS_NODES,
+    )
+
+    assert errors, "Expected the cross-contract drift to fail at plan review."
+    assert any(
+        "benchmark_definition.constraints.max_unit_cost" in error.message
+        or "engineering planner handoff" in error.message.lower()
         for error in errors
     ), errors
 

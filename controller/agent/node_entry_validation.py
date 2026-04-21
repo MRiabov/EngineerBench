@@ -45,7 +45,6 @@ from controller.agent.review_handover import (
     collect_plan_reviewer_handover_evidence,
     validate_approved_benchmark_bundle,
     validate_plan_reviewer_handover,
-    validate_planner_artifacts_cross_contract,
     validate_reviewer_handover,
 )
 from controller.clients.worker import WorkerClient
@@ -53,6 +52,7 @@ from controller.config.settings import settings as controller_settings
 from controller.persistence.db import get_sessionmaker
 from controller.persistence.models import Episode
 from shared.agent_templates import load_seed_starter_template_files
+from shared.agents.config import RENDER_BUCKET_NAME_SEQUENCE
 from shared.current_role import current_role_manifest_json, parse_current_role_manifest
 from shared.enums import AgentName, EntryFailureDisposition, EntryValidationSource
 from shared.models.schemas import (
@@ -77,6 +77,7 @@ from shared.utils.agent import (
     validate_benchmark,
     validate_engineering,
 )
+from shared.workers.filesystem.policy import FilesystemPolicy
 from shared.workers.loader import load_component_from_script
 from shared.workers.markdown_validator import validate_todo_md
 from shared.workers.schema import (
@@ -1816,6 +1817,126 @@ def _render_manifest_image_paths(
     return preview_paths, artifact_paths
 
 
+async def _expected_render_bucket_errors(
+    *,
+    target_node: AgentName,
+    artifact_exists: ArtifactExistsFn,
+    artifact_read_optional: ArtifactReadOptionalFn | None = None,
+    validate_manifest_contents: bool = False,
+) -> list[NodeEntryValidationError]:
+    config = FilesystemPolicy()
+    agent_policy = config.config.agents.get(target_node.value)
+    if agent_policy is None:
+        return []
+    expected_buckets = agent_policy.visual_inspection.entry_expects_render_buckets
+
+    expected_set = set(expected_buckets)
+    errors: list[NodeEntryValidationError] = []
+
+    for bucket_name in RENDER_BUCKET_NAME_SEQUENCE:
+        bucket_root = f"renders/{bucket_name}"
+        manifest_path = f"{bucket_root}/render_manifest.json"
+        bucket_present = await artifact_exists(bucket_root)
+        manifest_present = await artifact_exists(manifest_path)
+
+        if bucket_name in expected_set:
+            if not bucket_present:
+                errors.append(
+                    _seeded_schema_error(
+                        message=(
+                            f"{bucket_root} missing for {target_node.value} entry."
+                        ),
+                        artifact_path=bucket_root,
+                    )
+                )
+            if not manifest_present:
+                errors.append(
+                    _seeded_schema_error(
+                        message=(
+                            f"{manifest_path} missing for {target_node.value} entry."
+                        ),
+                        artifact_path=manifest_path,
+                    )
+                )
+            elif validate_manifest_contents and artifact_read_optional is not None:
+                manifest_content = await artifact_read_optional(manifest_path)
+                if manifest_content is None:
+                    errors.append(
+                        _seeded_schema_error(
+                            message=(
+                                f"{manifest_path} missing for {target_node.value} "
+                                "entry."
+                            ),
+                            artifact_path=manifest_path,
+                        )
+                    )
+                else:
+                    try:
+                        render_manifest = RenderManifest.model_validate_json(
+                            manifest_content
+                        )
+                    except Exception as exc:
+                        errors.append(
+                            _seeded_schema_error(
+                                message=f"{manifest_path}: {exc}",
+                                artifact_path=manifest_path,
+                            )
+                        )
+                    else:
+                        preview_image_paths, artifact_image_paths = (
+                            _render_manifest_image_paths(render_manifest)
+                        )
+                        if (
+                            preview_image_paths
+                            and artifact_image_paths
+                            and (preview_image_paths != artifact_image_paths)
+                        ):
+                            errors.append(
+                                _seeded_schema_error(
+                                    message=(
+                                        f"{manifest_path}: preview evidence paths "
+                                        "must match the render artifact image set"
+                                    ),
+                                    artifact_path=manifest_path,
+                                )
+                            )
+
+                        expected_image_paths = (
+                            preview_image_paths
+                            if preview_image_paths
+                            else artifact_image_paths
+                        )
+                        missing_image_paths = [
+                            image_path
+                            for image_path in expected_image_paths
+                            if not await artifact_exists(image_path)
+                        ]
+                        for image_path in missing_image_paths:
+                            errors.append(
+                                _seeded_schema_error(
+                                    message=(
+                                        f"{manifest_path}: render image "
+                                        f"'{image_path}' is missing."
+                                    ),
+                                    artifact_path=image_path,
+                                )
+                            )
+            continue
+
+        if bucket_present:
+            errors.append(
+                _seeded_schema_error(
+                    message=(
+                        f"Unexpected render bucket '{bucket_root}' present for "
+                        f"{target_node.value} entry."
+                    ),
+                    artifact_path=bucket_root,
+                )
+            )
+
+    return errors
+
+
 async def validate_seeded_workspace_handoff_artifacts(
     *,
     worker_client: WorkerClient,
@@ -1838,6 +1959,18 @@ async def validate_seeded_workspace_handoff_artifacts(
         await _current_role_manifest_errors(
             worker_client=worker_client,
             target_node=target_node,
+        )
+    )
+
+    async def _artifact_exists(path: str) -> bool:
+        return await worker_client.exists(path, bypass_agent_permissions=True)
+
+    errors.extend(
+        await _expected_render_bucket_errors(
+            target_node=target_node,
+            artifact_exists=_artifact_exists,
+            artifact_read_optional=worker_client.read_file_optional,
+            validate_manifest_contents=False,
         )
     )
 
@@ -2030,22 +2163,6 @@ async def validate_seeded_workspace_handoff_artifacts(
             )
         )
 
-    if {
-        "benchmark_definition.yaml",
-        "assembly_definition.yaml",
-    }.issubset(present_paths):
-        handover_error = await validate_planner_artifacts_cross_contract(
-            worker_client,
-            expected_stage=AgentName.ENGINEER_PLAN_REVIEWER,
-        )
-        if handover_error is not None:
-            errors.append(
-                _seeded_schema_error(
-                    message=f"engineering planner handoff: {handover_error}",
-                    artifact_path="assembly_definition.yaml",
-                )
-            )
-
     if (
         benchmark_definition_model is not None
         and benchmark_assembly_definition_model is not None
@@ -2077,7 +2194,7 @@ async def validate_seeded_workspace_handoff_artifacts(
                 assembly_definition=benchmark_assembly_definition_model,
                 manufacturing_config=manufacturing_config_model,
                 planner_node_type=AgentName.BENCHMARK_PLAN_REVIEWER,
-                plan_text=plan_content,
+                plan_text=contents.get("benchmark_plan.md") or plan_content,
             )
             errors.extend(
                 _seeded_schema_error(
@@ -2202,6 +2319,10 @@ async def validate_seeded_workspace_handoff_artifacts(
 
 class ArtifactExistsFn(Protocol):
     async def __call__(self, path: str) -> bool: ...
+
+
+class ArtifactReadOptionalFn(Protocol):
+    async def __call__(self, path: str) -> str | None: ...
 
 
 class CustomEntryCheck(Protocol):
@@ -2365,6 +2486,19 @@ async def evaluate_node_entry_contract(
         state=state,
     )
     errors.extend(current_role_errors)
+
+    errors.extend(
+        await _expected_render_bucket_errors(
+            target_node=contract.node,
+            artifact_exists=artifact_exists,
+            artifact_read_optional=(
+                _get_state_worker_client(state).read_file_optional
+                if _get_state_worker_client(state) is not None
+                else None
+            ),
+            validate_manifest_contents=True,
+        )
+    )
 
     for required_field in contract.required_state_fields:
         if _get_state_value(state, required_field) is None:

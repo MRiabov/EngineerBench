@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+import yaml
 
 from scripts.internal import eval_seed_renders
 from shared.current_role import current_role_manifest_json
@@ -37,6 +39,41 @@ from shared.enums import AgentName
 )
 def test_seed_render_bundle_prefixes_cover_all_roles(agent, expected_bundles):
     assert eval_seed_renders._seed_render_bundle_names(agent.value) == expected_bundles
+
+
+def test_seed_render_bundle_prefixes_match_visual_inspection_config():
+    cfg = yaml.safe_load(Path("config/agents_config.yaml").read_text(encoding="utf-8"))
+    agents = cfg["agents"]
+
+    expected_bundles_by_agent = {
+        AgentName.BENCHMARK_PLANNER: [],
+        AgentName.BENCHMARK_PLAN_REVIEWER: ["benchmark_renders"],
+        AgentName.BENCHMARK_CODER: ["benchmark_renders"],
+        AgentName.BENCHMARK_REVIEWER: ["benchmark_renders"],
+        AgentName.ENGINEER_PLANNER: ["benchmark_renders"],
+        AgentName.ENGINEER_PLAN_REVIEWER: [
+            "benchmark_renders",
+            "engineer_plan_renders",
+        ],
+        AgentName.ENGINEER_CODER: [
+            "benchmark_renders",
+            "engineer_plan_renders",
+        ],
+        AgentName.ENGINEER_EXECUTION_REVIEWER: [
+            "benchmark_renders",
+            "engineer_plan_renders",
+            "final_solution_submission_renders",
+        ],
+    }
+
+    for agent, expected_bundles in expected_bundles_by_agent.items():
+        assert eval_seed_renders._seed_render_bundle_names(agent.value) == (
+            expected_bundles
+        )
+        assert (
+            agents[agent.value]["visual_inspection"]["entry_expects_render_buckets"]
+            == expected_bundles
+        )
 
 
 def test_engineer_plan_seed_renders_use_planner_evidence_script(tmp_path, monkeypatch):

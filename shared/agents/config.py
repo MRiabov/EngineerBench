@@ -12,6 +12,17 @@ from shared.enums import AgentName
 logger = structlog.get_logger(__name__)
 
 ReasoningEffortLevel = Literal["low", "medium", "high", "xhigh"]
+RenderBucketName = Literal[
+    "benchmark_renders",
+    "engineer_plan_renders",
+    "final_solution_submission_renders",
+]
+
+RENDER_BUCKET_NAME_SEQUENCE: tuple[str, ...] = (
+    "benchmark_renders",
+    "engineer_plan_renders",
+    "final_solution_submission_renders",
+)
 
 
 class PathPolicy(BaseModel):
@@ -28,6 +39,38 @@ class VisualInspectionPolicy(BaseModel):
     required: bool = False
     min_images: int = Field(default=1, ge=1)
     reminder_interval: int = Field(default=2, ge=1)
+    entry_expects_render_buckets: list[RenderBucketName] = Field(default_factory=list)
+
+    @field_validator("entry_expects_render_buckets", mode="before")
+    @classmethod
+    def _normalize_entry_expects_render_buckets(
+        cls, value: object
+    ) -> list[str] | object:
+        if value is None:
+            return []
+        if isinstance(value, str):
+            value = [value]
+        if not isinstance(value, list):
+            return value
+
+        seen: set[str] = set()
+        for raw_bucket in value:
+            bucket = str(raw_bucket).strip()
+            if not bucket:
+                continue
+            if bucket not in RENDER_BUCKET_NAME_SEQUENCE:
+                msg = (
+                    f"Unknown render bucket '{bucket}'. Expected one of: "
+                    f"{', '.join(RENDER_BUCKET_NAME_SEQUENCE)}"
+                )
+                raise ValueError(msg)
+            seen.add(bucket)
+
+        normalized: list[str] = []
+        for bucket in RENDER_BUCKET_NAME_SEQUENCE:
+            if bucket in seen:
+                normalized.append(bucket)
+        return normalized
 
 
 class PayloadTrajectoryBudget(BaseModel):
@@ -310,6 +353,37 @@ class AgentsConfig(BaseModel):
     )
     defaults: AgentPolicy = Field(default_factory=AgentPolicy)
     agents: dict[str, AgentPolicy] = Field(default_factory=dict)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _require_visual_inspection_bucket_expectations(
+        cls, value: object
+    ) -> dict[str, object] | object:
+        if not isinstance(value, dict):
+            return value
+
+        agents = value.get("agents")
+        if not isinstance(agents, dict):
+            return value
+
+        missing_roles: list[str] = []
+        for raw_role, raw_policy in agents.items():
+            if not isinstance(raw_policy, dict):
+                continue
+            visual_inspection = raw_policy.get("visual_inspection")
+            if isinstance(visual_inspection, dict) and (
+                "entry_expects_render_buckets" not in visual_inspection
+            ):
+                missing_roles.append(str(raw_role))
+
+        if missing_roles:
+            roles = ", ".join(sorted(missing_roles))
+            raise ValueError(
+                "visual_inspection.entry_expects_render_buckets is required for "
+                f"agents: {roles}"
+            )
+
+        return value
 
     def get_allowed_during_unit_eval(
         self, agent_role: AgentName | str

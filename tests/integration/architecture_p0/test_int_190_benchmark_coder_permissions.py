@@ -97,6 +97,37 @@ def test_int_190_unit_eval_allowlists_are_explicit_and_reviewer_driven():
         "engineer_plan_reviewer",
     }
     assert agents["engineer_planner"]["visual_inspection"]["required"] is True
+    assert agents["engineer_planner"]["visual_inspection"][
+        "entry_expects_render_buckets"
+    ] == ["benchmark_renders"]
+    assert (
+        agents["benchmark_planner"]["visual_inspection"]["entry_expects_render_buckets"]
+        == []
+    )
+
+    expected_visual_buckets = {
+        "benchmark_planner": [],
+        "benchmark_plan_reviewer": ["benchmark_renders"],
+        "benchmark_coder": ["benchmark_renders"],
+        "benchmark_reviewer": ["benchmark_renders"],
+        "engineer_plan_reviewer": [
+            "benchmark_renders",
+            "engineer_plan_renders",
+        ],
+        "engineer_coder": [
+            "benchmark_renders",
+            "engineer_plan_renders",
+        ],
+        "engineer_execution_reviewer": [
+            "benchmark_renders",
+            "engineer_plan_renders",
+            "final_solution_submission_renders",
+        ],
+    }
+    for role, expected_buckets in expected_visual_buckets.items():
+        assert agents[role]["visual_inspection"]["entry_expects_render_buckets"] == (
+            expected_buckets
+        )
 
     engineer_execution_reviewer_allowlist = set(
         agents["engineer_execution_reviewer"]["allowed_during_unit_eval"]

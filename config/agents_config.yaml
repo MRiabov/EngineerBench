@@ -68,6 +68,10 @@ execution:
       timeout_seconds: 90
       max_turns: 150
       max_total_tokens: 400000
+    benchmark_plan_reviewer:
+      timeout_seconds: 450
+      max_turns: 150
+      max_total_tokens: 400000
     journalling_agent:
       timeout_seconds: 90
       max_turns: 150
@@ -177,6 +181,8 @@ agents:
       required: true
       min_images: 1
       reminder_interval: 2
+      entry_expects_render_buckets:
+        - benchmark_renders
   engineer_coder:
     reasoning_effort: high
     filesystem_permissions:
@@ -238,6 +244,9 @@ agents:
       required: true
       min_images: 1
       reminder_interval: 2
+      entry_expects_render_buckets:
+        - benchmark_renders
+        - engineer_plan_renders
   benchmark_coder:
     reasoning_effort: high
     filesystem_permissions:
@@ -296,6 +305,8 @@ agents:
       required: true
       min_images: 1
       reminder_interval: 2
+      entry_expects_render_buckets:
+        - benchmark_renders
   engineer_plan_reviewer:
     reasoning_effort: xhigh
     filesystem_permissions:
@@ -348,6 +359,9 @@ agents:
       required: true
       min_images: 1
       reminder_interval: 2
+      entry_expects_render_buckets:
+        - benchmark_renders
+        - engineer_plan_renders
   engineer_execution_reviewer:
     reasoning_effort: xhigh
     filesystem_permissions:
@@ -397,6 +411,10 @@ agents:
       required: true
       min_images: 1
       reminder_interval: 2
+      entry_expects_render_buckets:
+        - benchmark_renders
+        - engineer_plan_renders
+        - final_solution_submission_renders
   benchmark_planner:
     reasoning_effort: xhigh
     filesystem_permissions:
@@ -447,6 +465,11 @@ agents:
     allowed_during_unit_eval:
       - benchmark_planner
       - benchmark_plan_reviewer
+    visual_inspection:
+      required: true
+      min_images: 1
+      reminder_interval: 2
+      entry_expects_render_buckets: []
   benchmark_plan_reviewer:
     reasoning_effort: xhigh
     filesystem_permissions:
@@ -488,6 +511,8 @@ agents:
       required: true
       min_images: 1
       reminder_interval: 2
+      entry_expects_render_buckets:
+        - benchmark_renders
   benchmark_reviewer:
     reasoning_effort: xhigh
     filesystem_permissions:
@@ -531,6 +556,8 @@ agents:
       required: true
       min_images: 1
       reminder_interval: 2
+      entry_expects_render_buckets:
+        - benchmark_renders
   journalling_agent:
     filesystem_permissions:
       read:

@@ -20,6 +20,7 @@ _ENGINEER_PLAN_BASE_FILES: tuple[str, ...] = (
     "todo.md",
     "benchmark_definition.yaml",
     "assembly_definition.yaml",
+    "benchmark_plan.md",
     SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
 )
 

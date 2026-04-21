@@ -569,7 +569,7 @@ def _run_env_up() -> None:
     env_up_path = ROOT / "scripts" / "env_up.sh"
     result = subprocess.run(
         [str(env_up_path), "--profile", "eval"],
-        check=True,
+        check=False,
         capture_output=True,
         text=True,
         env={**os.environ, "PROBLEMOLOGIST_EVAL_LOCK_HELD": "1"},
@@ -578,6 +578,12 @@ def _run_env_up() -> None:
         print(result.stdout.strip())
     if result.stderr.strip():
         print(result.stderr.strip(), file=sys.stderr)
+    if result.returncode != 0:
+        print(
+            f"env_up.sh failed with exit code {result.returncode}.",
+            file=sys.stderr,
+        )
+        raise SystemExit(result.returncode)
 
 
 async def _async_main(args: argparse.Namespace) -> int:

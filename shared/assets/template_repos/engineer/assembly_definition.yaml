@@ -6,8 +6,8 @@ units:
   currency: "USD"
 
 constraints:
-  benchmark_max_unit_cost_usd: 27.0
-  benchmark_max_weight_g: 30.0
+  benchmark_max_unit_cost_usd: 21.0
+  benchmark_max_weight_g: 22.7448
   planner_target_max_unit_cost_usd: 18.0
   planner_target_max_weight_g: 20.0
 
@@ -80,25 +80,31 @@ totals:
   estimated_weight_g: 11.9232
   estimate_confidence: high
 
-# coarse_payload_trajectory:
-#   payload_part_names:
-#     - bridge_deck
-#   reference_frame: world
-#   sample_stride_s: 0.5
-#   anchors:
-#     - t_s: 0.0
-#       reference_point: build_zone_start
-#       pos_mm: [0.0, 0.0, 5.0]
-#       rot_deg: [0.0, 0.0, 0.0]
-#       position_tolerance_mm: [1.2, 1.2, 1.2]
-#       rotation_tolerance_deg: [0.1, 0.1, 5.0]
-#       build_zone_valid: true
-#     - t_s: 2.5
-#       reference_point: goal_zone_contact
-#       pos_mm: [12.0, 0.0, 2.0]
-#       rot_deg: [0.0, 0.0, 0.0]
-#       position_tolerance_mm: [1.2, 1.2, 1.2]
-#       rotation_tolerance_deg: [0.1, 0.1, 5.0]
-#       goal_zone_contact: true
+coarse_payload_trajectory:
+  payload_part_names:
+    - solution_plan_evidence
+  reference_frame: world
+  sample_stride_s: 0.2
+  anchors:
+    - t_s: 0.0
+      reference_point: build_zone_start
+      pos_mm: [-30.0, 0.0, 24.0]
+      rot_deg: [0.0, 0.0, 0.0]
+      position_tolerance_mm: [0.0, 0.0, 0.0]
+      rotation_tolerance_deg: [0.1, 0.1, 0.1]
+      build_zone_valid: true
+    - t_s: 0.2
+      reference_point: transfer_midspan
+      pos_mm: [0.0, 18.0, 24.0]
+      rot_deg: [0.0, 0.0, 0.0]
+      position_tolerance_mm: [0.0, 0.0, 0.0]
+      rotation_tolerance_deg: [0.1, 0.1, 0.1]
+    - t_s: 0.5
+      reference_point: goal_zone_contact
+      pos_mm: [32.0, 0.0, 10.0]
+      rot_deg: [0.0, 0.0, 0.0]
+      position_tolerance_mm: [0.0, 0.0, 0.0]
+      rotation_tolerance_deg: [0.1, 0.1, 0.1]
+      goal_zone_contact: true
 
 dfm_suggestions: []

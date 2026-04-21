@@ -11,8 +11,8 @@ import numpy as np
 import pyarrow.parquet as pq
 import pytest
 import trimesh
-from build123d import Align, Box, Compound, Location
 import vtk
+from build123d import Align, Box, Compound, Location
 
 from dataset.synthetic.tube_guided_synthetic_rigid_body_corpus.contract import (
     payload_trajectory_dict,
@@ -39,9 +39,9 @@ from shared.models.schemas import (
     BenchmarkPartDefinition,
     BenchmarkPartMetadata,
     BoundingBox,
+    CompoundMetadata,
     Constraints,
     CostTotals,
-    CompoundMetadata,
     ManufacturedPartEstimate,
     ObjectivesSection,
     PartMetadata,
@@ -233,9 +233,9 @@ def _points_within_any_bounds(
     tolerance_mm: float = 1e-6,
 ) -> bool:
     expanded_points = points[:, None, :]
-    inside = np.all(expanded_points >= bounds_min[None, :, :] - tolerance_mm, axis=2) & (
-        np.all(expanded_points <= bounds_max[None, :, :] + tolerance_mm, axis=2)
-    )
+    inside = np.all(
+        expanded_points >= bounds_min[None, :, :] - tolerance_mm, axis=2
+    ) & (np.all(expanded_points <= bounds_max[None, :, :] + tolerance_mm, axis=2))
     return bool(np.all(inside.any(axis=1)))
 
 
@@ -359,7 +359,14 @@ def _staged_workspace(
     scene = PreviewScene.model_validate_json(
         (bundle_root / "preview_scene.json").read_text(encoding="utf-8")
     )
-    return workspace_root, benchmark_definition, scene, bundle_root, component, preview_bundle
+    return (
+        workspace_root,
+        benchmark_definition,
+        scene,
+        bundle_root,
+        component,
+        preview_bundle,
+    )
 
 
 def _boundary_workspace(
