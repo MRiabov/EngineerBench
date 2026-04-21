@@ -1,3 +1,4 @@
+import json
 import os
 import shutil
 import uuid
@@ -23,7 +24,6 @@ from evals.logic.workspace import (
     InMemorySeedWorkspaceClient,
     materialize_seed_workspace_snapshot,
 )
-from scripts.internal.eval_seed_selection import load_seed_dataset
 from shared.agent_templates import load_role_template_files
 from shared.current_role import current_role_manifest_json
 from shared.enums import AgentName
@@ -55,6 +55,15 @@ from shared.workers.schema import BenchmarkToolResponse
 from tests.integration.agent.helpers import dump_yaml_model
 
 ROOT = Path(__file__).resolve().parents[3]
+FIXTURE_DATASET_ROOT = (
+    ROOT
+    / "tests"
+    / "integration"
+    / "fixtures"
+    / "codex_runner_mode"
+    / "datasets"
+)
+ROLE_BASED_SEED_DATASET_ROOT = ROOT / "dataset" / "data" / "seed" / "role_based"
 
 WORKER_LIGHT_URL = os.getenv("WORKER_LIGHT_URL", "http://127.0.0.1:18001")
 
@@ -68,6 +77,52 @@ def _seeded_planner_item(agent_name: AgentName, item_id: str) -> EvalDatasetItem
         complexity_level=0,
         seed_dataset=None,
         seed_files=load_role_template_files(agent_name),
+    )
+
+
+def _load_fixture_seed_item(agent_name: AgentName, task_id: str) -> EvalDatasetItem:
+    dataset_path = FIXTURE_DATASET_ROOT / f"{agent_name.value}.json"
+    if not dataset_path.exists():
+        raise FileNotFoundError(dataset_path)
+
+    rows = json.loads(dataset_path.read_text(encoding="utf-8"))
+    row = next((row for row in rows if row["id"] == task_id), None)
+    if row is None:
+        raise KeyError(f"Row {task_id!r} not found in {dataset_path}")
+    seed_artifact_dir = row.get("seed_artifact_dir")
+    if isinstance(seed_artifact_dir, str) and seed_artifact_dir:
+        row = {
+            **row,
+            "seed_artifact_dir": str((ROOT / seed_artifact_dir).resolve()),
+        }
+    return EvalDatasetItem.model_validate(
+        {
+            **row,
+            "seed_dataset": dataset_path.relative_to(ROOT),
+        }
+    )
+
+
+def _load_role_based_seed_item(agent_name: AgentName, task_id: str) -> EvalDatasetItem:
+    dataset_path = ROLE_BASED_SEED_DATASET_ROOT / f"{agent_name.value}.json"
+    if not dataset_path.exists():
+        raise FileNotFoundError(dataset_path)
+
+    rows = json.loads(dataset_path.read_text(encoding="utf-8"))
+    row = next((row for row in rows if row["id"] == task_id), None)
+    if row is None:
+        raise KeyError(f"Row {task_id!r} not found in {dataset_path}")
+    seed_artifact_dir = row.get("seed_artifact_dir")
+    if isinstance(seed_artifact_dir, str) and seed_artifact_dir:
+        row = {
+            **row,
+            "seed_artifact_dir": str((ROOT / seed_artifact_dir).resolve()),
+        }
+    return EvalDatasetItem.model_validate(
+        {
+            **row,
+            "seed_dataset": dataset_path.relative_to(ROOT),
+        }
     )
 
 
@@ -339,6 +394,66 @@ async def test_int_node_entry_rejects_stale_render_bundle_manifest():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("manifest_content", "expected_fragment"),
+    [
+        (
+            '{"preview_evidence_paths":["renders/engineer_plan_renders/cross_bucket.png"],'
+            '"artifacts":{"renders/engineer_plan_renders/cross_bucket.png":'
+            '{"modality":"rgb","group_key":"cross_bucket","siblings":{'
+            '"rgb":"renders/engineer_plan_renders/cross_bucket.png",'
+            '"depth":"renders/engineer_plan_renders/cross_bucket_depth.png",'
+            '"segmentation":"renders/engineer_plan_renders/cross_bucket_segmentation.png"}}}}',
+            "must stay within renders/benchmark_renders",
+        ),
+        ("{}", "contains no render images"),
+    ],
+)
+async def test_int_node_entry_rejects_cross_bucket_or_empty_render_manifests(
+    manifest_content: str,
+    expected_fragment: str,
+):
+    session_id = f"INT-RENDER-BUCKET-BIND-{uuid.uuid4().hex[:8]}"
+    worker = InMemorySeedWorkspaceClient(session_id=session_id)
+    try:
+        await worker.write_file(
+            ".manifests/current_role.json",
+            current_role_manifest_json(AgentName.BENCHMARK_REVIEWER),
+            overwrite=True,
+            bypass_agent_permissions=True,
+        )
+        if "cross_bucket.png" in manifest_content:
+            await worker.write_file(
+                "renders/engineer_plan_renders/cross_bucket.png",
+                "not an image, just a path anchor",
+                overwrite=True,
+                bypass_agent_permissions=True,
+            )
+        await worker.write_file(
+            "renders/benchmark_renders/render_manifest.json",
+            manifest_content,
+            overwrite=True,
+            bypass_agent_permissions=True,
+        )
+
+        result = await evaluate_node_entry_contract(
+            contract=NodeEntryContract(node=AgentName.BENCHMARK_REVIEWER),
+            state={"worker_client": worker, "session_id": session_id},
+            artifact_exists=worker.exists,
+            graph=ValidationGraph.BENCHMARK,
+            integration_mode=True,
+        )
+    finally:
+        await worker.aclose()
+
+    assert not result.ok
+    assert any(
+        expected_fragment in error.message.lower() for error in result.errors
+    ), result.errors
+
+
+@pytest.mark.integration_p0
+@pytest.mark.asyncio
 async def test_int_node_entry_rejects_unexpected_render_buckets():
     session_id = f"INT-RENDER-EXTRA-{uuid.uuid4().hex[:8]}"
     worker = InMemorySeedWorkspaceClient(session_id=session_id)
@@ -458,6 +573,31 @@ async def test_int_engineer_planner_seed_rejects_presolved_engineering_plan():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
+async def test_int_engineer_planner_seed_accepts_starter_template_under_scope():
+    item = _load_role_based_seed_item(AgentName.ENGINEER_PLANNER, "ep-001")
+
+    session_id = f"INT-STARTER-{uuid.uuid4().hex[:8]}"
+    snapshot_client = InMemorySeedWorkspaceClient(session_id=session_id)
+    await materialize_seed_workspace_snapshot(
+        item=item,
+        session_id=session_id,
+        agent_name=AgentName.ENGINEER_PLANNER,
+        root=ROOT,
+        workspace_client=snapshot_client,
+        update_manifests=True,
+    )
+
+    errors = await validate_seeded_workspace_handoff_artifacts(
+        worker_client=snapshot_client,
+        target_node=AgentName.ENGINEER_PLANNER,
+        validation_scope=ValidationScope.CURRENT_AND_PREVIOUS_NODES,
+    )
+
+    assert not errors, errors
+
+
+@pytest.mark.integration_p0
+@pytest.mark.asyncio
 async def test_int_engineer_planner_seed_rejects_presolved_assembly_definition():
     item = _seeded_planner_item(AgentName.ENGINEER_PLANNER, "ep-assembly-drift")
     assembly_definition = _engineer_starter_assembly_definition()
@@ -543,12 +683,7 @@ async def test_int_engineer_plan_reviewer_seed_rejects_cross_contract_drift():
 async def test_int_engineer_coder_seed_rejects_presolved_solution_script(
     tmp_path: Path,
 ):
-    seed_item = load_seed_dataset(
-        AgentName.ENGINEER_CODER,
-        task_id="ec-002",
-        limit=1,
-        levels=None,
-    )[0]
+    seed_item = _load_fixture_seed_item(AgentName.ENGINEER_CODER, "ec-002")
     temp_seed_dir = tmp_path / "engineer_coder_seed"
     shutil.copytree(seed_item.seed_artifact_dir, temp_seed_dir)
     temp_seed_dir.joinpath("solution_script.py").write_text(
@@ -615,12 +750,7 @@ result = build()
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
 async def test_int_engineer_coder_seed_requires_payload_trajectory_definition():
-    seed_item = load_seed_dataset(
-        AgentName.ENGINEER_CODER,
-        task_id="ec-002",
-        limit=1,
-        levels=None,
-    )[0]
+    seed_item = _load_fixture_seed_item(AgentName.ENGINEER_CODER, "ec-002")
 
     session_id = f"INT-STARTER-{uuid.uuid4().hex[:8]}"
     snapshot_client = InMemorySeedWorkspaceClient(session_id=session_id)
@@ -1174,12 +1304,7 @@ def test_int_engineer_validate_engineering_rejects_invalid_payload_scaffold(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ):
-    seed_item = load_seed_dataset(
-        AgentName.ENGINEER_CODER,
-        task_id="ec-002",
-        limit=1,
-        levels=None,
-    )[0]
+    seed_item = _load_fixture_seed_item(AgentName.ENGINEER_CODER, "ec-002")
     temp_seed_dir = tmp_path / "engineer_coder_seed"
     shutil.copytree(seed_item.seed_artifact_dir, temp_seed_dir)
     temp_seed_dir.joinpath("solution_script.py").write_text(
@@ -1215,12 +1340,7 @@ def build() -> Compound:
 async def test_int_benchmark_coder_seed_rejects_presolved_benchmark_script(
     tmp_path: Path,
 ):
-    seed_item = load_seed_dataset(
-        AgentName.BENCHMARK_CODER,
-        task_id="bc-002",
-        limit=1,
-        levels=None,
-    )[0]
+    seed_item = _load_fixture_seed_item(AgentName.BENCHMARK_CODER, "bc-002")
     temp_seed_dir = tmp_path / "benchmark_coder_seed"
     shutil.copytree(seed_item.seed_artifact_dir, temp_seed_dir)
     temp_seed_dir.joinpath("benchmark_script.py").write_text(
@@ -1267,12 +1387,7 @@ result = build()
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
 async def test_int_benchmark_reviewer_seed_rejects_presolved_todo(tmp_path: Path):
-    seed_item = load_seed_dataset(
-        AgentName.BENCHMARK_REVIEWER,
-        task_id="br-001",
-        limit=1,
-        levels=None,
-    )[0]
+    seed_item = _load_fixture_seed_item(AgentName.BENCHMARK_REVIEWER, "br-001")
     temp_seed_dir = tmp_path / "benchmark_reviewer_seed"
     shutil.copytree(seed_item.seed_artifact_dir, temp_seed_dir)
     temp_seed_dir.joinpath("todo.md").write_text(

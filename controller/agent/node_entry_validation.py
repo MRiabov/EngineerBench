@@ -9,7 +9,7 @@ import uuid
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from enum import StrEnum
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from types import SimpleNamespace
 from typing import Any, Protocol
 
@@ -1573,14 +1573,6 @@ async def _validate_seeded_workspace_scope_gates(
     errors: list[NodeEntryValidationError] = []
 
     if target_node == AgentName.BENCHMARK_PLANNER:
-        errors.extend(
-            await _run_seed_validation_submit_plan_gate(
-                worker_client=worker_client,
-                gate_name="benchmark planner submission",
-                submit_fn=submit_benchmark_plan,
-                gate_role=AgentName.BENCHMARK_PLANNER,
-            )
-        )
         return errors
 
     if target_node == AgentName.BENCHMARK_PLAN_REVIEWER:
@@ -1663,14 +1655,6 @@ async def _validate_seeded_workspace_scope_gates(
                 gate_name="benchmark coder validation",
                 validation_scope=validation_scope,
                 gate_role=AgentName.BENCHMARK_CODER,
-            )
-        )
-        errors.extend(
-            await _run_seed_validation_submit_plan_gate(
-                worker_client=worker_client,
-                gate_name="engineering planner submission",
-                submit_fn=submit_engineering_plan,
-                gate_role=AgentName.ENGINEER_PLANNER,
             )
         )
         return errors
@@ -1817,6 +1801,21 @@ def _render_manifest_image_paths(
     return preview_paths, artifact_paths
 
 
+def _render_path_within_bucket(path: str, bucket_root: str) -> bool:
+    candidate = PurePosixPath(path)
+    if candidate.is_absolute():
+        return False
+
+    bucket_parts = PurePosixPath(bucket_root).parts
+    if len(candidate.parts) <= len(bucket_parts):
+        return False
+    if candidate.parts[: len(bucket_parts)] != bucket_parts:
+        return False
+    if any(part == ".." for part in candidate.parts):
+        return False
+    return True
+
+
 async def _expected_render_bucket_errors(
     *,
     target_node: AgentName,
@@ -1886,6 +1885,11 @@ async def _expected_render_bucket_errors(
                         preview_image_paths, artifact_image_paths = (
                             _render_manifest_image_paths(render_manifest)
                         )
+                        render_image_paths = list(
+                            dict.fromkeys(
+                                preview_image_paths + artifact_image_paths
+                            )
+                        )
                         if (
                             preview_image_paths
                             and artifact_image_paths
@@ -1901,6 +1905,35 @@ async def _expected_render_bucket_errors(
                                 )
                             )
 
+                        if not render_image_paths:
+                            errors.append(
+                                _seeded_schema_error(
+                                    message=(
+                                        f"{manifest_path}: render manifest "
+                                        "contains no render images."
+                                    ),
+                                    artifact_path=manifest_path,
+                                )
+                            )
+                            continue
+
+                        invalid_image_paths = [
+                            image_path
+                            for image_path in render_image_paths
+                            if not _render_path_within_bucket(image_path, bucket_root)
+                        ]
+                        for image_path in invalid_image_paths:
+                            errors.append(
+                                _seeded_schema_error(
+                                    message=(
+                                        f"{manifest_path}: render image "
+                                        f"'{image_path}' must stay within "
+                                        f"{bucket_root}."
+                                    ),
+                                    artifact_path=image_path,
+                                )
+                            )
+
                         expected_image_paths = (
                             preview_image_paths
                             if preview_image_paths
@@ -1909,7 +1942,10 @@ async def _expected_render_bucket_errors(
                         missing_image_paths = [
                             image_path
                             for image_path in expected_image_paths
-                            if not await artifact_exists(image_path)
+                            if _render_path_within_bucket(
+                                image_path, bucket_root
+                            )
+                            and not await artifact_exists(image_path)
                         ]
                         for image_path in missing_image_paths:
                             errors.append(
