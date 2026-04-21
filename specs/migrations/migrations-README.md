@@ -49,6 +49,9 @@ The script reads `agents_affected` from frontmatter first and falls back to
 legacy body detection only for older docs that have not been updated yet.
 You can also keep an `added_at` field in the same frontmatter when you want the
 creation timestamp recorded directly in the migration doc.
+The `status` field should reflect the doc lifecycle; keep it aligned with the
+body narrative so investigation, active migration, implemented, and completed
+records do not contradict each other.
 
 ## Required Shape
 
@@ -57,19 +60,25 @@ section of its own:
 
 01. `# Title`
 02. Optional status comment such as `<!-- Investigation doc. No behavior change yet. -->`
-03. `## Purpose`
-04. `## Problem Statement`
-05. `## Current-State Inventory`
-06. `## Proposed Target State`
-07. `## Required Work`
-08. `## Non-Goals`
-09. `## Sequencing`
-10. `## Acceptance Criteria`
-11. `## Migration Checklist`
-12. `## File-Level Change Set`
+    or `<!-- Implemented. ... -->`
+03. Optional `## Status` section for completed or frozen records
+04. `## Purpose`
+05. `## Problem Statement`
+06. `## Current-State Inventory`
+07. `## Proposed Target State`
+08. `## Required Work`
+09. `## Non-Goals`
+10. `## Sequencing`
+11. `## Acceptance Criteria`
+12. `## Migration Checklist` - detailed execution checklist. If it's too much to
+13. `## File-Level Change Set`
 
 Optional follow-up sections may include `Open Questions`, `Risks`, `Test Impact`,
-`Verified This Pass`, `Seed and Fixture Updates`, and `Completion Note`.
+`Verified This Pass`, `Seed and Fixture Updates`, `Completion Note`, and other
+short migration-specific sections such as `Rollout Order`, `Assessment`,
+`Resolved Decisions`, `Design Notes`, `Cleanup Checklist`,
+`Implementation Checklist`, or `Phased Migration Shape` when they add distinct
+contract value.
 
 ## Writing Rules
 
@@ -96,8 +105,7 @@ Optional follow-up sections may include `Open Questions`, `Risks`, `Test Impact`
   before narrowing scope. As a rule of thumb, expect at least 10 existing
   integration tests to need updates per feature unless the migration doc
   explicitly justifies a smaller set.
-- Do not skip early catalog coverage. Treat `INT-001` through `INT-185` as
-  first-class candidates when searching for integration tests to update.
+- Define happy-path and negative-path tests.
 
 ## Section Guidance
 
@@ -164,6 +172,8 @@ Optional follow-up sections may include `Open Questions`, `Risks`, `Test Impact`
 - Phrase checklist items as concrete completion conditions, not aspirational
   goals.
 
+Important: if you feel overwhelmed trying to create the checklist in a single go with the migrations, it's OK, first write the previous migration spec points, and ask the developer to create execution checklists separately. I would then complete the checklist separately.
+
 ### File-Level Change Set
 
 - List the smallest realistic set of files that enforce the new contract.
@@ -173,9 +183,10 @@ Optional follow-up sections may include `Open Questions`, `Risks`, `Test Impact`
 
 ## Completion Rule
 
-When a migration is complete, add a short completion note and keep the doc
-frozen unless a later architecture change reopens the scope. Do not keep
-editing a finished migration as if it were a living task list.
+When a migration is complete, update the lifecycle status, add a short
+completion note, and keep the doc frozen unless a later architecture change
+reopens the scope. Do not keep editing a finished migration as if it were a
+living task list.
 
 ## Preferred Style
 
