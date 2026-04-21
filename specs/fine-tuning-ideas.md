@@ -18,3 +18,14 @@ It also is too early to implement too-->
 ## Uncategorized ideas
 
 - Finetuning with 32k max context may work because there is no particular need in stretching context further for solving such simple tasks as we have.
+
+## SFT dataset of reasoning traces
+
+Top works currently utilize large-scale continuous "standard-quality" training and SFT on high quality data for models. We need a dataset of building correct solutions in order for the model to understand semantics and reasoning patterns. To implement we need:
+
+- A dataset of working, physically and code-wise valid and quality solutions
+- A dataset of working solutions.
+
+## SFT dataset of build123d data:
+
+We could try to deterministically convert ABC and other CAD datasets to use build123d to teach the model build123d semantics.
