@@ -32,6 +32,52 @@ from shared.models.serialization import dump_yaml_model
 from shared.simulation.schemas import SimulatorBackendType
 from tests.integration.agent.helpers import load_integration_mock_scenarios
 
+SEED_STARTER_TEMPLATE_EXPECTATIONS: dict[AgentName, set[str]] = {
+    AgentName.BENCHMARK_PLANNER: {
+        "benchmark_plan.md",
+        "todo.md",
+        "benchmark_definition.yaml",
+        "benchmark_assembly_definition.yaml",
+        "benchmark_plan_evidence_script.py",
+    },
+    AgentName.ENGINEER_PLANNER: {
+        "engineering_plan.md",
+        "todo.md",
+        "assembly_definition.yaml",
+        "solution_plan_evidence_script.py",
+    },
+    AgentName.BENCHMARK_CODER: {
+        "benchmark_script.py",
+        "todo.md",
+        "journal.md",
+    },
+    AgentName.ENGINEER_CODER: {
+        "solution_script.py",
+        "payload_trajectory_definition.yaml",
+        "todo.md",
+        "journal.md",
+    },
+    AgentName.BENCHMARK_REVIEWER: {
+        "todo.md",
+        "journal.md",
+    },
+    AgentName.BENCHMARK_PLAN_REVIEWER: {
+        "todo.md",
+        "journal.md",
+    },
+    AgentName.ENGINEER_PLAN_REVIEWER: {
+        "todo.md",
+        "journal.md",
+    },
+    AgentName.ENGINEER_EXECUTION_REVIEWER: {
+        "todo.md",
+        "journal.md",
+    },
+    AgentName.SKILL_AGENT: set(),
+    AgentName.GIT_AGENT: set(),
+    AgentName.JOURNALLING_AGENT: set(),
+}
+
 
 @pytest.mark.integration_p0
 def test_common_agent_templates_load_from_shared_templates():
@@ -86,49 +132,12 @@ def test_planner_agent_templates_match_planner_starter_files():
 
 
 @pytest.mark.integration_p0
-def test_seed_starter_templates_cover_all_seeded_roles():
-    assert set(load_seed_starter_template_files(AgentName.BENCHMARK_PLANNER)) == {
-        "benchmark_plan.md",
-        "todo.md",
-        "benchmark_definition.yaml",
-        "benchmark_assembly_definition.yaml",
-        "benchmark_plan_evidence_script.py",
-    }
-    assert set(load_seed_starter_template_files(AgentName.ENGINEER_PLANNER)) == {
-        "engineering_plan.md",
-        "todo.md",
-        "assembly_definition.yaml",
-        "solution_plan_evidence_script.py",
-    }
-    assert set(load_seed_starter_template_files(AgentName.BENCHMARK_CODER)) == {
-        "benchmark_script.py",
-        "todo.md",
-        "journal.md",
-    }
-    assert set(load_seed_starter_template_files(AgentName.ENGINEER_CODER)) == {
-        "solution_script.py",
-        "payload_trajectory_definition.yaml",
-        "todo.md",
-        "journal.md",
-    }
-    assert set(load_seed_starter_template_files(AgentName.BENCHMARK_REVIEWER)) == {
-        "todo.md",
-        "journal.md",
-    }
-    assert set(load_seed_starter_template_files(AgentName.BENCHMARK_PLAN_REVIEWER)) == {
-        "todo.md",
-        "journal.md",
-    }
-    assert set(load_seed_starter_template_files(AgentName.ENGINEER_PLAN_REVIEWER)) == {
-        "todo.md",
-        "journal.md",
-    }
-    assert set(
-        load_seed_starter_template_files(AgentName.ENGINEER_EXECUTION_REVIEWER)
-    ) == {
-        "todo.md",
-        "journal.md",
-    }
+@pytest.mark.parametrize("agent_name", list(AgentName))
+def test_seed_starter_templates_cover_every_agent_name(agent_name: AgentName):
+    assert (
+        set(load_seed_starter_template_files(agent_name))
+        == (SEED_STARTER_TEMPLATE_EXPECTATIONS[agent_name])
+    )
 
 
 @pytest.mark.integration_p0

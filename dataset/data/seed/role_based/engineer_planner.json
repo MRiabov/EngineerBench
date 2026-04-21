@@ -1,0 +1,9 @@
+[
+  {
+    "id": "ep-001",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded gap-bridge handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence. Draft an implementation-ready engineering plan that bridges `transfer_cube` from `left_start_deck` to `right_goal_deck` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope.",
+    "complexity_level": 1,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-001-raised-shelf",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the gap-bridge benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent bridge-style engineering plan with exact label grounding and budget-consistent calculations."
+  }
+]
