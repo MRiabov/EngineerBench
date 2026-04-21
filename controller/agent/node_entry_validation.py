@@ -1886,9 +1886,7 @@ async def _expected_render_bucket_errors(
                             _render_manifest_image_paths(render_manifest)
                         )
                         render_image_paths = list(
-                            dict.fromkeys(
-                                preview_image_paths + artifact_image_paths
-                            )
+                            dict.fromkeys(preview_image_paths + artifact_image_paths)
                         )
                         if (
                             preview_image_paths
@@ -1942,9 +1940,7 @@ async def _expected_render_bucket_errors(
                         missing_image_paths = [
                             image_path
                             for image_path in expected_image_paths
-                            if _render_path_within_bucket(
-                                image_path, bucket_root
-                            )
+                            if _render_path_within_bucket(image_path, bucket_root)
                             and not await artifact_exists(image_path)
                         ]
                         for image_path in missing_image_paths:

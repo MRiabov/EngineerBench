@@ -155,6 +155,32 @@ def test_int_190_agent_execution_timeouts_are_role_specific():
 @pytest.mark.integration
 @pytest.mark.integration_p0
 @pytest.mark.int_id("INT-190")
+@pytest.mark.parametrize(
+    ("render_buckets", "expected_message"),
+    [
+        (None, "entry_expects_render_buckets"),
+        (["benchmark_renders", "  "], "blank entries"),
+    ],
+)
+def test_int_190_render_bucket_expectations_are_fail_closed(
+    tmp_path: Path,
+    render_buckets,
+    expected_message: str,
+):
+    cfg = yaml.safe_load(Path("config/agents_config.yaml").read_text(encoding="utf-8"))
+    cfg["agents"]["benchmark_coder"]["visual_inspection"][
+        "entry_expects_render_buckets"
+    ] = render_buckets
+    config_path = tmp_path / "agents_config.yaml"
+    config_path.write_text(yaml.safe_dump(cfg, sort_keys=False), encoding="utf-8")
+
+    with pytest.raises(ValueError, match=expected_message):
+        FilesystemPolicy(config_path=config_path)
+
+
+@pytest.mark.integration
+@pytest.mark.integration_p0
+@pytest.mark.int_id("INT-190")
 def test_int_190_bug_report_mode_gates_workspace_root_bug_report_write(
     tmp_path: Path,
 ):

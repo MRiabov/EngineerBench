@@ -12,7 +12,7 @@ These workflows are integration workflows. They run against the real compose sta
 4. Do not silently drop existing integration coverage; replacements must preserve or improve mapped coverage.
 5. Mark unimplemented IDs explicitly as deferred (`P1`/`P2`) instead of omitting them.
 6. `INT-NEG-###` is reserved for explicitly negative integration tests. Keep fail-closed coverage in that namespace and keep `INT-xxx` focused on success-oriented coverage.
-7. Integration tests must not consume `dataset/data/seed/**` or other eval-seed artifacts as reusable fixture inputs for unrelated product behavior. Use integration-owned fixtures under `tests/integration/fixtures/` for stable data. If a legacy replay corpus is still needed, treat `tests/integration/mock_responses/` as compatibility-only material.
+7. Integration tests must not consume `dataset/data/seed/**` or other eval-seed artifacts as reusable fixture inputs for unrelated product behavior. Use integration-owned fixtures under `tests/integration/fixtures/` for stable data. If a legacy replay corpus is still needed, treat `tests/integration/mock_responses/` as compatibility-only material. Failure point you do: if a seed gets deleted or edited, the tests is red.
 
 ## Non-negotiable Integration Execution Contract (applies to every `INT-xxx` and `INT-NEG-###`)
 

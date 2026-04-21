@@ -48,6 +48,7 @@ from shared.workers.schema import (
     PointCloudRenderBackend,
     PointCloudRenderRequest,
     ReadFileRequest,
+    RenderManifest,
     VerificationRequest,
     WriteFileRequest,
 )
@@ -330,6 +331,16 @@ def build():
             path.startswith("renders/benchmark_renders/")
             for path in static_preview_data.artifacts.render_paths
         ), static_preview_data.artifacts.render_paths
+        manifest_path = "renders/benchmark_renders/render_manifest.json"
+        assert manifest_path in static_preview_data.artifacts.render_blobs_base64, (
+            static_preview_data.artifacts.render_blobs_base64
+        )
+        render_manifest = RenderManifest.model_validate_json(
+            base64.b64decode(
+                static_preview_data.artifacts.render_blobs_base64[manifest_path]
+            ).decode("utf-8")
+        )
+        assert render_manifest.source_script_sha256, render_manifest.model_dump()
 
 
 def _point_cloud_preview_bundle_base64() -> str:

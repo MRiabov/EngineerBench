@@ -315,6 +315,7 @@ async def preview_script(
         ) as middleware:
             result = await middleware.render_cad(
                 payload.script_path,
+                script_content=payload.script_content,
                 orbit_pitch=payload.orbit_pitch,
                 orbit_yaw=payload.orbit_yaw,
                 rgb=payload.rgb,

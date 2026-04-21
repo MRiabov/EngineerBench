@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import base64
 import contextlib
+import hashlib
 import json
 import os
 import shutil
@@ -298,6 +299,28 @@ def _persist_preview_scene_bundle(
     scene_path = bundle_root / "preview_scene.json"
     scene_path.write_text(normalized_scene.model_dump_json(indent=2), encoding="utf-8")
     return scene_path
+
+
+def _resolve_source_script_sha256(
+    root: Path,
+    *,
+    script_path: str | Path | None,
+    script_content: str | None,
+) -> str | None:
+    if script_content is not None:
+        return hashlib.sha256(script_content.encode("utf-8")).hexdigest()
+
+    if script_path is None:
+        return None
+
+    candidate_path = root / Path(script_path)
+    if not candidate_path.exists() or not candidate_path.is_file():
+        return None
+
+    try:
+        return hashlib.sha256(candidate_path.read_bytes()).hexdigest()
+    except Exception:
+        return None
 
 
 def _bundle_sidecar_candidates(
@@ -841,6 +864,7 @@ def _build_preview_manifest(
     depth_ranges_by_path: dict[str, tuple[float, float]] | None,
     view_metadata_by_path: dict[str, PreviewViewSpec] | None,
     session_id: str | None,
+    source_script_sha256: str | None,
     publish_bundle_index: bool = True,
 ) -> Path:
     artifacts: dict[str, RenderArtifactMetadata] = {}
@@ -933,6 +957,7 @@ def _build_preview_manifest(
         worker_session_id=session_id,
         bundle_path=str(bundle_root.relative_to(root)).replace("\\", "/"),
         preview_evidence_paths=preview_evidence_paths,
+        source_script_sha256=source_script_sha256,
     )
     manifest_path = bundle_root / "render_manifest.json"
     _write_text_atomic(manifest_path, manifest.model_dump_json(indent=2))
@@ -1015,6 +1040,11 @@ async def api_preview(
         async with render_operation_admission("preview", x_session_id):
             with _bundle_context(request.bundle_base64) as root:
                 with _event_file_context(root):
+                    source_script_sha256 = _resolve_source_script_sha256(
+                        root,
+                        script_path=request.script_path,
+                        script_content=request.script_content,
+                    )
                     objectives = _load_workspace_benchmark_definition(
                         root, session_id=x_session_id
                     )
@@ -1174,6 +1204,7 @@ async def api_preview(
                     depth_ranges_by_path=depth_ranges_by_path or None,
                     view_metadata_by_path=view_metadata_by_path,
                     session_id=x_session_id,
+                    source_script_sha256=source_script_sha256,
                     publish_bundle_index=False,
                 )
                 manifest_json = preview_manifest.read_text(encoding="utf-8")
@@ -1290,6 +1321,11 @@ async def api_static_preview(
                 )
             with _bundle_context(request.bundle_base64) as root:
                 with _event_file_context(root):
+                    source_script_sha256 = _resolve_source_script_sha256(
+                        root,
+                        script_path=request.script_path,
+                        script_content=request.script_content,
+                    )
                     objectives = _load_workspace_benchmark_definition(
                         root, session_id=x_session_id
                     )
@@ -1346,6 +1382,7 @@ async def api_static_preview(
                             depth_ranges_by_path=render_result.depth_ranges_by_path,
                             view_metadata_by_path=None,
                             session_id=x_session_id,
+                            source_script_sha256=source_script_sha256,
                             publish_bundle_index=False,
                         )
                     else:
@@ -1400,6 +1437,7 @@ async def api_static_preview(
                             depth_ranges_by_path=render_result.depth_ranges_by_path,
                             view_metadata_by_path=None,
                             session_id=x_session_id,
+                            source_script_sha256=source_script_sha256,
                             publish_bundle_index=False,
                         )
 

@@ -47,7 +47,10 @@ class VisualInspectionPolicy(BaseModel):
         cls, value: object
     ) -> list[str] | object:
         if value is None:
-            return []
+            raise ValueError(
+                "entry_expects_render_buckets must be an explicit list; use [] "
+                "for no expected render buckets"
+            )
         if isinstance(value, str):
             value = [value]
         if not isinstance(value, list):
@@ -57,7 +60,9 @@ class VisualInspectionPolicy(BaseModel):
         for raw_bucket in value:
             bucket = str(raw_bucket).strip()
             if not bucket:
-                continue
+                raise ValueError(
+                    "entry_expects_render_buckets may not contain blank entries"
+                )
             if bucket not in RENDER_BUCKET_NAME_SEQUENCE:
                 msg = (
                     f"Unknown render bucket '{bucket}'. Expected one of: "
