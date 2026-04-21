@@ -309,6 +309,7 @@ def _bundle_sidecar_candidates(
         "render_manifest.json",
         "frames.jsonl",
         "objects.parquet",
+        "sampled_points.parquet",
     ):
         sidecar_path = bundle_root / rel_path
         if sidecar_path.exists() and sidecar_path.is_file():
@@ -407,40 +408,54 @@ def _collect_render_artifacts(
             )
 
     if sidecar_candidates:
-        if upload_client is None:
-            for rel_key, sidecar_path in sidecar_candidates.items():
-                render_blobs_base64[rel_key] = base64.b64encode(
-                    sidecar_path.read_bytes()
-                ).decode("ascii")
-        else:
-            with ThreadPoolExecutor(
-                max_workers=min(8, len(sidecar_candidates))
-            ) as executor:
-                futures = {
-                    executor.submit(
-                        upload_client.upload_file,
-                        str(sidecar_path),
-                        rel_key,
-                    ): (
-                        rel_key,
-                        sidecar_path,
-                    )
-                    for rel_key, sidecar_path in sidecar_candidates.items()
-                }
-                for future in as_completed(futures):
-                    rel_key, sidecar_path = futures[future]
-                    try:
-                        object_store_keys[rel_key] = future.result()
-                    except Exception:
-                        logger.warning(
-                            "renderer_sidecar_object_store_upload_failed",
-                            rel_path=rel_key,
-                            session_id=session_id,
-                            path=str(sidecar_path),
+        upload_sidecars = {
+            rel_key: sidecar_path
+            for rel_key, sidecar_path in sidecar_candidates.items()
+        }
+
+        if upload_sidecars:
+            if upload_client is None:
+                for rel_key, sidecar_path in upload_sidecars.items():
+                    if rel_key.endswith("sampled_points.parquet"):
+                        raise RuntimeError(
+                            "renderer returned sampled_points.parquet but S3 is not configured"
                         )
-                        render_blobs_base64[rel_key] = base64.b64encode(
-                            sidecar_path.read_bytes()
-                        ).decode("ascii")
+                    render_blobs_base64[rel_key] = base64.b64encode(
+                        sidecar_path.read_bytes()
+                    ).decode("ascii")
+            else:
+                with ThreadPoolExecutor(
+                    max_workers=min(8, len(upload_sidecars))
+                ) as executor:
+                    futures = {
+                        executor.submit(
+                            upload_client.upload_file,
+                            str(sidecar_path),
+                            rel_key,
+                        ): (
+                            rel_key,
+                            sidecar_path,
+                        )
+                        for rel_key, sidecar_path in upload_sidecars.items()
+                    }
+                    for future in as_completed(futures):
+                        rel_key, sidecar_path = futures[future]
+                        try:
+                            object_store_keys[rel_key] = future.result()
+                        except Exception as exc:
+                            if rel_key.endswith("sampled_points.parquet"):
+                                raise RuntimeError(
+                                    "renderer failed to upload sampled_points.parquet to object store"
+                                ) from exc
+                            logger.warning(
+                                "renderer_sidecar_object_store_upload_failed",
+                                rel_path=rel_key,
+                                session_id=session_id,
+                                path=str(sidecar_path),
+                            )
+                            render_blobs_base64[rel_key] = base64.b64encode(
+                                sidecar_path.read_bytes()
+                            ).decode("ascii")
 
     existing_manifest = None
 
@@ -1435,11 +1450,13 @@ async def api_render_point_cloud(
                     )
                     bundle_root.mkdir(parents=True, exist_ok=True)
                     source_mesh_root = root / "meshes"
-                    if any(entity.mesh_paths for entity in scene.entities):
-                        if not source_mesh_root.exists():
-                            raise FileNotFoundError(
-                                "preview scene bundle is missing the meshes directory"
-                            )
+                    if (
+                        any(entity.mesh_paths for entity in scene.entities)
+                        and not source_mesh_root.exists()
+                    ):
+                        raise FileNotFoundError(
+                            "preview scene bundle is missing the meshes directory"
+                        )
                     _persist_preview_scene_bundle(
                         bundle_root=bundle_root,
                         scene=scene,
@@ -1501,7 +1518,8 @@ async def api_render_point_cloud(
                     message=(
                         "Point cloud rendered successfully "
                         f"from {render_result.source_surface_count} surface meshes "
-                        f"using {render_result.sampled_point_count} sampled surface points."
+                        f"using {render_result.sampled_point_count} sampled "
+                        "surface points."
                     ),
                     artifacts=artifacts,
                     events=events,

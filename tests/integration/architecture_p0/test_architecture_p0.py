@@ -10,8 +10,12 @@ import boto3
 import cv2
 import httpx
 import numpy as np
+import pyarrow.parquet as pq
 import pytest
+import trimesh
+import vtk
 import yaml
+from build123d import Align, Box, Compound, Location
 
 from controller.api.schemas import AgentRunRequest, AgentRunResponse, EpisodeResponse
 from shared.current_role import current_role_manifest_json
@@ -23,14 +27,19 @@ from shared.models.schemas import (
     BenchmarkPartDefinition,
     BenchmarkPartMetadata,
     BoundingBox,
+    CompoundMetadata,
     Constraints,
     CostTotals,
     ForbidZone,
     ObjectivesSection,
+    PartMetadata,
     Payload,
     PhysicsConfig,
 )
+from shared.rendering import export_preview_scene_bundle
+from shared.simulation.scene_builder import PreviewScene
 from shared.simulation.schemas import SimulatorBackendType
+from shared.workers.bundling import extract_bundle_base64
 from shared.workers.schema import (
     BenchmarkToolRequest,
     BenchmarkToolResponse,
@@ -348,6 +357,103 @@ def _point_cloud_preview_bundle_base64() -> str:
         )
 
 
+def _point_cloud_boundary_preview_bundle(
+    tmp_path: Path,
+    *,
+    probe_center_x_mm: float,
+) -> tuple[PreviewScene, Path, str]:
+    workspace_root = tmp_path / f"point_cloud_boundary_{uuid.uuid4().hex[:8]}"
+    workspace_root.mkdir(parents=True, exist_ok=True)
+
+    scene_box = Box(
+        100.0,
+        100.0,
+        100.0,
+        align=(Align.CENTER, Align.CENTER, Align.CENTER),
+    )
+    scene_box.label = "scene_box"
+    scene_box.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
+
+    probe_box = Box(
+        24.0,
+        24.0,
+        24.0,
+        align=(Align.CENTER, Align.CENTER, Align.CENTER),
+    ).move(Location((probe_center_x_mm, 0.0, 0.0)))
+    probe_box.label = "probe_box"
+    probe_box.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=False)
+
+    boundary_scene = Compound(children=[scene_box, probe_box], label="boundary_scene")
+    boundary_scene.metadata = CompoundMetadata(is_fixed=True)
+
+    bundle_base64 = export_preview_scene_bundle(
+        boundary_scene,
+        objectives=None,
+        workspace_root=workspace_root,
+        smoke_test_mode=True,
+    )
+
+    bundle_root = tmp_path / f"point_cloud_boundary_bundle_{uuid.uuid4().hex[:8]}"
+    bundle_root.mkdir(parents=True, exist_ok=True)
+    extract_bundle_base64(bundle_base64, bundle_root)
+    scene = PreviewScene.model_validate_json(
+        (bundle_root / "preview_scene.json").read_text(encoding="utf-8")
+    )
+    return scene, bundle_root, bundle_base64
+
+
+def _point_cloud_entity_bounds(
+    scene: PreviewScene,
+    *,
+    bundle_root: Path,
+    label: str,
+) -> tuple[np.ndarray, np.ndarray]:
+    entity = next(entity for entity in scene.entities if entity.label == label)
+    if entity.mesh_paths:
+        mesh = trimesh.load(bundle_root / entity.mesh_paths[0], force="mesh")
+        mesh = mesh.copy()
+        transform = vtk.vtkTransform()
+        transform.PostMultiply()
+        transform.Translate(*[float(value) for value in entity.pos_mm])
+        transform.RotateX(float(entity.euler_deg[0]))
+        transform.RotateY(float(entity.euler_deg[1]))
+        transform.RotateZ(float(entity.euler_deg[2]))
+        vtk_matrix = transform.GetMatrix()
+        mesh.apply_transform(
+            np.asarray(
+                [
+                    [vtk_matrix.GetElement(row, col) for col in range(4)]
+                    for row in range(4)
+                ],
+                dtype=float,
+            )
+        )
+        bounds = np.asarray(mesh.bounds, dtype=float)
+        return bounds[0], bounds[1]
+
+    if entity.box_size_mm is not None:
+        center = np.asarray(entity.pos_mm, dtype=float)
+        half_size = np.asarray(entity.box_size_mm, dtype=float)
+        return center - half_size, center + half_size
+
+    raise AssertionError(f"exported entity {label!r} has no surface-bearing geometry")
+
+
+def _points_within_bounds(
+    points: np.ndarray,
+    *,
+    bounds_min: tuple[float, float, float],
+    bounds_max: tuple[float, float, float],
+    tolerance_mm: float = 1e-6,
+) -> bool:
+    bounds_min_array = np.asarray(bounds_min, dtype=float)
+    bounds_max_array = np.asarray(bounds_max, dtype=float)
+    return bool(
+        np.all(points >= bounds_min_array - tolerance_mm)
+        and np.all(points <= bounds_max_array + tolerance_mm)
+    )
+
+
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
 @pytest.mark.int_id("INT-223")
@@ -391,6 +497,147 @@ async def test_int_223_point_cloud_debug_render():
                 )
             ), data.artifacts
             assert "sampled surface points" in data.message
+
+
+@pytest.mark.integration_p0
+@pytest.mark.asyncio
+@pytest.mark.int_id("INT-292")
+async def test_int_292_point_cloud_export_bounds_follow_exported_preview_scene(
+    tmp_path: Path,
+):
+    """INT-292: preview-scene point clouds respect exported preview bounds."""
+    session_id = f"INT-292-{uuid.uuid4().hex[:8]}"
+
+    scene, bundle_root, bundle64 = _point_cloud_boundary_preview_bundle(
+        tmp_path,
+        probe_center_x_mm=37.8,
+    )
+    scene_bounds_min, scene_bounds_max = _point_cloud_entity_bounds(
+        scene, bundle_root=bundle_root, label="scene_box"
+    )
+    probe_bounds_min, probe_bounds_max = _point_cloud_entity_bounds(
+        scene, bundle_root=bundle_root, label="probe_box"
+    )
+    assert _points_within_bounds(
+        np.stack([probe_bounds_min, probe_bounds_max], axis=0),
+        bounds_min=scene_bounds_min,
+        bounds_max=scene_bounds_max,
+        tolerance_mm=1e-3,
+    )
+
+    async with httpx.AsyncClient(timeout=300.0) as client:
+        resp = await client.post(
+            f"{WORKER_RENDERER_URL}/debug/render_point_cloud",
+            json=PointCloudRenderRequest(
+                bundle_base64=bundle64,
+                sample_limit=96,
+                point_size_px=6,
+                render_backend=PointCloudRenderBackend.VTK,
+                output_name="boundary_point_cloud_vtk.png",
+            ).model_dump(mode="json"),
+            headers={"X-Session-ID": session_id},
+            timeout=300.0,
+        )
+        assert resp.status_code == 200, resp.text
+        data = BenchmarkToolResponse.model_validate(resp.json())
+        assert data.success, data.message
+        sampled_points_path = next(
+            path
+            for path in data.artifacts.object_store_keys
+            if path.endswith("sampled_points.parquet")
+        )
+        local_sampled_points_path = bundle_root / "sampled_points.parquet"
+        _s3_client().download_file(
+            ASSET_BUCKET,
+            data.artifacts.object_store_keys[sampled_points_path],
+            str(local_sampled_points_path),
+        )
+        table = pq.read_table(local_sampled_points_path)
+        points = np.column_stack(
+            [
+                np.asarray(table.column("x_mm").to_numpy(zero_copy_only=False)),
+                np.asarray(table.column("y_mm").to_numpy(zero_copy_only=False)),
+                np.asarray(table.column("z_mm").to_numpy(zero_copy_only=False)),
+            ]
+        )
+        assert np.isfinite(points).all()
+        assert _points_within_bounds(
+            points,
+            bounds_min=scene_bounds_min,
+            bounds_max=scene_bounds_max,
+            tolerance_mm=1e-3,
+        ), table.schema
+
+
+@pytest.mark.integration_p0
+@pytest.mark.asyncio
+@pytest.mark.int_id("INT-NEG-292")
+async def test_int_neg_292_point_cloud_export_bounds_fail_when_probe_is_outside(
+    tmp_path: Path,
+):
+    """INT-NEG-292: preview-scene point clouds fail closed outside exported bounds."""
+    session_id = f"INT-NEG-292-{uuid.uuid4().hex[:8]}"
+
+    scene, bundle_root, bundle64 = _point_cloud_boundary_preview_bundle(
+        tmp_path,
+        probe_center_x_mm=38.2,
+    )
+    scene_bounds_min, scene_bounds_max = _point_cloud_entity_bounds(
+        scene, bundle_root=bundle_root, label="scene_box"
+    )
+    probe_bounds_min, probe_bounds_max = _point_cloud_entity_bounds(
+        scene, bundle_root=bundle_root, label="probe_box"
+    )
+    assert not _points_within_bounds(
+        np.stack([probe_bounds_min, probe_bounds_max], axis=0),
+        bounds_min=scene_bounds_min,
+        bounds_max=scene_bounds_max,
+        tolerance_mm=1e-3,
+    )
+
+    async with httpx.AsyncClient(timeout=300.0) as client:
+        resp = await client.post(
+            f"{WORKER_RENDERER_URL}/debug/render_point_cloud",
+            json=PointCloudRenderRequest(
+                bundle_base64=bundle64,
+                sample_limit=96,
+                point_size_px=6,
+                render_backend=PointCloudRenderBackend.MATPLOTLIB,
+                output_name="boundary_point_cloud_matplotlib.png",
+            ).model_dump(mode="json"),
+            headers={"X-Session-ID": session_id},
+            timeout=300.0,
+        )
+        assert resp.status_code == 200, resp.text
+        data = BenchmarkToolResponse.model_validate(resp.json())
+        assert data.success, data.message
+        sampled_points_path = next(
+            path
+            for path in data.artifacts.object_store_keys
+            if path.endswith("sampled_points.parquet")
+        )
+        local_sampled_points_path = bundle_root / "sampled_points.parquet"
+        _s3_client().download_file(
+            ASSET_BUCKET,
+            data.artifacts.object_store_keys[sampled_points_path],
+            str(local_sampled_points_path),
+        )
+        table = pq.read_table(local_sampled_points_path)
+        points = np.column_stack(
+            [
+                np.asarray(table.column("x_mm").to_numpy(zero_copy_only=False)),
+                np.asarray(table.column("y_mm").to_numpy(zero_copy_only=False)),
+                np.asarray(table.column("z_mm").to_numpy(zero_copy_only=False)),
+            ]
+        )
+        assert np.isfinite(points).all()
+        with pytest.raises(AssertionError):
+            assert _points_within_bounds(
+                points,
+                bounds_min=scene_bounds_min,
+                bounds_max=scene_bounds_max,
+                tolerance_mm=1e-3,
+            )
 
 
 def _simulation_video_smoke_script() -> str:

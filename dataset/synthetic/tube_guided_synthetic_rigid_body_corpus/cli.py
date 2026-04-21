@@ -9,6 +9,7 @@ from typing import Any
 import structlog
 from build123d import Compound
 
+from shared.agent_templates import load_seed_starter_template_files
 from shared.enums import AgentName
 from shared.models.schemas import (
     AssemblyDefinition,
@@ -41,10 +42,11 @@ from .paths import (
     NotebookLogCapture,
     load_benchmark_build_fn,
     payload_scene_name,
-    progress_iter,
     prepare_timestamped_run_dir,
+    progress_iter,
 )
 from .pipeline import (
+    assert_payload_path_workspace_clear,
     backfill_source_solution,
     build_candidate_assembly,
     build_scene_xml,
@@ -437,7 +439,9 @@ def synthesize(
         sample_stride_s=0.1,
     )
 
-    PayloadTrajectoryDefinition.model_validate(payload_trajectory_yaml)
+    payload_trajectory = PayloadTrajectoryDefinition.model_validate(
+        payload_trajectory_yaml
+    )
 
     markdown_files = build_markdown_templates()
     planner_plan = build_engineering_plan_text(
@@ -514,6 +518,13 @@ def synthesize(
             "journal.md": markdown_files["journal.md"],
         },
         copy_reviews_from=copy_reviews_from,
+    )
+
+    assert_payload_path_workspace_clear(
+        workspace_root=coder_root,
+        benchmark_definition=synthetic_benchmark,
+        payload_definition=payload_trajectory,
+        session_id=f"{config.scenario_id}-payload-clearance-{chosen_seed}",
     )
 
     if config.emit_simulation_video and simulation_video_summary is None:

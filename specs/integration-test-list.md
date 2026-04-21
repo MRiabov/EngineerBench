@@ -59,11 +59,13 @@ This section is the smallest must-pass set. Keep it narrowly scoped, determinist
 | INT-073 | Session/episode/lineage observability linkage | Persisted records/events expose joinable linkage `user_session_id -> episode_id -> (simulation_run_id, review_id)` plus `seed_id`, `seed_dataset`, `seed_match_method`, `generation_kind`, `parent_seed_id`, `is_integration_test`, and `integration_test_id` without conflating session and episode identity. |
 | INT-101 | Physics backend selection contract | Setting `physics.backend: "mujoco"` in config selects the MuJoCo backend; `"genesis"` selects Genesis. Default (`genesis`) is used when not specified. `simulation_backend_selected` event emitted. |
 | INT-114 | Benchmark planner explicit submission gate | Benchmark planner must emit explicit `submit_benchmark_plan` (`TOOL_START`) with `node_type=benchmark_planner`; successful submission must materialize `.manifests/benchmark_plan_review_manifest.json`, canonicalize planner-authored benchmark estimate fields into runtime-derived caps (`max_unit_cost`, `max_weight_g`), require schema-valid `benchmark_assembly_definition.yaml`, unblock `Benchmark Plan Reviewer`, and only after benchmark plan-review approval may the episode reach `PLANNED` (and must not transition to `FAILED`). Missing submission fails closed. |
+| INT-292 | The preview-scene point-cloud export pipeline keeps sampled points within the actual exported scene-bounding box for a simple boundary scene, and a probe box nudged just inside the boundary still passes the vectorized bounds check. | Load the exported mesh-backed preview scene, compute the boundary from the exported mesh, and assert the sampled points satisfy the bounds check with `np.all`, not per-point loops. |
 
 ### P0 negative integration tests (`INT-NEG-###`)
 
 | ID | Test | Required assertions |
 | -- | -- | -- |
+| INT-NEG-292 | The preview-scene point-cloud export pipeline fails closed when a probe box is nudged just outside the exported scene-bounding box. | Load the exported mesh-backed preview scene, compute the boundary from the exported mesh, and assert the vectorized bounds check raises because the sampled points fall outside the boundary. |
 
 ### P1: Full architecture workflow coverage
 
@@ -235,13 +237,23 @@ benchmark geometry is exposed via `benchmark_script.py`, engineer code lives in
 | INT-282 | The corpus render-preview helper stages benchmark artifacts from the active workspace and preserves the workspace payload label in `objects.parquet`, so a `slider_ball` workspace yields `benchmark_payload__slider_ball` instead of falling back to repo-root defaults. | The helper must materialize the returned parquet sidecar and the payload body name must be present in the rendered object-pose records. |
 | INT-283 | `dataset.synthetic.tube_guided_synthetic_rigid_body_corpus` and the compatibility wrapper in `notebooks/tube_guided_synthetic_rigid_body_corpus.py` stay importable, expose the same canonical exports, and preserve the six-point `default_route_points()` scaffold plus wrapper delegation for `main()` and `synthesize()`. | Importing the wrapper or package directly is not enough unless the export aliases and route-point ordering remain intact. |
 | INT-284 | The generated tube corridor axis lines stay parallel within each span, remain colinear across split segments, preserve the intended perpendicular axes, maintain the expected line-to-line offsets, and fail closed on any intersecting or non-orthogonal box-axis geometry. | Line-level geometry checks must compare the actual generated part axes and their distances, not just the route-point scaffold. |
+| INT-288 | The payload-path sweep validates the serialized `payload_trajectory_definition.yaml` against the staged workspace and rejects any extra spawned geometry at the payload start pose while still accepting a clean workspace. | Exercise the real payload-trajectory file validation boundary; the dirty workspace must fail closed with a fixed-geometry overlap error. |
+| INT-289 | The staged synthetic coder workspace exports a preview scene whose actual exported mesh and box entities keep sampled points within their exported bounds, and the worker-renderer point-cloud debug endpoint renders a non-blank image from that bundle for both supported backends. | Exercise the real preview-scene bundle path, compute bounds from the exported entities, and reject a uniform blue-screen render by checking the returned PNG has non-zero RGB variance. |
+| INT-290 | The staged synthetic coder workspace computes a camera orbit that does not intersect any corridor part at the camera placement point, so the point-cloud view cannot be occluded by a part occupying the camera position. | Recompute the camera from the exported preview scene and fail closed if any part bounding box contains the camera point. |
+| INT-291 | The preview-scene point-cloud export pipeline keeps sampled points within the actual exported scene-bounding box for a simple boundary scene, and a probe box nudged just inside the boundary still passes the vectorized bounds check. | Load the exported mesh-backed preview scene, compute the boundary from the exported mesh, and assert the sampled points satisfy the bounds check with `np.all`, not per-point loops. |
+
+### P2 negative integration tests (`INT-NEG-###`)
+
+| ID | Test | Required assertions |
+| -- | -- | -- |
+| INT-NEG-291 | The preview-scene point-cloud export pipeline fails closed when a probe box is nudged just outside the exported scene-bounding box. | Load the exported mesh-backed preview scene, compute the boundary from the exported mesh, and assert the vectorized bounds check raises because the sampled points fall outside the boundary. |
 
 ## Recommended suite organization
 
 - `tests/integration/smoke/`: INT-001..INT-004 (fast baseline).
-- `tests/integration/architecture_p0/`: INT-005..INT-021, INT-024..INT-030, INT-053, INT-055, INT-061..INT-063, INT-070..INT-073, INT-101, INT-114, INT-187, INT-218..INT-277.
+- `tests/integration/architecture_p0/`: INT-005..INT-021, INT-024..INT-030, INT-053, INT-055, INT-061..INT-063, INT-070..INT-073, INT-101, INT-114, INT-187, INT-218..INT-277, INT-292.
 - `tests/integration/architecture_p1/`: INT-031..INT-040, INT-058..INT-060, INT-210, INT-211, INT-217.
-- `tests/integration/architecture_p2/`: INT-279..INT-284 (repo-split and tube-guided corpus regression checks).
+- `tests/integration/architecture_p2/`: INT-279..INT-291 (repo-split and tube-guided corpus regression checks).
 
 ## Notes
 

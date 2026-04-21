@@ -125,6 +125,75 @@ HUMAN NOTE: I've added a point cloud rendering and export endpoint on worker-ren
 - If the payload is still hard to see, log or expose the tracked body name and
   the camera name in the render summary so the video is easier to interpret.
 
+## 4. Main-app geometry convention mismatch breaks point-cloud placement and camera placement
+
+- [ ] unresolved
+
+- Symptom: the new `worker-renderer` point-cloud debug path can produce sampled
+  points that do not match the staged part placement for the synthetic corpus
+  bundle, and the computed camera orbit can land inside corridor geometry.
+
+- Evidence:
+
+  - The parquet-backed `sampled_points.parquet` artifact is real and the render
+    path is not blank anymore, so this is not a transport-only issue.
+  - The weaker `scene.bounds_min_mm` / `scene.bounds_max_mm` check is not a
+    reliable contract here because live sampled points can fall below `z=0`
+    even when the render is otherwise plausible.
+  - The stronger `point in any part bbox` assertion in `INT-289` fails on the
+    live render path, which means the sampled points are not lining up with the
+    authored component geometry the way they should.
+  - The companion camera-placement check in `INT-290` is intended to fail when
+    the camera origin is occluded by a corridor part, which matches the blue-
+    screen symptom we have been seeing.
+  - Both failures occur after the workspace is staged and exported, which means
+    the synthetic authoring pipeline is producing input that looks internally
+    consistent before the renderer boundary.
+  - This should be treated as a bug in the main-app geometry convention or the
+    worker-renderer consumption of it, not as a synthetic data pipeline defect.
+
+- Likely cause:
+
+  - This looks like a bug in the main-app geometry convention or the
+    worker-renderer consuming it, not in the synthetic data pipeline itself.
+  - One plausible source is mesh recentering or origin handling during export:
+    `MeshProcessor.process_geometry()` recenters exported meshes on their
+    centroid before the scene pose is reapplied, which may not match the part
+    bbox contract the preview scene assumes.
+  - Another plausible source is that worker-renderer is sampling a transformed
+    mesh representation whose origin/pose no longer matches the main-app
+    placement convention used when the preview scene computes part bboxes.
+  - The camera occlusion symptom suggests the camera placement logic may be
+    using the same broken convention, so the view can be blocked even when the
+    scene should be visible.
+
+- Current check:
+
+  - `INT-289` now asserts on the actual sampled point cloud positions via
+    parquet and keeps the bbox union check because that is the right placement
+    signal.
+  - `INT-290` recomputes the camera orbit and fails if the camera point is
+    inside any corridor part bbox.
+  - The test currently fails on that assertion, so the mismatch is reproducible
+    and not just a heuristic render artifact.
+
+### Solution notes
+
+- Inspect the full geometry convention at the main app / renderer boundary and
+  make sure the same origin is used for:
+  - preview scene export,
+  - mesh recentering or convex-hull fallback,
+  - point-cloud sampling, and
+  - bounding-box assertions.
+- Verify the camera placement code uses the same convention as the part bbox
+  export, otherwise the camera can end up occluded even when the route looks
+  valid in the synthetic authoring layer.
+- If the centroid recentering is intentional for physics, confirm that the
+  preview scene bboxes are derived from the same recentered geometry rather than
+  the authored part pose.
+- If the renderer is sampling the wrong transform stack, fix it at the source
+  instead of weakening the test. The failure should remain fail-closed.
+
 ## Notes
 
 - The notebook now writes run-scoped render evidence under

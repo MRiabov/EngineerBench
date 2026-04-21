@@ -2,13 +2,17 @@
 from __future__ import annotations
 
 import hashlib
+import contextlib
 import json
 from dataclasses import dataclass
 from pathlib import Path
+import tempfile
 
 import matplotlib
 
 matplotlib.use("Agg", force=True)
+import pyarrow as pa
+import pyarrow.parquet as pq
 import numpy as np
 import structlog
 import trimesh
@@ -66,6 +70,23 @@ class _SurfaceMesh:
     entity: PreviewEntity
     mesh: trimesh.Trimesh
     transform: vtk.vtkTransform
+
+
+def _write_parquet_atomic(path: Path, table: pa.Table) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile(
+        suffix=path.suffix,
+        dir=str(path.parent),
+        delete=False,
+    ) as tmp:
+        tmp_path = Path(tmp.name)
+
+    try:
+        pq.write_table(table, tmp_path)
+        tmp_path.replace(path)
+    finally:
+        with contextlib.suppress(FileNotFoundError):
+            tmp_path.unlink()
 
 
 def _load_preview_scene(scene_path: Path) -> tuple[PreviewScene, str]:
@@ -450,6 +471,16 @@ def render_scene_point_cloud(
         raise ValueError("preview scene does not contain any sampleable surfaces")
 
     points = np.concatenate(sampled_points, axis=0)
+    # Keep the sampled positions file-backed so the caller can transfer them
+    # through object storage instead of inlining a base64 blob.
+    sampled_points_path = output_dir / "sampled_points.parquet"
+    sampled_points_table = pa.table(
+        {
+            "x_mm": pa.array(points[:, 0], type=pa.float64()),
+            "y_mm": pa.array(points[:, 1], type=pa.float64()),
+            "z_mm": pa.array(points[:, 2], type=pa.float64()),
+        }
+    )
     backend = PointCloudRenderBackend(render_backend)
     if backend == PointCloudRenderBackend.MATPLOTLIB:
         image_path = _render_point_cloud_matplotlib(
@@ -484,6 +515,7 @@ def render_scene_point_cloud(
         source_surface_count=len(surfaces),
         backend=backend.value,
     )
+    _write_parquet_atomic(sampled_points_path, sampled_points_table)
     return PointCloudRenderResult(
         image_path=image_path,
         sampled_point_count=len(points),

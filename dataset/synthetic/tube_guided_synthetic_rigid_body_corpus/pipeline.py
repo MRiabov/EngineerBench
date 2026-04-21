@@ -15,7 +15,11 @@ import structlog
 from build123d import Compound
 
 from shared.enums import AgentName
-from shared.models.schemas import CompoundMetadata
+from shared.models.schemas import (
+    BenchmarkDefinition,
+    CompoundMetadata,
+    PayloadTrajectoryDefinition,
+)
 from shared.simulation.backends import SimulationScene
 from shared.simulation.schemas import SimulatorBackendType
 
@@ -55,6 +59,37 @@ def _default_s3_endpoint() -> str:
 def choose_batch_width(config: ScenarioConfig) -> int:
     lower, upper = config.batch_width_range
     return int(round((lower + upper) / 2.0))
+
+
+def assert_payload_path_workspace_clear(
+    *,
+    workspace_root: Path,
+    benchmark_definition: BenchmarkDefinition,
+    payload_definition: PayloadTrajectoryDefinition,
+    session_id: str | None = None,
+) -> None:
+    from worker_heavy.utils.payload_trajectory_validation import (
+        validate_payload_trajectory_swept_clearance,
+    )
+
+    logger.info(
+        "payload_path_swept_clearance_start",
+        workspace_root=str(workspace_root),
+        session_id=session_id,
+    )
+    errors = validate_payload_trajectory_swept_clearance(
+        workspace_root=workspace_root,
+        benchmark_definition=benchmark_definition,
+        payload_definition=payload_definition,
+        session_id=session_id,
+    )
+    if errors:
+        raise RuntimeError("; ".join(errors))
+    logger.info(
+        "payload_path_swept_clearance_done",
+        workspace_root=str(workspace_root),
+        session_id=session_id,
+    )
 
 
 def contact_body_name(contact, payload_body_name: str) -> str | None:
@@ -491,7 +526,9 @@ def render_startup_workspace_preview(
         "success": response.success,
         "status_text": response.status_text,
         "message": response.message,
-        "image_path": str(image_path) if image_path is not None else response.image_path,
+        "image_path": str(image_path)
+        if image_path is not None
+        else response.image_path,
         "artifact_path": (
             str(materialization_root / response.artifact_path)
             if response.artifact_path and not Path(response.artifact_path).is_absolute()
