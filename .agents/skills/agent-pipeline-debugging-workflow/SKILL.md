@@ -42,11 +42,9 @@ If a row violates the current seeded-entry contract, fix the seed or fixture and
 09. If you changed a contract surface (prompt/runtime/helper/validator), treat any earlier eval behavior as tainted evidence until you rerun under the corrected contract.
 10. Respect the skill split:
 
-- `skills/` is the runtime agent skill repo.
-- `.codex/skills/` is the Codex-only overlay.
-- Do not assume runtime agents inherit `.codex/skills/`.
-- It is acceptable for Codex to inherit or reuse runtime-agent skills, but not the other way around.
-- If a Codex-only skill appears in `skills/`, remove that drift to avoid confusing runtime agents.
+- `.agents/skills/` is the single canonical skill tree for all agents.
+- Keep all skill content in `.agents/skills/`.
+- If any mirrored or duplicate skill content exists outside that tree, consolidate it back into `.agents/skills/` and remove the duplicate.
 
 11. If you are acting as the supervisor agent, never edit files in a worker agent's workspace. Keep your edits limited to backend/runtime/orchestration/code-path fixes and repository-level contracts; let the worker agent own its own workspace files.
 12. Distinguish three end states clearly:
@@ -293,9 +291,9 @@ Prompt vs skill guidance:
 - Prompts should point to the relevant skill and keep only task-local constraints, role intent, and the minimum contract reminders needed for correctness.
 - If you find yourself repeatedly stuffing execution workflow details into prompts, that is usually a signal to move them into a skill.
 - Keep the skill boundary clean:
-  - runtime-agent skills belong in `skills/`
-  - Codex-only debugging/editorial skills belong in `.codex/skills/`
-  - do not copy `.codex`-only skills such as spec-authoring/editorial helpers into `skills/`
+  - runtime-agent skills belong in `.agents/skills/`
+  - keep all skill content in `.agents/skills/`
+  - if a skill is needed by multiple agents, share it once in `.agents/skills/` rather than duplicating it
 
 Import-side-effect hazard:
 

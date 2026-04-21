@@ -45,9 +45,9 @@ Examples:
 1. Inspect `git status`, read `AGENTS.md` and any local commit-splitting instructions, identify nested repositories/submodules, and split changes by intent/meaning.
 2. Build a commit map before staging anything: group related hunks by behavior, feature, refactor, test, spec, or devops work.
 3. Run `pre-commit run --all-files` once before the split sequence so hook-generated fixes, lint failures, and codegen issues are surfaced in a single turn.
-4. If there is a nested repository or submodule, especially `skills/` as a separate git repository, commit that nested repository first. Do not start the root split while the nested repository is dirty, because root hooks such as `record-skills-revision` can fail on a dirty nested repository.
+4. If there is a nested repository or submodule, commit that nested repository first. Do not start the root split while the nested repository is dirty, because repo-level hooks can fail on a dirty nested repository.
 5. If a file contains multiple unrelated changes, split it by hunk instead of forcing the whole file into one commit.
-6. Treat generated JSON and manifest churn as a first-class change group. If `record-skills-revision` or a similar hook rewrites `render_manifest.json`, review-manifest JSON, or other hook-owned JSON to match the new HEAD, keep that churn in a dedicated cleanup commit and stage it last so the remaining split does not keep going stale.
+6. Treat generated JSON and manifest churn as a first-class change group. If a hook rewrites `render_manifest.json`, review-manifest JSON, or other hook-owned JSON to match the new HEAD, keep that churn in a dedicated cleanup commit and stage it last so the remaining split does not keep going stale.
 7. Stage and commit each logical group separately.
 8. Give each commit a descriptive message that says what changed, not a generic placeholder.
 9. If a change lives in a nested repo/submodule, commit that repo's change as part of the split instead of leaving it dirty.
@@ -81,7 +81,7 @@ Commit message rules:
 - Do not treat `scripts/experiments/**` as accidental scratch. Those files often
   document syntax, performance, or verifier experiments and should be kept when
   they are part of the current work.
-- The `skills/` directory is a nested repository, not a normal folder. If it is dirty, commit it first before splitting the parent repository.
+- If a nested repository or submodule is dirty, commit it first before splitting the parent repository.
 - Do not leave submodule changes uncommitted if they are part of the current work. Treat them like any other logical change group and commit them in the nested repo before finalizing the parent repo.
 - If found (especially at repo root), call them out to the user and suggest moving them to `/scripts/throwaway/`.
 

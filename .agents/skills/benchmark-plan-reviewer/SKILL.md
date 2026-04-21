@@ -52,6 +52,26 @@ Treat `payload_trajectory_definition.yaml` as binding path-contract evidence whe
 - [ ] Write only `reviews/benchmark-plan-review-decision-round-<n>.yaml` and `reviews/benchmark-plan-review-comments-round-<n>.yaml`.
 - [ ] Use the decision YAML as the routing source of truth, then run `bash scripts/submit_review.sh`.
 
+## Workspace Boundary
+
+When this role begins from a seeded workspace, treat the stage-scoped review YAML pair as writable starter content:
+
+- `reviews/benchmark-plan-review-decision-round-<n>.yaml`
+- `reviews/benchmark-plan-review-comments-round-<n>.yaml`
+
+Treat the following paths as read-only reference inputs:
+
+- `benchmark_plan.md`
+- `todo.md`
+- `benchmark_definition.yaml`
+- `benchmark_assembly_definition.yaml`
+- `payload_trajectory_definition.yaml` when present
+- `benchmark_plan_evidence_script.py`
+- render evidence
+- `.manifests/benchmark_plan_review_manifest.json`
+
+Do not convert planner handoff artifacts into reviewer-owned templates.
+
 ## Comment Checklist
 
 - [ ] Populate the stage keys from the handover contract: `cross_artifact_consistency`, `feasible_mechanism`, `budget_realism`, and `dof_minimality`.

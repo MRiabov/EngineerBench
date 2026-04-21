@@ -1,6 +1,6 @@
 ---
 name: eval-creation-workflow
-description: Create or repair Problemologist eval seeds by adding role-based dataset rows plus stage-correct seeded workspace artifacts, including template/starter files for agent-editable outputs, with exact deterministic fields, then verify them with minimal-scope runs through dataset/evals/run_evals.py. Use this when asked to add benchmark, engineer, or reviewer evals, or when a role-based eval dataset looks structurally invalid.
+description: Create or repair Problemologist eval seeds by adding role-based dataset rows plus stage-correct seeded workspace artifacts, with an explicit split between starter/template files the target role will edit and read-only reference files the target role will only inspect, exact deterministic fields, then verify them with the seed validator. Use this when asked to add benchmark, engineer, or reviewer evals, or when a role-based eval dataset looks structurally invalid.
 ---
 
 # Eval Creation Workflow
@@ -19,6 +19,15 @@ When you are seeding a row that should look like another agent's output, read th
 - `engineer_plan_reviewer`: `../engineer-planner/SKILL.md`, `../engineer-coder/SKILL.md`, `../engineer-plan-reviewer/SKILL.md`, `../benchmark-reviewer/SKILL.md`
 - `engineer_coder`: `../engineer-planner/SKILL.md`, `../benchmark-planner/SKILL.md`, `../benchmark-coder/SKILL.md`, `../engineer-plan-reviewer/SKILL.md`, `../benchmark-reviewer/SKILL.md`
 - `engineer_execution_reviewer`: `../engineer-coder/SKILL.md`, `../engineer-plan-reviewer/SKILL.md`, `../benchmark-reviewer/SKILL.md`, plus `../../../specs/architecture/agents/handover-contracts.md` when you need the stage contract instead of a local skill file
+
+## Seed Artifact Intent
+
+Before writing any seed, classify every required path with the active stage contract and `references/role_input_index.md`.
+
+- `starter/template` files are the paths the evaluated role is expected to edit. Seed the canonical starter content for the same filename, keep it schema-valid, and do not pre-solve it.
+- `read-only reference` files are the paths the evaluated role is expected to inspect. Seed the contract-valid upstream artifact exactly, and do not rewrite it as if the role owns it.
+- If a helper such as `scripts/update_eval_seed_templates.py` refreshes the starter baseline, use it only for the starter/template subset; never let it overwrite read-only reference inputs or completed outputs.
+- If template repos are unnecessary for the seed, use `scripts/update_eval_seed_templates.py` instead of editing `shared/assets/template_repos/`.
 
 The main rule is simple: non-initial roles do not get plain prompt-only rows. They get seeded workspace files that match the handoff contract for that stage.
 
@@ -52,12 +61,12 @@ Open only what you need, but default to these after the role skills above:
 ## Non-negotiable rules
 
 01. Planner-style entrypoints may be prompt-only.
-02. Coder, reviewer, and downstream role evals must be seeded with the files that role is supposed to receive at entry. Any file the evaluated agent is expected to edit must be seeded as the template/starter version of that same path, not as a pre-solved output.
+02. Coder, reviewer, and downstream role evals must be seeded with the files that role is supposed to receive at entry. Any file the evaluated agent is expected to edit must be seeded as the template/starter version of that same path, not as a pre-solved output. Any file the evaluated agent is only supposed to inspect must stay a contract-valid reference input, not a solved output.
 03. Do not invent alternate filenames for handoff artifacts or reviewer manifests.
 04. Prefer `seed_artifact_dir` over large inline `seed_files`.
 05. Use `seed_files` only for tiny cases or one-off overrides.
 06. Validate the seed contract first with `scripts/validate_eval_seed.py`.
-07. After the seed validator passes, validate one task at a time with `dataset/evals/run_evals.py`.
+07. Classify each required path before authoring the seed. Do not infer writability from the file's presence in the hard entry bundle alone.
 08. If a stage requires a manifest or hash, populate a real contract-valid file rather than weakening validation, and compute any deterministic derived values exactly.
 09. Negative eval cases must still pass deterministic hard checks at seeded entry so the run reaches LLM evaluation; they may be semantically bad, but they should not be schema-invalid or rely on approximate deterministic fields.
 10. Do not add "negative" seeds that are out of bounds, over cost/weight caps, self-intersecting, schema-invalid, or otherwise guaranteed to fail before the target role is evaluated.
@@ -67,7 +76,6 @@ Open only what you need, but default to these after the role skills above:
 
 - Dataset rows live in `dataset/data/seed/role_based/<agent>.json`
 - Seeded stage artifacts live in `dataset/data/seed/artifacts/<agent>/<task-id>/`
-- Eval runner entry is `dataset/evals/run_evals.py`
 
 ## Stage selection
 
@@ -158,10 +166,10 @@ The canonical files in that library use the same basenames as the workspace arti
 2. Determine whether the target role is an initial role or a seeded downstream role.
 3. Add or edit the JSON row in `dataset/data/seed/role_based/<agent>.json`.
 4. If seeded, create `dataset/data/seed/artifacts/<agent>/<task-id>/`.
-5. Materialize the exact files that the role should see on disk at entry. For editable files, use the template/starter content for those same filenames so the agent begins from the intended scaffold.
+5. Materialize the exact files that the role should see on disk at entry. For starter/template files, use the template content for those same filenames so the agent begins from the intended scaffold. For read-only reference files, materialize the upstream handoff context the role should inspect, not a completed solution.
 6. If a manifest references file hashes, compute the real hash and patch the manifest.
 7. Run the seeded-entry validator for that one task.
-8. Only after the validator passes, run a minimal eval for that one task.
+8. If you need to debug the eval runner or confirm an end-to-end path, run a minimal eval for that one task.
 9. Confirm logs show the correct seeded stage entry, not an accidental planner start.
 
 ## Review-manifest rule
@@ -179,21 +187,20 @@ If the manifest is missing, stale, or schema-invalid, fix the seeded artifact se
 
 ## Useful commands
 
+Refresh canonical starter baselines for the writable subset of a seed:
+
+```bash
+uv run scripts/update_eval_seed_templates.py \
+  --agent engineer_coder \
+  --task-id ec-001-example
+```
+
+This helper copies starter templates only; it does not convert read-only reference inputs into editable outputs.
+
 List IDs for one agent:
 
 ```bash
 jq -r '.[].id' dataset/data/seed/role_based/benchmark_coder.json
-```
-
-Run one eval:
-
-```bash
-uv run dataset/evals/run_evals.py \
-  --agent benchmark_coder \
-  --task-id bc-001-example \
-  --limit 1 \
-  --concurrency 1 \
-  --verbose --log-level INFO
 ```
 
 Validate one seeded entry before the full eval:
@@ -235,7 +242,7 @@ uv run scripts/validate_eval_seed.py \
 Check that seeding happened:
 
 ```bash
-rg "eval_seed_workspace_applied|start_node=" logs/evals/run_evals.log logs/evals/controller.log
+rg "eval_seed_workspace_applied|start_node=" logs/evals/current/*.log
 ```
 
 Compute a file hash for manifests:

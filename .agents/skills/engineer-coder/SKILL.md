@@ -67,6 +67,31 @@ from utils.preview import (
 - Planner/reviewer contracts or reviewer output schemas.
 - Deep CAD syntax, manufacturing formulas, or specialist subsystem details. Those belong in specialist skills and references.
 
+## Workspace Boundary
+
+When this role begins from a seeded workspace, treat the following paths as writable starter content:
+
+- `solution_script.py`
+- `payload_trajectory_definition.yaml`
+- `todo.md`
+- `journal.md`
+- `plan_refusal.md` when applicable
+- any helper modules this role is expected to write
+
+Treat the following paths as read-only reference inputs:
+
+- `engineering_plan.md`
+- `benchmark_definition.yaml`
+- `assembly_definition.yaml`
+- `benchmark_assembly_definition.yaml`
+- `benchmark_script.py`
+- `solution_plan_evidence_script.py`
+- validation and simulation artifacts
+- render evidence
+- review artifacts
+
+Do not pre-solve the writable files or turn read-only handoff context into an editable template.
+
 ## Required Read Set
 
 Start with the handoff package:

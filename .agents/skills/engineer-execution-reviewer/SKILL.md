@@ -39,6 +39,30 @@ When execution evidence needs visual checking, use the shared preview helpers ex
 - [ ] Write only the stage-scoped execution review decision and comments YAML pair.
 - [ ] Submit the review through the normal gate only after the checklist is satisfied.
 
+## Workspace Boundary
+
+When this role begins from a seeded workspace, treat the stage-scoped execution review pair as writable starter content:
+
+- the active review round's decision YAML
+- the active review round's comments YAML
+
+Treat the following paths as read-only reference inputs:
+
+- `solution_script.py`
+- `benchmark_script.py`
+- `benchmark_assembly_definition.yaml`
+- `validation_results.json`
+- `simulation_result.json`
+- `engineering_plan.md`
+- `todo.md`
+- `benchmark_definition.yaml`
+- `assembly_definition.yaml`
+- `.manifests/engineering_execution_handoff_manifest.json`
+- `.manifests/engineering_plan_review_manifest.json`
+- render evidence
+
+Do not rewrite solution or benchmark artifacts as if the execution reviewer owns them.
+
 ### Sandbox render fallback
 
 When `render_cad(...)` hits `httpx.ConnectError: [Errno 1] Operation not permitted` or `worker_light_preview_failed`, this is a Codex-sandbox infra barrier — not a geometry defect.

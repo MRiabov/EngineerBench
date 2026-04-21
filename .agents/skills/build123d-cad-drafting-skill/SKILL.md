@@ -62,6 +62,13 @@ Read this skill and the relevant reference files below before planning any `buil
 - Verify downhill direction from the authored geometry, not from angle comments. If the object must travel from lower X to higher X, the support surface must be higher at the negative-X handoff and lower at the positive-X handoff in the final placed geometry. Reverse that relation when travel goes the other way.
 - For X-aligned ramps or chutes rotated about Y, do not trust your intuition about the sign. Inspect the final placed part extents/vertices or exported scene and confirm that the spawn side is the high side before you accept the slope.
 - Every child you place into `Compound(children=[...])` must be a distinct top-level object instance. Reusing one source shape is fine only if you derive separate placed copies from it with `.moved(...)`. When you need two rails, two walls, or mirrored supports from one builder result, always create each placement with `.moved(...)`; reserve `.move(...)` for a one-off final placement of a single object. Do not place the same mutable `Part` instance into the compound twice via repeated `.move(...)` calls.
+- For direct geometry transforms, rotation is valid and can be expressed either by multiplying with a `Rotation(...)` or by calling `shape.rotate(...)`, for example:
+
+```python
+rotated_box = Rotation(45, 0, 0) * box
+rotated_shape = shape.rotate(Axis, angle_in_degrees)
+```
+
 - If a top-level part must be rotated in the exported scene, encode the rotation directly in the location, for example:
 
 ```python

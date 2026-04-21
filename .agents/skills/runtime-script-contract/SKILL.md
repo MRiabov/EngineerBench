@@ -68,7 +68,7 @@ Use this sequence for benchmark-coder and engineer-coder evals:
 
 01. Read `benchmark_plan.md` for benchmark-coder tasks or `engineering_plan.md` for engineer-coder tasks, plus `todo.md`, `assembly_definition.yaml`, and `benchmark_definition.yaml`.
 02. If benchmark geometry exists, read `benchmark_script.py` as read-only context before drafting the solution.
-03. Read `skills/build123d-cad-drafting-skill/SKILL.md` before the first geometry draft.
+03. Read `.agents/skills/build123d-cad-drafting-skill/SKILL.md` before the first geometry draft.
 04. If the design includes imported components, read the relevant part-identity guidance before drafting the part geometry or motion contract.
 05. Only read a specialist subsystem skill if the approved handoff explicitly requires that subsystem. Motors alone do not imply a subsystem-specific task, and mechanical placeholders do not qualify.
 06. Keep the first `solution_script.py` draft compact and complete for the handoff. Prefer a direct `result = ...` binding and avoid extra helper files.

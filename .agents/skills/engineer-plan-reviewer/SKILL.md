@@ -54,6 +54,29 @@ When plan or execution evidence needs visual checking, use the shared preview he
 - [ ] Verify plan fidelity, robustness, manufacturability, and cost/weight compliance against the approved plan.
 - [ ] Reject flaky runtime-jitter behavior, excessive or unjustified DOFs, or any render/video evidence that was not inspected.
 
+## Workspace Boundary
+
+When this role begins from a seeded workspace, treat the stage-scoped review YAML pair as writable starter content:
+
+- the active review round's decision YAML
+- the active review round's comments YAML
+
+Treat the following paths as read-only reference inputs:
+
+- `engineering_plan.md`
+- `todo.md`
+- `benchmark_definition.yaml`
+- `assembly_definition.yaml`
+- `benchmark_assembly_definition.yaml`
+- `benchmark_script.py`
+- `solution_plan_evidence_script.py`
+- `solution_script.py`
+- validation and simulation artifacts
+- render evidence
+- `.manifests/**`
+
+Do not rewrite planner or coder artifacts as if the reviewer owns them.
+
 ### Refusal Review Checklist
 
 - [ ] Read `plan_refusal.md` and the rejected plan evidence.

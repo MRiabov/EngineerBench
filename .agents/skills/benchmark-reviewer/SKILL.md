@@ -37,6 +37,28 @@ When render evidence or objective overlays are present, use the shared preview h
 - [ ] Write only `reviews/benchmark-execution-review-decision-round-<n>.yaml` and `reviews/benchmark-execution-review-comments-round-<n>.yaml`.
 - [ ] Submit the review with `bash scripts/submit_review.sh` after the files are written.
 
+## Workspace Boundary
+
+When this role begins from a seeded workspace, treat the stage-scoped review YAML pair as writable starter content:
+
+- `reviews/benchmark-execution-review-decision-round-<n>.yaml`
+- `reviews/benchmark-execution-review-comments-round-<n>.yaml`
+
+Treat the following paths as read-only reference inputs:
+
+- `benchmark_script.py`
+- `validation_results.json`
+- `simulation_result.json`
+- `.manifests/benchmark_review_manifest.json`
+- `benchmark_plan.md`
+- `todo.md`
+- `benchmark_definition.yaml`
+- `benchmark_assembly_definition.yaml`
+- `benchmark_plan_evidence_script.py`
+- any render evidence
+
+Do not rewrite benchmark context as if the benchmark reviewer owns it.
+
 ## Comment Checklist
 
 - [ ] Record the stage evidence fields needed by the reviewer schema, including `latest_revision_verified`, `review_manifest_revision`, `validation_success`, `simulation_success`, `solvability_summary`, `attachment_policy_summary`, `render_count`, `inspected_render_count`, `visual_inspection_min_images`, `visual_inspection_satisfied`, `visual_evidence_checked`, `deterministic_error_count`, and `deterministic_refusal_reason` as applicable. Include `goal_reached` only if the schema or manifest already provides it as an engineer-owned field.

@@ -6,8 +6,8 @@ units:
   currency: "USD"
 
 constraints:
-  benchmark_max_unit_cost_usd: 21.0
-  benchmark_max_weight_g: 22.7448
+  benchmark_max_unit_cost_usd: 27.0
+  benchmark_max_weight_g: 30.0
   planner_target_max_unit_cost_usd: 18.0
   planner_target_max_weight_g: 20.0
 

@@ -5,7 +5,7 @@ description: Run, debug, and implement integration tests at the public boundary 
 
 # Integration Tests Workflow
 
-Use this workflow when adding, updating, or debugging integration tests in RunAudit.
+Use this workflow when adding, updating, or debugging integration tests in this repository.
 
 The important distinction is the boundary under test:
 

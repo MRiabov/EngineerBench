@@ -6,8 +6,8 @@ Usage:
     init_skill.py <skill-name> --path <path>
 
 Examples:
-    init_skill.py my-new-skill --path skills/public
-    init_skill.py my-api-helper --path skills/private
+    init_skill.py my-new-skill --path .agents/skills/public
+    init_skill.py my-api-helper --path .agents/skills/private
     init_skill.py custom-skill --path /custom/location
 """
 
@@ -74,10 +74,10 @@ Executable code (Python/Bash/etc.) that can be run directly to perform specific 
 
 **Appropriate for:** Python scripts, shell scripts, or any executable code that performs automation, data processing, or specific operations.
 
-**Note:** Scripts may be executed without loading into context, but can still be read by Claude for patching or environment adjustments.
+**Note:** Scripts may be executed without loading into context, but can still be read by the assistant for patching or environment adjustments.
 
 ### references/
-Documentation and reference material intended to be loaded into context to inform Claude's process and thinking.
+Documentation and reference material intended to be loaded into context to inform the assistant's process and thinking.
 
 **Examples from other skills:**
 - Product management: `communication.md`, `context_building.md` - detailed workflow guides
@@ -85,10 +85,10 @@ Documentation and reference material intended to be loaded into context to infor
 - Finance: Schema documentation, company policies
 - Function signatures: `function_signatures.md` - current callable surfaces for runtime helpers or APIs
 
-**Appropriate for:** In-depth documentation, API references, database schemas, comprehensive guides, or any detailed information that Claude should reference while working.
+**Appropriate for:** In-depth documentation, API references, database schemas, comprehensive guides, or any detailed information that the assistant should reference while working.
 
 ### assets/
-Files not intended to be loaded into context, but rather used within the output Claude produces.
+Files not intended to be loaded into context, but rather used within the output the assistant produces.
 
 **Examples from other skills:**
 - Brand styling: PowerPoint template files (.pptx), logo files
@@ -164,7 +164,7 @@ This placeholder represents where asset files would be stored.
 Replace with actual asset files (templates, images, fonts, etc.) or delete if not needed.
 
 Asset files are NOT intended to be loaded into context, but rather used within
-the output Claude produces.
+the output the assistant produces.
 
 Example asset files from other skills:
 - Brand guidelines: logo.png, slides_template.pptx
@@ -279,8 +279,8 @@ def main():
         print("  - Max 40 characters")
         print("  - Must match directory name exactly")
         print("\nExamples:")
-        print("  init_skill.py my-new-skill --path skills/public")
-        print("  init_skill.py my-api-helper --path skills/private")
+        print("  init_skill.py my-new-skill --path .agents/skills/public")
+        print("  init_skill.py my-api-helper --path .agents/skills/private")
         print("  init_skill.py custom-skill --path /custom/location")
         sys.exit(1)
 

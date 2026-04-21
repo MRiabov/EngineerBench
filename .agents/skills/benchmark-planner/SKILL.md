@@ -14,6 +14,10 @@ Turn a benchmark brief into a complete handoff that the benchmark coder can impl
 3. Prefer passive geometry first. Add benchmark-owned motion only when it is necessary for the objective.
 4. Fail closed when required benchmark facts are missing, contradictory, or hidden behind placeholders.
 
+## Workspace Note
+
+Benchmark planning starts from the prompt and approved benchmark context. Do not expect writable handoff files at node entry.
+
 ## Canonical Preview Helpers
 
 Use the shared preview helpers when evidence or objective overlays are part of the plan:

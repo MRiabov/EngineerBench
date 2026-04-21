@@ -62,6 +62,28 @@ from utils.preview import (
 - Reviewer outputs under `reviews/`.
 - Engineer solution files such as `solution_script.py`.
 
+## Workspace Boundary
+
+When this role begins from a seeded workspace, treat the following paths as writable starter content:
+
+- `benchmark_script.py`
+- `todo.md`
+- `journal.md`
+- any benchmark-side helper modules
+- `plan_refusal.md` when the approved plan is infeasible
+
+Treat the following paths as read-only reference inputs:
+
+- `benchmark_plan.md`
+- `benchmark_definition.yaml`
+- `benchmark_assembly_definition.yaml`
+- `benchmark_plan_evidence_script.py`
+- validation and simulation outputs
+- render evidence
+- reviewer artifacts
+
+Do not pre-solve the writable files or rewrite read-only benchmark context as if the benchmark coder owns it.
+
 ## Required Read Set
 
 Start with the benchmark handoff package:

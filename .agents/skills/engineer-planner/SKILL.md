@@ -52,6 +52,26 @@ Use the shared preview helpers whenever the plan needs visual evidence:
 - Fallback geometry, invented materials, or silent budget mutations.
 - Geometry or physics derivation that is hand-wavy instead of formula-backed.
 
+## Workspace Boundary
+
+When this role begins from a seeded workspace, treat the following paths as writable starter content:
+
+- `engineering_plan.md`
+- `todo.md`
+- `benchmark_definition.yaml`
+- `assembly_definition.yaml`
+- `solution_plan_evidence_script.py`
+- `journal.md` when present
+
+Treat the following paths as read-only reference inputs:
+
+- `benchmark_assembly_definition.yaml`
+- `benchmark_script.py`
+- render evidence
+- downstream review artifacts
+
+Do not turn benchmark-owned inputs into editable engineering templates.
+
 ## Required Read Set
 
 Start with the current handoff package:
