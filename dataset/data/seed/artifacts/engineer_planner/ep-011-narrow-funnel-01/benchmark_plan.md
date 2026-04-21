@@ -6,8 +6,8 @@ throat.
 
 ## 2. Geometry
 
-- `environment_fixture`: static base plate that provides a flat read-only
-  reference for the engineering solution.
+- `environment_fixture`: static upright lofted funnel fixture that provides
+  the wide capture mouth and narrow throat used by the passive benchmark.
 - The benchmark stays static; the challenge comes from the narrow throat and
   the runtime jitter on the payload.
 
