@@ -1,51 +1,51 @@
 {
   "version": "1.0",
-  "bundle_id": "9a4cf613-fda5-5b12-bf87-115160aafa2f",
-  "created_at": "2026-04-15T18:13:00.387622+00:00",
-  "episode_id": "584bb03a-71f0-56cb-a01b-80fe3b5de05d",
-  "worker_session_id": "seed-renders-br-001-sideways-ball-review-791cd819",
-  "revision": "812163be8439b5d8487faeead27fa9cc2069056b",
-  "scene_hash": "7ca3f7efcc3b2941cf9511e35ebf942cb5bfa5923a20122c2dc3b795bb8fb4af",
+  "bundle_id": "ea34d9dc-8283-5507-b41a-4e7e9a73bfa6",
+  "created_at": "2026-04-21T08:24:15.513916+00:00",
+  "episode_id": "8f51323f-f0d8-5a3c-96f4-0a2850692492",
+  "worker_session_id": "seed-renders-br-001-sideways-ball-review-873e0f9d",
+  "revision": "b32e93efd6ab1b575d5edc5315c150cf3710d3fb",
+  "scene_hash": "ab6a2f6b050654117faffed18d403a05fbd4b982024e53d7483dd00489cb2bb5",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",
   "source_script_sha256": null,
   "preview_evidence_paths": [
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a0.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a135.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a180.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a225.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a270.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a315.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a45.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a90.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a0.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a135.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a180.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a225.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a270.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a315.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a45.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a90.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a0.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a135.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a180.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a225.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a270.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a315.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a45.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a90.png"
+    "renders/benchmark_renders/benchmark_environment_render_e15_a0.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a135.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a180.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a225.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a270.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a315.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a45.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a90.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a0.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a135.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a180.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a225.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a270.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a315.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a45.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a90.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a0.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a135.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a180.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a225.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a270.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a315.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a45.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a90.png"
   ],
   "artifacts": {
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a0.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e15_a0.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e15_a0",
+      "group_key": "benchmark_environment_render_e15_a0",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a0.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a0_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a0_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a0.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a0_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a0_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -54,16 +54,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a45.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e15_a45.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e15_a45",
+      "group_key": "benchmark_environment_render_e15_a45",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a45.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a45_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a45_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a45.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a45_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a45_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -72,16 +72,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a90.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e15_a90.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e15_a90",
+      "group_key": "benchmark_environment_render_e15_a90",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a90.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a90_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a90_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a90.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a90_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a90_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -90,16 +90,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a135.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e15_a135.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e15_a135",
+      "group_key": "benchmark_environment_render_e15_a135",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a135.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a135_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a135_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a135.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a135_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a135_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -108,16 +108,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a180.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e15_a180.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e15_a180",
+      "group_key": "benchmark_environment_render_e15_a180",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a180.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a180_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a180_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a180.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a180_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a180_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -126,16 +126,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a225.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e15_a225.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e15_a225",
+      "group_key": "benchmark_environment_render_e15_a225",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a225.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a225_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a225_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a225.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a225_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a225_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -144,16 +144,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a270.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e15_a270.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e15_a270",
+      "group_key": "benchmark_environment_render_e15_a270",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a270.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a270_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a270_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a270.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a270_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a270_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -162,16 +162,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a315.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e15_a315.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e15_a315",
+      "group_key": "benchmark_environment_render_e15_a315",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a315.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a315_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a315_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a315.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a315_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a315_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -180,16 +180,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a0.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e45_a0.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e45_a0",
+      "group_key": "benchmark_environment_render_e45_a0",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a0.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a0_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a0_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a0.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a0_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a0_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -198,16 +198,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a45.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e45_a45.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e45_a45",
+      "group_key": "benchmark_environment_render_e45_a45",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a45.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a45_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a45_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a45.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a45_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a45_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -216,16 +216,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a90.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e45_a90.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e45_a90",
+      "group_key": "benchmark_environment_render_e45_a90",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a90.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a90_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a90_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a90.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a90_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a90_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -234,16 +234,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a135.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e45_a135.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e45_a135",
+      "group_key": "benchmark_environment_render_e45_a135",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a135.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a135_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a135_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a135.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a135_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a135_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -252,16 +252,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a180.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e45_a180.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e45_a180",
+      "group_key": "benchmark_environment_render_e45_a180",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a180.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a180_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a180_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a180.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a180_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a180_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -270,16 +270,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a225.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e45_a225.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e45_a225",
+      "group_key": "benchmark_environment_render_e45_a225",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a225.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a225_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a225_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a225.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a225_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a225_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -288,16 +288,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a270.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e45_a270.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e45_a270",
+      "group_key": "benchmark_environment_render_e45_a270",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a270.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a270_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a270_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a270.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a270_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a270_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -306,16 +306,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a315.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e45_a315.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e45_a315",
+      "group_key": "benchmark_environment_render_e45_a315",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a315.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a315_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a315_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a315.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a315_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a315_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -324,16 +324,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a0.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e75_a0.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e75_a0",
+      "group_key": "benchmark_environment_render_e75_a0",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a0.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a0_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a0_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a0.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a0_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a0_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -342,16 +342,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a45.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e75_a45.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e75_a45",
+      "group_key": "benchmark_environment_render_e75_a45",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a45.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a45_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a45_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a45.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a45_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a45_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -360,16 +360,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a90.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e75_a90.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e75_a90",
+      "group_key": "benchmark_environment_render_e75_a90",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a90.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a90_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a90_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a90.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a90_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a90_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -378,16 +378,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a135.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e75_a135.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e75_a135",
+      "group_key": "benchmark_environment_render_e75_a135",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a135.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a135_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a135_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a135.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a135_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a135_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -396,16 +396,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a180.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e75_a180.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e75_a180",
+      "group_key": "benchmark_environment_render_e75_a180",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a180.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a180_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a180_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a180.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a180_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a180_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -414,16 +414,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a225.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e75_a225.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e75_a225",
+      "group_key": "benchmark_environment_render_e75_a225",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a225.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a225_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a225_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a225.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a225_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a225_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -432,16 +432,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a270.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e75_a270.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e75_a270",
+      "group_key": "benchmark_environment_render_e75_a270",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a270.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a270_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a270_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a270.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a270_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a270_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -450,16 +450,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a315.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e75_a315.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e75_a315",
+      "group_key": "benchmark_environment_render_e75_a315",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a315.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a315_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a315_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a315.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a315_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a315_segmentation.png",
         "svg": null,
         "dxf": null
       },

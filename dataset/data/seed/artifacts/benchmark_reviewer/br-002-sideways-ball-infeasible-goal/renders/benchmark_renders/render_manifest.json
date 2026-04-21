@@ -1,99 +1,51 @@
 {
   "version": "1.0",
-  "bundle_id": "f34027e6-5a34-5353-81ac-4d71d84febe5",
-  "created_at": "2026-04-08T06:31:48.832739+00:00",
-  "episode_id": "225f44e6-a722-5e0f-93de-47c9091d822c",
-  "worker_session_id": "seed-renders-br-002-sideways-ball-infeasible-goal-8633866c",
-  "revision": "812163be8439b5d8487faeead27fa9cc2069056b",
-  "scene_hash": "45ca2b84b728d296745852e6a3c8b9f7529392c30198bdbde251e2d2b3d0f514",
+  "bundle_id": "0d50ac3b-c4b1-5c0e-a4fb-1a231cfdbf4a",
+  "created_at": "2026-04-21T08:24:54.828227+00:00",
+  "episode_id": "aa505f60-9669-5392-b243-a6ea98efa405",
+  "worker_session_id": "seed-renders-br-002-sideways-ball-infeasible-goal-a084131b",
+  "revision": "b32e93efd6ab1b575d5edc5315c150cf3710d3fb",
+  "scene_hash": "ab6a2f6b050654117faffed18d403a05fbd4b982024e53d7483dd00489cb2bb5",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",
   "source_script_sha256": null,
   "preview_evidence_paths": [
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a0.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a0_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a0_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a135.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a135_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a135_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a180.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a180_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a180_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a225.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a225_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a225_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a270.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a270_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a270_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a315.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a315_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a315_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a45.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a45_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a45_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a90.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a90_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a90_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a0.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a0_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a0_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a135.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a135_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a135_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a180.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a180_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a180_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a225.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a225_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a225_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a270.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a270_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a270_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a315.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a315_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a315_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a45.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a45_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a45_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a90.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a90_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a90_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a0.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a0_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a0_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a135.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a135_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a135_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a180.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a180_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a180_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a225.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a225_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a225_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a270.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a270_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a270_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a315.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a315_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a315_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a45.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a45_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a45_segmentation.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a90.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a90_depth.png",
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a90_segmentation.png"
+    "renders/benchmark_renders/benchmark_environment_render_e15_a0.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a135.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a180.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a225.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a270.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a315.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a45.png",
+    "renders/benchmark_renders/benchmark_environment_render_e15_a90.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a0.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a135.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a180.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a225.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a270.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a315.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a45.png",
+    "renders/benchmark_renders/benchmark_environment_render_e45_a90.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a0.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a135.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a180.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a225.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a270.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a315.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a45.png",
+    "renders/benchmark_renders/benchmark_environment_render_e75_a90.png"
   ],
   "artifacts": {
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a0.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e15_a0.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e15_a0",
+      "group_key": "benchmark_environment_render_e15_a0",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a0.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a0_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a0_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a0.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a0_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a0_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -102,143 +54,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a0_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e15_a0",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a0.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a0_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a0_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 3.3689146041870117,
-      "depth_max_m": 3.6584339141845703,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a0_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e15_a0",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a0.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a0_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a0_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a45.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e15_a45.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e15_a45",
+      "group_key": "benchmark_environment_render_e15_a45",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a45.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a45_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a45_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a45.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a45_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a45_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -247,143 +72,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a45_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e15_a45",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a45.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a45_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a45_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 2.9341132640838623,
-      "depth_max_m": 4.0863823890686035,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a45_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e15_a45",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a45.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a45_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a45_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a90.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e15_a90.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e15_a90",
+      "group_key": "benchmark_environment_render_e15_a90",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a90.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a90_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a90_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a90.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a90_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a90_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -392,143 +90,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a90_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e15_a90",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a90.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a90_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a90_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 2.837839126586914,
-      "depth_max_m": 4.181829929351807,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a90_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e15_a90",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a90.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a90_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a90_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a135.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e15_a135.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e15_a135",
+      "group_key": "benchmark_environment_render_e15_a135",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a135.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a135_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a135_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a135.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a135_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a135_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -537,143 +108,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a135_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e15_a135",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a135.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a135_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a135_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 2.9341137409210205,
-      "depth_max_m": 4.0863823890686035,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a135_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e15_a135",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a135.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a135_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a135_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a180.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e15_a180.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e15_a180",
+      "group_key": "benchmark_environment_render_e15_a180",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a180.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a180_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a180_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a180.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a180_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a180_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -682,143 +126,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a180_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e15_a180",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a180.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a180_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a180_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 3.3689146041870117,
-      "depth_max_m": 3.6584339141845703,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a180_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e15_a180",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a180.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a180_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a180_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a225.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e15_a225.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e15_a225",
+      "group_key": "benchmark_environment_render_e15_a225",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a225.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a225_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a225_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a225.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a225_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a225_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -827,143 +144,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a225_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e15_a225",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a225.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a225_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a225_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 2.9341137409210205,
-      "depth_max_m": 4.0863823890686035,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a225_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e15_a225",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a225.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a225_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a225_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a270.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e15_a270.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e15_a270",
+      "group_key": "benchmark_environment_render_e15_a270",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a270.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a270_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a270_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a270.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a270_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a270_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -972,143 +162,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a270_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e15_a270",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a270.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a270_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a270_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 2.837839126586914,
-      "depth_max_m": 4.181829452514648,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a270_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e15_a270",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a270.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a270_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a270_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a315.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e15_a315.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e15_a315",
+      "group_key": "benchmark_environment_render_e15_a315",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a315.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a315_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a315_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e15_a315.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e15_a315_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e15_a315_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -1117,143 +180,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a315_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e15_a315",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a315.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a315_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a315_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 2.9341137409210205,
-      "depth_max_m": 4.0863823890686035,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e15_a315_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e15_a315",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e15_a315.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e15_a315_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e15_a315_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a0.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e45_a0.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e45_a0",
+      "group_key": "benchmark_environment_render_e45_a0",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a0.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a0_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a0_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a0.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a0_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a0_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -1262,143 +198,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a0_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e45_a0",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a0.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a0_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a0_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 3.428234577178955,
-      "depth_max_m": 3.6452362537384033,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a0_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e45_a0",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a0.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a0_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a0_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a45.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e45_a45.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e45_a45",
+      "group_key": "benchmark_environment_render_e45_a45",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a45.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a45_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a45_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a45.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a45_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a45_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -1407,143 +216,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a45_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e45_a45",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a45.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a45_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a45_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 3.116462230682373,
-      "depth_max_m": 3.963165283203125,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a45_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e45_a45",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a45.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a45_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a45_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a90.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e45_a90.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e45_a90",
+      "group_key": "benchmark_environment_render_e45_a90",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a90.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a90_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a90_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a90.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a90_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a90_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -1552,143 +234,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a90_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e45_a90",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a90.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a90_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a90_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 3.046205520629883,
-      "depth_max_m": 4.034791946411133,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a90_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e45_a90",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a90.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a90_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a90_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a135.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e45_a135.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e45_a135",
+      "group_key": "benchmark_environment_render_e45_a135",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a135.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a135_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a135_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a135.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a135_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a135_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -1697,143 +252,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a135_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e45_a135",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a135.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a135_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a135_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 3.116462469100952,
-      "depth_max_m": 3.963165283203125,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a135_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e45_a135",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a135.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a135_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a135_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a180.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e45_a180.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e45_a180",
+      "group_key": "benchmark_environment_render_e45_a180",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a180.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a180_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a180_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a180.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a180_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a180_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -1842,143 +270,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a180_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e45_a180",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a180.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a180_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a180_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 3.428234577178955,
-      "depth_max_m": 3.6452362537384033,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a180_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e45_a180",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a180.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a180_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a180_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a225.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e45_a225.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e45_a225",
+      "group_key": "benchmark_environment_render_e45_a225",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a225.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a225_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a225_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a225.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a225_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a225_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -1987,143 +288,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a225_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e45_a225",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a225.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a225_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a225_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 3.116462230682373,
-      "depth_max_m": 3.963165044784546,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a225_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e45_a225",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a225.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a225_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a225_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a270.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e45_a270.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e45_a270",
+      "group_key": "benchmark_environment_render_e45_a270",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a270.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a270_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a270_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a270.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a270_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a270_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -2132,143 +306,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a270_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e45_a270",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a270.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a270_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a270_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 3.046205520629883,
-      "depth_max_m": 4.034791946411133,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a270_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e45_a270",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a270.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a270_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a270_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a315.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e45_a315.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e45_a315",
+      "group_key": "benchmark_environment_render_e45_a315",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a315.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a315_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a315_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e45_a315.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e45_a315_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e45_a315_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -2277,143 +324,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a315_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e45_a315",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a315.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a315_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a315_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 3.116462230682373,
-      "depth_max_m": 3.963165283203125,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e45_a315_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e45_a315",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e45_a315.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e45_a315_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e45_a315_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a0.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e75_a0.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e75_a0",
+      "group_key": "benchmark_environment_render_e75_a0",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a0.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a0_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a0_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a0.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a0_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a0_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -2422,143 +342,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a0_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e75_a0",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a0.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a0_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a0_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 3.4479706287384033,
-      "depth_max_m": 3.5947964191436768,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a0_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e75_a0",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a0.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a0_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a0_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a45.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e75_a45.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e75_a45",
+      "group_key": "benchmark_environment_render_e75_a45",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a45.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a45_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a45_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a45.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a45_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a45_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -2567,143 +360,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a45_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e75_a45",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a45.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a45_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a45_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 3.3615822792053223,
-      "depth_max_m": 3.7110979557037354,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a45_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e75_a45",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a45.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a45_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a45_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a90.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e75_a90.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e75_a90",
+      "group_key": "benchmark_environment_render_e75_a90",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a90.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a90_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a90_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a90.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a90_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a90_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -2712,143 +378,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a90_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e75_a90",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a90.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a90_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a90_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 3.3349413871765137,
-      "depth_max_m": 3.736586809158325,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a90_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e75_a90",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a90.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a90_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a90_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a135.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e75_a135.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e75_a135",
+      "group_key": "benchmark_environment_render_e75_a135",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a135.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a135_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a135_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a135.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a135_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a135_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -2857,143 +396,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a135_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e75_a135",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a135.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a135_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a135_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 3.3615825176239014,
-      "depth_max_m": 3.7110979557037354,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a135_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e75_a135",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a135.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a135_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a135_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a180.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e75_a180.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e75_a180",
+      "group_key": "benchmark_environment_render_e75_a180",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a180.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a180_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a180_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a180.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a180_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a180_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -3002,143 +414,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a180_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e75_a180",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a180.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a180_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a180_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 3.4479706287384033,
-      "depth_max_m": 3.5947964191436768,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a180_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e75_a180",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a180.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a180_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a180_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a225.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e75_a225.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e75_a225",
+      "group_key": "benchmark_environment_render_e75_a225",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a225.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a225_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a225_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a225.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a225_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a225_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -3147,143 +432,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a225_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e75_a225",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a225.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a225_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a225_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 3.361582040786743,
-      "depth_max_m": 3.7110979557037354,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a225_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e75_a225",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a225.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a225_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a225_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a270.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e75_a270.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e75_a270",
+      "group_key": "benchmark_environment_render_e75_a270",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a270.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a270_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a270_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a270.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a270_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a270_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -3292,143 +450,16 @@
       "depth_interpretation": null,
       "segmentation_legend": []
     },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a270_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e75_a270",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a270.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a270_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a270_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 3.3349413871765137,
-      "depth_max_m": 3.736586809158325,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a270_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e75_a270",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a270.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a270_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a270_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a315.png": {
+    "renders/benchmark_renders/benchmark_environment_render_e75_a315.png": {
       "modality": "rgb",
-      "group_key": "benchmark_assembly_render_e75_a315",
+      "group_key": "benchmark_environment_render_e75_a315",
       "view_index": null,
       "orbit_pitch_deg": null,
       "orbit_yaw_deg": null,
       "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a315.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a315_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a315_segmentation.png",
+        "rgb": "renders/benchmark_renders/benchmark_environment_render_e75_a315.png",
+        "depth": "renders/benchmark_renders/benchmark_environment_render_e75_a315_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_environment_render_e75_a315_segmentation.png",
         "svg": null,
         "dxf": null
       },
@@ -3436,133 +467,6 @@
       "depth_max_m": null,
       "depth_interpretation": null,
       "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a315_depth.png": {
-      "modality": "depth",
-      "group_key": "benchmark_assembly_render_e75_a315",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a315.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a315_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a315_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": 3.361582040786743,
-      "depth_max_m": 3.7110979557037354,
-      "depth_interpretation": "Camera-space depth in meters. False-color pixels are scaled from the build123d/VTK preview renderer's linear depth buffer; see depth_min_m and depth_max_m for the metric range.",
-      "segmentation_legend": []
-    },
-    "renders/benchmark_renders/benchmark_assembly_render_e75_a315_segmentation.png": {
-      "modality": "segmentation",
-      "group_key": "benchmark_assembly_render_e75_a315",
-      "view_index": null,
-      "orbit_pitch_deg": null,
-      "orbit_yaw_deg": null,
-      "siblings": {
-        "rgb": "renders/benchmark_renders/benchmark_assembly_render_e75_a315.png",
-        "depth": "renders/benchmark_renders/benchmark_assembly_render_e75_a315_depth.png",
-        "segmentation": "renders/benchmark_renders/benchmark_assembly_render_e75_a315_segmentation.png",
-        "svg": null,
-        "dxf": null
-      },
-      "depth_min_m": null,
-      "depth_max_m": null,
-      "depth_interpretation": null,
-      "segmentation_legend": [
-        {
-          "instance_id": "ground_plane",
-          "instance_name": "ground_plane",
-          "semantic_label": "ground_plane",
-          "object_type": "part",
-          "object_id": 0,
-          "body_name": "ground_plane",
-          "geom_name": "ground_plane",
-          "color_rgb": [
-            235,
-            59,
-            59
-          ],
-          "color_hex": "#eb3b3b"
-        },
-        {
-          "instance_id": "platform_left",
-          "instance_name": "platform_left",
-          "semantic_label": "platform_left",
-          "object_type": "part",
-          "object_id": 1,
-          "body_name": "platform_left",
-          "geom_name": "platform_left",
-          "color_rgb": [
-            59,
-            110,
-            235
-          ],
-          "color_hex": "#3b6eeb"
-        },
-        {
-          "instance_id": "platform_right",
-          "instance_name": "platform_right",
-          "semantic_label": "platform_right",
-          "object_type": "part",
-          "object_id": 2,
-          "body_name": "platform_right",
-          "geom_name": "platform_right",
-          "color_rgb": [
-            161,
-            235,
-            59
-          ],
-          "color_hex": "#a1eb3b"
-        },
-        {
-          "instance_id": "guide_rail_lower",
-          "instance_name": "guide_rail_lower",
-          "semantic_label": "guide_rail_lower",
-          "object_type": "part",
-          "object_id": 3,
-          "body_name": "guide_rail_lower",
-          "geom_name": "guide_rail_lower",
-          "color_rgb": [
-            235,
-            59,
-            213
-          ],
-          "color_hex": "#eb3bd5"
-        },
-        {
-          "instance_id": "guide_rail_upper",
-          "instance_name": "guide_rail_upper",
-          "semantic_label": "guide_rail_upper",
-          "object_type": "part",
-          "object_id": 4,
-          "body_name": "guide_rail_upper",
-          "geom_name": "guide_rail_upper",
-          "color_rgb": [
-            59,
-            235,
-            205
-          ],
-          "color_hex": "#3bebcd"
-        },
-        {
-          "instance_id": "projectile_ball",
-          "instance_name": "projectile_ball",
-          "semantic_label": "projectile_ball",
-          "object_type": "part",
-          "object_id": 5,
-          "body_name": "projectile_ball",
-          "geom_name": "projectile_ball",
-          "color_rgb": [
-            235,
-            154,
-            59
-          ],
-          "color_hex": "#eb9a3b"
-        }
-      ]
     }
   }
 }

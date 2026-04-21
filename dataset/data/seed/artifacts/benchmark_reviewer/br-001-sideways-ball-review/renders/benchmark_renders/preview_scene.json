@@ -1,5 +1,5 @@
 {
-  "component_label": "benchmark_assembly",
+  "component_label": "benchmark_environment",
   "entities": [
     {
       "label": "ground_plane",
@@ -22,14 +22,14 @@
         "meshes/ground_plane.obj"
       ],
       "box_size_mm": null,
-      "material_id": "hdpe",
+      "material_id": "aluminum_6061",
       "body_name": "ground_plane",
       "geom_name": "ground_plane",
       "zone_type": null,
       "color_rgba": [
-        0.9450980392156862,
-        0.9607843137254902,
-        0.9764705882352941,
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
         1.0
       ],
       "segmentation_color_rgb": [
@@ -136,14 +136,14 @@
         "meshes/guide_rail_lower.obj"
       ],
       "box_size_mm": null,
-      "material_id": "steel_cold_rolled",
+      "material_id": "aluminum_6061",
       "body_name": "guide_rail_lower",
       "geom_name": "guide_rail_lower",
       "zone_type": null,
       "color_rgba": [
-        0.62,
-        0.67,
-        0.73,
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
         1.0
       ],
       "segmentation_color_rgb": [
@@ -174,14 +174,14 @@
         "meshes/guide_rail_upper.obj"
       ],
       "box_size_mm": null,
-      "material_id": "steel_cold_rolled",
+      "material_id": "aluminum_6061",
       "body_name": "guide_rail_upper",
       "geom_name": "guide_rail_upper",
       "zone_type": null,
       "color_rgba": [
-        0.62,
-        0.67,
-        0.73,
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
         1.0
       ],
       "segmentation_color_rgb": [
@@ -198,44 +198,6 @@
       "instance_name": "projectile_ball",
       "object_type": "part",
       "object_id": 5,
-      "pos_mm": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "euler_deg": [
-        -0.0,
-        0.0,
-        -0.0
-      ],
-      "mesh_paths": [
-        "meshes/projectile_ball.obj"
-      ],
-      "box_size_mm": null,
-      "material_id": "steel_bearing",
-      "body_name": "projectile_ball",
-      "geom_name": "projectile_ball",
-      "zone_type": null,
-      "color_rgba": [
-        0.62,
-        0.67,
-        0.73,
-        1.0
-      ],
-      "segmentation_color_rgb": [
-        235,
-        154,
-        59
-      ],
-      "include_in_segmentation": true
-    },
-    {
-      "label": "projectile_ball",
-      "semantic_label": "projectile_ball",
-      "instance_id": "projectile_ball",
-      "instance_name": "projectile_ball",
-      "object_type": "part",
-      "object_id": 6,
       "pos_mm": [
         -0.5,
         0.0,
@@ -261,9 +223,9 @@
         1.0
       ],
       "segmentation_color_rgb": [
-        103,
-        59,
-        235
+        235,
+        154,
+        59
       ],
       "include_in_segmentation": true
     },
@@ -273,7 +235,7 @@
       "instance_id": "zone_goal",
       "instance_name": "zone_goal",
       "object_type": "zone",
-      "object_id": 7,
+      "object_id": 6,
       "pos_mm": [
         0.5,
         0.0,
@@ -301,9 +263,9 @@
         0.22
       ],
       "segmentation_color_rgb": [
-        66,
-        235,
-        59
+        103,
+        59,
+        235
       ],
       "include_in_segmentation": false
     },
@@ -313,11 +275,11 @@
       "instance_id": "zone_build",
       "instance_name": "zone_build",
       "object_type": "zone",
-      "object_id": 8,
+      "object_id": 7,
       "pos_mm": [
         0.0,
         0.0,
-        0.09
+        0.1
       ],
       "euler_deg": [
         0.0,
@@ -326,9 +288,9 @@
       ],
       "mesh_paths": [],
       "box_size_mm": [
-        0.58,
-        0.1,
-        0.09
+        0.7,
+        0.15,
+        0.1
       ],
       "material_id": null,
       "body_name": null,
@@ -341,9 +303,9 @@
         0.14
       ],
       "segmentation_color_rgb": [
+        66,
         235,
-        59,
-        117
+        59
       ],
       "include_in_segmentation": false
     }
@@ -356,12 +318,12 @@
   "bounds_max_mm": [
     0.7,
     0.15,
-    0.18
+    0.2
   ],
   "center_mm": [
     0.0,
     0.0,
-    0.06999999999999999
+    0.08
   ],
-  "diagonal": 1.4485855169785455
+  "diagonal": 1.4517575555167603
 }

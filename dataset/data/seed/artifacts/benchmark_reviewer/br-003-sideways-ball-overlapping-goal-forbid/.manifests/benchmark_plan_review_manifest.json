@@ -1,0 +1,15 @@
+{
+  "status": "ready_for_review",
+  "reviewer_stage": "benchmark_plan_reviewer",
+  "session_id": "seed-br-003-sideways-ball-overlapping-goal-forbid",
+  "planner_node_type": "benchmark_planner",
+  "benchmark_revision": "b32e93efd6ab1b575d5edc5315c150cf3710d3fb",
+  "environment_version": "1.0",
+  "artifact_hashes": {
+    "benchmark_assembly_definition.yaml": "487c0807a2410e8e2f823abb02a1290a88b0d697f34ad4757efb24322da76d21",
+    "benchmark_definition.yaml": "892370a6a8b6be14011ae1410dc10c5f84d97919f2b290beb03106d279a95d22",
+    "todo.md": "48bedf1e34b37e41cd188d38c5f11791cd94a7ac21b0ac199537feb7c9396c3a",
+    "benchmark_plan.md": "f65a5d0634d82c4d9b8582d0b134662d48ee2f64dce5593448f6cf9a6e6d8fd7",
+    "benchmark_plan_evidence_script.py": "6fd45ad07722c15b45865853d7c8f41e4c7f35099b7976afd4fe3269a19bae9a"
+  }
+}

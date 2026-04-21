@@ -1,0 +1,15 @@
+{
+  "status": "ready_for_review",
+  "reviewer_stage": "benchmark_plan_reviewer",
+  "session_id": "seed-br-004-lower-bin-unreachable-redirection-review",
+  "planner_node_type": "benchmark_planner",
+  "benchmark_revision": "b32e93efd6ab1b575d5edc5315c150cf3710d3fb",
+  "environment_version": "1.0",
+  "artifact_hashes": {
+    "benchmark_assembly_definition.yaml": "82ce381f06f75ae1d94eefe366472344bd29a270f392b882afdea893a2eddc01",
+    "benchmark_definition.yaml": "2c7d18765381649a2902e8849144b1e4dec6b33f0944ea347be0e8f5f081e355",
+    "todo.md": "48bedf1e34b37e41cd188d38c5f11791cd94a7ac21b0ac199537feb7c9396c3a",
+    "benchmark_plan.md": "39074e69ad6d5ba6720a1e44f3fd11fb9aac10d573de06bfe74f0b20169379da",
+    "benchmark_plan_evidence_script.py": "45786a98ece4cf6798523e81fb3f945c2a6d0fba748d1bc07fffccd6fc6edb97"
+  }
+}

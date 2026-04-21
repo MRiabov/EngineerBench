@@ -1,0 +1,13 @@
+{
+  "status": "ready_for_review",
+  "reviewer_stage": "benchmark_plan_reviewer",
+  "session_id": "seed-bc-003-sidedeflect",
+  "planner_node_type": "benchmark_planner",
+  "artifact_hashes": {
+    "benchmark_assembly_definition.yaml": "ced0c4875511e81a1f05d6db42b02c7f90baf1c45fc735677e539034b6775a24",
+    "benchmark_definition.yaml": "82c3808a8a2b94e8d025b0bb049e81e654a7d2ca9585676f17034d5835b5470a",
+    "todo.md": "48bedf1e34b37e41cd188d38c5f11791cd94a7ac21b0ac199537feb7c9396c3a",
+    "benchmark_plan.md": "2b98240b75fbcb22553d71a691032d226956005d2ccacf1e9ea1eb3e98137a8f",
+    "benchmark_plan_evidence_script.py": "e27eb5b181f58b21b5f4365bc11fcbc390c74ca263e703e60121444d5a44db48"
+  }
+}

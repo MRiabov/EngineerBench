@@ -1,0 +1,331 @@
+{
+  "component_label": "benchmark_environment",
+  "entities": [
+    {
+      "label": "left_start_deck",
+      "semantic_label": "left_start_deck",
+      "instance_id": "left_start_deck",
+      "instance_name": "left_start_deck",
+      "object_type": "part",
+      "object_id": 0,
+      "pos_mm": [
+        -30.0,
+        0.0,
+        2.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/left_start_deck.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "aluminum_6061",
+      "body_name": "left_start_deck",
+      "geom_name": "left_start_deck",
+      "zone_type": null,
+      "color_rgba": [
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "right_goal_deck",
+      "semantic_label": "right_goal_deck",
+      "instance_id": "right_goal_deck",
+      "instance_name": "right_goal_deck",
+      "object_type": "part",
+      "object_id": 1,
+      "pos_mm": [
+        30.0,
+        0.0,
+        2.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/right_goal_deck.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "aluminum_6061",
+      "body_name": "right_goal_deck",
+      "geom_name": "right_goal_deck",
+      "zone_type": null,
+      "color_rgba": [
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        110,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "bridge_reference_table",
+      "semantic_label": "bridge_reference_table",
+      "instance_id": "bridge_reference_table",
+      "instance_name": "bridge_reference_table",
+      "object_type": "part",
+      "object_id": 2,
+      "pos_mm": [
+        0.0,
+        0.0,
+        9.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/bridge_reference_table.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "aluminum_6061",
+      "body_name": "bridge_reference_table",
+      "geom_name": "bridge_reference_table",
+      "zone_type": null,
+      "color_rgba": [
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        161,
+        235,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "gap_floor_guard",
+      "semantic_label": "gap_floor_guard",
+      "instance_id": "gap_floor_guard",
+      "instance_name": "gap_floor_guard",
+      "object_type": "part",
+      "object_id": 3,
+      "pos_mm": [
+        0.0,
+        -14.0,
+        3.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/gap_floor_guard.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "aluminum_6061",
+      "body_name": "gap_floor_guard",
+      "geom_name": "gap_floor_guard",
+      "zone_type": null,
+      "color_rgba": [
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        213
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "projectile_ball",
+      "semantic_label": "projectile_ball",
+      "instance_id": "projectile_ball",
+      "instance_name": "projectile_ball",
+      "object_type": "part",
+      "object_id": 4,
+      "pos_mm": [
+        0.0,
+        0.0,
+        120.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [
+        "meshes/benchmark_payload__projectile_ball.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "abs",
+      "body_name": "benchmark_payload__projectile_ball",
+      "geom_name": "benchmark_payload__projectile_ball",
+      "zone_type": null,
+      "color_rgba": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        235,
+        205
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "zone_goal",
+      "semantic_label": "zone_goal",
+      "instance_id": "zone_goal",
+      "instance_name": "zone_goal",
+      "object_type": "zone",
+      "object_id": 5,
+      "pos_mm": [
+        170.0,
+        0.0,
+        15.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        30.0,
+        35.0,
+        10.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "goal",
+      "color_rgba": [
+        0.2,
+        0.72,
+        0.34,
+        0.22
+      ],
+      "segmentation_color_rgb": [
+        235,
+        154,
+        59
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_0_direct_drop_trap",
+      "semantic_label": "zone_forbid_0_direct_drop_trap",
+      "instance_id": "zone_forbid_0_direct_drop_trap",
+      "instance_name": "zone_forbid_0_direct_drop_trap",
+      "object_type": "zone",
+      "object_id": 6,
+      "pos_mm": [
+        0.0,
+        0.0,
+        25.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        20.0,
+        25.0,
+        25.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        103,
+        59,
+        235
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_build",
+      "semantic_label": "zone_build",
+      "instance_id": "zone_build",
+      "instance_name": "zone_build",
+      "object_type": "zone",
+      "object_id": 7,
+      "pos_mm": [
+        30.0,
+        0.0,
+        80.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        210.0,
+        120.0,
+        80.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "build",
+      "color_rgba": [
+        0.55,
+        0.55,
+        0.55,
+        0.14
+      ],
+      "segmentation_color_rgb": [
+        66,
+        235,
+        59
+      ],
+      "include_in_segmentation": false
+    }
+  ],
+  "bounds_min_mm": [
+    -180.0,
+    -120.0,
+    0.0
+  ],
+  "bounds_max_mm": [
+    240.0,
+    120.0,
+    160.0
+  ],
+  "center_mm": [
+    30.0,
+    0.0,
+    80.0
+  ],
+  "diagonal": 509.5095681142799
+}

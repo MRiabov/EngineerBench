@@ -4,10 +4,10 @@
   "session_id": "seed-bpr-007-lower-bin",
   "planner_node_type": "benchmark_planner",
   "artifact_hashes": {
-    "benchmark_assembly_definition.yaml": "0aa96153a33b56ab94011f1863154dd9e401512770aba689b6cacfdc0d0549f9",
-    "benchmark_definition.yaml": "0938f7f6ce686128b7563402a1102f88a92b65301ef14a743de24a5c3b0fd008",
+    "benchmark_assembly_definition.yaml": "82ce381f06f75ae1d94eefe366472344bd29a270f392b882afdea893a2eddc01",
+    "benchmark_definition.yaml": "a261cb19ac9c42820b7a4f7d0efe6c68d34a703600a81787a9b254c71f08a548",
     "todo.md": "48bedf1e34b37e41cd188d38c5f11791cd94a7ac21b0ac199537feb7c9396c3a",
     "benchmark_plan.md": "1a554d0d26e1d004b7bb1596e9bb4766987aa7361b7999ee4e4a77b0d061a1e6",
-    "benchmark_plan_evidence_script.py": "4e6a29517fd190fcb520cab54490a1fa64fb1ce930719e9332c47726e65ae117"
+    "benchmark_plan_evidence_script.py": "18f068d108c31a287f51663c02db1e18c29a4b1f1a26be7dd83156db053c4d7a"
   }
 }

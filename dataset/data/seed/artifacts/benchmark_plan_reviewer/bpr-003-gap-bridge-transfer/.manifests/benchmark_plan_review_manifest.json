@@ -4,10 +4,10 @@
   "session_id": "seed-bpr-003-no-drill-transfer",
   "planner_node_type": "benchmark_planner",
   "artifact_hashes": {
-    "benchmark_assembly_definition.yaml": "cce4102831b2d568144146ee134cdd0e10b61faf07e71fbba0dd446170e51d04",
-    "benchmark_definition.yaml": "b36e429d18f0df128da7c422eaa85b8d4c306b97a5fb05d11649df95f05b4cbb",
+    "benchmark_assembly_definition.yaml": "1d5153471f117566c90ef20166acf25e9c92a6c1703bb2b9cffaae84a4e71224",
+    "benchmark_definition.yaml": "af1c62f36b8eea0d0e6fb0bb94bf29458146b54914cfc02824165580f96b1b1a",
     "todo.md": "48bedf1e34b37e41cd188d38c5f11791cd94a7ac21b0ac199537feb7c9396c3a",
     "benchmark_plan.md": "6c4a2da3170059975a47f5992b7c4905e233ca750cd87e9ec44c48d71185735a",
-    "benchmark_plan_evidence_script.py": "4e6a29517fd190fcb520cab54490a1fa64fb1ce930719e9332c47726e65ae117"
+    "benchmark_plan_evidence_script.py": "c0aca4cad3447f36b9ed7df3f7bfd68bd4212e52ba0264c84a74e3cae54a466a"
   }
 }

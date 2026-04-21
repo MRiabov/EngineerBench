@@ -2,16 +2,16 @@
   "component_label": "benchmark_environment",
   "entities": [
     {
-      "label": "projectile_ball",
-      "semantic_label": "projectile_ball",
-      "instance_id": "projectile_ball",
-      "instance_name": "projectile_ball",
+      "label": "upper_start_ledge",
+      "semantic_label": "upper_start_ledge",
+      "instance_id": "upper_start_ledge",
+      "instance_name": "upper_start_ledge",
       "object_type": "part",
       "object_id": 0,
       "pos_mm": [
-        -0.02,
+        -0.03,
         0.0,
-        0.22
+        0.14
       ],
       "euler_deg": [
         -0.0,
@@ -19,17 +19,17 @@
         -0.0
       ],
       "mesh_paths": [
-        "meshes/projectile_ball.obj"
+        "meshes/upper_start_ledge.obj"
       ],
       "box_size_mm": null,
-      "material_id": "abs",
-      "body_name": "projectile_ball",
-      "geom_name": "projectile_ball",
+      "material_id": "aluminum_6061",
+      "body_name": "upper_start_ledge",
+      "geom_name": "upper_start_ledge",
       "zone_type": null,
       "color_rgba": [
-        1.0,
-        1.0,
-        1.0,
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
         1.0
       ],
       "segmentation_color_rgb": [
@@ -40,12 +40,164 @@
       "include_in_segmentation": true
     },
     {
+      "label": "deflector_ramp",
+      "semantic_label": "deflector_ramp",
+      "instance_id": "deflector_ramp",
+      "instance_name": "deflector_ramp",
+      "object_type": "part",
+      "object_id": 1,
+      "pos_mm": [
+        0.03,
+        0.0,
+        0.1
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/deflector_ramp.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "aluminum_6061",
+      "body_name": "deflector_ramp",
+      "geom_name": "deflector_ramp",
+      "zone_type": null,
+      "color_rgba": [
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        110,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "direct_drop_shield",
+      "semantic_label": "direct_drop_shield",
+      "instance_id": "direct_drop_shield",
+      "instance_name": "direct_drop_shield",
+      "object_type": "part",
+      "object_id": 2,
+      "pos_mm": [
+        0.08,
+        0.0,
+        0.12
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/direct_drop_shield.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "aluminum_6061",
+      "body_name": "direct_drop_shield",
+      "geom_name": "direct_drop_shield",
+      "zone_type": null,
+      "color_rgba": [
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        161,
+        235,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "lower_bin",
+      "semantic_label": "lower_bin",
+      "instance_id": "lower_bin",
+      "instance_name": "lower_bin",
+      "object_type": "part",
+      "object_id": 3,
+      "pos_mm": [
+        0.26,
+        0.0,
+        0.02
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/lower_bin.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "aluminum_6061",
+      "body_name": "lower_bin",
+      "geom_name": "lower_bin",
+      "zone_type": null,
+      "color_rgba": [
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        213
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "projectile_ball",
+      "semantic_label": "projectile_ball",
+      "instance_id": "projectile_ball",
+      "instance_name": "projectile_ball",
+      "object_type": "part",
+      "object_id": 4,
+      "pos_mm": [
+        -0.02,
+        0.0,
+        0.22
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [
+        "meshes/benchmark_payload__projectile_ball.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "abs",
+      "body_name": "benchmark_payload__projectile_ball",
+      "geom_name": "benchmark_payload__projectile_ball",
+      "zone_type": null,
+      "color_rgba": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        235,
+        205
+      ],
+      "include_in_segmentation": true
+    },
+    {
       "label": "zone_goal",
       "semantic_label": "zone_goal",
       "instance_id": "zone_goal",
       "instance_name": "zone_goal",
       "object_type": "zone",
-      "object_id": 1,
+      "object_id": 5,
       "pos_mm": [
         0.27,
         0.0,
@@ -73,9 +225,9 @@
         0.22
       ],
       "segmentation_color_rgb": [
-        59,
-        110,
-        235
+        235,
+        154,
+        59
       ],
       "include_in_segmentation": false
     },
@@ -85,7 +237,7 @@
       "instance_id": "zone_forbid_0_direct_drop_dead_zone",
       "instance_name": "zone_forbid_0_direct_drop_dead_zone",
       "object_type": "zone",
-      "object_id": 2,
+      "object_id": 6,
       "pos_mm": [
         0.0,
         0.0,
@@ -113,9 +265,9 @@
         0.2
       ],
       "segmentation_color_rgb": [
-        161,
-        235,
-        59
+        103,
+        59,
+        235
       ],
       "include_in_segmentation": false
     },
@@ -125,7 +277,7 @@
       "instance_id": "zone_build",
       "instance_name": "zone_build",
       "object_type": "zone",
-      "object_id": 3,
+      "object_id": 7,
       "pos_mm": [
         0.12,
         0.0,
@@ -153,9 +305,9 @@
         0.14
       ],
       "segmentation_color_rgb": [
+        66,
         235,
-        59,
-        213
+        59
       ],
       "include_in_segmentation": false
     }
