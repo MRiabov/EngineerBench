@@ -9,34 +9,30 @@ objectives:
   build_zone_mm:
     min_mm: [-0.12, -0.16, 0.0]
     max_mm: [0.36, 0.16, 0.28]
-  fluid_objectives: []
-  stress_objectives: []
 benchmark_parts:
   - part_id: upper_start_ledge
     label: upper_start_ledge
     metadata:
-      fixed: true
+      is_fixed: true
       material_id: aluminum_6061
   - part_id: deflector_ramp
     label: deflector_ramp
     metadata:
-      fixed: true
+      is_fixed: true
       material_id: hdpe
   - part_id: direct_drop_shield
     label: direct_drop_shield
     metadata:
-      fixed: true
+      is_fixed: true
       material_id: aluminum_6061
   - part_id: lower_bin
     label: lower_bin
     metadata:
-      fixed: true
+      is_fixed: true
       material_id: hdpe
 physics:
   backend: GENESIS
-  fem_enabled: false
   compute_target: auto
-fluids: []
 simulation_bounds_mm:
   min_mm: [-0.18, -0.2, -0.01]
   max_mm: [0.42, 0.2, 0.32]

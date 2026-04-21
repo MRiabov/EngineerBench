@@ -4,6 +4,7 @@ Test whether a rolling sphere can stay constrained inside a tunnel-shaped guide 
 
 ## 2. Geometry
 
+- `environment_fixture`: single fixed tunnel-shell fixture that stays inside the build zone and contains the rolling sphere until it reaches the goal box.
 - A tunnel body inside the build zone with a clear inner channel for a 30 mm radius_mm sphere.
 - Entry shelf near X=-0.42 m and exit lip near X=+0.48 m.
 - Static outer shell and floor should be fixed.

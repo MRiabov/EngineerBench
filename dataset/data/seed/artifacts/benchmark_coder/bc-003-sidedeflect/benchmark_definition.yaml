@@ -9,8 +9,6 @@ objectives:
   build_zone_mm:
     min_mm: [-180.0, -120.0, 0.0]
     max_mm: [240.0, 120.0, 160.0]
-  fluid_objectives: []
-  stress_objectives: []
 benchmark_parts:
   - part_id: base_plate
     label: base_plate
@@ -34,7 +32,6 @@ benchmark_parts:
       material_id: hdpe
 physics:
   backend: GENESIS
-  fem_enabled: false
   compute_target: auto
 simulation_bounds_mm:
   min_mm: [-220.0, -160.0, -10.0]

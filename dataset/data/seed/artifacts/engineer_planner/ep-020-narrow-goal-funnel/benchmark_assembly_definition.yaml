@@ -1,0 +1,80 @@
+version: "1.0"
+units:
+  length: "mm"
+  volume: "mm3"
+  mass: "g"
+  currency: "USD"
+constraints:
+  benchmark_max_unit_cost_usd: 80.0
+  benchmark_max_weight_g: 1600.0
+  planner_target_max_unit_cost_usd: 58.0
+  planner_target_max_weight_g: 1080.0
+manufactured_parts:
+  - part_name: capture_bowl
+    part_id: capture_bowl
+    manufacturing_method: CNC
+    material_id: hdpe
+    quantity: 1
+    part_volume_mm3: 320000.0
+    stock_bbox_mm:
+      x: 260.0
+      y: 180.0
+      z: 80.0
+    stock_volume_mm3: 3744000.0
+    removed_volume_mm3: 3424000.0
+    estimated_unit_cost_usd: 11.0
+  - part_name: throat_left
+    part_id: throat_left
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 110000.0
+    stock_bbox_mm:
+      x: 180.0
+      y: 12.0
+      z: 70.0
+    stock_volume_mm3: 151200.0
+    removed_volume_mm3: 41200.0
+    estimated_unit_cost_usd: 5.0
+  - part_name: throat_right
+    part_id: throat_right
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 110000.0
+    stock_bbox_mm:
+      x: 180.0
+      y: 12.0
+      z: 70.0
+    stock_volume_mm3: 151200.0
+    removed_volume_mm3: 41200.0
+    estimated_unit_cost_usd: 5.0
+  - part_name: goal_sleeve
+    part_id: goal_sleeve
+    manufacturing_method: CNC
+    material_id: hdpe
+    quantity: 1
+    part_volume_mm3: 70000.0
+    stock_bbox_mm:
+      x: 36.0
+      y: 36.0
+      z: 70.0
+    stock_volume_mm3: 90720.0
+    removed_volume_mm3: 20720.0
+    estimated_unit_cost_usd: 3.0
+final_assembly:
+  - name: capture_bowl
+    config:
+  - name: throat_left
+    config:
+  - name: throat_right
+    config:
+  - name: goal_sleeve
+    config:
+totals:
+  estimated_unit_cost_usd: 24.0
+  estimated_weight_g: 760.0
+  estimate_confidence: high
+dfm_suggestions:
+  - Machine the throat walls from identical strips so the narrow goal remains symmetric.
+  - Keep the goal sleeve as a single pocketed part to avoid assembly ambiguity.

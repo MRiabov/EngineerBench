@@ -1,0 +1,91 @@
+objectives:
+  goal_zone_mm:
+    min_mm:
+      - 420.0
+      - -60.0
+      - 15.0
+    max_mm:
+      - 520.0
+      - 60.0
+      - 110.0
+  forbid_zones:
+    - name: central_blocker
+      min_mm:
+        - 120.0
+        - -130.0
+        - 0.0
+      max_mm:
+        - 260.0
+        - 130.0
+        - 150.0
+  build_zone_mm:
+    min_mm:
+      - -240.0
+      - -180.0
+      - 0.0
+    max_mm:
+      - 560.0
+      - 180.0
+      - 240.0
+benchmark_parts:
+  - part_id: left_launch_pad
+    label: left_launch_pad
+    metadata:
+      fixed: true
+      material_id: aluminum_6061
+  - part_id: central_blocker
+    label: central_blocker
+    metadata:
+      fixed: true
+      material_id: aluminum_6061
+  - part_id: upper_route_wall
+    label: upper_route_wall
+    metadata:
+      fixed: true
+      material_id: hdpe
+  - part_id: lower_route_wall
+    label: lower_route_wall
+    metadata:
+      fixed: true
+      material_id: hdpe
+  - part_id: goal_catch_tray
+    label: goal_catch_tray
+    metadata:
+      fixed: true
+      material_id: hdpe
+physics:
+  backend: GENESIS
+  compute_target: auto
+simulation_bounds_mm:
+  min_mm:
+    - -300.0
+    - -220.0
+    - -10.0
+  max_mm:
+    - 620.0
+    - 220.0
+    - 280.0
+payload:
+  label: projectile_ball
+  shape: sphere
+  material_id: abs
+  static_randomization:
+    radius_mm:
+      - 28.0
+      - 30.0
+  start_position_mm:
+    - -180.0
+    - 0.0
+    - 150.0
+  runtime_jitter_mm:
+    - 14.0
+    - 10.0
+    - 6.0
+constraints:
+  estimated_solution_cost_usd: 53.333333333333
+  estimated_solution_weight_g: 1066.666666666667
+  max_unit_cost: 80.0
+  max_weight_g: 1600.0
+randomization:
+  static_variation_id: benchmark_plan_reviewer_central_forbid_route_v1
+  runtime_jitter_enabled: true

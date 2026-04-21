@@ -7,24 +7,20 @@ objectives:
       min_mm: [0.30, -0.04, 0.03]
       max_mm: [0.42, 0.04, 0.13]
   build_zone_mm:
-    min_mm: [-0.58, -0.1, 0.0]
-    max_mm: [0.58, 0.1, 0.18]
-  fluid_objectives: []
-  stress_objectives: []
+    min_mm: [-0.7, -0.15, -0.05]
+    max_mm: [0.7, 0.15, 0.2]
 benchmark_parts:
   - part_id: environment_fixture
     label: environment_fixture
     metadata:
-      fixed: true
+      is_fixed: true
       material_id: aluminum_6061
 
 physics:
   backend: GENESIS
-  fem_enabled: false
   compute_target: auto
-fluids: []
 simulation_bounds_mm:
-  min_mm: [-0.7, -0.15, 0.0]
+  min_mm: [-0.7, -0.15, -0.05]
   max_mm: [0.7, 0.15, 0.2]
 payload:
   label: projectile_ball
@@ -38,7 +34,7 @@ constraints:
   estimated_solution_cost_usd: 80.0
   estimated_solution_weight_g: 3333.333333333333
   max_unit_cost: 120.0
-  max_weight_g: 2200.0
+  max_weight_g: 5000.0
 randomization:
   static_variation_id: v1.2
   runtime_jitter_enabled: true

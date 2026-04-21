@@ -1,76 +1,72 @@
 objectives:
   goal_zone_mm:
     min_mm:
-    - 210.0
-    - -55.0
-    - 20.0
+      - 210.0
+      - -55.0
+      - 20.0
     max_mm:
-    - 310.0
-    - 55.0
-    - 110.0
+      - 310.0
+      - 55.0
+      - 110.0
   forbid_zones: []
   build_zone_mm:
     min_mm:
-    - -320.0
-    - -180.0
-    - 0.0
+      - -320.0
+      - -180.0
+      - 0.0
     max_mm:
-    - 340.0
-    - 180.0
-    - 220.0
-  fluid_objectives: []
-  stress_objectives: []
+      - 340.0
+      - 180.0
+      - 220.0
 benchmark_parts:
-- part_id: ballast_base
-  label: ballast_base
-  metadata:
-    fixed: true
-    material_id: steel_cold_rolled
-- part_id: transfer_chute
-  label: transfer_chute
-  metadata:
-    fixed: true
-    material_id: hdpe
-- part_id: counterweight_fin
-  label: counterweight_fin
-  metadata:
-    fixed: true
-    material_id: steel_cold_rolled
-- part_id: goal_cradle
-  label: goal_cradle
-  metadata:
-    fixed: true
-    material_id: hdpe
+  - part_id: ballast_base
+    label: ballast_base
+    metadata:
+      fixed: true
+      material_id: steel_cold_rolled
+  - part_id: transfer_chute
+    label: transfer_chute
+    metadata:
+      fixed: true
+      material_id: hdpe
+  - part_id: counterweight_fin
+    label: counterweight_fin
+    metadata:
+      fixed: true
+      material_id: steel_cold_rolled
+  - part_id: goal_cradle
+    label: goal_cradle
+    metadata:
+      fixed: true
+      material_id: hdpe
 physics:
   backend: GENESIS
-  fem_enabled: false
   compute_target: auto
-fluids: []
 simulation_bounds_mm:
   min_mm:
-  - -380.0
-  - -220.0
-  - -10.0
+    - -380.0
+    - -220.0
+    - -10.0
   max_mm:
-  - 400.0
-  - 220.0
-  - 280.0
+    - 400.0
+    - 220.0
+    - 280.0
 payload:
   label: projectile_ball
   shape: sphere
   material_id: abs
   static_randomization:
     radius_mm:
-    - 22.0
-    - 24.0
+      - 22.0
+      - 24.0
   start_position_mm:
-  - -250.0
-  - 0.0
-  - 70.0
+    - -250.0
+    - 0.0
+    - 70.0
   runtime_jitter_mm:
-  - 10.0
-  - 8.0
-  - 4.0
+    - 10.0
+    - 8.0
+    - 4.0
 constraints:
   estimated_solution_cost_usd: 40.0
   estimated_solution_weight_g: 666.666666666667

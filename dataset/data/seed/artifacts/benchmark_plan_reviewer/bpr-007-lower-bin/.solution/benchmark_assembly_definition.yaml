@@ -72,10 +72,9 @@ final_assembly:
   - name: lower_bin
     config:
 totals:
-  estimated_unit_cost_usd: 44.0
+  estimated_unit_cost_usd: 35.0
   estimated_weight_g: 920.0
   estimate_confidence: high
 dfm_suggestions:
   - Keep the dead-zone shield rectangular so the failure geometry stays obvious in review.
   - Use one continuous deflector instead of segmented ramps to avoid ambiguity in the planner handoff.
-

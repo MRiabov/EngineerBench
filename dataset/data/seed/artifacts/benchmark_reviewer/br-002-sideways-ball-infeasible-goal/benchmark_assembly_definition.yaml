@@ -6,7 +6,7 @@ units:
   currency: "USD"
 constraints:
   benchmark_max_unit_cost_usd: 120.0
-  benchmark_max_weight_g: 2200.0
+  benchmark_max_weight_g: 5000.0
   planner_target_max_unit_cost_usd: 120.0
   planner_target_max_weight_g: 2200.0
 manufactured_parts: []

@@ -72,7 +72,7 @@ final_assembly:
   - name: goal_cradle
     config:
 totals:
-  estimated_unit_cost_usd: 45.0
+  estimated_unit_cost_usd: 36.0
   estimated_weight_g: 820.0
   estimate_confidence: high
 dfm_suggestions:

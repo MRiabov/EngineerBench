@@ -5,7 +5,7 @@ Test passive gravity-driven redirection: a ball dropped from height must strike 
 ## 2. Geometry
 
 - `base_plate`: fixed floor plate centered at `[0, 0, 5]` mm, size `300×200×10` mm.
-- `deflector_ramp`: fixed angled ramp centered near `[40, 0, 60]` mm, top surface tilted 30° from horizontal, size `120×160×15` mm.
+- `deflector_ramp`: fixed angled ramp centered near `[40, 0, 60]` mm, built from `Rotation(0, 30, 0) * box` so its top surface tilts 30° from horizontal with the low edge toward `+X`, size `120×160×15` mm.
 - `side_goal_wall`: vertical wall forming the goal bin at `[140, -40, 20]` mm to `[200, 40, 80]` mm.
 - `catch_bin`: goal collection bin at `[140, -35, 5]` mm to `[200, 35, 25]` mm.
 - `projectile_ball` (payload, ABS plastic):

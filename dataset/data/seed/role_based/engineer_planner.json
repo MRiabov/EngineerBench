@@ -1,30 +1,23 @@
 [
   {
-    "id": "ep-002",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a route that gets the projectile ball around the central forbid zone and into the goal zone. The design must absorb the listed spawn jitter instead of depending on lucky bounces, and the final assembly should avoid unnecessary moving elements.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-002-central-forbid-route",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts describe a robust around-obstacle transport mechanism, include explicit risk mitigation for the forbid zone and jitter, and keep `assembly_definition.yaml` minimal in moving complexity and within budget."
-  },
-  {
-    "id": "ep-003",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a passive gap-bridge transfer from the left start area to the right goal zone. The plan must stay self-supporting inside the build zone and remain stable under runtime jitter.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-003-gap-bridge-transfer",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts describe a manufacturable passive mechanism, avoid unsupported external support assumptions, and keep costs and weight under the seeded benchmark caps."
-  },
-  {
-    "id": "ep-006",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan for a narrow, precision goal zone. The mechanism should widen the capture area upstream and then funnel the object into the narrow goal without violating the build zone or the seeded cost and weight caps.",
+    "id": "ep-001",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff package in the workspace to draft an implementation-ready passive gap-bridge engineering plan for the bridge benchmark. Keep the benchmark-owned files read-only, ground the engineering plan in the seeded benchmark geometry and caps, and update `engineering_plan.md`, `todo.md`, `assembly_definition.yaml`, and `solution_plan_evidence_script.py` from the starter templates.",
     "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-006-narrow-goal",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts include a realistic precision-guidance strategy, mention tolerance and jitter risks explicitly, and produce contract-valid handoff files with tighter planner budgets."
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-001-gap-bridge-transfer",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner starts from the seeded benchmark gap-bridge context plus the exact planner starter templates, keeps benchmark-owned files read-only, and updates the writable planner files without drifting from the starter snapshot."
   },
   {
-    "id": "ep-007",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff in `benchmark_definition.yaml` to plan a controlled drop or redirection that sends the projectile ball from the elevated start region into the lower bin goal zone. The plan should handle the vertical drop cleanly, remain manufacturable, and stay within the benchmark cost and weight caps.",
-    "complexity_level": 0,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-007-lower-bin",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Planner artifacts define a gravity-aware lower-bin solution, include concrete risk mitigations for bounce and escape, and produce valid engineering handoff files under the benchmark caps."
+    "id": "ep-010",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded benchmark handoff package in the workspace to draft an implementation-ready passive elevated bypass bridge engineering plan for the `central_blocker` benchmark. Keep the benchmark-owned files read-only, ground the engineering plan in the seeded benchmark geometry and caps, and update `engineering_plan.md`, `todo.md`, `benchmark_definition.yaml`, `assembly_definition.yaml`, and `solution_plan_evidence_script.py` from the starter templates.",
+    "complexity_level": 2,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-010-central-bypass-route",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner starts from the seeded central-bypass benchmark context plus the exact planner starter templates, keeps benchmark-owned files read-only, and updates the writable planner files without drifting from the starter snapshot."
+  },
+  {
+    "id": "ep-020",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Use the seeded narrow-goal funnel benchmark handoff in the workspace to draft an implementation-ready passive precision-funnel engineering plan. Keep the benchmark-owned files read-only, ground the engineering plan in the seeded benchmark geometry and caps, and update `engineering_plan.md`, `todo.md`, `assembly_definition.yaml`, and `solution_plan_evidence_script.py` from the starter templates.",
+    "complexity_level": 3,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-020-narrow-goal-funnel",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner starts from the seeded narrow-goal funnel benchmark context plus the exact planner starter templates, keeps benchmark-owned files read-only, and updates the writable planner files without drifting from the starter snapshot."
   }
 ]

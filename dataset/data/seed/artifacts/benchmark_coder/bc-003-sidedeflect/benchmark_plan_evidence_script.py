@@ -9,7 +9,7 @@ build123d scene. Every label and quantity must match the planner handoff exactly
 - catch_bin x1 (hdpe, fixed)
 """
 
-from build123d import Align, Box, Compound, Location
+from build123d import Align, Box, Compound, Location, Rotation
 
 from utils.metadata import CompoundMetadata, PartMetadata
 
@@ -24,8 +24,8 @@ DEFLECTOR_RAMP_SIZE = (120.0, 160.0, 15.0)
 SIDE_GOAL_WALL_POS = (170.0, 0.0, 50.0)
 SIDE_GOAL_WALL_SIZE = (60.0, 80.0, 60.0)
 
-CATCH_BIN_POS = (170.0, 0.0, 12.5)
-CATCH_BIN_SIZE = (60.0, 70.0, 5.0)
+CATCH_BIN_POS = (170.0, 0.0, 15.0)
+CATCH_BIN_SIZE = (60.0, 70.0, 20.0)
 
 
 def build() -> Compound:
@@ -33,14 +33,17 @@ def build() -> Compound:
     children: list = []
 
     # base_plate x1
-    bp = Box(*BASE_PLATE_SIZE, align=(Align.CENTER, Align.CENTER, Align.MIN))
+    bp = Box(*BASE_PLATE_SIZE, align=(Align.CENTER, Align.CENTER, Align.CENTER))
     bp = bp.move(Location(BASE_PLATE_POS))
     bp.label = "base_plate"
     bp.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
     children.append(bp)
 
     # deflector_ramp x1
-    dr = Box(*DEFLECTOR_RAMP_SIZE, align=(Align.CENTER, Align.CENTER, Align.CENTER))
+    dr = Rotation(0.0, 30.0, 0.0) * Box(
+        *DEFLECTOR_RAMP_SIZE,
+        align=(Align.CENTER, Align.CENTER, Align.CENTER),
+    )
     dr = dr.move(Location(DEFLECTOR_RAMP_POS))
     dr.label = "deflector_ramp"
     dr.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
@@ -54,7 +57,7 @@ def build() -> Compound:
     children.append(sgw)
 
     # catch_bin x1
-    cb = Box(*CATCH_BIN_SIZE, align=(Align.CENTER, Align.CENTER, Align.MIN))
+    cb = Box(*CATCH_BIN_SIZE, align=(Align.CENTER, Align.CENTER, Align.CENTER))
     cb = cb.move(Location(CATCH_BIN_POS))
     cb.label = "catch_bin"
     cb.metadata = PartMetadata(material_id="hdpe", is_fixed=True)

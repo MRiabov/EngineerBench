@@ -72,10 +72,9 @@ final_assembly:
   - name: goal_sleeve
     config:
 totals:
-  estimated_unit_cost_usd: 32.0
+  estimated_unit_cost_usd: 24.0
   estimated_weight_g: 760.0
   estimate_confidence: high
 dfm_suggestions:
   - Machine the throat walls from identical strips so the narrow goal remains symmetric.
   - Keep the goal sleeve as a single pocketed part to avoid assembly ambiguity.
-

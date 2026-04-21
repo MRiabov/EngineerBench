@@ -87,10 +87,9 @@ final_assembly:
   - name: goal_catch_tray
     config:
 totals:
-  estimated_unit_cost_usd: 56.0
+  estimated_unit_cost_usd: 49.0
   estimated_weight_g: 1260.0
   estimate_confidence: high
 dfm_suggestions:
   - Keep the route walls symmetric so the benchmark route remains clear and easy to inspect.
   - Use a shallow goal tray pocket instead of extra moving catch features.
-
