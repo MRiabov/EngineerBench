@@ -30,6 +30,7 @@ For CLI-provider-backed sessions, the runtime reads the checked-in `.agents/skil
 Skill-training sessions may additionally materialize `suggested_skills/` as a writable session-local worktree/checkpoint seeded from the approved `.agents/skills/` tree. That overlay is session-scoped, not canonical source, and the training loop should read it first when it exists. Publication back into canonical `.agents/skills/` happens through a separate promotion flow.
 
 Role-specific planner scaffolds remain in `shared/assets/template_repos/` and are copied into each workspace before node entry.
+For Engineering Planner, that copied scaffold includes `assembly_definition.yaml` as the checked-in starter template baseline. The render buckets a role expects follow the same `visual_inspection` policy contract described in [handover-contracts.md](./handover-contracts.md).
 `worker_light/agent_files/` is a legacy compatibility mirror for bootstrap and local inspection, not the canonical source of truth.
 
 Template files are intentional source artifacts, not ad hoc runtime defaults
@@ -177,6 +178,10 @@ reviewer is expected to edit. Seed validation fails closed if those writable
 paths already contain a pre-solved output instead of the checked-in starter
 content.
 
+For Engineering Planner, the starter snapshot also includes the checked-in
+`assembly_definition.yaml` template baseline, and seed validation fails closed
+if that file is already solved or otherwise diverges before planner edits.
+
 ## `agents_config.yaml` (path permissions policy)
 
 To prevent permission drift between the static file contract and runtime behavior, we define a centralized policy file at `config/agents_config.yaml`.
@@ -210,7 +215,7 @@ Control-file ownership split:
 06. `solution_script.py` owns engineer-planned solution geometry and implementation code.
 07. `solution_plan_evidence_script.py` owns engineering planner evidence geometry.
 08. `engineering_plan.md` owns engineering planner narrative, proof structure, and exact inventory grounding.
-09. `assembly_definition.yaml` owns engineer-planned solution structure, costing inputs, and motion metadata.
+09. `assembly_definition.yaml` owns engineer-planned solution structure, costing inputs, and motion metadata; Engineer Planner workspaces materialize it from the starter template baseline before any planner edits.
 10. `payload_trajectory_definition.yaml` is the required engineer-coder higher-resolution payload trajectory and contact proof; it refines the coarse planner forecast, must not contradict it, must declare explicit rotation on every step, must start at the payload spawn position, must end at the goal-zone center, must never rise above the spawn height, and must remain swept-clearance safe against fixed geometry.
 11. We do not duplicate engineer solution metadata into `benchmark_definition.yaml`.
 

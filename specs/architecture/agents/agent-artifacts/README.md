@@ -25,7 +25,7 @@ Use this library when a role must seed or judge a concrete workspace file rather
 | [bug_report.md](./bug_report_md_acceptance_criteria.md) | Maintainer-facing runtime blocker report | Infra/runtime failure details and archive metadata |
 | [benchmark_definition.yaml](./benchmark_definition_yaml_acceptance_criteria.md) | Benchmark task geometry and caps | Geometry validity, randomization, and benchmark-contract fidelity |
 | [benchmark_assembly_definition.yaml](./benchmark_assembly_definition_yaml_acceptance_criteria.md) | Benchmark-owned fixture and motion contract | Read-only motion visibility and geometry fidelity |
-| [assembly_definition.yaml](./assembly_definition_yaml_acceptance_criteria.md) | Engineer-owned solution contract | Cost, weight, final assembly, and motion consistency |
+| [assembly_definition.yaml](./assembly_definition_yaml_acceptance_criteria.md) | Engineer planner starter template and solution contract | Template baseline, cost, weight, final assembly, and motion consistency |
 | [benchmark_plan_evidence_script.py](./benchmark_plan_evidence_script_py_acceptance_criteria.md) | Benchmark evidence scene source | Inventory preservation and readability |
 | [solution_plan_evidence_script.py](./solution_plan_evidence_script_py_acceptance_criteria.md) | Engineering plan evidence scene source | Proposed assembly fidelity and readability |
 | [benchmark_script.py](./benchmark_script_py_acceptance_criteria.md) | Approved benchmark geometry source | Exact benchmark inventory and read-only downstream context |

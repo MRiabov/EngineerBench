@@ -16,7 +16,7 @@ The Benchmark Plan Reviewer checks the planner handoff before implementation sta
 - `benchmark_definition.yaml`
 - `benchmark_assembly_definition.yaml`
 - `benchmark_plan_evidence_script.py`
-- `renders/benchmark_renders/**` when available
+- `renders/benchmark_renders/**`
 - `renders/current-episode/**` when it exists
 - `.manifests/benchmark_plan_review_manifest.json`
 
@@ -35,7 +35,7 @@ The Benchmark Plan Reviewer checks the planner handoff before implementation sta
 - Review the latest planner revision only.
 - Check exact inventory grounding across the markdown, YAML, and planner scripts.
 - Reject unsupported geometry claims, hidden motion, and free-form XYZ placement as the primary layout mechanism.
-- If render images exist, inspect at least one before approval.
+- This role's policy defines the benchmark render images it expects for the current revision; inspect at least one of those images before approval.
 - If the benchmark has moving fixtures, require motion-visible handoff facts, not just prose.
 - If bug-report mode is enabled and runtime plumbing blocks the review, write `bug_report.md` at the workspace root and continue unless the reviewer is actually blocked.
 - Keep the review output limited to the stage-owned YAML pair.
@@ -47,7 +47,7 @@ The Benchmark Plan Reviewer checks the planner handoff before implementation sta
 - The benchmark geometry is feasible before coding starts.
 - The inventory labels and repeated quantities match exactly.
 - The motion contract is explicit enough for the benchmark coder to reconstruct.
-- The review decision is written only after media inspection when media exists.
+- The review decision is written only after the required media inspection.
 
 ## Related Skills
 

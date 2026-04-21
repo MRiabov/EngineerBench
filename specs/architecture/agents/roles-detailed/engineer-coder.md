@@ -56,7 +56,7 @@ The Engineering Coder turns the approved engineering handoff into `solution_scri
 - `assembly_definition.yaml`, `benchmark_definition.yaml`, `benchmark_assembly_definition.yaml`, and the planner evidence scripts are read-only context after plan approval.
 - The coder preserves the exact labels, repeated quantities, budgets, and geometry relationships in the handoff.
 - Validate and simulate the latest revision with `validate_engineering()` / `simulate_engineering()` before requesting review, then call `submit_solution_for_review()`.
-- Inspect render or video evidence when it exists; do not rely on text-only summaries.
+- This role's policy defines the render or video evidence it expects for the current revision; inspect that evidence before finishing and do not rely on text-only summaries.
 - Keep `payload_trajectory_definition.yaml` synchronized with the coarse planner forecast before submission.
 - If bug-report mode is enabled and runtime plumbing blocks progress, write `bug_report.md` at the workspace root, keep `journal.md` for task-facing notes, and continue working unless the task is genuinely blocked.
 - Use `plan_refusal.md` only when the approved plan is genuinely infeasible.

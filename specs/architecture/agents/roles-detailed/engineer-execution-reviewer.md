@@ -45,7 +45,7 @@ The Engineering Execution Reviewer decides whether the implemented solution is r
 
 - Review the latest revision only.
 - Require validation and simulation success before approval.
-- Inspect render images and simulation video when they exist.
+- This role's policy defines the render images and simulation video it expects for the current revision; inspect those artifacts before approval.
 - If `payload_trajectory_definition.yaml` exists, review it as the fine-grained motion proof alongside `assembly_definition.yaml`.
 - Inspect the sampled `objects.parquet` sidecar when motion evidence exists.
 - Verify plan fidelity, robustness, manufacturability, cost/weight compliance, and motion plausibility.

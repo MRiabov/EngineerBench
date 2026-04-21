@@ -47,7 +47,7 @@ The Engineering Plan Reviewer checks the plan before engineering implementation 
 - Reject unsupported mechanisms, inconsistent budgets, and exact inventory drift.
 - Treat motion claims as formula-backed facts, not prose.
 - Use `verify` only when the workspace already contains a concrete candidate that needs runtime-randomization evidence.
-- If render images exist, inspect them before approval.
+- This role's policy defines the render images it expects for the current revision; inspect those images before approval.
 - If a refusal artifact exists, confirm whether it is a valid plan refusal or a coder failure artifact.
 - If bug-report mode is enabled and runtime plumbing blocks the review, write `bug_report.md` at the workspace root and continue unless the reviewer is actually blocked.
 - Write only the stage-owned decision/comments YAML pair, then finish with `bash scripts/submit_review.sh`.

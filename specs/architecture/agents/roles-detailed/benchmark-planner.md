@@ -54,7 +54,7 @@ The Benchmark Planner turns a problem brief into a benchmark handoff package. It
 - `payload.material_id` must resolve to a known material from `manufacturing_config.yaml`.
 - Moving benchmark-owned fixtures need explicit, reviewer-visible motion facts.
 - If bug-report mode is enabled and runtime plumbing blocks progress, write `bug_report.md` at the workspace root and keep working unless the task is genuinely blocked.
-- If render images already exist for the current revision, inspect them with `inspect_media()` before submission.
+- This role's policy defines the benchmark render images it expects for the current revision; inspect those images with `inspect_media()` before submission.
 - Do not expect `benchmark_script.py` in the workspace until after plan approval.
 - `submit_benchmark_plan()` is the only completion gate; do not hand off before the package is internally consistent.
 

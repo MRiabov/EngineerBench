@@ -50,12 +50,12 @@ The Engineering Planner turns benchmark context into an implementation-ready eng
 ## What Humans Must Tell It
 
 - The benchmark objective zones, runtime jitter, and budget caps are the contract it must solve against.
-- `benchmark_assembly_definition.yaml` is read-only context.
+- `benchmark_assembly_definition.yaml` is read-only context, and benchmark render bundles under `renders/benchmark_renders/**` are mandatory handoff context when this role's visual-inspection policy expects render assets.
 - The planner must preserve benchmark-owned fixtures and exact grounded inventory mentions while designing the engineer solution.
-- `assembly_definition.yaml` is the machine-readable solution contract; `validate_costing_and_price()` normalizes the final totals.
+- `assembly_definition.yaml` is the writable starter template and the machine-readable solution contract; `validate_costing_and_price()` normalizes the final totals.
 - If the solution needs motion proof, the planner must state the coarse motion forecast and keep it consistent with the fine-grained trajectory file if one exists.
 - If bug-report mode is enabled and runtime plumbing blocks progress, write `bug_report.md` at the workspace root and keep working unless the task is genuinely blocked.
-- If render images already exist for the current revision, inspect them with `inspect_media()` before submission.
+- This role's policy defines the render images it expects for the current revision; inspect them with `inspect_media()` before submission. Render evidence is part of the handoff, not optional decoration.
 
 ## Acceptance Checklist
 

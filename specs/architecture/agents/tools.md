@@ -197,10 +197,13 @@ I propose the following set of tools (their usage is below). Notably, the tools 
 
 - Visual-inspection requirements are configured in `config/agents_config.yaml`, not hardcoded in prompts alone.
 - Policy shape:
-  - `visual_inspection.required`: whether the role must inspect render images when available.
+  - `visual_inspection.required`: whether the role must inspect the render images its policy expects for the current node/revision.
+  - `visual_inspection.entry_expects_render_buckets`: the required canonical list of persistent `renders/<bucket>/` bundle names that the role expects to exist when the node starts; missing, malformed, or unknown bucket names are schema errors.
   - `visual_inspection.min_images`: minimum number of distinct render images the role must inspect.
   - `visual_inspection.reminder_interval`: how often runtime injects reminder messages while the role keeps operating without satisfying the image requirement.
   - When a role keeps failing the same blocker, it should inspect the exact render or video evidence before the next attempt; after three consecutive failures on the same issue, inspect render evidence on every subsequent retry until the blocker changes. This is the visual-inspection discipline expected by the render-evidence skill, not a substitute for the config gate.
+- The bucket list is the node-entry contract for render-bundle presence; runtime does not infer it from permissions, prompt prose, or file discovery.
+- The policy is evaluated fail-closed against the render state the role expects: if expected renders are missing, the run is invalid; render absence is only acceptable when the role policy does not expect render assets.
 - Current required roles are:
   - `benchmark_plan_reviewer`
   - `benchmark_reviewer`

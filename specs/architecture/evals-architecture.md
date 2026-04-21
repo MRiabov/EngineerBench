@@ -137,7 +137,7 @@ Proposal: normalize the simulation to the center bottom of the build zone. So th
 6. Given a moving benchmark whose declared fixture behavior does not match observed simulation behavior, the Benchmark Reviewer rejects it in at least 85% of seeded mismatch cases.
 7. The Benchmark Reviewer writes a stage-canonical checklist in the reviewer comments YAML, and the checklist keys/values match the seeded ground truth in at least 95% of cases.
 
-All visual-inspection evals above are config-driven rather than prompt-only. The source of truth for required roles and image-count thresholds is `config/agents_config.yaml` (`visual_inspection.required`, `visual_inspection.min_images`, `visual_inspection.reminder_interval`), and the requirement is conditional on actual render-image availability for the current node/revision.
+All visual-inspection evals above are config-driven rather than prompt-only. The source of truth for required roles, exact persistent render buckets, and image-count thresholds is `config/agents_config.yaml` (`visual_inspection.required`, `visual_inspection.entry_expects_render_buckets`, `visual_inspection.min_images`, `visual_inspection.reminder_interval`), and the requirement is fail-closed against the render state expected for the current role and current node/revision: if render assets are expected, they must exist in the buckets named by the config field and be inspected; if they are not expected, absence is correct. Node-entry validation reads that same bucket list, so the eval contract is tied to config rather than to prompt prose or filesystem permissions.
 
 #### Medium evals - Skill Training Loop (Standalone)
 

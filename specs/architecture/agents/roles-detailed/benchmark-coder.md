@@ -51,7 +51,7 @@ The Benchmark Coder turns an approved benchmark handoff into `benchmark_script.p
 - The benchmark coder preserves the approved labels and repeated quantities exactly.
 - `benchmark_plan_evidence_script.py` is the inspectable source of the approved geometry; do not reinterpret it.
 - The coder should validate and simulate the latest revision with `validate_benchmark()` / `simulate_benchmark()` before any review handoff, where `simulate_benchmark()` is a stability/evidence pass rather than a goal-reaching pass, then call `submit_benchmark_for_review()`.
-- If render images or simulation video exist, the coder must inspect them before finishing.
+- This role's policy defines the render images and simulation video it expects for the current revision; inspect those artifacts before finishing.
 - If bug-report mode is enabled and runtime plumbing blocks progress, write `bug_report.md` at the workspace root, keep `journal.md` for task-facing notes, and continue working unless the task is genuinely blocked.
 - `plan_refusal.md` is only valid when the approved plan is infeasible, not when the implementation is merely inconvenient.
 
