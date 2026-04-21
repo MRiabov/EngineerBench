@@ -91,6 +91,8 @@ if [ -f .env ]; then
   done < .env
 fi
 
+# Docker Compose treats missing env_file entries as a hard error, so create an
+# ignored empty file for clean checkouts that have not copied .env.example yet.
 eval "$(python3 -m evals.logic.stack_profiles --profile "$STACK_PROFILE" --root "$(pwd)" --format shell)"
 
 export LOG_DIR="${LOG_DIR:-$STACK_DEFAULT_LOG_DIR}"
