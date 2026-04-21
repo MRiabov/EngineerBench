@@ -5,5 +5,12 @@
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-001-raised-shelf",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the gap-bridge benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent bridge-style engineering plan with exact label grounding and budget-consistent calculations."
+  },
+  {
+    "id": "ep-011",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded narrow-funnel handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence. Draft an implementation-ready engineering plan that uses a passive precision funnel to guide `projectile_ball` from the wide capture mouth into the narrow goal throat while preserving the benchmark-owned `environment_fixture` and staying inside the published cost and weight envelope.",
+    "complexity_level": 2,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-011-narrow-funnel-01",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the narrow-funnel benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent passive funnel engineering plan with exact label grounding and budget-consistent calculations."
   }
 ]
