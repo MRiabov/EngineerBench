@@ -4,7 +4,7 @@
   "created_at": "2026-04-21T07:04:00.528521+00:00",
   "episode_id": "47ff30b2-dd4a-5cd1-b110-99a06743a07a",
   "worker_session_id": "seed-renders-bc-003-sidedeflect-9a71b5f8",
-  "revision": "b32e93efd6ab1b575d5edc5315c150cf3710d3fb",
+  "revision": "7a4e9fc661588d2ce321dd051291db08d78c3da2",
   "scene_hash": "ceea294ea7874822dbafb2ca97bc20816d608dbc793ff02bb872fd1e9e987a60",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",
