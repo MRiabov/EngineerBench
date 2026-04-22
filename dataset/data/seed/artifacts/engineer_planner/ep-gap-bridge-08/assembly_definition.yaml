@@ -1,0 +1,112 @@
+version: "1.0"
+units:
+  length: "mm"
+  volume: "mm3"
+  mass: "g"
+  currency: "USD"
+
+constraints:
+  benchmark_max_unit_cost_usd: 27.0
+  benchmark_max_weight_g: 30.0
+  planner_target_max_unit_cost_usd: 18.0
+  planner_target_max_weight_g: 20.0
+
+manufactured_parts:
+  - part_name: bridge_deck
+    part_id: bridge_deck
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 2048.0
+    stock_bbox_mm:
+      x: 300.0
+      y: 95.0
+      z: 8.0
+    stock_volume_mm3: 228000.0
+    removed_volume_mm3: 225952.0
+    estimated_unit_cost_usd: 7.0
+  - part_name: left_support
+    part_id: left_support
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 1152.0
+    stock_bbox_mm:
+      x: 24.0
+      y: 95.0
+      z: 18.0
+    stock_volume_mm3: 41040.0
+    removed_volume_mm3: 39888.0
+    estimated_unit_cost_usd: 3.0
+  - part_name: right_support
+    part_id: right_support
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 1152.0
+    stock_bbox_mm:
+      x: 24.0
+      y: 95.0
+      z: 18.0
+    stock_volume_mm3: 41040.0
+    removed_volume_mm3: 39888.0
+    estimated_unit_cost_usd: 3.0
+  - part_name: stop_lip
+    part_id: stop_lip
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 64.0
+    stock_bbox_mm:
+      x: 8.0
+      y: 95.0
+      z: 12.0
+    stock_volume_mm3: 9120.0
+    removed_volume_mm3: 9056.0
+    estimated_unit_cost_usd: 1.0
+
+final_assembly:
+  - name: bridge_deck
+    config:
+  - name: left_support
+    config:
+  - name: right_support
+    config:
+  - name: stop_lip
+    config:
+
+totals:
+  estimated_unit_cost_usd: 14.0
+  estimated_weight_g: 11.9232
+  estimate_confidence: high
+
+coarse_payload_trajectory:
+  payload_part_names:
+    - transfer_cube
+  reference_frame: world
+  sample_stride_s: 0.2
+  anchors:
+    - t_s: 0.0
+      reference_point: build_zone_start
+      pos_mm: [-250.0, 0.0, 80.0]
+      rot_deg: [0.0, 0.0, 0.0]
+      position_tolerance_mm: [1.0, 1.0, 1.0]
+      rotation_tolerance_deg: [0.5, 0.5, 5.0]
+      build_zone_valid: true
+    - t_s: 0.6
+      reference_point: bridge_reference_table
+      pos_mm: [70.0, 0.0, 78.0]
+      rot_deg: [0.0, 0.0, 0.0]
+      position_tolerance_mm: [1.0, 1.0, 1.0]
+      rotation_tolerance_deg: [0.5, 0.5, 5.0]
+    - t_s: 1.4
+      reference_point: goal_zone_contact
+      pos_mm: [265.0, 0.0, 72.5]
+      rot_deg: [0.0, 0.0, 0.0]
+      position_tolerance_mm: [1.0, 1.0, 1.0]
+      rotation_tolerance_deg: [0.5, 0.5, 5.0]
+      goal_zone_contact: true
+
+dfm_suggestions:
+  - Keep the bridge deck pocketed so the span stays lightweight while still spanning the gap.
+  - Reuse the same anchor-block profile on both ends to simplify CAM setup.
