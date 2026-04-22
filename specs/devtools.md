@@ -155,6 +155,7 @@ The eval tooling mirrors the integration tooling, but it owns a separate lock, a
 - `dataset/evals/eval_seed_update_autopilot.py` is the reusable seed-update autopilot for eval rows.
 - It runs engineer_planner seed jobs one row at a time with process-level concurrency: each worker owns one seed worktree, launches the authoring Codex CLI, refreshes the seed artifacts, runs `scripts/validate_eval_seed.py`, and then runs a read-only review prompt before the row is merged back.
 - Before queueing a candidate row, it validates any already-created matching row and skips it when `scripts/validate_eval_seed.py` reports a pass; failed existing rows remain eligible for repair and the queue continues filling from later candidates.
+- Its authoring and review prompts inline the row's task and expected criteria when available so the model can self-check exact role and label grounding before editing the workspace.
 - It keeps its per-seed logs, prompts, and merged summaries under `logs/evals/seed_update_autopilot/`, and the worker count is configurable so 2-4 Codex CLIs can be active at once on different seeds.
 - The canonical entrypoint lives in `dataset/evals/eval_seed_update_autopilot.py`; the old family-batch idea is no longer the maintained contract.
 
