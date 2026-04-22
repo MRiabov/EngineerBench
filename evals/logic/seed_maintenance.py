@@ -5,6 +5,8 @@ import json
 from functools import lru_cache
 from pathlib import Path
 
+from shared.agent_templates import load_seed_starter_template_files
+from shared.enums import AgentName
 from shared.git_utils import repo_revision
 
 _PLAN_REVIEW_MANIFEST_NAMES = {
@@ -195,6 +197,40 @@ def refresh_seed_artifact_manifests(
         refresh_plan_review_manifest_hashes,
     ):
         updated_paths.extend(updater(artifact_dir, fix=fix))
+    return updated_paths
+
+
+def refresh_seed_starter_template_files(
+    artifact_dir: Path,
+    agent_name: AgentName,
+    *,
+    fix: bool = False,
+    refresh_manifests: bool = True,
+) -> list[Path]:
+    """Refresh the editable starter subset for a seeded agent workspace."""
+
+    starter_files = load_seed_starter_template_files(agent_name)
+    if not starter_files:
+        return []
+
+    updated_paths: list[Path] = []
+    starter_changed = False
+
+    for rel_path, content in sorted(starter_files.items()):
+        file_path = artifact_dir / rel_path
+        current = file_path.read_text(encoding="utf-8") if file_path.exists() else None
+        if current == content:
+            continue
+
+        starter_changed = True
+        updated_paths.append(file_path)
+        if fix:
+            file_path.parent.mkdir(parents=True, exist_ok=True)
+            file_path.write_text(content, encoding="utf-8")
+
+    if refresh_manifests and starter_changed:
+        updated_paths.extend(refresh_seed_artifact_manifests(artifact_dir, fix=fix))
+
     return updated_paths
 
 

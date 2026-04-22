@@ -7,9 +7,11 @@ from pathlib import Path
 
 import pytest
 
+from evals.logic.seed_maintenance import refresh_seed_starter_template_files
 from shared.agent_templates import load_seed_starter_template_files
 from shared.current_role import parse_current_role_manifest
 from shared.enums import AgentName
+from shared.git_utils import repo_revision
 
 ROOT = Path(__file__).resolve().parents[3]
 SCRIPT = ROOT / "dataset" / "evals" / "materialize_seed_authoring_workspace.py"
@@ -60,10 +62,17 @@ def test_seed_authoring_workspace_bootstrapper_materializes_starter_files(
     stdout_paths = _parse_stdout_paths(completed.stdout)
     workspace_dir = Path(stdout_paths["workspace"])
     prompt_path = Path(stdout_paths["prompt"])
+    venv_path = Path(stdout_paths["venv"])
 
     assert workspace_dir == output_dir.resolve()
     assert prompt_path == workspace_dir / "prompt.md"
     assert prompt_path.exists()
+    assert venv_path == workspace_dir / ".venv"
+    assert (venv_path / "bin" / "python").exists()
+    source_python = ROOT / ".venv" / "bin" / "python"
+    dest_python = venv_path / "bin" / "python"
+    assert source_python.stat().st_dev == dest_python.stat().st_dev
+    assert source_python.stat().st_ino == dest_python.stat().st_ino
 
     manifest_path = workspace_dir / ".manifests" / "current_role.json"
     manifest = parse_current_role_manifest(manifest_path.read_text(encoding="utf-8"))
@@ -89,14 +98,64 @@ def test_seed_authoring_workspace_bootstrapper_uses_seed_authoring_temp_root() -
 
     stdout_paths = _parse_stdout_paths(completed.stdout)
     workspace_dir = Path(stdout_paths["workspace"])
+    venv_path = Path(stdout_paths["venv"])
     assert workspace_dir.as_posix().startswith(
         "/tmp/problemologist-evals/seed_authoring/"
     )
     assert workspace_dir.exists()
+    assert venv_path == workspace_dir / ".venv"
+    assert (venv_path / "bin" / "python").exists()
 
     manifest_path = workspace_dir / ".manifests" / "current_role.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     assert manifest["agent_name"] == AgentName.ENGINEER_CODER.value
+
+
+@pytest.mark.integration_p0
+def test_refresh_seed_starter_template_files_restores_templates_and_manifests(
+    tmp_path: Path,
+) -> None:
+    agent_name = AgentName.ENGINEER_PLANNER
+    artifact_dir = tmp_path / "artifact"
+    starter_files = load_seed_starter_template_files(agent_name)
+    for rel_path, content in starter_files.items():
+        file_path = artifact_dir / rel_path
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+        file_path.write_text(content, encoding="utf-8")
+
+    changed_rel_path = next(iter(starter_files))
+    (artifact_dir / changed_rel_path).write_text(
+        "# mutated starter content\n", encoding="utf-8"
+    )
+
+    manifest_path = (
+        artifact_dir / "renders" / "benchmark_renders" / "render_manifest.json"
+    )
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(
+        json.dumps({"revision": "old-revision"}, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+    updated_paths = refresh_seed_starter_template_files(
+        artifact_dir,
+        agent_name,
+        fix=True,
+        refresh_manifests=True,
+    )
+    updated_rel_paths = {
+        path.relative_to(artifact_dir).as_posix() for path in updated_paths
+    }
+
+    assert (artifact_dir / changed_rel_path).read_text(
+        encoding="utf-8"
+    ) == starter_files[changed_rel_path]
+    current_revision = repo_revision(ROOT)
+    assert current_revision is not None
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert manifest["revision"] == current_revision
+    assert changed_rel_path in updated_rel_paths
+    assert "renders/benchmark_renders/render_manifest.json" in updated_rel_paths
 
 
 @pytest.mark.integration_p0

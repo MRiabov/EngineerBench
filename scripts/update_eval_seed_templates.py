@@ -12,13 +12,14 @@ from evals.logic.dataset_selection import (  # noqa: E402
     parse_level_filters,
     resolve_agents_for,
 )
-from evals.logic.seed_maintenance import refresh_seed_artifact_manifests  # noqa: E402
+from evals.logic.seed_maintenance import (  # noqa: E402
+    refresh_seed_starter_template_files,
+)
 from scripts.internal.eval_seed_selection import (  # noqa: E402
     infer_seed_agent_for_task_id,
     load_seed_dataset,
     seed_dataset_agents,
 )
-from shared.agent_templates import load_seed_starter_template_files  # noqa: E402
 from shared.enums import AgentName  # noqa: E402
 
 
@@ -101,26 +102,6 @@ def _parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def _write_starter_files(
-    artifact_dir: Path,
-    starter_files: dict[str, str],
-    *,
-    dry_run: bool,
-) -> list[str]:
-    updated: list[str] = []
-    for rel_path, content in sorted(starter_files.items()):
-        file_path = artifact_dir / rel_path
-        current = file_path.read_text(encoding="utf-8") if file_path.exists() else None
-        if current == content:
-            continue
-        updated.append(rel_path)
-        if dry_run:
-            continue
-        file_path.parent.mkdir(parents=True, exist_ok=True)
-        file_path.write_text(content, encoding="utf-8")
-    return updated
-
-
 def _update_item(
     agent: AgentName,
     item,
@@ -132,25 +113,21 @@ def _update_item(
     if artifact_dir is None:
         return True, False, []
 
-    starter_files = load_seed_starter_template_files(agent)
-    if not starter_files:
-        return True, False, []
-
-    updated_paths = _write_starter_files(
+    updated_paths = refresh_seed_starter_template_files(
         artifact_dir,
-        starter_files,
-        dry_run=dry_run,
+        agent,
+        fix=not dry_run,
+        refresh_manifests=update_manifests,
     )
 
-    if not dry_run and update_manifests and updated_paths:
-        refreshed = refresh_seed_artifact_manifests(artifact_dir, fix=True)
-        updated_paths.extend(
+    return (
+        True,
+        bool(updated_paths),
+        [
             str(path.relative_to(artifact_dir)).replace("\\", "/")
-            for path in refreshed
-            if path.exists()
-        )
-
-    return True, bool(updated_paths), updated_paths
+            for path in updated_paths
+        ],
+    )
 
 
 def main() -> int:

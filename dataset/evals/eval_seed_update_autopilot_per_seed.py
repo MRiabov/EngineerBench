@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Author, review, and validate engineer_planner seeds one row at a time.
+"""Create, review, and validate engineer_planner seed rows one row at a time.
 
-This is the maintainer-side autopilot for the narrow task of building the
-`engineer_planner` corpus with process-level concurrency. Each worker owns a
-single seed row, runs a seed-local authoring prompt in an isolated worktree,
-refreshes the deterministic seed artifacts, runs the real seed validator, and
-then runs a read-only review prompt before the row is merged back.
+This is the maintainer-side autopilot for the narrow task of building
+`engineer_planner` corpus rows with process-level concurrency. Each worker
+owns a single seed row, runs a seed-local authoring prompt in an isolated
+worktree, refreshes the deterministic seed artifacts, runs the real seed
+validator, and then runs a read-only review prompt before the relevant files
+are copied back. Existing rows are skipped when the latest tracked run passed
+review and validation; broken rows are repaired in place.
 
 The outer orchestration is intentionally seed-granular. Multiple workers can
 run at the same time, but each Codex CLI invocation handles only one seed at a
@@ -15,6 +17,7 @@ time so seed creation can stay complex without batching families together.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -32,14 +35,23 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from dataset.evals.materialize_seed_authoring_workspace import (  # noqa: E402
+    materialize_seed_authoring_workspace as bootstrap_seed_authoring_workspace,
+)
 from evals.logic.cli_provider import (  # noqa: E402
     available_cli_providers,
     get_cli_provider,
 )
-from evals.logic.codex_workspace import resolve_cli_home_root  # noqa: E402
+from evals.logic.codex_workspace import (  # noqa: E402
+    resolve_cli_home_root,
+    sync_repo_venv,
+)
 from evals.logic.dataset_selection import (  # noqa: E402
     parse_level_filters,
     parse_task_id_filters,
+)
+from evals.logic.seed_maintenance import (  # noqa: E402
+    refresh_seed_starter_template_files,
 )
 from shared.enums import AgentName  # noqa: E402
 
@@ -76,6 +88,7 @@ FAMILY_PLAN_REL = Path(
 )
 DATASET_REL = Path("dataset/data/seed/role_based/engineer_planner.json")
 ARTIFACT_ROOT_REL = Path("dataset/data/seed/artifacts/engineer_planner")
+TASK_STATE_REL = Path("logs/evals/seed_update_autopilot/task_state.json")
 CANONICAL_TASK_ID_RE = re.compile(r"^ep-(?P<family>[a-z-]+)-(?P<variant>\d{2})$")
 SKIP_UNTRACKED_PREFIXES = (
     "logs/",
@@ -89,7 +102,7 @@ SKIP_UNTRACKED_PREFIXES = (
     ".mypy_cache/",
 )
 _WORKTREE_LOCK = threading.Lock()
-_MERGE_LOCK = threading.Lock()
+_APPLY_LOCK = threading.Lock()
 
 
 @dataclass(slots=True)
@@ -155,9 +168,23 @@ class SeedJobRun:
     changed_task_ids: list[str] = field(default_factory=list)
     introduced_paths: list[str] = field(default_factory=list)
     unexpected_paths: list[str] = field(default_factory=list)
-    merged: bool = False
+    copied_back: bool = False
     success: bool = False
     failure_reason: str | None = None
+    last_validation_passed: bool | None = None
+    last_review_passed: bool | None = None
+    bundle_fingerprint: str | None = None
+
+
+@dataclass(slots=True)
+class SeedTaskState:
+    task_id: str
+    bundle_fingerprint: str
+    last_validation_passed: bool
+    last_review_passed: bool
+    source_run_started_at: str
+    source_run_finished_at: str | None
+    recorded_at: str
 
 
 @dataclass(slots=True)
@@ -361,6 +388,10 @@ def _load_raw_seed_rows(
     return json_path, rows
 
 
+def _task_state_path(root: Path) -> Path:
+    return root / TASK_STATE_REL
+
+
 def _load_seed_row_context(task_id: str) -> tuple[str | None, str | None]:
     _, rows = _load_raw_seed_rows(ROOT, DEFAULT_AGENT)
     row = next((entry for entry in rows if entry.get("id") == task_id), None)
@@ -385,6 +416,34 @@ def _row_id_map(rows: list[dict[str, object]]) -> dict[str, dict[str, object]]:
         if isinstance(task_id, str) and task_id:
             mapped[task_id] = row
     return mapped
+
+
+def _seed_bundle_fingerprint(root: Path, task_id: str) -> str:
+    digest = hashlib.sha256()
+
+    _, rows = _load_raw_seed_rows(root, DEFAULT_AGENT)
+    row = next((entry for entry in rows if entry.get("id") == task_id), None)
+    if isinstance(row, dict):
+        digest.update(
+            json.dumps(
+                row, sort_keys=True, ensure_ascii=False, separators=(",", ":")
+            ).encode("utf-8")
+        )
+        digest.update(b"\0")
+
+    artifact_dir = root / ARTIFACT_ROOT_REL / task_id
+    if artifact_dir.exists():
+        for path in sorted(
+            (candidate for candidate in artifact_dir.rglob("*") if candidate.is_file()),
+            key=lambda candidate: candidate.relative_to(artifact_dir).as_posix(),
+        ):
+            rel_path = path.relative_to(artifact_dir).as_posix()
+            digest.update(rel_path.encode("utf-8"))
+            digest.update(b"\0")
+            digest.update(path.read_bytes())
+            digest.update(b"\0")
+
+    return digest.hexdigest()
 
 
 def _diff_changed_task_ids(
@@ -475,6 +534,177 @@ def _parse_trailing_json_payload(stdout: str) -> dict[str, object]:
     raise ValueError("No trailing JSON payload found in validator output")
 
 
+def _seed_task_state_from_json(
+    task_id: str, payload: dict[str, object]
+) -> SeedTaskState:
+    return SeedTaskState(
+        task_id=task_id,
+        bundle_fingerprint=str(payload["bundle_fingerprint"]),
+        last_validation_passed=bool(payload["last_validation_passed"]),
+        last_review_passed=bool(payload["last_review_passed"]),
+        source_run_started_at=str(payload["source_run_started_at"]),
+        source_run_finished_at=(
+            None
+            if payload.get("source_run_finished_at") in {None, ""}
+            else str(payload["source_run_finished_at"])
+        ),
+        recorded_at=str(payload["recorded_at"]),
+    )
+
+
+def _seed_task_state_to_json(state: SeedTaskState) -> dict[str, object]:
+    return {
+        "task_id": state.task_id,
+        "bundle_fingerprint": state.bundle_fingerprint,
+        "last_validation_passed": state.last_validation_passed,
+        "last_review_passed": state.last_review_passed,
+        "source_run_started_at": state.source_run_started_at,
+        "source_run_finished_at": state.source_run_finished_at,
+        "recorded_at": state.recorded_at,
+    }
+
+
+def _load_seed_task_state(root: Path) -> dict[str, SeedTaskState]:
+    state_path = _task_state_path(root)
+    if state_path.exists():
+        try:
+            payload = json.loads(state_path.read_text(encoding="utf-8"))
+        except Exception:
+            payload = {}
+        if isinstance(payload, dict):
+            states: dict[str, SeedTaskState] = {}
+            for task_id, raw_state in payload.items():
+                if not isinstance(task_id, str) or not isinstance(raw_state, dict):
+                    continue
+                try:
+                    states[task_id] = _seed_task_state_from_json(task_id, raw_state)
+                except Exception:
+                    continue
+            return states
+
+    migrated = _migrate_seed_task_state_from_summaries(root)
+    if migrated:
+        _write_seed_task_state(root, migrated)
+    return migrated
+
+
+def _migrate_seed_task_state_from_summaries(root: Path) -> dict[str, SeedTaskState]:
+    runs_root = root / "logs" / "evals" / "seed_update_autopilot" / "runs"
+    if not runs_root.exists():
+        return {}
+
+    migrated: dict[str, SeedTaskState] = {}
+    for summary_path in runs_root.glob("*/seed_update_autopilot_summary.json"):
+        try:
+            payload = json.loads(summary_path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if not isinstance(payload, dict):
+            continue
+
+        started_at = str(payload.get("started_at") or "")
+        finished_at = payload.get("finished_at")
+        finished_at_text = None if finished_at in {None, ""} else str(finished_at)
+        seed_jobs = payload.get("seed_jobs")
+        if not isinstance(seed_jobs, list):
+            continue
+
+        for job in seed_jobs:
+            if not isinstance(job, dict):
+                continue
+            task_id = job.get("task_id")
+            if not isinstance(task_id, str) or not task_id:
+                continue
+            if not bool(job.get("success")):
+                continue
+            try:
+                fingerprint = _seed_bundle_fingerprint(root, task_id)
+            except Exception:
+                continue
+            migrated[task_id] = SeedTaskState(
+                task_id=task_id,
+                bundle_fingerprint=fingerprint,
+                last_validation_passed=bool(job.get("last_validation_passed", True)),
+                last_review_passed=bool(job.get("last_review_passed", True)),
+                source_run_started_at=started_at,
+                source_run_finished_at=finished_at_text,
+                recorded_at=time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+            )
+    return migrated
+
+
+def _write_seed_task_state(root: Path, states: dict[str, SeedTaskState]) -> None:
+    state_path = _task_state_path(root)
+    state_path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        task_id: _seed_task_state_to_json(state)
+        for task_id, state in sorted(states.items())
+    }
+    state_path.write_text(
+        json.dumps(payload, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+
+
+def _latest_seed_job_success(task_id: str) -> bool | None:
+    runs_root = ROOT / "logs" / "evals" / "seed_update_autopilot" / "runs"
+    if not runs_root.exists():
+        return None
+
+    latest_started_at = ""
+    latest_mtime = -1.0
+    latest_success: bool | None = None
+
+    for summary_path in runs_root.glob("*/seed_update_autopilot_summary.json"):
+        try:
+            payload = json.loads(summary_path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if not isinstance(payload, dict):
+            continue
+
+        started_at = str(payload.get("started_at") or "")
+        try:
+            mtime = summary_path.stat().st_mtime
+        except OSError:
+            mtime = -1.0
+
+        seed_jobs = payload.get("seed_jobs")
+        if not isinstance(seed_jobs, list):
+            continue
+
+        for job in seed_jobs:
+            if not isinstance(job, dict):
+                continue
+            if job.get("task_id") != task_id:
+                continue
+            if started_at > latest_started_at or (
+                started_at == latest_started_at and mtime > latest_mtime
+            ):
+                latest_started_at = started_at
+                latest_mtime = mtime
+                latest_success = bool(job.get("success"))
+
+    return latest_success
+
+
+def _existing_seed_needs_repair(
+    *,
+    task_id: str,
+    queue: bool,
+    validation_scope: str,
+) -> bool:
+    if not _validate_existing_seed_row(
+        task_id=task_id,
+        queue=queue,
+        validation_scope=validation_scope,
+    ):
+        return True
+
+    latest_success = _latest_seed_job_success(task_id)
+    return latest_success is not True
+
+
 def _canonical_seed_specs(
     *,
     root: Path,
@@ -484,6 +714,7 @@ def _canonical_seed_specs(
     limit: int,
     queue: bool,
     validation_scope: str,
+    task_state: dict[str, SeedTaskState],
 ) -> tuple[list[SeedSpec], list[str]]:
     _, rows = _load_raw_seed_rows(root, DEFAULT_AGENT)
     existing_ids = set(_row_id_map(rows))
@@ -503,18 +734,45 @@ def _canonical_seed_specs(
             if levels and complexity_level not in levels:
                 continue
             existing_row = task_id in existing_ids
+            if explicit_ids:
+                requested_seen.add(task_id)
+            if existing_row:
+                current_fingerprint = _seed_bundle_fingerprint(root, task_id)
+                state = task_state.get(task_id)
+                if (
+                    state is not None
+                    and state.bundle_fingerprint == current_fingerprint
+                    and state.last_validation_passed
+                    and state.last_review_passed
+                ):
+                    skipped_existing.append(task_id)
+                    continue
+                if _existing_seed_needs_repair(
+                    task_id=task_id,
+                    queue=queue,
+                    validation_scope=validation_scope,
+                ):
+                    candidate_specs.append(
+                        SeedSpec(
+                            task_id=task_id,
+                            family=family,
+                            variant=variant,
+                            complexity_level=complexity_level,
+                            existing_row=True,
+                        )
+                    )
+                else:
+                    skipped_existing.append(task_id)
+                continue
             candidate_specs.append(
                 SeedSpec(
                     task_id=task_id,
                     family=family,
                     variant=variant,
                     complexity_level=complexity_level,
-                    existing_row=existing_row,
+                    existing_row=False,
                 )
             )
-            if explicit_ids:
-                requested_seen.add(task_id)
-
     if not candidate_specs:
         if requested_ids and not requested_seen:
             missing = sorted(requested_ids)
@@ -523,22 +781,8 @@ def _canonical_seed_specs(
             )
         return [], skipped_existing
 
-    valid_existing_ids: set[str] = set()
-    for spec in candidate_specs:
-        if not spec.existing_row:
-            continue
-        if _validate_existing_seed_row(
-            task_id=spec.task_id,
-            queue=queue,
-            validation_scope=validation_scope,
-        ):
-            valid_existing_ids.add(spec.task_id)
-
     selected: list[SeedSpec] = []
     for spec in candidate_specs:
-        if spec.task_id in valid_existing_ids:
-            skipped_existing.append(spec.task_id)
-            continue
         selected.append(spec)
         if limit > 0 and len(selected) >= limit:
             break
@@ -614,28 +858,38 @@ def _materialize_seed_worktree(
                 create_proc.stderr or create_proc.stdout or "git worktree add failed"
             )
 
-    root_row = next((row for row in root_rows if row.get("id") == spec.task_id), None)
-    if isinstance(root_row, dict):
-        # Only carry the target row across. The worktree stays clean for every
-        # unrelated file so repairs are local to this seed.
-        dataset_path = worktree_dir / DATASET_REL
-        with dataset_path.open(encoding="utf-8") as handle:
-            worktree_rows = json.load(handle)
-        if not isinstance(worktree_rows, list):
-            raise RuntimeError(f"Seed dataset is not a list: {dataset_path}")
-        _upsert_seed_row(worktree_rows, root_row)
-        dataset_path.write_text(
-            json.dumps(worktree_rows, indent=2, ensure_ascii=False) + "\n",
-            encoding="utf-8",
+    if spec.existing_row:
+        root_row = next(
+            (row for row in root_rows if row.get("id") == spec.task_id), None
         )
+        if isinstance(root_row, dict):
+            # Only carry the target row across. The worktree stays clean for every
+            # unrelated file so repairs are local to this seed.
+            dataset_path = worktree_dir / DATASET_REL
+            with dataset_path.open(encoding="utf-8") as handle:
+                worktree_rows = json.load(handle)
+            if not isinstance(worktree_rows, list):
+                raise RuntimeError(f"Seed dataset is not a list: {dataset_path}")
+            _upsert_seed_row(worktree_rows, root_row)
+            dataset_path.write_text(
+                json.dumps(worktree_rows, indent=2, ensure_ascii=False) + "\n",
+                encoding="utf-8",
+            )
 
-    source_artifact_dir = root / ARTIFACT_ROOT_REL / spec.task_id
-    destination_artifact_dir = worktree_dir / ARTIFACT_ROOT_REL / spec.task_id
-    if source_artifact_dir.exists():
-        if destination_artifact_dir.exists():
-            shutil.rmtree(destination_artifact_dir)
-        destination_artifact_dir.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copytree(source_artifact_dir, destination_artifact_dir)
+        source_artifact_dir = root / ARTIFACT_ROOT_REL / spec.task_id
+        destination_artifact_dir = worktree_dir / ARTIFACT_ROOT_REL / spec.task_id
+        if source_artifact_dir.exists():
+            if destination_artifact_dir.exists():
+                shutil.rmtree(destination_artifact_dir)
+            destination_artifact_dir.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copytree(source_artifact_dir, destination_artifact_dir)
+        sync_repo_venv(worktree_dir)
+    else:
+        bootstrap_seed_authoring_workspace(
+            agent=DEFAULT_AGENT,
+            task_id=spec.task_id,
+            output_dir=str(worktree_dir),
+        )
 
 
 def _cleanup_worktree(root: Path, worktree_dir: Path) -> None:
@@ -697,20 +951,35 @@ def _build_authoring_prompt(
         "",
         f"Family plan source of truth: {FAMILY_PLAN_REL.as_posix()}",
         "",
-        "",
-        "Rules:",
-        "- Modify only dataset/data/seed/role_based/engineer_planner.json and "
-        "the target artifact directory.",
-        "- Repair the existing seed in place when a previous round failed; do "
-        "not restart from scratch or switch to a different task id.",
-        "- Keep `seed_artifact_dir` stable and pointing at the canonical "
-        "artifact directory for this task id.",
-        "- Keep benchmark-owned context read-only and exact-grounded.",
-        "- Keep the engineer_planner starter files starter-like, not solved.",
-        "- Do not run validation, render, or judge helpers. The maintainer "
-        "driver handles those steps.",
-        "- Do not touch unrelated files.",
     ]
+    if not spec.existing_row:
+        parts.extend(
+            [
+                "Bootstrap state:",
+                "- This workspace was initialized by "
+                "`dataset/evals/materialize_seed_authoring_workspace.py`.",
+                "- The starter/template files, current-role manifest, and "
+                "synced `.venv` are already present.",
+                "- Start from that scaffold; do not rebuild the starter set by hand.",
+                "",
+            ]
+        )
+    parts.extend(
+        [
+            "Rules:",
+            "- Modify only dataset/data/seed/role_based/engineer_planner.json and "
+            "the target artifact directory.",
+            "- Repair the existing seed in place when a previous round failed; do "
+            "not restart from scratch or switch to a different task id.",
+            "- Keep `seed_artifact_dir` stable and pointing at the canonical "
+            "artifact directory for this task id.",
+            "- Keep benchmark-owned context read-only and exact-grounded.",
+            "- Keep the engineer_planner starter files starter-like, not solved.",
+            "- Do not run validation, render, or judge helpers. The maintainer "
+            "driver handles those steps.",
+            "- Do not touch unrelated files.",
+        ]
+    )
     if task_text and criteria_text:
         parts.extend(
             [
@@ -1182,42 +1451,22 @@ def _validate_seed_row_contract(
     return row
 
 
-def _merge_seed_row(
+def _copy_seed_dataset_file(
     *,
     root: Path,
-    row: dict[str, object],
+    workspace_dir: Path,
 ) -> None:
-    with _MERGE_LOCK:
-        dataset_path = root / DATASET_REL
-        with dataset_path.open(encoding="utf-8") as handle:
-            rows = json.load(handle)
-        if not isinstance(rows, list):
-            raise RuntimeError(f"Seed dataset is not a list: {dataset_path}")
-        row_id = row.get("id")
-        if not isinstance(row_id, str) or not row_id.strip():
-            raise RuntimeError("Merged seed row is missing an id")
-        rows_by_id = _row_id_map(rows)
-        rows_by_id[row_id] = row
-
-        def sort_key(entry: dict[str, object]) -> tuple[int, int, int, str]:
-            task_id = str(entry.get("id") or "")
-            match = CANONICAL_TASK_ID_RE.match(task_id)
-            if not match:
-                return (1, 99, 99, task_id)
-            family = match.group("family").replace("-", "_")
-            variant = int(match.group("variant"))
-            family_index = DEFAULT_FAMILIES.index(family)
-            return (0, family_index, variant, task_id)
-
-        merged_rows = sorted(rows_by_id.values(), key=sort_key)
-        dataset_path.write_text(
-            json.dumps(merged_rows, indent=2, ensure_ascii=False) + "\n",
-            encoding="utf-8",
-        )
+    with _APPLY_LOCK:
+        source_path = workspace_dir / DATASET_REL
+        if not source_path.exists():
+            raise RuntimeError(f"Source dataset file missing: {source_path}")
+        destination_path = root / DATASET_REL
+        destination_path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source_path, destination_path)
 
 
 def _copy_seed_artifact_dir(*, root: Path, spec: SeedSpec, workspace_dir: Path) -> None:
-    with _MERGE_LOCK:
+    with _APPLY_LOCK:
         source_dir = workspace_dir / ARTIFACT_ROOT_REL / spec.task_id
         if not source_dir.exists():
             raise RuntimeError(f"Source artifact dir missing: {source_dir}")
@@ -1271,6 +1520,8 @@ def _run_seed_job(
     )
 
     repair_note: str | None = None
+    validation_passed = False
+    review_passed = False
     for round_index in range(1, max(0, author_retries) + 2):
         round_dir = job_dir / f"round-{round_index:02d}"
         round_dir.mkdir(parents=True, exist_ok=True)
@@ -1325,6 +1576,7 @@ def _run_seed_job(
             round_run.repair_note = repair_note
             job.rounds.append(round_run)
             continue
+        validation_passed = True
 
         validation_tail = _tail_lines(Path(validation_run.log_path))
         if not validate_only:
@@ -1344,9 +1596,10 @@ def _run_seed_job(
                 round_run.repair_note = repair_note
                 job.rounds.append(round_run)
                 continue
+            review_passed = True
 
         try:
-            row = _validate_seed_row_contract(spec=spec, workspace_dir=worktree_dir)
+            _validate_seed_row_contract(spec=spec, workspace_dir=worktree_dir)
         except Exception as exc:
             repair_note = str(exc)
             round_run.repair_note = repair_note
@@ -1396,15 +1649,24 @@ def _run_seed_job(
             job.success = True
             job.changed_task_ids = changed_ids
             job.introduced_paths = introduced_paths
-            job.merged = False
+            job.copied_back = False
             return job
 
-        _merge_seed_row(root=ROOT, row=row)
+        _copy_seed_dataset_file(root=ROOT, workspace_dir=worktree_dir)
         _copy_seed_artifact_dir(root=ROOT, spec=spec, workspace_dir=worktree_dir)
+        refresh_seed_starter_template_files(
+            ROOT / ARTIFACT_ROOT_REL / spec.task_id,
+            DEFAULT_AGENT,
+            fix=True,
+            refresh_manifests=update_manifests,
+        )
         job.changed_task_ids = changed_ids
         job.introduced_paths = introduced_paths
-        job.merged = True
+        job.copied_back = True
         job.success = True
+        job.last_validation_passed = validation_passed
+        job.last_review_passed = review_passed if not validate_only else False
+        job.bundle_fingerprint = _seed_bundle_fingerprint(ROOT, spec.task_id)
         return job
 
     job.failure_reason = repair_note or "seed job exhausted its repair rounds"
@@ -1418,6 +1680,12 @@ def _run_seed_job(
         if path != DATASET_REL.as_posix()
         and not any(path.startswith(prefix) for prefix in allowed_prefixes)
     ]
+    job.last_validation_passed = validation_passed
+    job.last_review_passed = review_passed if not validate_only else False
+    try:
+        job.bundle_fingerprint = _seed_bundle_fingerprint(ROOT, spec.task_id)
+    except Exception:
+        job.bundle_fingerprint = None
     return job
 
 
@@ -1498,6 +1766,7 @@ def main() -> int:
         validate_only=args.validate_only,
         authoring_enabled=args.author,
     )
+    task_state = _load_seed_task_state(ROOT)
 
     if not args.skip_env_up and not args.dry_run:
         env_up_path = ROOT / "scripts" / "env_up.sh"
@@ -1526,7 +1795,8 @@ def main() -> int:
         levels=selected_levels,
         limit=args.limit,
         queue=args.queue,
-        validation_scope=args.validation_scope.value,
+        validation_scope=args.validation_scope,
+        task_state=task_state,
     )
     summary.selected_task_ids = [spec.task_id for spec in selected_specs]
     summary.skipped_existing_task_ids = skipped_existing
@@ -1540,8 +1810,8 @@ def main() -> int:
             print(f"Summary written to {summary_path}")
             print(f"Run directory: {run_dir}")
             print(
-                "No seeds queued: all matching existing seeds already passed "
-                "validation."
+                "No seeds queued: all matching existing rows are already "
+                "clean, and no new canonical task ids matched the selection."
             )
             return 0
         summary.finished_at = time.strftime("%Y-%m-%dT%H:%M:%S%z")
@@ -1567,6 +1837,7 @@ def main() -> int:
 
     jobs: list[SeedJobRun] = []
     failures: list[str] = []
+    copied_task_ids: list[str] = []
 
     with ThreadPoolExecutor(max_workers=args.seed_workers) as pool:
         future_map = {
@@ -1605,11 +1876,23 @@ def main() -> int:
             summary.seed_jobs.append(job)
             if job.success:
                 summary.completed_task_ids.append(job.task_id)
-                status = "MERGED" if job.merged else "VALIDATED"
+                status = "COPIED" if job.copied_back else "VALIDATED"
                 print(
                     f"[seed] {status} {job.task_id}: family={job.family} "
                     f"variant={job.variant:02d}"
                 )
+                if job.copied_back and job.bundle_fingerprint:
+                    task_state[job.task_id] = SeedTaskState(
+                        task_id=job.task_id,
+                        bundle_fingerprint=job.bundle_fingerprint,
+                        last_validation_passed=bool(job.last_validation_passed),
+                        last_review_passed=bool(job.last_review_passed),
+                        source_run_started_at=summary.started_at,
+                        source_run_finished_at=None,
+                        recorded_at=time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                    )
+                    _write_seed_task_state(ROOT, task_state)
+                    copied_task_ids.append(job.task_id)
             else:
                 summary.failed_task_ids.append(job.task_id)
                 failures.append(job.task_id)
@@ -1625,6 +1908,21 @@ def main() -> int:
 
     summary.finished_at = time.strftime("%Y-%m-%dT%H:%M:%S%z")
     summary.success = not failures
+    if copied_task_ids:
+        for task_id in copied_task_ids:
+            state = task_state.get(task_id)
+            if state is None:
+                continue
+            task_state[task_id] = SeedTaskState(
+                task_id=state.task_id,
+                bundle_fingerprint=state.bundle_fingerprint,
+                last_validation_passed=state.last_validation_passed,
+                last_review_passed=state.last_review_passed,
+                source_run_started_at=state.source_run_started_at,
+                source_run_finished_at=summary.finished_at,
+                recorded_at=summary.finished_at,
+            )
+        _write_seed_task_state(ROOT, task_state)
     summary_path = _write_summary(run_dir, summary)
 
     print(f"Summary written to {summary_path}")

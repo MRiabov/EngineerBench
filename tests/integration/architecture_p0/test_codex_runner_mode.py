@@ -2836,9 +2836,6 @@ def _build_cli_runtime_context_for_test(
             f"Task ID: {item.id}",
             dataset_note,
             "",
-            "Task:",
-            item.task.strip(),
-            "",
             "Workspace contract:",
             "- Use workspace-relative paths only.",
             "- The workspace already contains the starter files, role templates, and any copied seed artifacts.",
@@ -2927,6 +2924,8 @@ def test_prompt_manager_unified_render_uses_shared_source_model(
         "This is a local CLI-provider workspace."
     ) < cli_prompt.index("Workspace: current directory")
     assert "common.code_template" not in cli_prompt
+    assert item.task.strip() not in cli_prompt
+    assert "Task:" not in cli_prompt
     assert "Bug-report mode is a global diagnostic overlay." not in api_prompt
     assert "Bug-report mode is a global diagnostic overlay." not in cli_prompt
     assert materialized.prompt_text == cli_prompt

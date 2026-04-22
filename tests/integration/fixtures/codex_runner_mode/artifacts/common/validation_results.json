@@ -1,4 +1,5 @@
 {
   "success": true,
-  "message": "fixture validation result"
+  "message": "fixture validation result",
+  "script_sha256": "9a1082bef0cfb6190c8d346194c9172c584edd6da621dec483dcd55cc32ea556"
 }
