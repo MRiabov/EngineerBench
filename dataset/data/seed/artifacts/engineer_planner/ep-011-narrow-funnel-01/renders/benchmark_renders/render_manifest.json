@@ -4,7 +4,7 @@
   "created_at": "2026-04-21T19:25:53.693531+00:00",
   "episode_id": "8768ed30-844a-56e2-b9b4-63c803b69c66",
   "worker_session_id": "seed-renders-ep-011-narrow-funnel-01-8ada3e34",
-  "revision": "d8b0d5409ea9d1c826f51af3a5d3ae30ed647a6f",
+  "revision": "b9f6456e30b990608a17aa0af971d21811240eb7",
   "scene_hash": "d5d12e6aefee295f7d15eee0645be5e5dd7634ac9b81be09e4affb0bb8c7ddd1",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",
