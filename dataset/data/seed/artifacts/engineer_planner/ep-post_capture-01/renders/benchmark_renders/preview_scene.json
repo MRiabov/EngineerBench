@@ -116,12 +116,50 @@
       "include_in_segmentation": true
     },
     {
+      "label": "goal_lip",
+      "semantic_label": "goal_lip",
+      "instance_id": "goal_lip",
+      "instance_name": "goal_lip",
+      "object_type": "part",
+      "object_id": 3,
+      "pos_mm": [
+        515.0,
+        0.0,
+        26.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/goal_lip.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hdpe",
+      "body_name": "goal_lip",
+      "geom_name": "goal_lip",
+      "zone_type": null,
+      "color_rgba": [
+        0.9450980392156862,
+        0.9607843137254902,
+        0.9764705882352941,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        213
+      ],
+      "include_in_segmentation": true
+    },
+    {
       "label": "projectile_ball",
       "semantic_label": "projectile_ball",
       "instance_id": "projectile_ball",
       "instance_name": "projectile_ball",
       "object_type": "part",
-      "object_id": 3,
+      "object_id": 4,
       "pos_mm": [
         -240.0,
         0.0,
@@ -147,9 +185,9 @@
         1.0
       ],
       "segmentation_color_rgb": [
-        235,
         59,
-        213
+        235,
+        205
       ],
       "include_in_segmentation": true
     },
@@ -159,7 +197,7 @@
       "instance_id": "zone_goal",
       "instance_name": "zone_goal",
       "object_type": "zone",
-      "object_id": 4,
+      "object_id": 5,
       "pos_mm": [
         430.0,
         0.0,
@@ -187,9 +225,9 @@
         0.22
       ],
       "segmentation_color_rgb": [
-        59,
         235,
-        205
+        154,
+        59
       ],
       "include_in_segmentation": false
     },
@@ -199,9 +237,9 @@
       "instance_id": "zone_build",
       "instance_name": "zone_build",
       "object_type": "zone",
-      "object_id": 5,
+      "object_id": 6,
       "pos_mm": [
-        110.0,
+        150.0,
         0.0,
         120.0
       ],
@@ -212,7 +250,7 @@
       ],
       "mesh_paths": [],
       "box_size_mm": [
-        430.0,
+        470.0,
         180.0,
         120.0
       ],
@@ -227,9 +265,9 @@
         0.14
       ],
       "segmentation_color_rgb": [
-        235,
-        154,
-        59
+        103,
+        59,
+        235
       ],
       "include_in_segmentation": false
     }
@@ -240,14 +278,14 @@
     0.0
   ],
   "bounds_max_mm": [
-    540.0,
+    620.0,
     180.0,
     240.0
   ],
   "center_mm": [
-    110.0,
+    150.0,
     0.0,
     120.0
   ],
-  "diagonal": 962.7045237246992
+  "diagonal": 1034.7946656221222
 }

@@ -1,0 +1,81 @@
+version: '1.0'
+units:
+  length: mm
+  volume: mm3
+  mass: g
+  currency: USD
+constraints:
+  benchmark_max_unit_cost_usd: 80.0
+  benchmark_max_weight_g: 1400.0
+  planner_target_max_unit_cost_usd: 30.0
+  planner_target_max_weight_g: 1300.0
+manufactured_parts:
+- part_name: left_start_pad
+  part_id: left_start_pad
+  manufacturing_method: CNC
+  material_id: hdpe
+  quantity: 1
+  part_volume_mm3: 336000.0
+  stock_bbox_mm:
+    x: 140.0
+    y: 120.0
+    z: 20.0
+  stock_volume_mm3: 336000.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 8.0
+- part_name: goal_capture_tray
+  part_id: goal_capture_tray
+  manufacturing_method: CNC
+  material_id: hdpe
+  quantity: 1
+  part_volume_mm3: 722000.0
+  stock_bbox_mm:
+    x: 190.0
+    y: 190.0
+    z: 20.0
+  stock_volume_mm3: 722000.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 10.0
+- part_name: capture_post
+  part_id: capture_post
+  manufacturing_method: CNC
+  material_id: steel_cold_rolled
+  quantity: 1
+  part_volume_mm3: 38720.0
+  stock_bbox_mm:
+    x: 22.0
+    y: 22.0
+    z: 80.0
+  stock_volume_mm3: 38720.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 5.0
+- part_name: goal_lip
+  part_id: goal_lip
+  manufacturing_method: CNC
+  material_id: hdpe
+  quantity: 1
+  part_volume_mm3: 31920.0
+  stock_bbox_mm:
+    x: 12.0
+    y: 190.0
+    z: 14.0
+  stock_volume_mm3: 31920.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 2.0
+final_assembly:
+- name: left_start_pad
+  config: null
+- name: goal_capture_tray
+  config: null
+- name: capture_post
+  config: null
+- name: goal_lip
+  config: null
+totals:
+  estimated_unit_cost_usd: 25.0
+  estimated_weight_g: 1339.38
+  estimate_confidence: high
+dfm_suggestions:
+- Keep the tray and post static and centered so the capture region remains legible.
+- Use a single post blank with no moving or compliant features.
+- Keep the goal lip shallow and fixed so it reads as a passive retention edge.

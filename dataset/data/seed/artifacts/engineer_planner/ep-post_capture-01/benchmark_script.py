@@ -20,8 +20,6 @@ def _make_box(
 
 
 def build() -> Compound:
-    """Return the benchmark assembly geometry for this workspace."""
-
     fixtures = Compound(
         children=[
             _make_box(
@@ -41,6 +39,12 @@ def build() -> Compound:
                 (20.0, 20.0, 80.0),
                 (430.0, 0.0, 60.0),
                 "steel_cold_rolled",
+            ),
+            _make_box(
+                "goal_lip",
+                (10.0, 180.0, 12.0),
+                (515.0, 0.0, 26.0),
+                "hdpe",
             ),
         ]
     )

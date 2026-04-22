@@ -4,7 +4,7 @@
   "created_at": "2026-04-21T07:05:10.835543+00:00",
   "episode_id": "fbaec921-d93c-5a91-b165-aacf9a9efc14",
   "worker_session_id": "seed-renders-bpr-007-lower-bin-e02dd2b1",
-  "revision": "66fa6fa56ebe7109d2e3e28cba9e6593ef19b1f5",
+  "revision": "2801be1c5506c9ae8a082361c75b675063990407",
   "scene_hash": "bbb447b77ff82d10c1a015466471599ff57bfb9e0e9fefeea7bce191d535a42b",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",

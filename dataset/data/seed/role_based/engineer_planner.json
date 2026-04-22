@@ -1,5 +1,33 @@
 [
   {
+    "id": "ep-001",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded gap-bridge handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence. Draft an implementation-ready engineering plan that bridges `transfer_cube` from `left_start_deck` to `right_goal_deck` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope.",
+    "complexity_level": 1,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-001-raised-shelf",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the gap-bridge benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent bridge-style engineering plan with exact label grounding and budget-consistent calculations."
+  },
+  {
+    "id": "ep-011",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded narrow-funnel handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence. Draft an implementation-ready engineering plan that uses a passive precision funnel to guide `projectile_ball` from the wide capture mouth into the narrow goal throat while preserving the benchmark-owned `environment_fixture` and staying inside the published cost and weight envelope.",
+    "complexity_level": 2,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-011-narrow-funnel-01",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the narrow-funnel benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent passive funnel engineering plan with exact label grounding and budget-consistent calculations."
+  },
+  {
+    "id": "ep-central-bypass-01",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded central-bypass handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence. Draft an implementation-ready engineering plan that routes `projectile_ball` around `central_blocker` from `left_start_deck` to `right_goal_deck` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope.",
+    "complexity_level": 1,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-central-bypass-01",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the central-bypass benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent bypass-style engineering plan with exact label grounding and budget-consistent calculations."
+  },
+  {
+    "id": "ep-central-bypass-07",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded central-bypass handoff in the workspace, including the read-only benchmark geometry and benchmark plan evidence for `left_start_pad`, `central_blocker`, and `right_goal_pad`, plus the payload label `transfer_cube`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that routes `transfer_cube` around `central_blocker` on the positive-Y side without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope.",
+    "complexity_level": 1,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-central-bypass-07",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the central-bypass benchmark files as read-only context, starts from the checked-in starter-template baseline instead of a pre-solved output, and produces a coherent bypass-style engineering plan with exact label grounding for `transfer_cube`, `left_start_pad`, `central_blocker`, and `right_goal_pad`, plus budget-consistent calculations."
+  },
+  {
     "id": "ep-gap-bridge-01",
     "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded gap-bridge handoff in the workspace, including the read-only benchmark geometry for `left_start_deck`, `right_goal_deck`, `bridge_reference_table`, and `gap_floor_guard`, plus the payload label `transfer_cube`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that bridges `transfer_cube` from `left_start_deck` to `right_goal_deck` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope.",
     "complexity_level": 1,
@@ -11,6 +39,13 @@
     "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded gap-bridge handoff in the workspace, including the read-only benchmark geometry, benchmark plan evidence script, and benchmark render evidence. Draft an implementation-ready engineering plan that bridges `transfer_cube` from `left_start_deck` to `right_goal_deck` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope.",
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-gap-bridge-03",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the gap-bridge benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent bridge-style engineering plan with exact label grounding for `transfer_cube`, `left_start_deck`, `right_goal_deck`, `bridge_reference_table`, and `gap_floor_guard`, plus budget-consistent calculations."
+  },
+  {
+    "id": "ep-gap-bridge-04",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded gap-bridge handoff in the workspace, including the read-only benchmark geometry, benchmark plan evidence script, and benchmark render evidence for `left_start_deck`, `right_goal_deck`, `bridge_reference_table`, and `gap_floor_guard`, plus the payload label `transfer_cube`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that bridges `transfer_cube` from `left_start_deck` to `right_goal_deck` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope.",
+    "complexity_level": 1,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-gap-bridge-04",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the gap-bridge benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent bridge-style engineering plan with exact label grounding for `transfer_cube`, `left_start_deck`, `right_goal_deck`, `bridge_reference_table`, and `gap_floor_guard`, plus budget-consistent calculations."
   },
   {
@@ -35,45 +70,73 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the gap-bridge benchmark files as read-only context, preserves the starter scaffold files, keeps the starter plan unsolved, and produces a coherent bridge-style engineering plan with exact label grounding and budget-consistent calculations."
   },
   {
-    "id": "ep-central-bypass-01",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded central-bypass handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence. Draft an implementation-ready engineering plan that routes `projectile_ball` around `central_blocker` from `left_start_deck` to `right_goal_deck` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-central-bypass-01",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the central-bypass benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent bypass-style engineering plan with exact label grounding and budget-consistent calculations."
-  },
-  {
-    "id": "ep-central-bypass-07",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded central-bypass handoff in the workspace, including the read-only benchmark geometry and benchmark plan evidence for `left_start_pad`, `central_blocker`, and `right_goal_pad`, plus the payload label `transfer_cube`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that routes `transfer_cube` around `central_blocker` on the positive-Y side without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-central-bypass-07",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the central-bypass benchmark files as read-only context, starts from the checked-in starter-template baseline instead of a pre-solved output, and produces a coherent bypass-style engineering plan with exact label grounding for `transfer_cube`, `left_start_pad`, `central_blocker`, and `right_goal_pad`, plus budget-consistent calculations."
-  },
-  {
-    "id": "ep-terrain-ridge-01",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded terrain-ridge handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `terrain_base`, `terrain_ridge`, and `goal_catch_tray`, plus the payload label `steel_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that carries `steel_ball` over the ridge into `goal_catch_tray` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-terrain-ridge-01",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the terrain-ridge benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent guide-bridge engineering plan with exact label grounding for `steel_ball`, `terrain_base`, `terrain_ridge`, and `goal_catch_tray`, plus budget-consistent calculations."
-  },
-  {
-    "id": "ep-001",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded gap-bridge handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence. Draft an implementation-ready engineering plan that bridges `transfer_cube` from `left_start_deck` to `right_goal_deck` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope.",
-    "complexity_level": 1,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-001-raised-shelf",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the gap-bridge benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent bridge-style engineering plan with exact label grounding and budget-consistent calculations."
-  },
-  {
-    "id": "ep-011",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded narrow-funnel handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence. Draft an implementation-ready engineering plan that uses a passive precision funnel to guide `projectile_ball` from the wide capture mouth into the narrow goal throat while preserving the benchmark-owned `environment_fixture` and staying inside the published cost and weight envelope.",
-    "complexity_level": 2,
-    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-011-narrow-funnel-01",
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the narrow-funnel benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent passive funnel engineering plan with exact label grounding and budget-consistent calculations."
-  },
-  {
     "id": "ep-post_capture-01",
-    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded post-capture handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `left_start_pad`, `goal_capture_tray`, and `capture_post`, plus the payload label `projectile_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that delivers `projectile_ball` into the capture region around `capture_post` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope.",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded post-capture handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `left_start_pad`, `goal_capture_tray`, `capture_post`, and `goal_lip`, plus the payload label `projectile_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that delivers `projectile_ball` into the capture region around `capture_post` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: baseline post capture with a centered tray and a standard post.",
     "complexity_level": 3,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-post_capture-01",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the post-capture benchmark files as read-only context, starts from the checked-in starter-template baseline instead of a pre-solved output, and produces a coherent post-capture engineering plan with exact label grounding for `projectile_ball`, `left_start_pad`, `goal_capture_tray`, `capture_post`, and `goal_lip`, plus budget-consistent calculations."
+  },
+  {
+    "id": "ep-post_capture-02",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded post-capture handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `left_start_pad`, `goal_capture_tray`, `capture_post`, and `goal_lip`, plus the payload label `projectile_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that delivers `projectile_ball` into the capture region around `capture_post` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: a narrower tray and slightly shorter post.",
+    "complexity_level": 3,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-post_capture-02",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the post-capture benchmark files as read-only context, starts from the checked-in starter-template baseline instead of a pre-solved output, and produces a coherent post-capture engineering plan with exact label grounding for `projectile_ball`, `left_start_pad`, `goal_capture_tray`, `capture_post`, and `goal_lip`, plus budget-consistent calculations."
+  },
+  {
+    "id": "ep-post_capture-03",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded post-capture handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `left_start_pad`, `goal_capture_tray`, `capture_post`, and `goal_lip`, plus the payload label `projectile_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that delivers `projectile_ball` into the capture region around `capture_post` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: a wider tray with a taller post.",
+    "complexity_level": 3,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-post_capture-03",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the post-capture benchmark files as read-only context, starts from the checked-in starter-template baseline instead of a pre-solved output, and produces a coherent post-capture engineering plan with exact label grounding for `projectile_ball`, `left_start_pad`, `goal_capture_tray`, `capture_post`, and `goal_lip`, plus budget-consistent calculations."
+  },
+  {
+    "id": "ep-post_capture-04",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded post-capture handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `left_start_pad`, `goal_capture_tray`, `capture_post`, and `goal_lip`, plus the payload label `projectile_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that delivers `projectile_ball` into the capture region around `capture_post` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: a compact tray with a smaller post diameter.",
+    "complexity_level": 3,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-post_capture-04",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the post-capture benchmark files as read-only context, starts from the checked-in starter-template baseline instead of a pre-solved output, and produces a coherent post-capture engineering plan with exact label grounding for `projectile_ball`, `left_start_pad`, `goal_capture_tray`, `capture_post`, and `goal_lip`, plus budget-consistent calculations."
+  },
+  {
+    "id": "ep-post_capture-05",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded post-capture handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `left_start_pad`, `goal_capture_tray`, `capture_post`, and `goal_lip`, plus the payload label `projectile_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that delivers `projectile_ball` into the capture region around `capture_post` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: a wider tray with a taller goal lip.",
+    "complexity_level": 3,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-post_capture-05",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the post-capture benchmark files as read-only context, starts from the checked-in starter-template baseline instead of a pre-solved output, and produces a coherent post-capture engineering plan with exact label grounding for `projectile_ball`, `left_start_pad`, `goal_capture_tray`, `capture_post`, and `goal_lip`, plus budget-consistent calculations."
+  },
+  {
+    "id": "ep-post_capture-06",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded post-capture handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `left_start_pad`, `goal_capture_tray`, `capture_post`, and `goal_lip`, plus the payload label `projectile_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that delivers `projectile_ball` into the capture region around `capture_post` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: a large tray with a tall post and a compact lip.",
+    "complexity_level": 3,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-post_capture-06",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the post-capture benchmark files as read-only context, starts from the checked-in starter-template baseline instead of a pre-solved output, and produces a coherent post-capture engineering plan with exact label grounding for `projectile_ball`, `left_start_pad`, `goal_capture_tray`, `capture_post`, and `goal_lip`, plus budget-consistent calculations."
+  },
+  {
+    "id": "ep-post_capture-07",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded post-capture handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `left_start_pad`, `goal_capture_tray`, `capture_post`, and `goal_lip`, plus the payload label `projectile_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that delivers `projectile_ball` into the capture region around `capture_post` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: a shifted tray with a moderate post.",
+    "complexity_level": 3,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-post_capture-07",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the post-capture benchmark files as read-only context, starts from the checked-in starter-template baseline instead of a pre-solved output, and produces a coherent post-capture engineering plan with exact label grounding for `projectile_ball`, `left_start_pad`, `goal_capture_tray`, `capture_post`, and `goal_lip`, plus budget-consistent calculations."
+  },
+  {
+    "id": "ep-post_capture-08",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded post-capture handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `left_start_pad`, `goal_capture_tray`, `capture_post`, and `goal_lip`, plus the payload label `projectile_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that delivers `projectile_ball` into the capture region around `capture_post` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: a shifted tray with a taller lip and narrower capture throat.",
+    "complexity_level": 3,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-post_capture-08",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the post-capture benchmark files as read-only context, starts from the checked-in starter-template baseline instead of a pre-solved output, and produces a coherent post-capture engineering plan with exact label grounding for `projectile_ball`, `left_start_pad`, `goal_capture_tray`, `capture_post`, and `goal_lip`, plus budget-consistent calculations."
+  },
+  {
+    "id": "ep-post_capture-09",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded post-capture handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `left_start_pad`, `goal_capture_tray`, `capture_post`, and `goal_lip`, plus the payload label `projectile_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that delivers `projectile_ball` into the capture region around `capture_post` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: a compact tray with a low post and tighter lip.",
+    "complexity_level": 3,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-post_capture-09",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the post-capture benchmark files as read-only context, starts from the checked-in starter-template baseline instead of a pre-solved output, and produces a coherent post-capture engineering plan with exact label grounding for `projectile_ball`, `left_start_pad`, `goal_capture_tray`, `capture_post`, and `goal_lip`, plus budget-consistent calculations."
+  },
+  {
+    "id": "ep-post_capture-10",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded post-capture handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `left_start_pad`, `goal_capture_tray`, `capture_post`, and `goal_lip`, plus the payload label `projectile_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that delivers `projectile_ball` into the capture region around `capture_post` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: the farthest tray offset and a taller capture post.",
+    "complexity_level": 3,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-post_capture-10",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the post-capture benchmark files as read-only context, starts from the checked-in starter-template baseline instead of a pre-solved output, and produces a coherent post-capture engineering plan with exact label grounding for `projectile_ball`, `left_start_pad`, `goal_capture_tray`, `capture_post`, and `goal_lip`, plus budget-consistent calculations."
   },
   {
@@ -82,5 +145,12 @@
     "complexity_level": 2,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-s-corridor-001",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the corridor benchmark files as read-only context, starts from the checked-in starter-template baseline instead of a pre-solved output, and produces a coherent corridor-style engineering plan with exact label grounding for `transfer_cube`, `left_launch_pad`, `corridor_block_a`, `corridor_block_b`, `corridor_block_c`, and `goal_catch_tray`, plus budget-consistent calculations."
+  },
+  {
+    "id": "ep-terrain-ridge-01",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded terrain-ridge handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `terrain_base`, `terrain_ridge`, and `goal_catch_tray`, plus the payload label `steel_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that carries `steel_ball` over the ridge into `goal_catch_tray` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope.",
+    "complexity_level": 2,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-terrain-ridge-01",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the terrain-ridge benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent guide-bridge engineering plan with exact label grounding for `steel_ball`, `terrain_base`, `terrain_ridge`, and `goal_catch_tray`, plus budget-consistent calculations."
   }
 ]
