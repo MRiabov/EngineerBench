@@ -115,6 +115,20 @@ def _run_validate_eval_seed(
     )
 
 
+def _parse_trailing_json(stdout: str) -> dict[str, object]:
+    lines = stdout.splitlines()
+    for index in range(len(lines) - 1, -1, -1):
+        if lines[index].strip() != "{":
+            continue
+        try:
+            payload = json.loads("\n".join(lines[index:]))
+        except json.JSONDecodeError:
+            continue
+        if isinstance(payload, dict):
+            return payload
+    raise AssertionError("Expected a trailing JSON payload in stdout")
+
+
 def _load_dataset_item(_dataset_rel_path: str, row_id: str) -> EvalDatasetItem:
     dataset_path = CODEX_FIXTURE_DATASET_DIR / Path(_dataset_rel_path).name
     if not dataset_path.exists():
@@ -3601,6 +3615,7 @@ def test_validate_eval_seed_accepts_curated_rows_and_preserves_redundancy_metada
     assert "-y" in help_output, help_completed.stdout
     assert "--runner-backend" in help_output, help_completed.stdout
     assert "--validation-scope" in help_output, help_completed.stdout
+    assert "--json" in help_output, help_completed.stdout
     assert "cli" in help_output, help_completed.stdout
 
     validation_cases = (
@@ -3831,6 +3846,50 @@ def test_validate_eval_seed_errors_only_suppresses_pass_output():
     assert completed.returncode == 0, completed.stderr
     assert "PASS benchmark_planner bp-001:" not in completed.stdout
     assert "Validated 1 row(s): all passed." not in completed.stdout
+
+
+@pytest.mark.integration_p0
+@pytest.mark.int_id("INT-270a")
+def test_validate_eval_seed_json_mode_emits_machine_readable_results(tmp_path: Path):
+    lock_path = tmp_path / "problemologist-eval.lock"
+    state_path = tmp_path / "problemologist-eval.run.json"
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "scripts/validate_eval_seed.py",
+            "--skip-env-up",
+            "--agent",
+            "engineer_planner",
+            "--task-id",
+            "ep-001",
+            "--fail-fast",
+            "--concurrency",
+            "1",
+            "--errors-only",
+            "--json",
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=300,
+        env=_validate_eval_seed_env(
+            EVAL_RUN_LOCK_PATH=str(lock_path),
+            EVAL_RUN_STATE_PATH=str(state_path),
+            LOG_LEVEL="ERROR",
+        ),
+    )
+
+    assert completed.returncode in {0, 1}, completed.stderr
+    payload = _parse_trailing_json(completed.stdout)
+    assert payload["checked"] == 1, payload
+    assert payload["passed"] + payload["failed"] == 1, payload
+    assert len(payload["results"]) == 1, payload
+    result = payload["results"][0]
+    assert result["task_id"] == "ep-001", payload
+    assert result["agent"] == "engineer_planner", payload
+    assert isinstance(result["ok"], bool), payload
 
 
 @pytest.mark.integration_p0

@@ -123,7 +123,7 @@ defaults:
         - "**"
 agents:
   engineer_planner:
-    reasoning_effort: xhigh
+    reasoning_effort: medium
     filesystem_permissions:
       read:
         allow:
@@ -308,7 +308,7 @@ agents:
       entry_expects_render_buckets:
         - benchmark_renders
   engineer_plan_reviewer:
-    reasoning_effort: xhigh
+    reasoning_effort: high
     filesystem_permissions:
       read:
         allow:
@@ -416,7 +416,7 @@ agents:
         - engineer_plan_renders
         - final_solution_submission_renders
   benchmark_planner:
-    reasoning_effort: xhigh
+    reasoning_effort: high
     filesystem_permissions:
       read:
         allow:
@@ -471,7 +471,7 @@ agents:
       reminder_interval: 2
       entry_expects_render_buckets: []
   benchmark_plan_reviewer:
-    reasoning_effort: xhigh
+    reasoning_effort: medium
     filesystem_permissions:
       read:
         allow:
@@ -514,7 +514,7 @@ agents:
       entry_expects_render_buckets:
         - benchmark_renders
   benchmark_reviewer:
-    reasoning_effort: xhigh
+    reasoning_effort: medium
     filesystem_permissions:
       read:
         allow:

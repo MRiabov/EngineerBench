@@ -387,6 +387,77 @@ def _level_for_family(family: str) -> int:
     return DEFAULT_COMPLEXITY_BY_FAMILY[family]
 
 
+def _validate_existing_seed_row(
+    *,
+    task_id: str,
+    queue: bool,
+    validation_scope: str,
+) -> bool:
+    command = [
+        sys.executable,
+        str(ROOT / "scripts" / "validate_eval_seed.py"),
+        "--skip-env-up",
+        "--agent",
+        DEFAULT_AGENT.value,
+        "--task-id",
+        task_id,
+        "--fail-fast",
+        "--concurrency",
+        "1",
+        "--errors-only",
+        "--json",
+        "--validation-scope",
+        validation_scope,
+    ]
+    if queue:
+        command.append("--queue")
+
+    env = dict(os.environ)
+    env["LOG_LEVEL"] = "ERROR"
+
+    completed = subprocess.run(
+        command,
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if completed.returncode not in (0, 1):
+        return False
+
+    try:
+        payload = _parse_trailing_json_payload(completed.stdout)
+    except ValueError:
+        return False
+
+    results = payload.get("results")
+    if not isinstance(results, list):
+        return False
+
+    for result in results:
+        if not isinstance(result, dict):
+            continue
+        if result.get("task_id") == task_id:
+            return bool(result.get("ok"))
+    return False
+
+
+def _parse_trailing_json_payload(stdout: str) -> dict[str, object]:
+    lines = stdout.splitlines()
+    for index in range(len(lines) - 1, -1, -1):
+        if lines[index].strip() != "{":
+            continue
+        payload_text = "\n".join(lines[index:])
+        try:
+            payload = json.loads(payload_text)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(payload, dict):
+            return payload
+    raise ValueError("No trailing JSON payload found in validator output")
+
+
 def _canonical_seed_specs(
     *,
     root: Path,
@@ -394,14 +465,17 @@ def _canonical_seed_specs(
     task_ids: set[str] | None,
     levels: set[int] | None,
     limit: int,
+    queue: bool,
+    validation_scope: str,
 ) -> tuple[list[SeedSpec], list[str]]:
     _, rows = _load_raw_seed_rows(root, DEFAULT_AGENT)
     existing_ids = set(_row_id_map(rows))
 
-    selected: list[SeedSpec] = []
+    candidate_specs: list[SeedSpec] = []
     skipped_existing: list[str] = []
     requested_ids = set(task_ids or set())
     explicit_ids = bool(requested_ids)
+    requested_seen: set[str] = set()
 
     for family in families:
         for variant in range(1, 11):
@@ -412,10 +486,7 @@ def _canonical_seed_specs(
             if levels and complexity_level not in levels:
                 continue
             existing_row = task_id in existing_ids
-            if existing_row and not explicit_ids:
-                skipped_existing.append(task_id)
-                continue
-            selected.append(
+            candidate_specs.append(
                 SeedSpec(
                     task_id=task_id,
                     family=family,
@@ -424,16 +495,43 @@ def _canonical_seed_specs(
                     existing_row=existing_row,
                 )
             )
+            if explicit_ids:
+                requested_seen.add(task_id)
+
+    if not candidate_specs:
+        if requested_ids and not requested_seen:
+            missing = sorted(requested_ids)
+            raise SystemExit(
+                "Unknown canonical engineer_planner task id(s): " + ", ".join(missing)
+            )
+        return [], skipped_existing
+
+    valid_existing_ids: set[str] = set()
+    for spec in candidate_specs:
+        if not spec.existing_row:
+            continue
+        if _validate_existing_seed_row(
+            task_id=spec.task_id,
+            queue=queue,
+            validation_scope=validation_scope,
+        ):
+            valid_existing_ids.add(spec.task_id)
+
+    selected: list[SeedSpec] = []
+    for spec in candidate_specs:
+        if spec.task_id in valid_existing_ids:
+            skipped_existing.append(spec.task_id)
+            continue
+        selected.append(spec)
+        if limit > 0 and len(selected) >= limit:
+            break
 
     if requested_ids:
-        missing = sorted(requested_ids - {spec.task_id for spec in selected})
+        missing = sorted(requested_ids - requested_seen)
         if missing:
             raise SystemExit(
                 "Unknown canonical engineer_planner task id(s): " + ", ".join(missing)
             )
-
-    if limit > 0:
-        selected = selected[:limit]
 
     return selected, skipped_existing
 
@@ -1365,11 +1463,25 @@ def main() -> int:
         task_ids=set(requested_task_ids) if requested_task_ids else None,
         levels=selected_levels,
         limit=args.limit,
+        queue=args.queue,
+        validation_scope=args.validation_scope.value,
     )
     summary.selected_task_ids = [spec.task_id for spec in selected_specs]
     summary.skipped_existing_task_ids = skipped_existing
 
     if not selected_specs:
+        if skipped_existing:
+            summary.completed_task_ids = []
+            summary.finished_at = time.strftime("%Y-%m-%dT%H:%M:%S%z")
+            summary.success = True
+            summary_path = _write_summary(run_dir, summary)
+            print(f"Summary written to {summary_path}")
+            print(f"Run directory: {run_dir}")
+            print(
+                "No seeds queued: all matching existing seeds already passed "
+                "validation."
+            )
+            return 0
         summary.finished_at = time.strftime("%Y-%m-%dT%H:%M:%S%z")
         summary.success = False
         summary_path = _write_summary(run_dir, summary)

@@ -4,6 +4,7 @@ import argparse
 import asyncio
 import atexit
 import json
+import logging
 import os
 import re
 import subprocess
@@ -266,6 +267,14 @@ def _parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--json",
+        action="store_true",
+        help=(
+            "Emit a machine-readable validation summary as JSON. "
+            "Incompatible with --run-judge."
+        ),
+    )
+    parser.add_argument(
         "--run-judge",
         action="store_true",
         help=(
@@ -518,6 +527,20 @@ def _validate_generated_curation_manifests(*, errors_only: bool = False) -> list
     return validated
 
 
+def _validation_json_payload(
+    *,
+    checked: int,
+    results: list[dict[str, object]],
+) -> dict[str, object]:
+    failed = sum(1 for result in results if not bool(result.get("ok")))
+    return {
+        "checked": checked,
+        "passed": checked - failed,
+        "failed": failed,
+        "results": results,
+    }
+
+
 async def _validate_item(
     agent: AgentName,
     item: EvalDatasetItem,
@@ -589,6 +612,10 @@ def _run_env_up() -> None:
 async def _async_main(args: argparse.Namespace) -> int:
     if args.concurrency < 1:
         raise SystemExit("--concurrency must be >= 1")
+    if args.json and args.run_judge:
+        raise SystemExit("--json cannot be combined with --run-judge.")
+    if args.json:
+        logging.disable(logging.CRITICAL)
 
     if args.agent:
         agents = resolve_agents_for(
@@ -606,6 +633,7 @@ async def _async_main(args: argparse.Namespace) -> int:
     failures: list[tuple[str, str, str]] = []
     checked = 0
     work_items: list[tuple[AgentName, EvalDatasetItem]] = []
+    json_results: list[dict[str, object]] = []
 
     for agent in agents:
         dataset = load_seed_dataset(
@@ -705,10 +733,18 @@ async def _async_main(args: argparse.Namespace) -> int:
                 if not ok:
                     print(_format_failure_message(agent.value, item.id, detail))
                     failures.append((agent.value, item.id, detail))
-                    if args.fail_fast:
-                        break
                 elif not args.errors_only:
                     print(f"PASS {agent.value} {item.id}: {detail}")
+                json_results.append(
+                    {
+                        "agent": agent.value,
+                        "task_id": item.id,
+                        "ok": ok,
+                        "detail": str(detail),
+                    }
+                )
+                if not ok and args.fail_fast:
+                    break
         else:
             semaphore = asyncio.Semaphore(args.concurrency)
 
@@ -738,20 +774,49 @@ async def _async_main(args: argparse.Namespace) -> int:
                     failures.append((agent.value, item.id, detail))
                 elif not args.errors_only:
                     print(f"PASS {agent.value} {item.id}: {detail}")
+                json_results.append(
+                    {
+                        "agent": agent.value,
+                        "task_id": item.id,
+                        "ok": ok,
+                        "detail": str(detail),
+                    }
+                )
 
     if checked == 0:
-        print("No dataset rows matched the requested filter.", file=sys.stderr)
+        if args.json:
+            payload = _validation_json_payload(checked=0, results=[])
+            payload["error"] = "No dataset rows matched the requested filter."
+            print(json.dumps(payload, indent=2, sort_keys=True))
+        else:
+            print("No dataset rows matched the requested filter.", file=sys.stderr)
         return 1
 
     if failures:
-        if not args.errors_only:
+        if args.json:
+            print(
+                json.dumps(
+                    _validation_json_payload(checked=checked, results=json_results),
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
+        elif not args.errors_only:
             print(
                 f"Validated {checked} row(s): {checked - len(failures)} passed, {len(failures)} failed.",
                 file=sys.stderr,
             )
         return 1
 
-    if not args.errors_only:
+    if args.json:
+        print(
+            json.dumps(
+                _validation_json_payload(checked=checked, results=json_results),
+                indent=2,
+                sort_keys=True,
+            )
+        )
+    elif not args.errors_only:
         print(f"Validated {checked} row(s): all passed.")
 
     if args.run_judge:
