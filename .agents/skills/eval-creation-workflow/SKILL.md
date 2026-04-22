@@ -47,6 +47,12 @@ For the detailed seed-hygiene checklist, contract expectations, and command snip
 If a filename does not yet have a dedicated acceptance reference, start from `references/file-contract-template.md` and specialize it with the active role contract, validator, and cross-file checks.
 Use `references/artifact_inventory.md` when you need to discover which file families are in scope before authoring the per-file criteria.
 
+## Blank-Slate Bootstrapper
+
+- The blank-slate seed-authoring helper is tracked in [Seed Authoring Workspace Bootstrapper](../../../specs/migrations/minor/seed-authoring-workspace-bootstrapper.md).
+- Use it to create a fresh seed-authoring workspace for a new row.
+- Keep using `scripts/update_eval_seed_templates.py` only to refresh the starter subset inside an existing seed corpus artifact.
+
 ## Read first
 
 Open only what you need, but default to these after the role skills above:

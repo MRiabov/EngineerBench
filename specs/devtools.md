@@ -22,7 +22,7 @@ The developer instrumentation layer is split into a small set of canonical entry
 | -- | -- | -- | -- |
 | Local bootstrap | `scripts/env_up.sh`, `scripts/env_down.sh` | Bring the selected local stack profile up and down, including infra, app processes, and profile-scoped cleanup | Public and stable |
 | Integration orchestration | `scripts/run_integration_tests.sh`, `scripts/internal/integration_runner.py` | Run the canonical integration suite through the real stack and the real HTTP/system boundaries | Public wrapper, internal implementation |
-| Eval orchestration | `dataset/evals/run_evals.py`, `evals/logic/runner.py` (split into reusable helpers under `evals/logic/`), `dataset/evals/materialize_seed_workspace.py` | Run evals, materialize seeded workspaces, and expose the CLI-provider-backed debug path | Public wrapper plus internal implementation |
+| Eval orchestration | `dataset/evals/run_evals.py`, `evals/logic/runner.py` (split into reusable helpers under `evals/logic/`), `dataset/evals/materialize_seed_workspace.py`, `dataset/evals/materialize_seed_authoring_workspace.py` | Run evals, materialize seeded workspaces, bootstrap seed-authoring workspaces, and expose the CLI-provider-backed debug path | Public wrapper plus internal implementation |
 | Eval coordination | `scripts/internal/eval_run_lock.py`, `scripts/internal/eval_seed_renders.py` | Serialize eval runs and support deterministic seed render regeneration for maintainer tooling | Internal helper modules |
 | Seed and fixture validation | `scripts/validate_eval_seed.py`, `scripts/update_eval_seed_renders.py`, `scripts/validate_integration_mock_response_preflight.py`, `scripts/normalize_integration_mock_responses.py` | Validate seeded eval rows against the current seeded-entry contract, including the seeded-validation scope contract, update deterministic seed render bundles, validate the legacy integration replay corpus, and repair deterministic drift in that corpus | Public maintenance utilities |
 | Derived artifact regeneration | `scripts/persist_test_results.py` | Persist test-history outputs | Public utilities |
@@ -142,6 +142,7 @@ The eval tooling mirrors the integration tooling, but it owns a separate lock, a
 - It uses the exclusive eval lock while bootstrapping and then downgrades to the shared validation lock so multiple validation-only consumers can coexist while the stack remains protected.
 - After bootstrap it stops mutating the lock state and keeps only the shared lock file handle open.
 - It exposes explicit sandbox selection through `--yolo` and `--no-yolo`; the script should never invent a hidden bypass mode.
+- The blank-slate seed-authoring helper lives in `dataset/evals/materialize_seed_authoring_workspace.py` and is tracked in [Seed Authoring Workspace Bootstrapper](./migrations/minor/seed-authoring-workspace-bootstrapper.md); it bootstraps a fresh authoring workspace instead of rehydrating an existing seed row.
 
 ### `dataset/evals/run_e2e_seed.py`
 
@@ -153,6 +154,7 @@ The eval tooling mirrors the integration tooling, but it owns a separate lock, a
 
 - `dataset/evals/eval_seed_update_autopilot.py` is the reusable seed-update autopilot for eval rows.
 - It runs engineer_planner seed jobs one row at a time with process-level concurrency: each worker owns one seed worktree, launches the authoring Codex CLI, refreshes the seed artifacts, runs `scripts/validate_eval_seed.py`, and then runs a read-only review prompt before the row is merged back.
+- Before queueing a candidate row, it validates any already-created matching row and skips it when `scripts/validate_eval_seed.py` reports a pass; failed existing rows remain eligible for repair and the queue continues filling from later candidates.
 - It keeps its per-seed logs, prompts, and merged summaries under `logs/evals/seed_update_autopilot/`, and the worker count is configurable so 2-4 Codex CLIs can be active at once on different seeds.
 - The canonical entrypoint lives in `dataset/evals/eval_seed_update_autopilot.py`; the old family-batch idea is no longer the maintained contract.
 
@@ -187,10 +189,11 @@ The validation helpers are developer tooling, not product behavior.
 - For any seed-backed row with writable authored files, the seeded workspace must still expose the writable starter files for that row. The validator fails closed if those paths already contain a pre-solved output instead of the checked-in starter baseline.
 - For role-based rows, that contract includes the current-role manifest as the authoritative role marker for the seeded workspace.
 - For planner rows, that contract includes exact inventory preservation, exact identifier mention coverage in `benchmark_plan.md` or `engineering_plan.md`, and the latest handoff cross-contract checks from the controller validation path.
-- `scripts/update_eval_seed_templates.py` refreshes the checked-in starter files in the seed corpus from the shared template registry, and `scripts/update_eval_seed_renders.py` continues to own deterministic render regeneration.
+- `scripts/update_eval_seed_templates.py` refreshes the checked-in starter files in the seed corpus from the shared template registry, and `scripts/update_eval_seed_renders.py` continues to own deterministic render regeneration. That refresh utility remains separate from the blank-slate seed-authoring bootstrapper.
 - It can refresh deterministic seed manifests when asked; render bundles are handled by `scripts/update_eval_seed_renders.py`.
 - It can optionally run the eval runner in judge mode after validation.
 - `--judge-provider` selects the CLI provider for that judge follow-up; the default is `qwen`, and the choice is orthogonal to `--runner-backend`.
+- `--json` emits a trailing machine-readable summary payload so maintainer tooling can parse validation results without scraping the human-oriented logs.
 - Validation-only `--skip-env-up` runs join the shared validation lock so multiple seed checks can proceed in parallel while still preventing eval teardown during an active validation consumer.
 - The script keeps the lock exclusive only while bootstrapping the eval stack, then downgrades to the shared validation lock before health checks and validation work continue.
 - If `--run-judge` is requested for more than 10 selected seed rows, the script requires `-y` before it will launch the expensive judge pass.
