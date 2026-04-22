@@ -43,3 +43,16 @@ Continuous pretraining may be done on a image dataset such as a visual image
 There was a number of models that are doing pre-training on gameplaying models. I assume they might have suitable embeddings? maybe not.
 
 <!--Note: I may want to apply for an innovation voucher. I also must apply for the computation voucher. That means applying for VAT.-->
+
+## Automatic skill tuning
+
+Projects like SkillClaw handle skill tuning, but it looks very strangely implemented.
+
+## RL interfaces
+
+There is a number of RL interfaces already available. SWE-smith uses them
+
+## Move to cadquery
+
+Models struggle already, and cadquery has a supreme amount of training data on the internet. Fine-tuned models available already. Why bother training a model from scratch if I can train a CQ model?
+Also, CQ appears to be quite forgiving too.
