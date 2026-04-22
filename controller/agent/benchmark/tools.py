@@ -177,7 +177,6 @@ def get_benchmark_planner_tools(
 
         required_files = [
             plan_path_for_agent(AgentName.BENCHMARK_PLANNER).as_posix(),
-            "todo.md",
             "benchmark_definition.yaml",
             "benchmark_assembly_definition.yaml",
             BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
@@ -230,32 +229,27 @@ def get_benchmark_planner_tools(
         manufacturing_config_text = await _read_required_text(
             "manufacturing_config.yaml"
         )
-        if manufacturing_config_text is None:
-            result = PlannerSubmissionResult(
-                ok=False,
-                status="rejected",
-                errors=[
-                    "manufacturing_config.yaml missing; planner handoff requires a "
-                    "workspace pricing source"
-                ],
-                node_type=AgentName.BENCHMARK_PLANNER,
-            )
-            return result.model_dump(mode="json")
-
-        try:
+        if manufacturing_config_text is not None:
+            try:
+                load_planner_manufacturing_config_from_text(manufacturing_config_text)
+            except Exception as exc:
+                result = PlannerSubmissionResult(
+                    ok=False,
+                    status="rejected",
+                    errors=[
+                        f"manufacturing_config.yaml invalid for planner handoff: {exc}"
+                    ],
+                    node_type=AgentName.BENCHMARK_PLANNER,
+                )
+                return result.model_dump(mode="json")
             manufacturing_config = load_planner_manufacturing_config_from_text(
                 manufacturing_config_text
             )
-        except Exception as exc:
-            result = PlannerSubmissionResult(
-                ok=False,
-                status="rejected",
-                errors=[
-                    f"manufacturing_config.yaml invalid for planner handoff: {exc}"
-                ],
-                node_type=AgentName.BENCHMARK_PLANNER,
-            )
-            return result.model_dump(mode="json")
+            artifacts["manufacturing_config.yaml"] = manufacturing_config_text
+        else:
+            from worker_heavy.workbenches.config import load_required_merged_config
+
+            manufacturing_config = load_required_merged_config()
 
         canonical_benchmark_definition, canonicalization_errors = (
             _canonicalize_benchmark_constraints(artifacts["benchmark_definition.yaml"])
@@ -275,7 +269,6 @@ def get_benchmark_planner_tools(
             canonical_benchmark_definition,
             overwrite=True,
         )
-        artifacts["manufacturing_config.yaml"] = manufacturing_config_text
 
         pricing_result = await run_validate_and_price_script(fs)
         if not pricing_result["ok"]:

@@ -30,7 +30,7 @@ trap cleanup EXIT
   printf '[%s] launching overnight batch\n' "$(date -Iseconds)"
   cd "$ROOT"
   set +e
-  "$UV" run dataset/evals/eval_seed_update_autopilot_per_seed.py --author --seed-workers 4 --limit 30 --author-retries 1 --queue
+  "$UV" run dataset/evals/eval_seed_update_autopilot_per_seed.py --author --seed-workers 4 --limit 30 --author-retries 2 --queue
   status=$?
   set -e
   printf '[%s] overnight batch finished with exit %s\n' "$(date -Iseconds)" "$status"

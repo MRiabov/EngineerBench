@@ -14,7 +14,7 @@ from shared.enums import AgentName
 from shared.script_contracts import (
     BENCHMARK_SCRIPT_PATH,
     PAYLOAD_TRAJECTORY_DEFINITION_PATH,
-    SOLUTION_SCRIPT_PATH,
+    SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
 )
 from shared.type_checking import type_check
 
@@ -96,13 +96,11 @@ class CoderNode(BaseNode):
         }
         validate_files = [
             "engineering_plan.md",
-            "todo.md",
             "benchmark_definition.yaml",
             "assembly_definition.yaml",
-            PAYLOAD_TRAJECTORY_DEFINITION_PATH,
-            BENCHMARK_SCRIPT_PATH,
-            SOLUTION_SCRIPT_PATH,
             "benchmark_assembly_definition.yaml",
+            BENCHMARK_SCRIPT_PATH,
+            SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
         ]
 
         prediction, _, journal_entry = await self._run_program(

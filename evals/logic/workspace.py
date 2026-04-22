@@ -30,6 +30,7 @@ from controller.agent.node_entry_validation import (
 from controller.clients.worker import WorkerClient
 from evals.logic.models import AgentEvalSpec, EvalDatasetItem
 from evals.logic.seed_maintenance import refresh_seed_artifact_manifests
+from shared.agent_templates import load_seed_starter_template_files
 from shared.current_role import current_role_manifest_json
 from shared.enums import AgentName, EvalMode
 from shared.models.schemas import (
@@ -287,6 +288,39 @@ class InMemorySeedWorkspaceClient:
 
     async def aclose(self) -> None:
         return None
+
+
+async def _materialize_runtime_seed_scaffold(
+    *,
+    workspace_client: Any,
+    agent_name: AgentName,
+) -> list[str]:
+    """Materialize runtime starter files for seeded planner validation."""
+
+    starter_files = load_seed_starter_template_files(agent_name)
+    if not starter_files:
+        return []
+
+    created_paths: list[str] = []
+    for rel_path, content in sorted(starter_files.items()):
+        try:
+            already_exists = await workspace_client.exists(
+                rel_path, bypass_agent_permissions=True
+            )
+        except Exception:
+            already_exists = False
+        if already_exists:
+            continue
+
+        await workspace_client.write_file(
+            rel_path,
+            content,
+            overwrite=False,
+            bypass_agent_permissions=True,
+        )
+        created_paths.append(rel_path)
+
+    return created_paths
 
 
 async def materialize_seed_workspace_snapshot(
@@ -639,6 +673,11 @@ async def preflight_seeded_entry_contract(
                 "Seeded workspace is missing copied seed artifact(s): "
                 + ", ".join(missing_seed_paths)
             )
+
+        await _materialize_runtime_seed_scaffold(
+            workspace_client=worker,
+            agent_name=target_node,
+        )
 
         try:
             result = await evaluate_node_entry_contract(

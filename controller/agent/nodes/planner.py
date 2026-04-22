@@ -64,10 +64,10 @@ class PlannerNode(BaseNode):
         }
         validate_files = [
             "engineering_plan.md",
-            "todo.md",
             "benchmark_definition.yaml",
             "assembly_definition.yaml",
             "benchmark_assembly_definition.yaml",
+            "benchmark_script.py",
             SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
         ]
 

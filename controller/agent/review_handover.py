@@ -714,6 +714,8 @@ async def validate_plan_reviewer_handover(
     for rel_path, expected_hash in manifest.artifact_hashes.items():
         content = await worker_client.read_file_optional(rel_path)
         if content is None:
+            if rel_path in {"todo.md", "manufacturing_config.yaml"}:
+                continue
             return f"planner artifact missing: {rel_path}"
         actual_hash = hashlib.sha256(content.encode("utf-8")).hexdigest()
         if actual_hash != expected_hash:

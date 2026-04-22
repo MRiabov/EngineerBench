@@ -3,62 +3,83 @@ from __future__ import annotations
 from shared.enums import AgentName
 from shared.script_contracts import (
     BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
+    BENCHMARK_SCRIPT_PATH,
     CURRENT_ROLE_MANIFEST_PATH,
     SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
+    SOLUTION_SCRIPT_PATH,
 )
 
 _BENCHMARK_PLAN_BASE_FILES: tuple[str, ...] = (
     "benchmark_plan.md",
-    "todo.md",
     "benchmark_definition.yaml",
     "benchmark_assembly_definition.yaml",
     BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
 )
 
-_ENGINEER_PLAN_BASE_FILES: tuple[str, ...] = (
-    "engineering_plan.md",
-    "todo.md",
-    "benchmark_definition.yaml",
-    "assembly_definition.yaml",
-    "benchmark_plan.md",
-    SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
-)
+_CURRENT_SEED_WORKSPACE_FILES: dict[AgentName, tuple[str, ...]] = {
+    AgentName.BENCHMARK_CODER: (
+        "benchmark_plan.md",
+        "benchmark_definition.yaml",
+        "benchmark_assembly_definition.yaml",
+        BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
+    ),
+    AgentName.BENCHMARK_REVIEWER: (
+        "benchmark_definition.yaml",
+        "assembly_definition.yaml",
+        "benchmark_assembly_definition.yaml",
+        BENCHMARK_SCRIPT_PATH,
+        "benchmark_plan.md",
+        BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
+    ),
+    AgentName.ENGINEER_PLANNER: (
+        "benchmark_plan.md",
+        "benchmark_assembly_definition.yaml",
+        BENCHMARK_SCRIPT_PATH,
+        BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
+    ),
+    AgentName.ENGINEER_CODER: (
+        "engineering_plan.md",
+        "benchmark_definition.yaml",
+        "assembly_definition.yaml",
+        "benchmark_assembly_definition.yaml",
+        BENCHMARK_SCRIPT_PATH,
+        SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
+    ),
+    AgentName.ENGINEER_PLAN_REVIEWER: (
+        "engineering_plan.md",
+        "benchmark_definition.yaml",
+        "assembly_definition.yaml",
+        "benchmark_assembly_definition.yaml",
+        BENCHMARK_SCRIPT_PATH,
+        SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
+    ),
+    AgentName.ENGINEER_EXECUTION_REVIEWER: (
+        "engineering_plan.md",
+        "benchmark_definition.yaml",
+        "assembly_definition.yaml",
+        "benchmark_assembly_definition.yaml",
+        BENCHMARK_SCRIPT_PATH,
+        SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
+        SOLUTION_SCRIPT_PATH,
+    ),
+}
 
 SEED_STARTER_TEMPLATE_FILES: dict[AgentName, tuple[str, ...]] = {
     AgentName.BENCHMARK_PLANNER: _BENCHMARK_PLAN_BASE_FILES,
     AgentName.ENGINEER_PLANNER: (
         "engineering_plan.md",
-        "todo.md",
         "assembly_definition.yaml",
         SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
     ),
-    AgentName.BENCHMARK_CODER: (
-        "benchmark_script.py",
-        "todo.md",
-        "journal.md",
-    ),
+    AgentName.BENCHMARK_CODER: ("benchmark_script.py",),
     AgentName.ENGINEER_CODER: (
         "solution_script.py",
         "payload_trajectory_definition.yaml",
-        "todo.md",
-        "journal.md",
     ),
-    AgentName.BENCHMARK_PLAN_REVIEWER: (
-        "todo.md",
-        "journal.md",
-    ),
-    AgentName.BENCHMARK_REVIEWER: (
-        "todo.md",
-        "journal.md",
-    ),
-    AgentName.ENGINEER_PLAN_REVIEWER: (
-        "todo.md",
-        "journal.md",
-    ),
-    AgentName.ENGINEER_EXECUTION_REVIEWER: (
-        "todo.md",
-        "journal.md",
-    ),
+    AgentName.BENCHMARK_PLAN_REVIEWER: (),
+    AgentName.BENCHMARK_REVIEWER: (),
+    AgentName.ENGINEER_PLAN_REVIEWER: (),
+    AgentName.ENGINEER_EXECUTION_REVIEWER: (),
 }
 
 SEED_TEMPLATE_EXCLUSION_FILES: dict[AgentName, tuple[str, ...]] = {
@@ -75,21 +96,14 @@ def seed_template_exclusion_files_for_agent(agent_name: AgentName) -> tuple[str,
 
 
 def plan_artifacts_for_agent(agent_name: AgentName) -> tuple[str, ...]:
+    if agent_name in _CURRENT_SEED_WORKSPACE_FILES:
+        return _CURRENT_SEED_WORKSPACE_FILES[agent_name]
+
     if agent_name in {
         AgentName.BENCHMARK_PLANNER,
         AgentName.BENCHMARK_PLAN_REVIEWER,
-        AgentName.BENCHMARK_CODER,
-        AgentName.BENCHMARK_REVIEWER,
     }:
         return _BENCHMARK_PLAN_BASE_FILES
-
-    if agent_name in {
-        AgentName.ENGINEER_PLANNER,
-        AgentName.ENGINEER_PLAN_REVIEWER,
-        AgentName.ENGINEER_CODER,
-        AgentName.ENGINEER_EXECUTION_REVIEWER,
-    }:
-        return _ENGINEER_PLAN_BASE_FILES
 
     return ()
 

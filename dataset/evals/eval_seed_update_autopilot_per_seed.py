@@ -51,7 +51,7 @@ from evals.logic.dataset_selection import (  # noqa: E402
     parse_task_id_filters,
 )
 from evals.logic.seed_maintenance import (  # noqa: E402
-    refresh_seed_starter_template_files,
+    refresh_seed_artifact_manifests,
 )
 from shared.enums import AgentName  # noqa: E402
 
@@ -1635,11 +1635,9 @@ def _run_seed_job(
 
         _copy_seed_dataset_file(root=ROOT, workspace_dir=worktree_dir)
         _copy_seed_artifact_dir(root=ROOT, spec=spec, workspace_dir=worktree_dir)
-        refresh_seed_starter_template_files(
+        refresh_seed_artifact_manifests(
             ROOT / ARTIFACT_ROOT_REL / spec.task_id,
-            DEFAULT_AGENT,
-            fix=True,
-            refresh_manifests=update_manifests,
+            fix=update_manifests,
         )
         job.changed_task_ids = changed_ids
         job.introduced_paths = introduced_paths

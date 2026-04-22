@@ -70,7 +70,6 @@ def _validate_benchmark_motion_visibility(
             pass
 
     plan_text = artifacts.get("benchmark_plan.md")
-    todo_text = artifacts.get("todo.md")
     benchmark_definition_text = artifacts.get("benchmark_definition.yaml")
     benchmark_assembly_definition_text = artifacts.get(
         "benchmark_assembly_definition.yaml"
@@ -79,7 +78,6 @@ def _validate_benchmark_motion_visibility(
         not benchmark_definition_text
         or not benchmark_assembly_definition_text
         or not plan_text
-        or not todo_text
     ):
         return []
 
@@ -115,7 +113,7 @@ def _validate_benchmark_motion_visibility(
         benchmark_definition=benchmark_definition,
         assembly_definition=assembly_definition,
         plan_text=plan_text,
-        todo_text=todo_text,
+        todo_text=artifacts.get("todo.md"),
         plan_refusal_text=plan_refusal_text,
     )
 
@@ -257,7 +255,6 @@ async def validate_benchmark_planner_handoff_artifacts(
         artifacts[plan_artifact_name] = await client.read_file(plan_artifact_name)
 
     for rel_path in (
-        "todo.md",
         "benchmark_definition.yaml",
         "benchmark_assembly_definition.yaml",
         "benchmark_plan_evidence_script.py",

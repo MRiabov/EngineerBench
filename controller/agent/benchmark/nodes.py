@@ -192,7 +192,6 @@ class BenchmarkPlannerNode(BaseNode):
         if settings.is_integration_test:
             validate_files = [
                 PLAN_FILE,
-                "todo.md",
                 "benchmark_definition.yaml",
                 "benchmark_assembly_definition.yaml",
                 BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
@@ -591,7 +590,6 @@ class BenchmarkPlannerNode(BaseNode):
         max_retries = max(1, int(settings.dspy_program_max_retries))
         validate_files = [
             PLAN_FILE,
-            "todo.md",
             "benchmark_definition.yaml",
             "benchmark_assembly_definition.yaml",
             BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
@@ -1269,7 +1267,6 @@ class BenchmarkPlanReviewerNode(BaseNode):
             get_plan_reviewer_tools,
             [
                 PLAN_FILE,
-                "todo.md",
                 "benchmark_definition.yaml",
                 "benchmark_assembly_definition.yaml",
             ],
@@ -1497,10 +1494,10 @@ class BenchmarkCoderNode(BaseNode):
             inputs,
             get_benchmark_tools,
             [
-                SCRIPT_FILE,
                 PLAN_FILE,
-                "todo.md",
                 "benchmark_definition.yaml",
+                "benchmark_assembly_definition.yaml",
+                BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
             ],
             AgentName.BENCHMARK_CODER,
         )

@@ -73,18 +73,14 @@ def _workspace_environment_version(workspace: Path) -> str | None:
 def _required_files(agent_name: AgentName) -> tuple[str, ...]:
     if agent_name == AgentName.BENCHMARK_PLANNER:
         return (
-            "todo.md",
             "benchmark_definition.yaml",
             "benchmark_assembly_definition.yaml",
             BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
-            "manufacturing_config.yaml",
         )
     return (
-        "todo.md",
         "benchmark_definition.yaml",
         "assembly_definition.yaml",
         SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
-        "manufacturing_config.yaml",
     )
 
 
@@ -199,20 +195,24 @@ def _submit_plan(workspace: Path | None = None) -> PlannerSubmissionResult:
             encoding="utf-8",
         )
 
-    try:
-        manufacturing_config_text = artifacts["manufacturing_config.yaml"]
-        manufacturing_config = load_planner_manufacturing_config_from_text(
-            manufacturing_config_text
-        )
-    except Exception as exc:
-        return PlannerSubmissionResult(
-            ok=False,
-            status="rejected",
-            errors=[f"failed to load manufacturing_config.yaml: {exc}"],
-            node_type=agent_name,
-        )
+    manufacturing_config_text = artifacts.get("manufacturing_config.yaml")
+    if manufacturing_config_text is not None:
+        try:
+            manufacturing_config = load_planner_manufacturing_config_from_text(
+                manufacturing_config_text
+            )
+        except Exception as exc:
+            return PlannerSubmissionResult(
+                ok=False,
+                status="rejected",
+                errors=[f"failed to load manufacturing_config.yaml: {exc}"],
+                node_type=agent_name,
+            )
+        artifacts["manufacturing_config.yaml"] = manufacturing_config_text
+    else:
+        from worker_heavy.workbenches.config import load_required_merged_config
 
-    artifacts["manufacturing_config.yaml"] = manufacturing_config_text
+        manufacturing_config = load_required_merged_config()
 
     validation_artifacts = dict(artifacts)
     benchmark_script_path = workspace / BENCHMARK_SCRIPT_PATH

@@ -861,7 +861,7 @@ def _validate_payload_trajectory_clearance_from_payload_definition(
     *,
     files_content_map: dict[str, str],
     benchmark_definition: BenchmarkDefinition,
-    coarse_payload_trajectory: CoarsePayloadTrajectory,
+    payload_definition: PayloadTrajectoryDefinition,
     assembly_definition: AssemblyDefinition,
     benchmark_assembly_definition: AssemblyDefinition | None,
     session_id: str | None = None,
@@ -889,11 +889,6 @@ def _validate_payload_trajectory_clearance_from_payload_definition(
                 encoding="utf-8",
             )
 
-        payload_definition = (
-            _payload_trajectory_definition_from_coarse_payload_trajectory(
-                coarse_payload_trajectory
-            )
-        )
         clearance_errors = validate_payload_trajectory_swept_clearance(
             workspace_root=workspace_root,
             benchmark_definition=benchmark_definition,
@@ -1449,11 +1444,16 @@ def validate_planner_handoff_cross_contract(
                     "planner clearance"
                 )
             else:
+                payload_definition = (
+                    _payload_trajectory_definition_from_coarse_payload_trajectory(
+                        coarse_payload_trajectory
+                    )
+                )
                 errors.extend(
                     _validate_payload_trajectory_clearance_from_payload_definition(
                         files_content_map=files_content_map,
                         benchmark_definition=benchmark_definition,
-                        coarse_payload_trajectory=coarse_payload_trajectory,
+                        payload_definition=payload_definition,
                         assembly_definition=assembly_definition,
                         benchmark_assembly_definition=None,
                         session_id=session_id,
@@ -1624,59 +1624,66 @@ def validate_node_output(
             required_files = {
                 AgentName.ENGINEER_PLANNER: [
                     plan_artifact_name,
-                    "todo.md",
                     "benchmark_definition.yaml",
                     "assembly_definition.yaml",
+                    "benchmark_assembly_definition.yaml",
+                    BENCHMARK_SCRIPT_PATH,
                     SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
                 ],
                 AgentName.BENCHMARK_PLANNER: [
                     plan_artifact_name,
-                    "todo.md",
                     "benchmark_definition.yaml",
                     "benchmark_assembly_definition.yaml",
                     BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
                 ],
                 AgentName.ENGINEER_CODER: [
                     plan_artifact_name,
-                    "todo.md",
                     "benchmark_definition.yaml",
+                    "assembly_definition.yaml",
+                    "benchmark_assembly_definition.yaml",
+                    BENCHMARK_SCRIPT_PATH,
                     SOLUTION_SCRIPT_PATH,
+                    SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
                 ],
                 AgentName.BENCHMARK_CODER: [
                     plan_artifact_name,
-                    "todo.md",
                     "benchmark_definition.yaml",
+                    "benchmark_assembly_definition.yaml",
                     BENCHMARK_SCRIPT_PATH,
+                    BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
                 ],
             }.get(node_key, [])
     else:
         required_files = {
             AgentName.ENGINEER_PLANNER: [
                 plan_artifact_name,
-                "todo.md",
                 "benchmark_definition.yaml",
                 "assembly_definition.yaml",
+                "benchmark_assembly_definition.yaml",
+                BENCHMARK_SCRIPT_PATH,
                 SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
             ],
             AgentName.BENCHMARK_PLANNER: [
                 plan_artifact_name,
-                "todo.md",
                 "benchmark_definition.yaml",
                 "benchmark_assembly_definition.yaml",
                 BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
             ],
             AgentName.ENGINEER_CODER: [
                 plan_artifact_name,
-                "todo.md",
                 "benchmark_definition.yaml",
-                "payload_trajectory_definition.yaml",
+                "assembly_definition.yaml",
+                "benchmark_assembly_definition.yaml",
+                BENCHMARK_SCRIPT_PATH,
                 SOLUTION_SCRIPT_PATH,
+                SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
             ],
             AgentName.BENCHMARK_CODER: [
                 plan_artifact_name,
-                "todo.md",
                 "benchmark_definition.yaml",
+                "benchmark_assembly_definition.yaml",
                 BENCHMARK_SCRIPT_PATH,
+                BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
             ],
         }.get(node_key, [])
 

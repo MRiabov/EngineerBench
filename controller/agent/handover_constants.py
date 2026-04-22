@@ -11,44 +11,39 @@ from shared.script_contracts import (
 )
 
 ENGINEER_BENCHMARK_CONTEXT_ARTIFACTS: tuple[str, ...] = (
+    "benchmark_definition.yaml",
+    "assembly_definition.yaml",
     "benchmark_assembly_definition.yaml",
     BENCHMARK_SCRIPT_PATH,
 )
 
-ENGINEER_BENCHMARK_SOURCE_ARTIFACTS: tuple[str, ...] = (
-    SOLUTION_SCRIPT_PATH,
-    PAYLOAD_TRAJECTORY_DEFINITION_PATH,
-)
-
 BENCHMARK_PLANNER_HANDOFF_ARTIFACTS: tuple[str, ...] = (
     BENCHMARK_PLAN_PATH,
-    "todo.md",
     "benchmark_definition.yaml",
     "benchmark_assembly_definition.yaml",
     BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
 )
 
-BENCHMARK_CODER_HANDOFF_ARTIFACTS: tuple[str, ...] = (
-    *BENCHMARK_PLANNER_HANDOFF_ARTIFACTS,
-    BENCHMARK_SCRIPT_PATH,
-)
+BENCHMARK_CODER_HANDOFF_ARTIFACTS: tuple[str, ...] = BENCHMARK_PLANNER_HANDOFF_ARTIFACTS
 
 ENGINEERING_EXECUTION_REVIEWER_HANDOFF_ARTIFACTS: tuple[str, ...] = (
-    SOLUTION_SCRIPT_PATH,
-    PAYLOAD_TRAJECTORY_DEFINITION_PATH,
-    BENCHMARK_SCRIPT_PATH,
-    "benchmark_assembly_definition.yaml",
-    "validation_results.json",
-    "simulation_result.json",
-)
-
-ENGINEER_PLANNER_HANDOFF_ARTIFACTS: tuple[str, ...] = (
     ENGINEERING_PLAN_PATH,
     "todo.md",
     "benchmark_definition.yaml",
     "assembly_definition.yaml",
+    "benchmark_assembly_definition.yaml",
+    BENCHMARK_SCRIPT_PATH,
     SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
-    *ENGINEER_BENCHMARK_CONTEXT_ARTIFACTS,
+    SOLUTION_SCRIPT_PATH,
+)
+
+ENGINEER_PLANNER_HANDOFF_ARTIFACTS: tuple[str, ...] = (
+    ENGINEERING_PLAN_PATH,
+    "benchmark_definition.yaml",
+    "assembly_definition.yaml",
+    "benchmark_assembly_definition.yaml",
+    BENCHMARK_SCRIPT_PATH,
+    SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
 )
 
 BENCHMARK_PLAN_REVIEW_MANIFEST = ".manifests/benchmark_plan_review_manifest.json"
@@ -105,7 +100,6 @@ __all__ = [
     "ENGINEERING_PLAN_REVIEW_MANIFEST",
     "ENGINEER_BENCHMARK_CONTEXT_ARTIFACTS",
     "ENGINEER_BENCHMARK_HANDOVER_CHECK",
-    "ENGINEER_BENCHMARK_SOURCE_ARTIFACTS",
     "ENGINEER_EXECUTION_REVIEWER_HANDOVER_CHECK",
     "ENGINEER_PLANNER_HANDOFF_ARTIFACTS",
     "ENGINEER_PLANNER_EVIDENCE_LAYOUT_CHECK",

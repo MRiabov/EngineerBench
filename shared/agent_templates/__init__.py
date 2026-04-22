@@ -118,6 +118,7 @@ def load_seed_starter_template_files(agent_name: AgentName) -> dict[str, str]:
         AgentName.ENGINEER_PLANNER,
     }:
         starter_files.update(load_role_template_files(agent_name))
+        starter_files.pop("todo.md", None)
     elif agent_name == AgentName.BENCHMARK_CODER:
         benchmark_templates = load_template_repo_files("benchmark_generator")
         starter_files["benchmark_script.py"] = benchmark_templates[
@@ -129,17 +130,6 @@ def load_seed_starter_template_files(agent_name: AgentName) -> dict[str, str]:
         starter_files["payload_trajectory_definition.yaml"] = engineer_templates[
             "payload_trajectory_definition.yaml"
         ]
-
-    if agent_name in {
-        AgentName.BENCHMARK_CODER,
-        AgentName.BENCHMARK_REVIEWER,
-        AgentName.BENCHMARK_PLAN_REVIEWER,
-        AgentName.ENGINEER_CODER,
-        AgentName.ENGINEER_PLAN_REVIEWER,
-        AgentName.ENGINEER_EXECUTION_REVIEWER,
-    }:
-        starter_files["todo.md"] = common_templates["todo.md"]
-        starter_files["journal.md"] = common_templates["journal.md"]
 
     expected_paths = seed_starter_template_files_for_agent(agent_name)
     if expected_paths and set(starter_files) != set(expected_paths):

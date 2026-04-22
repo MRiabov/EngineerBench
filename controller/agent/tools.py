@@ -233,30 +233,19 @@ def get_engineer_planner_tools(
         manufacturing_config_text = await fs.client.read_file_optional(
             "manufacturing_config.yaml", bypass_agent_permissions=True
         )
-        if manufacturing_config_text is None:
-            return {
-                "ok": False,
-                "stdout": "",
-                "stderr": (
-                    "manufacturing_config.yaml missing; planner handoff requires a "
-                    "workspace pricing source"
-                ),
-                "exit_code": 1,
-                "timed_out": False,
-            }
-
-        try:
-            load_planner_manufacturing_config_from_text(manufacturing_config_text)
-        except Exception as exc:
-            return {
-                "ok": False,
-                "stdout": "",
-                "stderr": (
-                    f"manufacturing_config.yaml invalid for planner handoff: {exc}"
-                ),
-                "exit_code": 1,
-                "timed_out": False,
-            }
+        if manufacturing_config_text is not None:
+            try:
+                load_planner_manufacturing_config_from_text(manufacturing_config_text)
+            except Exception as exc:
+                return {
+                    "ok": False,
+                    "stdout": "",
+                    "stderr": (
+                        f"manufacturing_config.yaml invalid for planner handoff: {exc}"
+                    ),
+                    "exit_code": 1,
+                    "timed_out": False,
+                }
 
         return await run_validate_and_price_script(fs)
 
@@ -277,9 +266,10 @@ def get_engineer_planner_tools(
         plan_path = plan_path_for_agent(planner_node_type).as_posix()
         required_files = [
             plan_path,
-            "todo.md",
             "benchmark_definition.yaml",
             "assembly_definition.yaml",
+            "benchmark_assembly_definition.yaml",
+            "benchmark_script.py",
             SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
         ]
         artifacts: dict[str, str] = {}
@@ -309,34 +299,27 @@ def get_engineer_planner_tools(
         custom_config_text = await fs.client.read_file_optional(
             "manufacturing_config.yaml", bypass_agent_permissions=True
         )
-        if custom_config_text is None:
-            result = PlannerSubmissionResult(
-                ok=False,
-                status="rejected",
-                errors=[
-                    "manufacturing_config.yaml missing; planner handoff requires a "
-                    "workspace pricing source"
-                ],
-                node_type=planner_node_type,
-            )
-            return result.model_dump(mode="json")
-
-        try:
+        if custom_config_text is not None:
+            try:
+                load_planner_manufacturing_config_from_text(custom_config_text)
+            except Exception as exc:
+                result = PlannerSubmissionResult(
+                    ok=False,
+                    status="rejected",
+                    errors=[
+                        f"manufacturing_config.yaml invalid for planner handoff: {exc}"
+                    ],
+                    node_type=planner_node_type,
+                )
+                return result.model_dump(mode="json")
+            artifacts["manufacturing_config.yaml"] = custom_config_text
             manufacturing_config = load_planner_manufacturing_config_from_text(
                 custom_config_text
             )
-        except Exception as exc:
-            result = PlannerSubmissionResult(
-                ok=False,
-                status="rejected",
-                errors=[
-                    f"manufacturing_config.yaml invalid for planner handoff: {exc}"
-                ],
-                node_type=planner_node_type,
-            )
-            return result.model_dump(mode="json")
+        else:
+            from worker_heavy.workbenches.config import load_required_merged_config
 
-        artifacts["manufacturing_config.yaml"] = custom_config_text
+            manufacturing_config = load_required_merged_config()
 
         pricing_result = await run_validate_and_price_script(fs)
         if not pricing_result["ok"]:

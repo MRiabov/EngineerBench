@@ -30,7 +30,6 @@ from controller.agent.handover_constants import (
     BENCHMARK_REVIEWER_HANDOVER_CHECK,
     ENGINEER_BENCHMARK_CONTEXT_ARTIFACTS,
     ENGINEER_BENCHMARK_HANDOVER_CHECK,
-    ENGINEER_BENCHMARK_SOURCE_ARTIFACTS,
     ENGINEER_EXECUTION_REVIEWER_HANDOVER_CHECK,
     ENGINEER_PLAN_REVIEWER_HANDOVER_CHECK,
     ENGINEER_PLANNER_EVIDENCE_LAYOUT_CHECK,
@@ -63,7 +62,6 @@ from shared.models.simulation import SimulationResult
 from shared.script_contracts import (
     BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
     BENCHMARK_SCRIPT_PATH,
-    PAYLOAD_TRAJECTORY_DEFINITION_PATH,
     SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
     authored_script_path_for_agent,
     authored_script_path_for_reviewer_stage,
@@ -325,7 +323,17 @@ _RENDER_EVIDENCE_EXTENSIONS = _RENDER_IMAGE_EXTENSIONS | {".mp4"}
 def _benchmark_planner_entry_artifacts() -> list[str]:
     """Artifacts the benchmark planner needs before it can start planning."""
     return [
-        "todo.md",
+        "benchmark_plan.md",
+        "benchmark_assembly_definition.yaml",
+        "benchmark_script.py",
+        BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
+    ]
+
+
+def _benchmark_coder_entry_artifacts() -> list[str]:
+    """Artifacts the benchmark coder needs before it can start coding."""
+    return [
+        "benchmark_plan.md",
         "benchmark_definition.yaml",
         "benchmark_assembly_definition.yaml",
         BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
@@ -335,7 +343,17 @@ def _benchmark_planner_entry_artifacts() -> list[str]:
 def _engineer_planner_entry_artifacts() -> list[str]:
     """Artifacts the engineering planner needs before it can start planning."""
     return [
-        "todo.md",
+        "benchmark_plan.md",
+        "benchmark_assembly_definition.yaml",
+        "benchmark_script.py",
+        BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
+    ]
+
+
+def _engineer_coder_entry_artifacts() -> list[str]:
+    """Artifacts the engineering coder needs before it can start coding."""
+    return [
+        "engineering_plan.md",
         "benchmark_definition.yaml",
         "assembly_definition.yaml",
         "benchmark_assembly_definition.yaml",
@@ -461,10 +479,7 @@ def build_benchmark_node_contracts() -> dict[AgentName, NodeEntryContract]:
         AgentName.BENCHMARK_CODER: NodeEntryContract(
             node=AgentName.BENCHMARK_CODER,
             required_state_fields=["session", "episode_id"],
-            required_artifacts=[
-                *BENCHMARK_PLANNER_HANDOFF_ARTIFACTS,
-                BENCHMARK_SCRIPT_PATH,
-            ],
+            required_artifacts=_benchmark_coder_entry_artifacts(),
             custom_check=BENCHMARK_CODER_HANDOVER_CHECK,
         ),
         AgentName.BENCHMARK_REVIEWER: NodeEntryContract(
@@ -494,10 +509,7 @@ def build_engineer_node_contracts() -> dict[AgentName, NodeEntryContract]:
         AgentName.ENGINEER_CODER: NodeEntryContract(
             node=AgentName.ENGINEER_CODER,
             required_state_fields=["episode_id"],
-            required_artifacts=[
-                *ENGINEER_PLANNER_HANDOFF_ARTIFACTS,
-                *ENGINEER_BENCHMARK_SOURCE_ARTIFACTS,
-            ],
+            required_artifacts=_engineer_coder_entry_artifacts(),
             custom_check=ENGINEER_PLANNER_EVIDENCE_LAYOUT_CHECK,
         ),
         AgentName.ENGINEER_EXECUTION_REVIEWER: NodeEntryContract(
@@ -1960,17 +1972,7 @@ async def validate_seeded_workspace_handoff_artifacts(
             "manufacturing_config.yaml",
             bypass_agent_permissions=True,
         )
-        if manufacturing_raw is None:
-            errors.append(
-                _seeded_schema_error(
-                    message=(
-                        "manufacturing_config.yaml missing for planner handoff "
-                        "pricing source"
-                    ),
-                    artifact_path="manufacturing_config.yaml",
-                )
-            )
-        else:
+        if manufacturing_raw is not None:
             try:
                 manufacturing_config_model = (
                     load_planner_manufacturing_config_from_text(manufacturing_raw)
@@ -2124,6 +2126,14 @@ async def validate_seeded_workspace_handoff_artifacts(
         target_node != AgentName.BENCHMARK_PLANNER
         and "benchmark_definition.yaml" in present_paths
         and "benchmark_script.py" not in present_paths
+        and target_node
+        in {
+            AgentName.BENCHMARK_REVIEWER,
+            AgentName.ENGINEER_PLANNER,
+            AgentName.ENGINEER_PLAN_REVIEWER,
+            AgentName.ENGINEER_CODER,
+            AgentName.ENGINEER_EXECUTION_REVIEWER,
+        }
     ):
         errors.append(
             _seeded_schema_error(
@@ -2175,25 +2185,6 @@ async def validate_seeded_workspace_handoff_artifacts(
                 )
                 for message in handover_errors
             )
-
-    if (
-        target_node
-        in {
-            AgentName.ENGINEER_CODER,
-            AgentName.ENGINEER_EXECUTION_REVIEWER,
-        }
-        and benchmark_definition_model is not None
-        and PAYLOAD_TRAJECTORY_DEFINITION_PATH not in present_paths
-    ):
-        errors.append(
-            _seeded_schema_error(
-                message=(
-                    "payload_trajectory_definition.yaml missing; every benchmark-"
-                    "backed workspace must define the payload trajectory"
-                ),
-                artifact_path=PAYLOAD_TRAJECTORY_DEFINITION_PATH,
-            )
-        )
 
     render_error = await validate_render_images_non_black(
         worker_client,
