@@ -142,7 +142,7 @@ The eval tooling mirrors the integration tooling, but it owns a separate lock, a
 - It uses the exclusive eval lock while bootstrapping and then downgrades to the shared validation lock so multiple validation-only consumers can coexist while the stack remains protected.
 - After bootstrap it stops mutating the lock state and keeps only the shared lock file handle open.
 - It exposes explicit sandbox selection through `--yolo` and `--no-yolo`; the script should never invent a hidden bypass mode.
-- The blank-slate seed-authoring helper lives in `dataset/evals/materialize_seed_authoring_workspace.py` and is tracked in [Seed Authoring Workspace Bootstrapper](./migrations/minor/seed-authoring-workspace-bootstrapper.md); it bootstraps a fresh authoring workspace instead of rehydrating an existing seed row.
+- The blank-slate seed-authoring helper lives in `dataset/evals/materialize_seed_authoring_workspace.py` and is tracked in [Seed Authoring Workspace Bootstrapper](./migrations/minor/seed-authoring-workspace-bootstrapper.md); it bootstraps a fresh authoring workspace instead of rehydrating an existing seed row and synchronizes the repository-local `.venv` into that workspace so the authoring agent can run workspace-local commands immediately.
 
 ### `dataset/evals/run_e2e_seed.py`
 
@@ -153,10 +153,12 @@ The eval tooling mirrors the integration tooling, but it owns a separate lock, a
 ### `dataset/evals/eval_seed_update_autopilot.py`
 
 - `dataset/evals/eval_seed_update_autopilot.py` is the reusable seed-update autopilot for eval rows.
-- It runs engineer_planner seed jobs one row at a time with process-level concurrency: each worker owns one seed worktree, launches the authoring Codex CLI, refreshes the seed artifacts, runs `scripts/validate_eval_seed.py`, and then runs a read-only review prompt before the row is merged back.
-- Before queueing a candidate row, it validates any already-created matching row and skips it when `scripts/validate_eval_seed.py` reports a pass; failed existing rows remain eligible for repair and the queue continues filling from later candidates.
+- It runs engineer_planner seed jobs one row at a time with process-level concurrency: each worker owns one seed worktree, launches the authoring Codex CLI, refreshes the seed artifacts, runs `scripts/validate_eval_seed.py`, and then runs a read-only review prompt before the relevant workspace files are copied back.
+- For new rows, the worker bootstraps the worktree through `dataset/evals/materialize_seed_authoring_workspace.py` before authoring starts, so the blank workspace and `.venv` are already in place when the model receives the prompt.
+- The autopilot creates new rows and repairs broken existing rows: if a canonical `task_id` already exists in `dataset/data/seed/role_based/engineer_planner.json`, it is skipped when the persisted task-state record shows the current bundle fingerprint was already validated and reviewed cleanly, and it is requeued when the current `scripts/validate_eval_seed.py` check fails or the persisted task state is missing/stale.
+- The persisted task-state file lives at `logs/evals/seed_update_autopilot/task_state.json`; successful copy-back runs refresh it with the task id, bundle fingerprint, and the last validation/review outcome, so later runs do not need to re-review unchanged clean rows.
 - Its authoring and review prompts inline the row's task and expected criteria when available so the model can self-check exact role and label grounding before editing the workspace.
-- It keeps its per-seed logs, prompts, and merged summaries under `logs/evals/seed_update_autopilot/`, and the worker count is configurable so 2-4 Codex CLIs can be active at once on different seeds.
+- It keeps its per-seed logs, prompts, and per-seed run summaries under `logs/evals/seed_update_autopilot/`, and the worker count is configurable so 2-4 Codex CLIs can be active at once on different seeds.
 - The canonical entrypoint lives in `dataset/evals/eval_seed_update_autopilot.py`; the old family-batch idea is no longer the maintained contract.
 
 ### Eval coordination helpers

@@ -51,6 +51,7 @@ Use `references/artifact_inventory.md` when you need to discover which file fami
 
 - The blank-slate seed-authoring helper is tracked in [Seed Authoring Workspace Bootstrapper](../../../specs/migrations/minor/seed-authoring-workspace-bootstrapper.md).
 - Use it to create a fresh seed-authoring workspace for a new row.
+- It also synchronizes the repository-local `.venv` into that workspace so the authoring agent can run workspace-local commands immediately.
 - Keep using `scripts/update_eval_seed_templates.py` only to refresh the starter subset inside an existing seed corpus artifact.
 
 ## Read first

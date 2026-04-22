@@ -31,7 +31,7 @@ The unified prompt manager treats these inputs as authoritative:
 - the checked-in `.agents/skills/` tree and its workspace materializations, as described in [agent-skill.md](./agent-skill.md), plus any compact generated index derived from the active skill tree when the backend needs one. When a skill-training run materializes a session-local `suggested_skills/` overlay/worktree, that overlay is the active skill tree for that run. Those runtime copies are inputs to the agent, not a separate prompt source.
 - backends that know the session-local overlay root may surface it through `PROBLEMOLOGIST_SKILL_OVERLAY_ROOT` so catalog helpers can render overlay-first skill references without duplicating the resolution rule.
 - `worker_light/agent_files/`: legacy compatibility mirror only.
-- runtime-generated context: task text, agent identity, task ID, workspace state, backend selection, and tool registration.
+- runtime-generated context: agent identity, task ID, workspace state, backend selection, and tool registration.
 
 `common.code_template` is legacy once equivalent content lives in the managed prompt sources and prompt-context templates. It is not the canonical source for the unified model.
 
@@ -105,7 +105,7 @@ These appendices carry provider-specific operational reminders. They do not repl
 
 Runtime-generated context includes facts that only exist when the workspace is materialized.
 
-Examples include the task text, agent name, task ID, seed dataset name, workspace-relative file inventory, render availability, active backend selection, and the registered tool surface.
+Examples include the agent name, task ID, seed dataset name, workspace-relative file inventory, render availability, active backend selection, and the registered tool surface.
 
 This context is injected by the runtime. It is not a manually maintained prompt template.
 
