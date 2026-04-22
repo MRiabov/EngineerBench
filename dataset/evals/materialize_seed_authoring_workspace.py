@@ -16,10 +16,12 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from shared.agent_templates import load_seed_starter_template_files  # noqa: E402
-from evals.logic.codex_workspace import materialize_seed_workspace as materialize_workspace  # noqa: E402
+from evals.logic.codex_workspace import (
+    materialize_seed_workspace as materialize_workspace,  # noqa: E402
+)
 from evals.logic.models import EvalDatasetItem  # noqa: E402
 from evals.logic.temp_paths import mkdtemp_in_eval_temp_root  # noqa: E402
+from shared.agent_templates import load_seed_starter_template_files  # noqa: E402
 from shared.enums import AgentName  # noqa: E402
 
 DEFAULT_TASK_ID = "seed-authoring"
@@ -119,11 +121,11 @@ def main() -> int:
 
     starter_files = load_seed_starter_template_files(agent)
     if not starter_files:
-        raise SystemExit(
-            f"Agent '{agent.value}' does not have a seed starter set."
-        )
+        raise SystemExit(f"Agent '{agent.value}' does not have a seed starter set.")
 
-    workspace_dir = _ensure_destination(args.output_dir, agent=agent, task_id=args.task_id)
+    workspace_dir = _ensure_destination(
+        args.output_dir, agent=agent, task_id=args.task_id
+    )
     item = _build_authoring_item(agent=agent, task_id=args.task_id, task=args.task)
     materialized = materialize_workspace(
         item=item,

@@ -100,7 +100,9 @@ def test_seed_authoring_workspace_bootstrapper_uses_seed_authoring_temp_root() -
 
 
 @pytest.mark.integration_p0
-def test_seed_authoring_workspace_bootstrapper_rejects_agents_without_starter_files() -> None:
+def test_seed_authoring_workspace_bootstrapper_rejects_agents_without_starter_files() -> (
+    None
+):
     completed = _run_bootstrapper(
         "--agent",
         AgentName.SKILL_AGENT.value,
