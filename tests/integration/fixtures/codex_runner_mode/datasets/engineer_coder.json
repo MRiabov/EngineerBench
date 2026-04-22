@@ -9,12 +9,12 @@
     "id": "ec-002",
     "task": "Engineer coder integration fixture row ec-002.",
     "complexity_level": 0,
-    "seed_artifact_dir": "tests/integration/fixtures/codex_runner_mode/artifacts/common"
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-002-low-friction-cube"
   },
   {
     "id": "ec-005",
     "task": "Engineer coder integration fixture row ec-005.",
     "complexity_level": 0,
-    "seed_artifact_dir": "tests/integration/fixtures/codex_runner_mode/artifacts/common"
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-005-lower-bin-deflector"
   }
 ]

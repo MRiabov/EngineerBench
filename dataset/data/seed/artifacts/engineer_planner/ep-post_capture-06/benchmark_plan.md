@@ -6,8 +6,8 @@ Test whether an engineer can deliver `projectile_ball` into a post-centered capt
 
 - `left_start_pad`: static launch pad centered at [-230, 0, 10] with size [140, 120, 20].
 - `goal_capture_tray`: static landing tray centered at [435, 0, 10] with size [190, 190, 20].
-- `capture_post`: static vertical post centered at [435, 0, 62] with size [22, 22, 85].
-- `goal_lip`: static downstream retention lip centered at [535, 0, 26] with size [10, 190, 12]; this is read-only benchmark geometry.
+- `capture_post`: static vertical post centered at [435, 0, 63.5] with size [22, 22, 85].
+- `goal_lip`: static downstream retention lip centered at [540, 0, 26] with size [10, 190, 12]; this is read-only benchmark geometry.
 
 The route is intentionally simple. The challenge is the final capture precision around the post and the lip-aware retention envelope, not hidden benchmark-side actuation.
 

@@ -24,10 +24,8 @@ manufactured_parts:
     dfm_suggestions: []
 final_assembly:
   - name: fixture_body
-    config:
-      dofs: []
 totals:
   estimated_unit_cost_usd: 10.0
-  estimated_weight_g: 100.0
+  estimated_weight_g: 2.7
   estimate_confidence: high
 dfm_suggestions: []

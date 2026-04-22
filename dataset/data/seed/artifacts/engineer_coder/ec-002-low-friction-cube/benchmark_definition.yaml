@@ -8,7 +8,7 @@ objectives:
       max_mm: [220.0, 90.0, 120.0]
   build_zone_mm:
     min_mm: [-340.0, -140.0, 0.0]
-    max_mm: [400.0, 140.0, 180.0]
+    max_mm: [400.0, 140.0, 220.0]
 benchmark_parts:
   - part_id: environment_fixture
     label: environment_fixture
@@ -28,7 +28,7 @@ payload:
   material_id: abs
   static_randomization:
     radius_mm: [13.0, 15.0]
-  start_position_mm: [-280.0, 0.0, 24.0]
+  start_position_mm: [-280.0, 0.0, 180.0]
   runtime_jitter_mm: [14.0, 12.0, 3.0]
 constraints:
   max_unit_cost: 50.0

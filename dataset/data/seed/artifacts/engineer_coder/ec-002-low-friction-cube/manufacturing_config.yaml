@@ -1,0 +1,125 @@
+defaults:
+  currency: "USD"
+
+materials:
+  aluminum_6061:
+    name: "Aluminum 6061"
+    density_g_cm3: 2.7
+    density_kg_m3: 2700
+    color: "#C0C0C0"
+    cost_per_kg: 6.00
+    restitution: 0.5
+    friction_coef: 0.61
+
+  steel_carbon:
+    name: "Carbon Steel"
+    density_g_cm3: 7.85
+    density_kg_m3: 7850
+    color: "#6E737B"
+    cost_per_kg: 1.80
+    restitution: 0.55
+    friction_coef: 0.60
+
+  steel_structural:
+    name: "Structural Steel"
+    density_g_cm3: 7.85
+    density_kg_m3: 7850
+    color: "#5F666E"
+    cost_per_kg: 1.40
+    restitution: 0.50
+    friction_coef: 0.62
+
+  abs:
+    name: "ABS"
+    density_g_cm3: 1.04
+    density_kg_m3: 1040
+    color: "#FFFFFF"
+    cost_per_kg: 2.50
+    restitution: 0.6
+    friction_coef: 0.5
+
+  hdpe:
+    name: "HDPE"
+    density_g_cm3: 0.95
+    density_kg_m3: 950
+    color: "#F1F5F9"
+    cost_per_kg: 1.90
+    restitution: 0.30
+    friction_coef: 0.22
+
+  hardwood:
+    name: "Hardwood"
+    density_g_cm3: 0.75
+    density_kg_m3: 750
+    color: "#8B5A2B"
+    cost_per_kg: 3.20
+    restitution: 0.35
+    friction_coef: 0.50
+
+  silicone_rubber:
+    name: "Silicone Rubber"
+    density_g_cm3: 1.1
+    density_kg_m3: 1100
+    color: "#FF0000"
+    cost_per_kg: 15.00
+    restitution: 0.1
+    friction_coef: 0.8
+
+  rubber_generic:
+    name: "Generic Rubber"
+    density_g_cm3: 1.15
+    density_kg_m3: 1150
+    color: "#1F2937"
+    cost_per_kg: 8.50
+    restitution: 0.20
+    friction_coef: 0.90
+
+cnc:
+  materials:
+    aluminum_6061:
+      name: "Aluminum 6061"
+      density_g_cm3: 2.7
+      cost_per_kg: 6.0
+      machine_hourly_rate: 80.0
+      color: "#D1D5DB"
+      restitution: 0.5
+      friction_coef: 0.6
+  constraints:
+    mrr_mm3_per_min: 1000.0
+  parameters:
+    finishing_feed_rate_mm_min: 500.0
+    finishing_stepover_mm: 0.5
+  costs:
+    setup_fee: 100.0
+
+injection_molding:
+  materials:
+    abs:
+      name: "ABS"
+      density_g_cm3: 1.04
+      cost_per_kg: 2.5
+      machine_hourly_rate: 60.0
+      color: "#3B82F6"
+      restitution: 0.4
+      friction_coef: 0.5
+  constraints:
+    min_draft_angle_deg: 2.0
+    min_wall_thickness_mm: 1.0
+    max_wall_thickness_mm: 4.0
+  costs:
+    base_mold_cost: 5000.0
+    mold_cost_per_surface_area_cm2: 0.5
+    injection_rate_cm3_s: 10.0
+
+three_dp:
+  materials:
+    abs:
+      name: "ABS (3DP)"
+      density_g_cm3: 1.04
+      cost_per_kg: 20.0
+      machine_hourly_rate: 20.0
+      color: "#1E293B"
+      restitution: 0.3
+      friction_coef: 0.4
+  costs:
+    setup_fee: 10.0

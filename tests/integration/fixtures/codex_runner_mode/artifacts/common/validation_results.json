@@ -1,5 +1,7 @@
 {
   "success": true,
   "message": "fixture validation result",
+  "timestamp": 1713774000.0,
+  "script_path": "solution_script.py",
   "script_sha256": "9a1082bef0cfb6190c8d346194c9172c584edd6da621dec483dcd55cc32ea556"
 }

@@ -23,32 +23,32 @@ def build() -> Compound:
     fixtures = Compound(
         children=[
             _make_box(
-                'left_start_pad',
+                "left_start_pad",
                 (140.0, 120.0, 20.0),
                 (-220.0, 0.0, 10.0),
-                'hdpe',
+                "hdpe",
             ),
             _make_box(
-                'goal_capture_tray',
+                "goal_capture_tray",
                 (190.0, 190.0, 20.0),
                 (410.0, 0.0, 10.0),
-                'hdpe',
+                "hdpe",
             ),
             _make_box(
-                'capture_post',
+                "capture_post",
                 (22.0, 22.0, 80.0),
                 (410.0, 0.0, 60.0),
-                'steel_cold_rolled',
+                "steel_cold_rolled",
             ),
             _make_box(
-                'goal_lip',
+                "goal_lip",
                 (12.0, 190.0, 14.0),
                 (499.0, 0.0, 27.0),
-                'hdpe',
+                "hdpe",
             ),
         ]
     )
-    fixtures.label = 'benchmark_fixtures'
+    fixtures.label = "benchmark_fixtures"
     fixtures.metadata = CompoundMetadata()
     return fixtures
 
