@@ -56,7 +56,7 @@ When plan or execution evidence needs visual checking, use the shared preview he
 
 ## Workspace Boundary
 
-When this role begins from a seeded workspace, treat the stage-scoped review YAML pair as writable starter content:
+When this role begins from a seeded workspace, treat the stage-scoped review YAML pair as writable review outputs:
 
 - the active review round's decision YAML
 - the active review round's comments YAML

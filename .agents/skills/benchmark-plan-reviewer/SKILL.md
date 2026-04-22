@@ -54,7 +54,7 @@ Treat `payload_trajectory_definition.yaml` as binding path-contract evidence whe
 
 ## Workspace Boundary
 
-When this role begins from a seeded workspace, treat the stage-scoped review YAML pair as writable starter content:
+When this role begins from a seeded workspace, treat the stage-scoped review YAML pair as writable review outputs:
 
 - `reviews/benchmark-plan-review-decision-round-<n>.yaml`
 - `reviews/benchmark-plan-review-comments-round-<n>.yaml`
@@ -70,7 +70,7 @@ Treat the following paths as read-only reference inputs:
 - render evidence
 - `.manifests/benchmark_plan_review_manifest.json`
 
-Do not convert planner handoff artifacts into reviewer-owned templates.
+Do not convert planner handoff artifacts into reviewer-owned workspace files.
 
 ## Comment Checklist
 

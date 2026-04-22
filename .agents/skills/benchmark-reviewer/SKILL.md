@@ -39,7 +39,7 @@ When render evidence or objective overlays are present, use the shared preview h
 
 ## Workspace Boundary
 
-When this role begins from a seeded workspace, treat the stage-scoped review YAML pair as writable starter content:
+When this role begins from a seeded workspace, treat the stage-scoped review YAML pair as writable review outputs:
 
 - `reviews/benchmark-execution-review-decision-round-<n>.yaml`
 - `reviews/benchmark-execution-review-comments-round-<n>.yaml`

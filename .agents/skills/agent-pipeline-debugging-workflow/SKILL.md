@@ -1,6 +1,6 @@
 ---
 name: agent-pipeline-debugging-workflow
-description: Debug and fix agent-pipeline failures by reproducing with one agent and one task through `uv run dataset/evals/run_evals.py` or `uv run scripts/validate_eval_seed.py`, inspecting `logs/manual_run/`, `logs/evals/`, and integration backend-error logs, and applying root-cause fixes for deterministic validation, prompts, seed fixtures, or runtime-contract bugs aligned with `specs/desired_architecture.md`, `specs/architecture/evals-architecture.md`, `specs/devtools.md`, `specs/integration-test-rules.md`, `specs/integration-test-list.md`, and `specs/dataset-generation.md`. Invoke this skill when you need to fix eval regressions or seeded-entry contract failures.
+description: Debug and fix agent-pipeline failures by reproducing with one agent and one task through `uv run dataset/evals/run_evals.py` or `uv run scripts/validate_eval_seed.py`, inspecting `logs/manual_run/`, `logs/evals/`, and integration backend-error logs, and applying root-cause fixes for deterministic validation, prompts, seed fixtures, or runtime-contract bugs aligned with `specs/desired_architecture.md`, `specs/architecture/evals-architecture.md`, `specs/devtools.md`, `specs/integration-test-rules.md`, `specs/integration-test-list.md`, and `specs/dataset-generation.md`. Invoke this skill when you need to fix eval regressions or template-free seeded-entry contract failures.
 ---
 
 # Agent Pipeline Debugging Workflow
@@ -216,7 +216,7 @@ When an eval regression looks like contract drift, inspect all relevant surfaces
 03. loader/import behavior for authored scripts
 04. controller validators and script-contract guards
 05. schema/request descriptions shown to tools or APIs
-06. template repos and sample agent files
+06. seed corpus artifacts, sample agent files, and workspace fixtures
 07. mock transcripts / integration fixtures that may keep teaching the old contract
 08. architecture specs and skills that should own the long-form instructions
 09. deterministic validators, normalization helpers, and generated schemas/code that compute or check derived fields
@@ -247,7 +247,7 @@ Quota guard:
 - Environment/bootstrap failure:
   `controller_unreachable`, `worker_unreachable`, dependency/import/startup errors.
 - Seed/fixture contract failure:
-  `validate_eval_seed.py` rejects missing artifacts, malformed manifests, stale renders, or workspace-shape drift before full evals can be trusted.
+  `validate_eval_seed.py` rejects missing artifacts, malformed manifests, forbidden template files, stale renders, or workspace-shape drift before full evals can be trusted.
 - API/orchestration contract failure:
   `eval_trigger_failed`, wrong status transitions, bad request/response shape.
 - Trace/flow integrity failure:

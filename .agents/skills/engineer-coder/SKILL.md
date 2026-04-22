@@ -69,7 +69,7 @@ from utils.preview import (
 
 ## Workspace Boundary
 
-When this role begins from a seeded workspace, treat the following paths as writable starter content:
+When this role begins from a seeded workspace, treat the following paths as writable seeded workspace files:
 
 - `solution_script.py`
 - `payload_trajectory_definition.yaml`
@@ -90,7 +90,7 @@ Treat the following paths as read-only reference inputs:
 - render evidence
 - review artifacts
 
-Do not pre-solve the writable files or turn read-only handoff context into an editable template.
+Do not pre-solve the writable files or turn read-only handoff context into editable workspace files.
 
 ## Required Read Set
 

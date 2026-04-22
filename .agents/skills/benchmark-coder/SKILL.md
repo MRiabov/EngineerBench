@@ -64,7 +64,7 @@ from utils.preview import (
 
 ## Workspace Boundary
 
-When this role begins from a seeded workspace, treat the following paths as writable starter content:
+When this role begins from a seeded workspace, treat the following paths as writable seeded workspace files:
 
 - `benchmark_script.py`
 - `todo.md`

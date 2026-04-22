@@ -1,6 +1,6 @@
 ---
 name: eval-creation-workflow
-description: Create or repair Problemologist eval seeds by adding role-based dataset rows plus stage-correct seeded workspace artifacts, with an explicit split between starter/template files the target role will edit and read-only reference files the target role will only inspect, exact deterministic fields, then verify them with the seed validator. Use this when asked to add benchmark, engineer, or reviewer evals, or when a role-based eval dataset looks structurally invalid.
+description: Create or repair Problemologist eval seeds by adding role-based dataset rows plus stage-correct seeded workspace artifacts, with all seeded files classified under the active handoff contract and no template/starter files in eval workspaces, exact deterministic fields, then verify them with the seed validator. Use this when asked to add benchmark, engineer, or reviewer evals, or when a role-based eval dataset looks structurally invalid.
 ---
 
 # Eval Creation Workflow
@@ -24,10 +24,9 @@ When you are seeding a row that should look like another agent's output, read th
 
 Before writing any seed, classify every required path with the active stage contract and `references/role_input_index.md`.
 
-- `starter/template` files are the paths the evaluated role is expected to edit. Seed the canonical starter content for the same filename, keep it schema-valid, and do not pre-solve it.
+- `mutable workspace` files are the paths the evaluated role is expected to modify. Seed the contract-valid starting state for the same filename, keep it schema-valid, and do not pre-solve it.
 - `read-only reference` files are the paths the evaluated role is expected to inspect. Seed the contract-valid upstream artifact exactly, and do not rewrite it as if the role owns it.
-- If a helper such as `scripts/update_eval_seed_templates.py` refreshes the starter baseline, use it only for the starter/template subset; never let it overwrite read-only reference inputs or completed outputs.
-- If template repos are unnecessary for the seed, use `scripts/update_eval_seed_templates.py` instead of editing `shared/assets/template_repos/`.
+- Template/starter files are forbidden in eval seeds. If a row or fixture still contains them, remove them and revalidate instead of trying to refresh from a template repo.
 
 The main rule is simple: non-initial roles do not get plain prompt-only rows. They get seeded workspace files that match the handoff contract for that stage.
 
@@ -52,7 +51,7 @@ Use `references/artifact_inventory.md` when you need to discover which file fami
 - The blank-slate seed-authoring helper is tracked in [Seed Authoring Workspace Bootstrapper](../../../specs/migrations/minor/seed-authoring-workspace-bootstrapper.md).
 - Use it to create a fresh seed-authoring workspace for a new row.
 - It also synchronizes the repository-local `.venv` into that workspace so the authoring agent can run workspace-local commands immediately.
-- Keep using `scripts/update_eval_seed_templates.py` only to refresh the starter subset inside an existing seed corpus artifact.
+- Seed artifacts must be authored directly from the active handoff contract; do not rely on any template-refresh helper.
 
 ## Read first
 
@@ -68,7 +67,7 @@ Open only what you need, but default to these after the role skills above:
 ## Non-negotiable rules
 
 01. Planner-style entrypoints may be prompt-only.
-02. Coder, reviewer, and downstream role evals must be seeded with the files that role is supposed to receive at entry. Any file the evaluated agent is expected to edit must be seeded as the template/starter version of that same path, not as a pre-solved output. Any file the evaluated agent is only supposed to inspect must stay a contract-valid reference input, not a solved output.
+02. Coder, reviewer, and downstream role evals must be seeded with the files that role is supposed to receive at entry. Any file the evaluated agent is expected to edit must be seeded as the contract-valid starting state for that same path, never as a pre-solved output or template file. Any file the evaluated agent is only supposed to inspect must stay a contract-valid reference input, not a solved output.
 03. Do not invent alternate filenames for handoff artifacts or reviewer manifests.
 04. Prefer `seed_artifact_dir` over large inline `seed_files`.
 05. Use `seed_files` only for tiny cases or one-off overrides.
@@ -173,7 +172,7 @@ The canonical files in that library use the same basenames as the workspace arti
 2. Determine whether the target role is an initial role or a seeded downstream role.
 3. Add or edit the JSON row in `dataset/data/seed/role_based/<agent>.json`.
 4. If seeded, create `dataset/data/seed/artifacts/<agent>/<task-id>/`.
-5. Materialize the exact files that the role should see on disk at entry. For starter/template files, use the template content for those same filenames so the agent begins from the intended scaffold. For read-only reference files, materialize the upstream handoff context the role should inspect, not a completed solution.
+5. Materialize the exact files that the role should see on disk at entry. For mutable workspace files, seed the contract-valid starting state for those filenames without introducing template/starter files. For read-only reference files, materialize the upstream handoff context the role should inspect, not a completed solution.
 6. If a manifest references file hashes, compute the real hash and patch the manifest.
 7. Run the seeded-entry validator for that one task.
 8. If you need to debug the eval runner or confirm an end-to-end path, run a minimal eval for that one task.
@@ -194,15 +193,13 @@ If the manifest is missing, stale, or schema-invalid, fix the seeded artifact se
 
 ## Useful commands
 
-Refresh canonical starter baselines for the writable subset of a seed:
+Validate the seed contract after editing the corpus directly:
 
 ```bash
-uv run scripts/update_eval_seed_templates.py \
+uv run scripts/validate_eval_seed.py \
   --agent engineer_coder \
   --task-id ec-001-example
 ```
-
-This helper copies starter templates only; it does not convert read-only reference inputs into editable outputs.
 
 List IDs for one agent:
 

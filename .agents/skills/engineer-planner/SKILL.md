@@ -54,7 +54,7 @@ Use the shared preview helpers whenever the plan needs visual evidence:
 
 ## Workspace Boundary
 
-When this role begins from a seeded workspace, treat the following paths as writable starter content:
+When this role begins from a seeded workspace, treat the following paths as writable seeded workspace files:
 
 - `engineering_plan.md`
 - `todo.md`
@@ -70,7 +70,7 @@ Treat the following paths as read-only reference inputs:
 - render evidence
 - downstream review artifacts
 
-Do not turn benchmark-owned inputs into editable engineering templates.
+Do not turn benchmark-owned inputs into editable workspace files.
 
 ## Required Read Set
 
