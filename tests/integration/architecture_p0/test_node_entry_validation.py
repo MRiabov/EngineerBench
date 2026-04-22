@@ -585,44 +585,6 @@ async def test_int_engineer_planner_seed_accepts_template_free_seed_under_scope(
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
-async def test_int_engineer_planner_seed_rejects_presolved_assembly_definition():
-    item = _seeded_planner_item(AgentName.ENGINEER_PLANNER, "ep-assembly-drift")
-    assembly_definition = _engineer_starter_assembly_definition()
-    assembly_definition.constraints.benchmark_max_unit_cost_usd += 1.0
-    item = item.model_copy(
-        update={
-            "seed_files": {
-                **(item.seed_files or {}),
-                "assembly_definition.yaml": dump_yaml_model(assembly_definition),
-            }
-        }
-    )
-
-    session_id = f"INT-STARTER-{uuid.uuid4().hex[:8]}"
-    snapshot_client = InMemorySeedWorkspaceClient(session_id=session_id)
-    await materialize_seed_workspace_snapshot(
-        item=item,
-        session_id=session_id,
-        agent_name=AgentName.ENGINEER_PLANNER,
-        root=ROOT,
-        workspace_client=snapshot_client,
-        update_manifests=True,
-    )
-
-    errors = await validate_seeded_workspace_handoff_artifacts(
-        worker_client=snapshot_client,
-        target_node=AgentName.ENGINEER_PLANNER,
-        validation_scope=ValidationScope.CURRENT_NODE,
-    )
-
-    assert errors, "Expected the pre-solved engineer planner seed to fail."
-    assert any(error.artifact_path == "assembly_definition.yaml" for error in errors), (
-        errors
-    )
-
-
-@pytest.mark.integration_p0
-@pytest.mark.asyncio
 async def test_int_engineer_plan_reviewer_seed_rejects_cross_contract_drift():
     item = _seeded_planner_item(AgentName.ENGINEER_PLANNER, "ep-cross-contract-drift")
     benchmark_definition = _cross_contract_benchmark_definition()

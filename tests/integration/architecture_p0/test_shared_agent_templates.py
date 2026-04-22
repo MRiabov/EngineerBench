@@ -35,44 +35,26 @@ from tests.integration.agent.helpers import load_integration_mock_scenarios
 SEED_STARTER_TEMPLATE_EXPECTATIONS: dict[AgentName, set[str]] = {
     AgentName.BENCHMARK_PLANNER: {
         "benchmark_plan.md",
-        "todo.md",
         "benchmark_definition.yaml",
         "benchmark_assembly_definition.yaml",
         "benchmark_plan_evidence_script.py",
     },
     AgentName.ENGINEER_PLANNER: {
         "engineering_plan.md",
-        "todo.md",
         "assembly_definition.yaml",
         "solution_plan_evidence_script.py",
     },
     AgentName.BENCHMARK_CODER: {
         "benchmark_script.py",
-        "todo.md",
-        "journal.md",
     },
     AgentName.ENGINEER_CODER: {
         "solution_script.py",
         "payload_trajectory_definition.yaml",
-        "todo.md",
-        "journal.md",
     },
-    AgentName.BENCHMARK_REVIEWER: {
-        "todo.md",
-        "journal.md",
-    },
-    AgentName.BENCHMARK_PLAN_REVIEWER: {
-        "todo.md",
-        "journal.md",
-    },
-    AgentName.ENGINEER_PLAN_REVIEWER: {
-        "todo.md",
-        "journal.md",
-    },
-    AgentName.ENGINEER_EXECUTION_REVIEWER: {
-        "todo.md",
-        "journal.md",
-    },
+    AgentName.BENCHMARK_REVIEWER: set(),
+    AgentName.BENCHMARK_PLAN_REVIEWER: set(),
+    AgentName.ENGINEER_PLAN_REVIEWER: set(),
+    AgentName.ENGINEER_EXECUTION_REVIEWER: set(),
     AgentName.SKILL_AGENT: set(),
     AgentName.GIT_AGENT: set(),
     AgentName.JOURNALLING_AGENT: set(),
