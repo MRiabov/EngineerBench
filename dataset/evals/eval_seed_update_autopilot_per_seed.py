@@ -361,6 +361,23 @@ def _load_raw_seed_rows(
     return json_path, rows
 
 
+def _load_seed_row_context(task_id: str) -> tuple[str | None, str | None]:
+    _, rows = _load_raw_seed_rows(ROOT, DEFAULT_AGENT)
+    row = next((entry for entry in rows if entry.get("id") == task_id), None)
+    if not isinstance(row, dict):
+        return None, None
+
+    task_text = row.get("task")
+    if not isinstance(task_text, str) or not task_text.strip():
+        return None, None
+
+    criteria_text = row.get("expected_criteria")
+    if not isinstance(criteria_text, str) or not criteria_text.strip():
+        return None, None
+
+    return task_text.strip(), criteria_text.strip()
+
+
 def _row_id_map(rows: list[dict[str, object]]) -> dict[str, dict[str, object]]:
     mapped: dict[str, dict[str, object]] = {}
     for row in rows:
@@ -657,6 +674,7 @@ def _build_authoring_prompt(
     *,
     repair_note: str | None = None,
 ) -> str:
+    task_text, criteria_text = _load_seed_row_context(spec.task_id)
     mode = "repair" if spec.existing_row else "create"
     parts = [
         "$eval-creation-workflow",
@@ -679,6 +697,7 @@ def _build_authoring_prompt(
         "",
         f"Family plan source of truth: {FAMILY_PLAN_REL.as_posix()}",
         "",
+        "",
         "Rules:",
         "- Modify only dataset/data/seed/role_based/engineer_planner.json and "
         "the target artifact directory.",
@@ -692,6 +711,27 @@ def _build_authoring_prompt(
         "driver handles those steps.",
         "- Do not touch unrelated files.",
     ]
+    if task_text and criteria_text:
+        parts.extend(
+            [
+                "Row contract snapshot:",
+                f"- task: {task_text}",
+                f"- expected_criteria: {criteria_text}",
+                "",
+            ]
+        )
+    parts.extend(
+        [
+            "Self-check before editing:",
+            "- `.manifests/current_role.json` must name `engineer_planner`.",
+            "- `seed_artifact_dir` must stay stable for this task id.",
+            "- benchmark-owned files stay read-only and exact-grounded.",
+            "- starter scaffold files stay starter-like, not solved.",
+            "- every role, object, and payload label in the task or criteria must "
+            "remain exact-grounded; do not substitute generic names.",
+            "",
+        ]
+    )
     if repair_note:
         parts.extend(
             [
@@ -709,6 +749,7 @@ def _build_review_prompt(
     validation_tail: str,
     repair_note: str | None = None,
 ) -> str:
+    task_text, criteria_text = _load_seed_row_context(spec.task_id)
     parts = [
         "$engineer-plan-reviewer",
         "",
@@ -738,6 +779,27 @@ def _build_review_prompt(
         "REVIEW_NOTES:",
         "- ...",
     ]
+    if task_text and criteria_text:
+        parts.extend(
+            [
+                "",
+                "Row contract snapshot:",
+                f"- task: {task_text}",
+                f"- expected_criteria: {criteria_text}",
+            ]
+        )
+    parts.extend(
+        [
+            "",
+            "Review checklist:",
+            "- `.manifests/current_role.json` names `engineer_planner`.",
+            "- the seeded workspace matches the row's artifact directory exactly.",
+            "- benchmark-owned files remain read-only and exact-grounded.",
+            "- starter scaffold files are starter-like, not pre-solved outputs.",
+            "- role/object/payload labels match the row contract without generic "
+            "substitutions.",
+        ]
+    )
     if repair_note:
         parts.extend(
             [
