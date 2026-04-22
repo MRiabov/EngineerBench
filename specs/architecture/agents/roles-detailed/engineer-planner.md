@@ -53,6 +53,7 @@ The Engineering Planner turns benchmark context into an implementation-ready eng
 - `benchmark_assembly_definition.yaml` is read-only context, and benchmark render bundles under `renders/benchmark_renders/**` are mandatory handoff context when this role's visual-inspection policy expects render assets.
 - The planner must preserve benchmark-owned fixtures and exact grounded inventory mentions while designing the engineer solution.
 - `assembly_definition.yaml` is the writable starter template and the machine-readable solution contract; `validate_costing_and_price()` normalizes the final totals.
+- In seeded evals, the runtime bootstrapper materializes `assembly_definition.yaml` and `solution_plan_evidence_script.py` before planner entry; the stored seed corpus does not carry those template-authored copies.
 - If the solution needs motion proof, the planner must state the coarse motion forecast and keep it consistent with the fine-grained trajectory file if one exists.
 - If bug-report mode is enabled and runtime plumbing blocks progress, write `bug_report.md` at the workspace root and keep working unless the task is genuinely blocked.
 - This role's policy defines the render images it expects for the current revision; inspect them with `inspect_media()` before submission. Render evidence is part of the handoff, not optional decoration.

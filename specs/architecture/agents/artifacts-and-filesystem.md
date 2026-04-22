@@ -30,7 +30,7 @@ For CLI-provider-backed sessions, the runtime reads the checked-in `.agents/skil
 Skill-training sessions may additionally materialize `suggested_skills/` as a writable session-local worktree/checkpoint seeded from the approved `.agents/skills/` tree. That overlay is session-scoped, not canonical source, and the training loop should read it first when it exists. Publication back into canonical `.agents/skills/` happens through a separate promotion flow.
 
 Role-specific planner scaffolds remain in `shared/assets/template_repos/` and are copied into each workspace before node entry.
-For Engineering Planner, that copied scaffold includes `assembly_definition.yaml` as the checked-in starter template baseline. The render buckets a role expects follow the same `visual_inspection` policy contract described in [handover-contracts.md](./handover-contracts.md).
+That runtime bootstrap surface is separate from `dataset/data/seed/**`, which stores only the seed corpus and the read-only handoff inputs. For Engineering Planner, the copied scaffold includes `assembly_definition.yaml` and `solution_plan_evidence_script.py` as runtime starter files. The render buckets a role expects follow the same `visual_inspection` policy contract described in [handover-contracts.md](./handover-contracts.md).
 `worker_light/agent_files/` is a legacy compatibility mirror for bootstrap and local inspection, not the canonical source of truth.
 
 Template files are intentional source artifacts, not ad hoc runtime defaults
@@ -168,19 +168,21 @@ YAML templates are schema-validated when they are materialized into a
 workspace, so starter drift is caught at source rather than after a node has
 already started.
 
-Any seed-backed row with writable authored files must preserve the starter
-snapshot for the files the agent is expected to edit. For planner workspaces,
-that starter snapshot includes the role-owned authored plan files and planner
-evidence script. For coder workspaces, that starter snapshot includes the
-role-owned authored source file plus `todo.md` and `journal.md`. For reviewer
-workspaces, that starter snapshot includes the writable note files the
-reviewer is expected to edit. Seed validation fails closed if those writable
-paths already contain a pre-solved output instead of the checked-in starter
-content.
+Any seed-backed row with writable authored files must preserve the runtime
+starter snapshot for the files the agent is expected to edit. For planner
+workspaces, that starter snapshot includes the role-owned authored plan files
+and planner evidence script. For coder workspaces, that starter snapshot
+includes the role-owned authored source file plus `todo.md` and `journal.md`.
+For reviewer workspaces, that starter snapshot includes the writable note
+files the reviewer is expected to edit. Seed validation fails closed if the
+stored seed corpus already contains a pre-solved output instead of the
+expected non-template seed inputs.
 
-For Engineering Planner, the starter snapshot also includes the checked-in
-`assembly_definition.yaml` template baseline, and seed validation fails closed
-if that file is already solved or otherwise diverges before planner edits.
+For Engineering Planner, the runtime starter snapshot also includes the
+checked-in `assembly_definition.yaml` template baseline and
+`solution_plan_evidence_script.py`, and controller entry validation fails
+closed if those runtime starter files are already solved or otherwise diverge
+before planner edits.
 
 ## `agents_config.yaml` (path permissions policy)
 

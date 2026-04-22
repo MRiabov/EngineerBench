@@ -189,7 +189,6 @@ The validation helpers are developer tooling, not product behavior.
 - This script validates seeded eval entry contracts without running the full eval loop.
 - It seeds the local workspace through the real helper path and validates the row against the current contract set.
 - The seeded-validation depth contract is documented in [Seeded Eval Validation Scope Contract](./migrations/minor/seeded-eval-validation-scope-contract.md); `--validation-scope` selects `current-node`, `current-and-previous-nodes`, or `current-and-previous-nodes-with-heavy-simulation`, `current-and-previous-nodes` is the default, and unknown values fail closed.
-- Seeded eval workspaces are template-free at runtime. The validator only inspects the remaining non-template seed files and fails closed if a forbidden template-authored file is present.
 - For role-based rows, that contract includes the current-role manifest as the authoritative role marker for the seeded workspace.
 - For planner rows, that contract includes exact inventory preservation, exact identifier mention coverage in `benchmark_plan.md` or `engineering_plan.md`, and the latest handoff cross-contract checks from the controller validation path.
 - `scripts/update_eval_seed_renders.py` continues to own deterministic render regeneration.
@@ -200,7 +199,8 @@ The validation helpers are developer tooling, not product behavior.
 - Validation-only `--skip-env-up` runs join the shared validation lock so multiple seed checks can proceed in parallel while still preventing eval teardown during an active validation consumer.
 - The script keeps the lock exclusive only while bootstrapping the eval stack, then downgrades to the shared validation lock before health checks and validation work continue.
 - If `--run-judge` is requested for more than 10 selected seed rows, the script requires `-y` before it will launch the expensive judge pass.
-- It must fail closed when required eval-row artifacts are missing, malformed, or no longer match the expected workspace contract.
+- Seeded eval corpora are template-free. The validator only inspects the stored seed corpus, while runtime workspace bootstrap materializes the engineer-planner starter scaffold before planner entry and the controller node-entry gate validates that scaffold there.
+- It must fail closed when required seed-corpus artifacts are missing, malformed, or no longer match the expected stored-corpus contract.
 
 ### `scripts/update_eval_seed_renders.py`
 

@@ -19,63 +19,68 @@ added_at: '2026-04-22T10:59:32Z'
 
 ## Purpose
 
-This migration removes template-authored files from seeded eval workspaces and
-makes seed validation inspect only the non-template files that remain. It
+This migration removes template-authored copies from the stored seed corpus
+and makes seed validation inspect only the non-template files that remain. It
 supersedes [Seeded Starter Baseline Registry Contract](./seeded-starter-baseline-registry-contract.md)
 from the opposite direction: instead of keeping writable starter templates in
-the workspace and comparing them against a baseline, evals will no longer
-carry template files at all.
+the stored seed bundle and comparing them against a baseline, evals will keep
+the seed corpus template-free while runtime workspace bootstrap still
+materializes the planner scaffold before the relevant planner node starts.
 
-The target state is to validate the eval state that agents actually own, not a
-template surface that invites solved-seed drift.
+The target state is to validate the eval state that the seed corpus actually
+owns, while leaving runtime starter scaffold materialization to the workspace
+bootstrapper and its controller entry gate.
 
 ## Problem Statement
 
-Seeded eval workspaces currently include starter-template files for rows that
-are supposed to edit them. That makes the template surface part of the
-validation story, which has a bad side effect: agents learn to treat those
-files as an editable solution surface and sometimes pre-solve downstream
-artifacts to satisfy the wrong contract.
+Seeded eval workspaces currently blur two different surfaces:
 
-The failure mode is visible when a planner row materializes a workspace that
-still contains template files for the next stage. The planner then edits around
-the template instead of around the actual eval contract, because the
-validation pipeline still reasons about that template content. The result is a
-seed that validates the template baseline instead of the real workspace
-contract.
+- the stored seed corpus, which should only contain the non-template inputs
+  that define the problem instance, and
+- the runtime bootstrap scaffold, which still needs to materialize
+  engineer-planner starter files before the planner node starts.
+
+That ambiguity leaks into validation. When the corpus and the runtime scaffold
+are treated as the same thing, agents learn to reason about template copies as
+if they were part of the seed contract, and the validator is forced to check
+the wrong boundary.
 
 That is the wrong direction for the system. Template material should remain in
-canonical template sources and prompt-context assets, while eval validation
-should only care about the non-template files that define the seeded run.
+canonical template sources and runtime bootstrap helpers, while eval seed
+validation should only care about the stored non-template files that define
+the seeded run.
 
 ## Current-State Inventory
 
 | Area | Current behavior | Why it must change |
 | -- | -- | -- |
 | `shared/eval_artifacts.py` | Exposes `SEED_STARTER_TEMPLATE_FILES` and per-agent starter file lists that drive seeded workspace materialization. | The eval contract needs an exclusion registry, not a registry that encourages copying templates into the seed workspace. |
+| `controller/agent/initialization.py` | Materializes role-specific starter files into live workspaces before node entry. | The runtime bootstrapper must stay responsible for planner scaffold materialization, separate from the stored seed corpus. |
 | `evals/logic/seed_maintenance.py` | Refreshes starter template files into seeded artifact directories. | Seed maintenance must stop reintroducing template files into evaluated workspaces. |
-| `scripts/update_eval_seed_templates.py` | Copies canonical starter templates into seeded eval artifacts. | A maintenance helper that copies templates is incompatible with a template-free eval workspace contract. |
 | `evals/logic/workspace.py` | Materializes seeded workspaces from the current starter-file contract. | Workspace seeding must omit template-authored files entirely. |
-| `controller/agent/node_entry_validation.py` | Validates starter-template presence and drift as part of the seeded entry path. | Validation must fail closed on forbidden template presence and otherwise only inspect non-template files. |
-| `scripts/validate_eval_seed.py` | Validates seeded eval entry contracts against the current starter-file shape. | The CLI should inherit the template-free contract instead of synchronizing or checking template baselines. |
-| `specs/devtools.md` | Documents writable starter files and starter-baseline drift checks. | Developer docs need to describe the eval workspace as template-free, not template-baseline-backed. |
-| `specs/architecture/agents/artifacts-and-filesystem.md` | Still describes seed-backed rows as preserving starter snapshots. | The file-ownership contract must stop treating template files as part of the evaluated workspace. |
-| `specs/architecture/agents/handover-contracts.md` | Names seeded/direct-start starter-baseline checks. | The handover contract must stop depending on template files as an owned workspace surface. |
+| `controller/agent/node_entry_validation.py` | Validates the runtime workspace contract, including the planner scaffold that bootstrap materialized. | Validation must fail closed on forbidden template presence in the seed corpus and separately verify the runtime scaffold at planner entry. |
+| `scripts/validate_eval_seed.py` | Validates seeded eval entry contracts against the current seed-corpus shape. | The CLI should inherit the template-free corpus contract instead of synchronizing or checking the runtime scaffold. |
+| `specs/devtools.md` | Documents writable starter files and starter-baseline drift checks. | Developer docs need to distinguish template-free seed corpora from runtime bootstrap scaffolds. |
+| `specs/architecture/agents/artifacts-and-filesystem.md` | Still conflates seed-backed rows with starter snapshots. | The file-ownership contract must distinguish stored seed files from runtime starter files. |
+| `specs/architecture/agents/handover-contracts.md` | Names seeded/direct-start starter-baseline checks. | The handover contract must stop depending on seed-corpus template copies as the source of truth for planner bootstrap. |
 | `tests/integration/architecture_p0/test_seed_authoring_workspace_bootstrapper.py` | Verifies starter-file refresh behavior. | Integration coverage must move from template refresh to template absence. |
 | `tests/integration/architecture_p0/test_node_entry_validation.py` | Exercises starter-template validation and drift failures. | The node-entry regression suite must prove that template files are forbidden, not just matched. |
 | `tests/integration/architecture_p0/test_codex_runner_mode.py` | Exercises `scripts/validate_eval_seed.py` on seeded rows. | The CLI regression must prove non-template validation still passes while template-file presence fails closed. |
 
 ## Proposed Target State
 
-1. Seeded eval workspaces never materialize template-authored files as
-   workspace entries.
-2. `scripts/validate_eval_seed.py` validates only non-template files in the
-   seed corpus and fails closed if a forbidden template file is present.
-3. The controller node-entry validation path is the single source of truth for
-   that check.
-4. Template sources remain canonical in their shared template repositories and
-   prompt-context assets, but they are not copied into the evaluated workspace.
-5. The docs and integration tests describe the same template-free eval
+1. Seeded eval corpora never materialize template-authored files as stored
+   seed artifacts.
+2. Runtime workspace bootstrap still materializes the engineer-planner
+   starter scaffold before the planner node starts.
+3. `scripts/validate_eval_seed.py` validates only the non-template seed corpus
+   and fails closed if a forbidden template file is present there.
+4. The controller node-entry validation path is the source of truth for the
+   runtime starter scaffold once it has been materialized.
+5. Template sources remain canonical in their shared template repositories and
+   prompt-context assets, but they are not stored in the evaluated seed
+   corpus.
+6. The docs and integration tests describe the same seed-corpus/runtime-split
    contract that the runtime enforces.
 
 ## Required Work
@@ -83,18 +88,22 @@ should only care about the non-template files that define the seeded run.
 ### 1. Define the exclusion contract explicitly
 
 - Add an explicit template-file exclusion registry to `shared/eval_artifacts.py`
-  or the nearest shared workspace-contract module.
+  or the nearest shared workspace-contract module for the stored seed corpus.
 - Keep the set explicit per seed-backed row. Do not infer template exclusion
   from filename patterns or workspace shape.
 - Make the registry distinguish template files from the non-template eval files
   that remain in scope.
+- Keep the runtime starter scaffold contract separate and owned by the
+  workspace bootstrapper, not the stored seed corpus.
 
 ### 2. Remove template files from seeded workspaces
 
 - Update the seed workspace materialization path in `evals/logic/workspace.py`
-  so template-authored files are not copied into eval workspaces.
-- Update `evals/logic/seed_maintenance.py` and
-  `scripts/update_eval_seed_templates.py` so they stop refreshing template
+  so template-authored files are not copied into the stored seed corpus.
+- Keep `controller/agent/initialization.py` and the local workspace bootstrap
+  helpers responsible for materializing the runtime starter scaffold before
+  the planner node starts.
+- Update `evals/logic/seed_maintenance.py` so it stops refreshing template
   files into the evaluated corpus.
 - Keep the seed corpus focused on non-template eval artifacts, read-only
   context, and other required runtime files.
@@ -102,9 +111,11 @@ should only care about the non-template files that define the seeded run.
 ### 3. Validate only the remaining non-template contract surfaces
 
 - Keep `controller/agent/node_entry_validation.py` fail-closed.
-- Reject any seeded workspace that still contains a forbidden template file.
+- Reject any stored seed corpus that still contains a forbidden template file.
 - Validate the remaining non-template files through the existing controller
   seam instead of adding a separate CLI heuristic.
+- Keep the runtime starter scaffold validation at planner entry after the
+  bootstrapper has materialized it.
 - Preserve the current validation-depth behavior from
   `scripts/validate_eval_seed.py`; this migration changes the file set under
   validation, not the depth contract.
@@ -113,22 +124,23 @@ should only care about the non-template files that define the seeded run.
 
 - Update `specs/devtools.md` so seed validation is described as template-free.
 - Update `specs/architecture/agents/artifacts-and-filesystem.md` so the
-  file-ownership contract distinguishes non-template eval files from forbidden
-  template files.
+  file-ownership contract distinguishes stored seed files from runtime starter
+  files.
 - Update `specs/architecture/agents/handover-contracts.md` so seeded/direct-
-  start rows no longer treat template files as part of the editable workspace
-  contract.
+  start rows no longer treat stored template copies as part of the editable
+  seed contract.
 - Keep the wording distinct from the starter-baseline migration so the two
   contracts do not collapse into one another.
 
 ### 5. Refresh regression coverage
 
 - Add negative regressions that prove a forbidden template file in a seed
-  workspace fails validation.
+  corpus fails validation.
 - Add positive regressions that prove a template-free seed still validates
   successfully through `scripts/validate_eval_seed.py`.
 - Update any bootstrapper or corpus-refresh tests so they assert template
-  absence instead of starter-template restoration.
+  absence in the stored corpus while still checking runtime scaffold
+  materialization separately.
 
 ## Non-Goals
 
@@ -143,6 +155,9 @@ should only care about the non-template files that define the seeded run.
   to template-file presence.
 - Do not broaden the rule to non-seeded runtime workspaces unless they share
   the same seed contract.
+- Do not remove the runtime starter scaffold from engineer-planner workspaces;
+  this migration only separates stored seed corpus files from runtime bootstrap
+  materialization.
 
 ## Sequencing
 
@@ -160,14 +175,16 @@ The safe order is:
 
 ## Acceptance Criteria
 
-1. Seeded eval workspaces contain no template-authored files.
-2. `scripts/validate_eval_seed.py` validates only the non-template seed files
-   and fails closed if a forbidden template file is present.
-3. The controller validation path, not a CLI heuristic, owns the template-free
-   contract.
-4. The docs and integration tests describe the same file set that the runtime
-   enforces.
-5. The new contract supersedes the starter-baseline registry approach rather
+1. Seeded eval corpora contain no template-authored files.
+2. Runtime workspace bootstrap still materializes the engineer-planner starter
+   scaffold before planner entry.
+3. `scripts/validate_eval_seed.py` validates only the non-template seed
+   corpus and fails closed if a forbidden template file is present there.
+4. The controller validation path, not a CLI heuristic, owns the runtime
+   starter scaffold contract at planner entry.
+5. The docs and integration tests describe the same seed-corpus/runtime-split
+   contract that the runtime enforces.
+6. The new contract supersedes the starter-baseline registry approach rather
    than layering on top of it.
 
 ## Migration Checklist
@@ -185,19 +202,21 @@ The safe order is:
 
 - [ ] Remove template-authored files from seeded workspace materialization in
   `evals/logic/workspace.py`.
-- [ ] Update `evals/logic/seed_maintenance.py` so it stops refreshing template
+- [ ] Keep runtime starter scaffold materialization in
+  `controller/agent/initialization.py` and local workspace bootstrap helpers.
+- [x] Update `evals/logic/seed_maintenance.py` so it stops refreshing template
   files into the evaluated corpus.
-- [ ] Keep `scripts/update_eval_seed_templates.py` from copying template files
-  back into the seed corpus.
 - [ ] Preserve read-only context files and other non-template seed artifacts
   that are still required for the runtime contract.
 
 ### Validation Plumbing
 
 - [ ] Keep `controller/agent/node_entry_validation.py` fail-closed on forbidden
-  template presence.
+  template presence in the seed corpus.
 - [ ] Ensure validation still inspects the remaining non-template files through
   the controller seam rather than a separate CLI heuristic.
+- [ ] Keep runtime starter scaffold validation at planner entry after bootstrap
+  materialization.
 - [ ] Preserve the current validation-depth behavior from
   `scripts/validate_eval_seed.py`.
 - [ ] Confirm the CLI surface continues to fail closed on malformed or missing
@@ -224,7 +243,7 @@ The safe order is:
   workspace fails validation.
 - [ ] Add positive regressions that prove a template-free seed still validates
   successfully through `scripts/validate_eval_seed.py`.
-- [ ] Update bootstrapper or corpus-refresh tests so they assert template
+- [x] Update bootstrapper or corpus-refresh tests so they assert template
   absence instead of starter-template restoration.
 - [ ] Refresh any CLI regression cases that still assume the workspace contains
   editable template files.
@@ -235,6 +254,8 @@ The safe order is:
   the workspace contract changes land.
 - [ ] Confirm the seed corpus no longer materializes template files for any
   affected row.
+- [x] Confirm the runtime starter scaffold still materializes for
+  engineer_planner before node entry.
 - [ ] Confirm the controller validation path and CLI validation path still
   agree on success and failure outcomes.
 - [ ] Confirm no agent skill files were edited as part of the migration.
@@ -245,11 +266,11 @@ The implementation should touch the smallest set of files that actually
 enforce the new contract:
 
 - `shared/eval_artifacts.py`
+- `controller/agent/initialization.py`
 - `evals/logic/seed_maintenance.py`
 - `evals/logic/workspace.py`
 - `controller/agent/node_entry_validation.py`
 - `scripts/validate_eval_seed.py`
-- `scripts/update_eval_seed_templates.py`
 - `specs/devtools.md`
 - `specs/architecture/agents/artifacts-and-filesystem.md`
 - `specs/architecture/agents/handover-contracts.md`
