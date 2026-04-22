@@ -19,11 +19,11 @@ manufactured_parts:
     quantity: 1
     part_volume_mm3: 2048.0
     stock_bbox_mm:
-      x: 300.0
-      y: 95.0
-      z: 8.0
-    stock_volume_mm3: 228000.0
-    removed_volume_mm3: 225952.0
+      x: 64.0
+      y: 8.0
+      z: 4.0
+    stock_volume_mm3: 2048.0
+    removed_volume_mm3: 0.0
     estimated_unit_cost_usd: 7.0
   - part_name: left_support
     part_id: left_support
@@ -32,11 +32,11 @@ manufactured_parts:
     quantity: 1
     part_volume_mm3: 1152.0
     stock_bbox_mm:
-      x: 24.0
-      y: 95.0
-      z: 18.0
-    stock_volume_mm3: 41040.0
-    removed_volume_mm3: 39888.0
+      x: 8.0
+      y: 12.0
+      z: 12.0
+    stock_volume_mm3: 1152.0
+    removed_volume_mm3: 0.0
     estimated_unit_cost_usd: 3.0
   - part_name: right_support
     part_id: right_support
@@ -45,11 +45,11 @@ manufactured_parts:
     quantity: 1
     part_volume_mm3: 1152.0
     stock_bbox_mm:
-      x: 24.0
-      y: 95.0
-      z: 18.0
-    stock_volume_mm3: 41040.0
-    removed_volume_mm3: 39888.0
+      x: 8.0
+      y: 12.0
+      z: 12.0
+    stock_volume_mm3: 1152.0
+    removed_volume_mm3: 0.0
     estimated_unit_cost_usd: 3.0
   - part_name: stop_lip
     part_id: stop_lip
@@ -58,11 +58,11 @@ manufactured_parts:
     quantity: 1
     part_volume_mm3: 64.0
     stock_bbox_mm:
-      x: 8.0
-      y: 95.0
-      z: 12.0
-    stock_volume_mm3: 9120.0
-    removed_volume_mm3: 9056.0
+      x: 4.0
+      y: 8.0
+      z: 2.0
+    stock_volume_mm3: 64.0
+    removed_volume_mm3: 0.0
     estimated_unit_cost_usd: 1.0
 
 final_assembly:
@@ -82,31 +82,29 @@ totals:
 
 coarse_payload_trajectory:
   payload_part_names:
-    - transfer_cube
+    - solution_plan_evidence
   reference_frame: world
   sample_stride_s: 0.2
   anchors:
     - t_s: 0.0
       reference_point: build_zone_start
-      pos_mm: [-250.0, 0.0, 80.0]
+      pos_mm: [-30.0, 0.0, 24.0]
       rot_deg: [0.0, 0.0, 0.0]
-      position_tolerance_mm: [1.0, 1.0, 1.0]
-      rotation_tolerance_deg: [0.5, 0.5, 5.0]
+      position_tolerance_mm: [0.0, 0.0, 0.0]
+      rotation_tolerance_deg: [0.1, 0.1, 0.1]
       build_zone_valid: true
-    - t_s: 0.6
-      reference_point: bridge_reference_table
-      pos_mm: [70.0, 0.0, 78.0]
+    - t_s: 0.2
+      reference_point: transfer_midspan
+      pos_mm: [0.0, 18.0, 24.0]
       rot_deg: [0.0, 0.0, 0.0]
-      position_tolerance_mm: [1.0, 1.0, 1.0]
-      rotation_tolerance_deg: [0.5, 0.5, 5.0]
-    - t_s: 1.4
+      position_tolerance_mm: [0.0, 0.0, 0.0]
+      rotation_tolerance_deg: [0.1, 0.1, 0.1]
+    - t_s: 0.5
       reference_point: goal_zone_contact
-      pos_mm: [265.0, 0.0, 72.5]
+      pos_mm: [32.0, 0.0, 10.0]
       rot_deg: [0.0, 0.0, 0.0]
-      position_tolerance_mm: [1.0, 1.0, 1.0]
-      rotation_tolerance_deg: [0.5, 0.5, 5.0]
+      position_tolerance_mm: [0.0, 0.0, 0.0]
+      rotation_tolerance_deg: [0.1, 0.1, 0.1]
       goal_zone_contact: true
 
-dfm_suggestions:
-  - Keep the bridge deck pocketed so the span stays lightweight while still spanning the gap.
-  - Reuse the same anchor-block profile on both ends to simplify CAM setup.
+dfm_suggestions: []

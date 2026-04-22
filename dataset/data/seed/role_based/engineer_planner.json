@@ -1,5 +1,19 @@
 [
   {
+    "id": "ep-gap-bridge-01",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded gap-bridge handoff in the workspace, including the read-only benchmark geometry for `left_start_deck`, `right_goal_deck`, `bridge_reference_table`, and `gap_floor_guard`, plus the payload label `transfer_cube`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that bridges `transfer_cube` from `left_start_deck` to `right_goal_deck` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope.",
+    "complexity_level": 1,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-gap-bridge-01",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the gap-bridge benchmark files as read-only context, starts from the checked-in starter-template baseline instead of a pre-solved output, and produces a coherent bridge-style engineering plan with exact label grounding for `transfer_cube`, `left_start_deck`, `right_goal_deck`, `bridge_reference_table`, and `gap_floor_guard`, plus budget-consistent calculations."
+  },
+  {
+    "id": "ep-gap-bridge-03",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded gap-bridge handoff in the workspace, including the read-only benchmark geometry, benchmark plan evidence script, and benchmark render evidence. Draft an implementation-ready engineering plan that bridges `transfer_cube` from `left_start_deck` to `right_goal_deck` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope.",
+    "complexity_level": 1,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-gap-bridge-03",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the gap-bridge benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent bridge-style engineering plan with exact label grounding for `transfer_cube`, `left_start_deck`, `right_goal_deck`, `bridge_reference_table`, and `gap_floor_guard`, plus budget-consistent calculations."
+  },
+  {
     "id": "ep-001",
     "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded gap-bridge handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence. Draft an implementation-ready engineering plan that bridges `transfer_cube` from `left_start_deck` to `right_goal_deck` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope.",
     "complexity_level": 1,
@@ -12,5 +26,12 @@
     "complexity_level": 2,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-011-narrow-funnel-01",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the narrow-funnel benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent passive funnel engineering plan with exact label grounding and budget-consistent calculations."
+  },
+  {
+    "id": "ep-s-corridor-001",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded corridor handoff in the workspace, including the read-only benchmark geometry and benchmark plan evidence for `left_launch_pad`, `corridor_block_a`, `corridor_block_b`, `corridor_block_c`, and `goal_catch_tray`, plus the payload label `transfer_cube`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that routes `transfer_cube` through the bent corridor without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope.",
+    "complexity_level": 2,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-s-corridor-001",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the corridor benchmark files as read-only context, starts from the checked-in starter-template baseline instead of a pre-solved output, and produces a coherent corridor-style engineering plan with exact label grounding for `transfer_cube`, `left_launch_pad`, `corridor_block_a`, `corridor_block_b`, `corridor_block_c`, and `goal_catch_tray`, plus budget-consistent calculations."
   }
 ]

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from build123d import Align, Box, Compound, Location
 
-from utils.metadata import CompoundMetadata, PartMetadata
+from shared.models.schemas import CompoundMetadata, PartMetadata
 
 
 def _make_box(
@@ -20,37 +20,39 @@ def _make_box(
 
 
 def build() -> Compound:
-    assembly = Compound(
+    """Return the benchmark assembly geometry for this workspace."""
+
+    fixtures = Compound(
         children=[
             _make_box(
-                "bridge_deck",
-                (300.0, 95.0, 8.0),
-                (10.0, 0.0, 74.0),
+                "left_start_deck",
+                (180.0, 180.0, 70.0),
+                (-220.0, 0.0, 35.0),
                 "aluminum_6061",
             ),
             _make_box(
-                "left_support",
-                (24.0, 95.0, 18.0),
-                (-128.0, 0.0, 61.0),
+                "right_goal_deck",
+                (200.0, 180.0, 70.0),
+                (250.0, 0.0, 35.0),
                 "aluminum_6061",
             ),
             _make_box(
-                "right_support",
-                (24.0, 95.0, 18.0),
-                (148.0, 0.0, 61.0),
+                "bridge_reference_table",
+                (140.0, 120.0, 30.0),
+                (70.0, 0.0, 55.0),
                 "aluminum_6061",
             ),
             _make_box(
-                "stop_lip",
-                (8.0, 95.0, 12.0),
-                (156.0, 0.0, 84.0),
-                "aluminum_6061",
+                "gap_floor_guard",
+                (160.0, 300.0, 40.0),
+                (10.0, 0.0, 20.0),
+                "hdpe",
             ),
         ]
     )
-    assembly.label = "solution_plan_evidence"
-    assembly.metadata = CompoundMetadata()
-    return assembly
+    fixtures.label = "benchmark_fixtures"
+    fixtures.metadata = CompoundMetadata()
+    return fixtures
 
 
 result = build()
