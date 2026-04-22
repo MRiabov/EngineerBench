@@ -22,8 +22,8 @@ import shlex
 import shutil
 import subprocess
 import sys
-import time
 import threading
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -32,9 +32,15 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from evals.logic.cli_provider import available_cli_providers, get_cli_provider  # noqa: E402
+from evals.logic.cli_provider import (  # noqa: E402
+    available_cli_providers,
+    get_cli_provider,
+)
 from evals.logic.codex_workspace import resolve_cli_home_root  # noqa: E402
-from evals.logic.dataset_selection import parse_level_filters, parse_task_id_filters  # noqa: E402
+from evals.logic.dataset_selection import (  # noqa: E402
+    parse_level_filters,
+    parse_task_id_filters,
+)
 from shared.enums import AgentName  # noqa: E402
 
 DEFAULT_AGENT = AgentName.ENGINEER_PLANNER
@@ -66,14 +72,11 @@ DEFAULT_COMPLEXITY_BY_FAMILY = {
     "motion_aware": 4,
 }
 FAMILY_PLAN_REL = Path(
-    "dataset/data/seed/artifacts/engineer_planner/"
-    "engineer_planner_seed_family_plan.md"
+    "dataset/data/seed/artifacts/engineer_planner/engineer_planner_seed_family_plan.md"
 )
 DATASET_REL = Path("dataset/data/seed/role_based/engineer_planner.json")
 ARTIFACT_ROOT_REL = Path("dataset/data/seed/artifacts/engineer_planner")
-CANONICAL_TASK_ID_RE = re.compile(
-    r"^ep-(?P<family>[a-z-]+)-(?P<variant>\d{2})$"
-)
+CANONICAL_TASK_ID_RE = re.compile(r"^ep-(?P<family>[a-z-]+)-(?P<variant>\d{2})$")
 SKIP_UNTRACKED_PREFIXES = (
     "logs/",
     ".tmp/",
@@ -342,7 +345,9 @@ def _seed_dataset_path_for_agent(root: Path, agent: AgentName) -> Path | None:
     return None
 
 
-def _load_raw_seed_rows(root: Path, agent: AgentName) -> tuple[Path, list[dict[str, object]]]:
+def _load_raw_seed_rows(
+    root: Path, agent: AgentName
+) -> tuple[Path, list[dict[str, object]]]:
     json_path = _seed_dataset_path_for_agent(root, agent)
     if json_path is None:
         searched = ", ".join(str(path) for path in _dataset_roots(root))
@@ -424,8 +429,7 @@ def _canonical_seed_specs(
         missing = sorted(requested_ids - {spec.task_id for spec in selected})
         if missing:
             raise SystemExit(
-                "Unknown canonical engineer_planner task id(s): "
-                + ", ".join(missing)
+                "Unknown canonical engineer_planner task id(s): " + ", ".join(missing)
             )
 
     if limit > 0:
@@ -523,7 +527,9 @@ def _cleanup_worktree(root: Path, worktree_dir: Path) -> None:
     if not worktree_dir.exists():
         return
     with _WORKTREE_LOCK:
-        remove_proc = _run_git(root, ["worktree", "remove", "--force", str(worktree_dir)])
+        remove_proc = _run_git(
+            root, ["worktree", "remove", "--force", str(worktree_dir)]
+        )
         if remove_proc.returncode == 0:
             return
         shutil.rmtree(worktree_dir, ignore_errors=True)
@@ -611,8 +617,7 @@ def _build_review_prompt(
         f"Review the engineer_planner seed row {spec.task_id} and its artifact "
         f"dir {(ARTIFACT_ROOT_REL / spec.task_id).as_posix()}.",
         "",
-        "Use .agents/skills/engineer-plan-reviewer as the primary checklist "
-        "lens.",
+        "Use .agents/skills/engineer-plan-reviewer as the primary checklist lens.",
         "Treat the family plan at "
         f"{FAMILY_PLAN_REL.as_posix()} as the source of truth for family "
         "shape, variant progression, and row naming.",
@@ -660,7 +665,9 @@ def _run_cli_prompt(
     dry_run: bool,
 ) -> tuple[int, list[str]]:
     provider = get_cli_provider(provider_name)
-    session_id = f"{session_prefix}-{_sanitize_slug(task_id)}-{time.strftime('%Y%m%d_%H%M%S')}"
+    session_id = (
+        f"{session_prefix}-{_sanitize_slug(task_id)}-{time.strftime('%Y%m%d_%H%M%S')}"
+    )
     codex_home_root = resolve_cli_home_root(
         task_id=task_id,
         session_id=session_id,
@@ -708,7 +715,9 @@ def _run_cli_prompt(
             invocation.argv,
             input=stdin_text,
             text=True,
-            cwd=str(invocation.cwd) if invocation.cwd is not None else str(workspace_dir),
+            cwd=str(invocation.cwd)
+            if invocation.cwd is not None
+            else str(workspace_dir),
             env=merged_env,
             stdout=handle,
             stderr=subprocess.STDOUT,
@@ -795,11 +804,15 @@ def _run_review_prompt(
         passed = False
         notes = ""
         result_matches = list(
-            re.finditer(r"^REVIEW_RESULT:\s*(PASS|FAIL)\s*$", review_output, re.MULTILINE)
+            re.finditer(
+                r"^REVIEW_RESULT:\s*(PASS|FAIL)\s*$", review_output, re.MULTILINE
+            )
         )
         if result_matches:
             passed = result_matches[-1].group(1).upper() == "PASS"
-        notes_matches = list(re.finditer(r"^REVIEW_NOTES:\s*", review_output, re.MULTILINE))
+        notes_matches = list(
+            re.finditer(r"^REVIEW_NOTES:\s*", review_output, re.MULTILINE)
+        )
         if notes_matches:
             notes = review_output[notes_matches[-1].end() :].strip()
         elif review_output.strip():
@@ -877,8 +890,12 @@ def _refresh_seed_artifacts(
     ]
     if not update_manifests:
         template_cmd.append("--no-update-manifests")
-    template_log = run_dir / "maintenance" / f"templates-{_sanitize_slug(spec.task_id)}.log"
-    rc = _run_command(template_cmd, log_path=template_log, dry_run=dry_run, cwd=workspace_dir)
+    template_log = (
+        run_dir / "maintenance" / f"templates-{_sanitize_slug(spec.task_id)}.log"
+    )
+    rc = _run_command(
+        template_cmd, log_path=template_log, dry_run=dry_run, cwd=workspace_dir
+    )
     if rc != 0:
         return rc
 
@@ -893,8 +910,12 @@ def _refresh_seed_artifacts(
     ]
     if queue:
         renders_cmd.append("--queue")
-    renders_log = run_dir / "maintenance" / f"renders-{_sanitize_slug(spec.task_id)}.log"
-    return _run_command(renders_cmd, log_path=renders_log, dry_run=dry_run, cwd=workspace_dir)
+    renders_log = (
+        run_dir / "maintenance" / f"renders-{_sanitize_slug(spec.task_id)}.log"
+    )
+    return _run_command(
+        renders_cmd, log_path=renders_log, dry_run=dry_run, cwd=workspace_dir
+    )
 
 
 def _run_command(
@@ -989,7 +1010,9 @@ def _validate_seed_row_contract(
     try:
         manifest = json.loads(role_manifest_path.read_text(encoding="utf-8"))
     except Exception as exc:
-        raise RuntimeError(f"Invalid current-role manifest: {role_manifest_path}") from exc
+        raise RuntimeError(
+            f"Invalid current-role manifest: {role_manifest_path}"
+        ) from exc
     if str(manifest.get("agent_name")) != DEFAULT_AGENT.value:
         raise RuntimeError(
             f"current-role manifest does not name {DEFAULT_AGENT.value}: "
@@ -1109,14 +1132,17 @@ def _run_seed_job(
             job.rounds.append(round_run)
             continue
 
-        if _refresh_seed_artifacts(
-            spec=spec,
-            workspace_dir=worktree_dir,
-            run_dir=run_dir,
-            queue=queue,
-            update_manifests=update_manifests,
-            dry_run=dry_run,
-        ) != 0:
+        if (
+            _refresh_seed_artifacts(
+                spec=spec,
+                workspace_dir=worktree_dir,
+                run_dir=run_dir,
+                queue=queue,
+                update_manifests=update_manifests,
+                dry_run=dry_run,
+            )
+            != 0
+        ):
             repair_note = _tail_lines(
                 run_dir / "maintenance" / f"renders-{_sanitize_slug(spec.task_id)}.log"
             )
@@ -1396,7 +1422,9 @@ def main() -> int:
                     variant=spec.variant,
                     complexity_level=spec.complexity_level,
                     existing_row=spec.existing_row,
-                    worktree_dir=str(run_dir / "worktrees" / _sanitize_slug(spec.task_id)),
+                    worktree_dir=str(
+                        run_dir / "worktrees" / _sanitize_slug(spec.task_id)
+                    ),
                     failure_reason=str(exc),
                 )
             jobs.append(job)
