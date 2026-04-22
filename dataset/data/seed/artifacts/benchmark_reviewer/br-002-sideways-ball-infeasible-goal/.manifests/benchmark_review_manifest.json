@@ -3,7 +3,7 @@
   "reviewer_stage": "benchmark_reviewer",
   "timestamp": "2026-03-10T09:00:00Z",
   "session_id": "seed-br-002-sideways-ball-infeasible-goal",
-  "revision": "b9f6456e30b990608a17aa0af971d21811240eb7",
+  "revision": "f0c3744c2b6c6b3500afdcfc1fc189522ed30723",
   "script_path": "benchmark_script.py",
   "script_sha256": "6fd45ad07722c15b45865853d7c8f41e4c7f35099b7976afd4fe3269a19bae9a",
   "validation_success": true,

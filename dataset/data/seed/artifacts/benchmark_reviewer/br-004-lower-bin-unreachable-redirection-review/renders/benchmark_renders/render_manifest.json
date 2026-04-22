@@ -4,7 +4,7 @@
   "created_at": "2026-04-21T08:31:01.514929+00:00",
   "episode_id": "e8e79f42-ed26-5d67-8f0e-9e2d1caba9a4",
   "worker_session_id": "seed-renders-br-004-lower-bin-unreachable-redirection-review-a0255097",
-  "revision": "b9f6456e30b990608a17aa0af971d21811240eb7",
+  "revision": "f0c3744c2b6c6b3500afdcfc1fc189522ed30723",
   "scene_hash": "555c72869e362ea35dea01f7267e76e1c6341473c893ee3a638f39ffd2c63c9f",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",
