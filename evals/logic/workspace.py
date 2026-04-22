@@ -30,7 +30,6 @@ from controller.agent.node_entry_validation import (
 from controller.clients.worker import WorkerClient
 from evals.logic.models import AgentEvalSpec, EvalDatasetItem
 from evals.logic.seed_maintenance import refresh_seed_artifact_manifests
-from shared.agent_templates import load_common_template_files
 from shared.current_role import current_role_manifest_json
 from shared.enums import AgentName, EvalMode
 from shared.models.schemas import (
@@ -301,11 +300,7 @@ async def materialize_seed_workspace_snapshot(
 ) -> list[str]:
     artifact_dir = resolve_seed_artifact_dir(item, root=root)
     inline_files = item.seed_files or {}
-    template_files = load_common_template_files()
     seeded_paths: list[str] = []
-
-    if artifact_dir is None and not inline_files and not template_files:
-        return seeded_paths
 
     if artifact_dir is not None:
         if not artifact_dir.exists():
@@ -320,15 +315,6 @@ async def materialize_seed_workspace_snapshot(
             raise ValueError(
                 "Seed artifact manifest drift detected; rerun with --update-manifests."
             )
-
-    for rel_path, content in template_files.items():
-        await workspace_client.write_file(
-            rel_path,
-            content,
-            overwrite=True,
-            bypass_agent_permissions=True,
-        )
-        seeded_paths.append(rel_path)
 
     if artifact_dir is not None:
         for path in _iter_seed_artifact_paths(artifact_dir):
@@ -474,8 +460,7 @@ async def seed_eval_workspace(
 ) -> None:
     artifact_dir = resolve_seed_artifact_dir(item, root=root)
     inline_files = item.seed_files or {}
-    template_files = load_common_template_files()
-    if artifact_dir is None and not inline_files and not template_files:
+    if artifact_dir is None and not inline_files:
         return
 
     if artifact_dir is not None:
@@ -495,15 +480,6 @@ async def seed_eval_workspace(
     worker = WorkerClient(base_url=worker_light_url, session_id=session_id)
     seeded_paths: list[str] = []
     try:
-        for rel_path, content in template_files.items():
-            await worker.write_file(
-                rel_path,
-                content,
-                overwrite=True,
-                bypass_agent_permissions=True,
-            )
-            seeded_paths.append(rel_path)
-
         if artifact_dir is not None:
             for path in _iter_seed_artifact_paths(artifact_dir):
                 rel_path = path.relative_to(artifact_dir).as_posix()

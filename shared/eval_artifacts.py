@@ -61,9 +61,17 @@ SEED_STARTER_TEMPLATE_FILES: dict[AgentName, tuple[str, ...]] = {
     ),
 }
 
+SEED_TEMPLATE_EXCLUSION_FILES: dict[AgentName, tuple[str, ...]] = {
+    agent_name: paths for agent_name, paths in SEED_STARTER_TEMPLATE_FILES.items()
+}
+
 
 def seed_starter_template_files_for_agent(agent_name: AgentName) -> tuple[str, ...]:
     return SEED_STARTER_TEMPLATE_FILES.get(agent_name, ())
+
+
+def seed_template_exclusion_files_for_agent(agent_name: AgentName) -> tuple[str, ...]:
+    return SEED_TEMPLATE_EXCLUSION_FILES.get(agent_name, ())
 
 
 def plan_artifacts_for_agent(agent_name: AgentName) -> tuple[str, ...]:
@@ -96,6 +104,7 @@ def workspace_artifacts_for_agent(agent_name: AgentName) -> tuple[str, ...]:
 
 __all__ = [
     "plan_artifacts_for_agent",
+    "seed_template_exclusion_files_for_agent",
     "seed_starter_template_files_for_agent",
     "workspace_artifacts_for_agent",
 ]

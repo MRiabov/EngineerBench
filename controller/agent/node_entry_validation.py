@@ -51,7 +51,6 @@ from controller.clients.worker import WorkerClient
 from controller.config.settings import settings as controller_settings
 from controller.persistence.db import get_sessionmaker
 from controller.persistence.models import Episode
-from shared.agent_templates import load_seed_starter_template_files
 from shared.agents.config import RENDER_BUCKET_NAME_SEQUENCE
 from shared.current_role import current_role_manifest_json, parse_current_role_manifest
 from shared.enums import AgentName, EntryFailureDisposition, EntryValidationSource
@@ -1084,54 +1083,6 @@ def _seeded_schema_error(
     )
 
 
-async def _seeded_starter_template_errors(
-    *,
-    worker_client: Any,
-    target_node: AgentName,
-) -> list[NodeEntryValidationError]:
-    starter_templates = load_seed_starter_template_files(target_node)
-    if not starter_templates:
-        return []
-
-    errors: list[NodeEntryValidationError] = []
-    for rel_path, expected_content in starter_templates.items():
-        try:
-            actual_content = await worker_client.read_file_optional(
-                rel_path,
-                bypass_agent_permissions=True,
-            )
-        except Exception as exc:
-            errors.append(
-                _seeded_schema_error(
-                    message=f"{rel_path}: starter template read failed: {exc}",
-                    artifact_path=rel_path,
-                )
-            )
-            continue
-
-        if actual_content is None:
-            errors.append(
-                _seeded_schema_error(
-                    message=f"{rel_path}: seeded workspace is missing the starter template baseline.",
-                    artifact_path=rel_path,
-                )
-            )
-            continue
-
-        if actual_content != expected_content:
-            errors.append(
-                _seeded_schema_error(
-                    message=(
-                        f"{rel_path}: seeded workspace must begin from the starter "
-                        "template version, not a pre-solved output."
-                    ),
-                    artifact_path=rel_path,
-                )
-            )
-
-    return errors
-
-
 def _benchmark_validation_errors(
     *,
     messages: Sequence[str],
@@ -1975,12 +1926,7 @@ async def validate_seeded_workspace_handoff_artifacts(
     target_node: AgentName,
     validation_scope: ValidationScope = ValidationScope.CURRENT_NODE,
 ) -> list[NodeEntryValidationError]:
-    """Fail-closed schema + semantic checks for seeded/direct entry workspaces.
-
-    Downstream coder and reviewer seed rows must still expose the writable
-    authored files from their checked-in starter templates rather than
-    pre-solved outputs.
-    """
+    """Fail-closed schema + semantic checks for seeded/direct entry workspaces."""
     errors: list[NodeEntryValidationError] = []
     contents: dict[str, str] = {}
     benchmark_definition_model: BenchmarkDefinition | None = None
@@ -2039,12 +1985,6 @@ async def validate_seeded_workspace_handoff_artifacts(
                         artifact_path="manufacturing_config.yaml",
                     )
                 )
-
-    starter_template_errors = await _seeded_starter_template_errors(
-        worker_client=worker_client,
-        target_node=target_node,
-    )
-    errors.extend(starter_template_errors)
 
     for rel_path in SCHEMA_BACKED_HANDOFF_PATHS:
         content = await worker_client.read_file_optional(

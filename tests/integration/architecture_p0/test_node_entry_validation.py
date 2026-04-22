@@ -521,11 +521,7 @@ async def test_int_benchmark_planner_seed_rejects_presolved_benchmark_plan():
     )
 
     assert errors, "Expected the pre-solved benchmark planner seed to fail."
-    assert any(
-        error.artifact_path == "benchmark_plan.md"
-        and "starter template version" in error.message.lower()
-        for error in errors
-    ), errors
+    assert any(error.artifact_path == "benchmark_plan.md" for error in errors), errors
 
 
 @pytest.mark.integration_p0
@@ -559,16 +555,12 @@ async def test_int_engineer_planner_seed_rejects_presolved_engineering_plan():
     )
 
     assert errors, "Expected the pre-solved engineer planner seed to fail."
-    assert any(
-        error.artifact_path == "engineering_plan.md"
-        and "starter template version" in error.message.lower()
-        for error in errors
-    ), errors
+    assert any(error.artifact_path == "engineering_plan.md" for error in errors), errors
 
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
-async def test_int_engineer_planner_seed_accepts_starter_template_under_scope():
+async def test_int_engineer_planner_seed_accepts_template_free_seed_under_scope():
     item = _load_role_based_seed_item(AgentName.ENGINEER_PLANNER, "ep-001")
 
     session_id = f"INT-STARTER-{uuid.uuid4().hex[:8]}"
@@ -624,11 +616,9 @@ async def test_int_engineer_planner_seed_rejects_presolved_assembly_definition()
     )
 
     assert errors, "Expected the pre-solved engineer planner seed to fail."
-    assert any(
-        error.artifact_path == "assembly_definition.yaml"
-        and "starter template version" in error.message.lower()
-        for error in errors
-    ), errors
+    assert any(error.artifact_path == "assembly_definition.yaml" for error in errors), (
+        errors
+    )
 
 
 @pytest.mark.integration_p0
@@ -735,11 +725,7 @@ result = build()
     )
 
     assert errors, "Expected the pre-solved engineer seed to fail."
-    assert any(
-        error.artifact_path == "solution_script.py"
-        and "starter template version" in error.message.lower()
-        for error in errors
-    ), errors
+    assert any(error.artifact_path == "solution_script.py" for error in errors), errors
 
 
 @pytest.mark.integration_p0
@@ -1372,11 +1358,7 @@ result = build()
     )
 
     assert errors, "Expected the pre-solved benchmark seed to fail."
-    assert any(
-        error.artifact_path == "benchmark_script.py"
-        and "starter template version" in error.message.lower()
-        for error in errors
-    ), errors
+    assert any(error.artifact_path == "benchmark_script.py" for error in errors), errors
 
 
 @pytest.mark.integration_p0
@@ -1409,11 +1391,7 @@ async def test_int_benchmark_reviewer_seed_rejects_presolved_todo(tmp_path: Path
     )
 
     assert errors, "Expected the pre-solved benchmark reviewer seed to fail."
-    assert any(
-        error.artifact_path == "todo.md"
-        and "starter template version" in error.message.lower()
-        for error in errors
-    ), errors
+    assert any(error.artifact_path == "todo.md" for error in errors), errors
 
 
 @pytest.mark.integration_p0

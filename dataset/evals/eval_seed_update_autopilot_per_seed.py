@@ -1309,25 +1309,6 @@ def _refresh_seed_artifacts(
     update_manifests: bool,
     dry_run: bool,
 ) -> int:
-    template_cmd = [
-        sys.executable,
-        str(workspace_dir / "scripts" / "update_eval_seed_templates.py"),
-        "--agent",
-        DEFAULT_AGENT.value,
-        "--task-id",
-        spec.task_id,
-    ]
-    if not update_manifests:
-        template_cmd.append("--no-update-manifests")
-    template_log = (
-        run_dir / "maintenance" / f"templates-{_sanitize_slug(spec.task_id)}.log"
-    )
-    rc = _run_command(
-        template_cmd, log_path=template_log, dry_run=dry_run, cwd=workspace_dir
-    )
-    if rc != 0:
-        return rc
-
     renders_cmd = [
         sys.executable,
         str(workspace_dir / "scripts" / "update_eval_seed_renders.py"),
