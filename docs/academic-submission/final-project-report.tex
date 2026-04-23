@@ -425,7 +425,7 @@ Feedback / Formula
 \endgroup
 
 \section{Agent Roles and Handoffs}
-This appendix summarizes the model-facing role graph, the stage-scoped handoff artifacts, and the auxiliary roles that support the pipeline but do not hand off to another model-facing role.
+This appendix summarizes the role graph, the agent-specific handoff files, and the auxiliary roles that support the pipeline.
 
 \begingroup
 \scriptsize
@@ -438,33 +438,95 @@ This appendix summarizes the model-facing role graph, the stage-scoped handoff a
   >{\raggedright\arraybackslash}p{0.20\columnwidth}%
   >{\raggedright\arraybackslash}p{0.30\columnwidth}%
   >{\raggedright\arraybackslash}p{0.15\columnwidth}@{}}
-\caption{Agent roles and stage-scoped handoffs in the codebase.}\label{tab:agent-handoffs}\\
+\caption{Agent roles and handoffs in the codebase.}\label{tab:agent-handoffs}\\
 \toprule\noalign{}
-Stage / role & Purpose & Reads & Writes / handoff artifacts & Routing \\
+Agent / role & Purpose & Reads & Writes / handoff artifacts & Routing \\
 \midrule\noalign{}
 \endfirsthead
 \toprule\noalign{}
-Stage / role & Purpose & Reads & Writes / handoff artifacts & Routing \\
+Agent / role & Purpose & Reads & Writes / handoff artifacts & Routing \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-\multicolumn{5}{@{}l}{\textbf{Benchmark generator}}\\
+\multicolumn{5}{@{}l}{\textbf{Benchmark agents}}\\
 Benchmark Planner & Designs the benchmark task, geometry, randomization, and benchmark-owned fixture contract. & User prompt, benchmark context, and materials inventory. & \texttt{benchmark\_plan.md}, \texttt{todo.md}, \texttt{benchmark\_definition.yaml}, \texttt{benchmark\_assembly\_definition.yaml}, \texttt{benchmark\_plan\_evidence\_script.py}; submits via \texttt{submit\_benchmark\_plan()} to \texttt{.manifests/benchmark\_plan\_review\_manifest.json}. & To Benchmark Plan Reviewer. \\
-Benchmark Plan Reviewer & Verifies cross-artifact consistency before implementation starts. & Planner handoff package and any required render evidence. & Stage-scoped review YAML pair via \texttt{submit\_review}. & Rejects to Benchmark Planner; accept opens Benchmark Coder. \\
+Benchmark Plan Reviewer & Verifies consistency across the benchmark artifacts before implementation begins. & Planner handoff package and any required render evidence. & Review YAML pair via \texttt{submit\_review}. & Rejects to Benchmark Planner; acceptance opens Benchmark Coder. \\
 Benchmark Coder & Implements the approved benchmark. & Approved benchmark plan and read-only benchmark evidence/context. & \texttt{benchmark\_script.py}, helper modules, progress TODO updates, and \texttt{plan\_refusal.md} only if the plan is infeasible; submits via \texttt{submit\_benchmark\_for\_review()} to \texttt{.manifests/benchmark\_review\_manifest.json}. & To Benchmark Reviewer. \\
-Benchmark Reviewer & Validates the benchmark implementation after validation and simulation. & Latest validated benchmark implementation, benchmark artifacts, and dynamic evidence for moving fixtures. & Stage-scoped review YAML pair via \texttt{submit\_review}. & Rejects to Benchmark Coder; accept opens Engineering Planner. \\
-\multicolumn{5}{@{}l}{\textbf{Engineering workflow}}\\
+Benchmark Reviewer & Validates the benchmark implementation after validation and simulation. & Latest validated benchmark implementation, benchmark artifacts, and dynamic evidence for moving fixtures. & Review YAML pair via \texttt{submit\_review}. & Rejects to Benchmark Coder; acceptance opens Engineering Planner. \\
+\multicolumn{5}{@{}l}{\textbf{Engineering agents}}\\
 Engineering Planner & Turns benchmark context into an implementation-ready engineering plan, including motion and cost/weight budgets. & Benchmark artifacts, objective geometry, read-only benchmark renders, and current constraints. & \texttt{engineering\_plan.md}, \texttt{todo.md}, \texttt{benchmark\_definition.yaml}, \texttt{assembly\_definition.yaml}, \texttt{solution\_plan\_evidence\_script.py}, \texttt{payload\_trajectory\_definition.yaml}; submits via \texttt{submit\_engineering\_plan()} to \texttt{.manifests/engineering\_plan\_review\_manifest.json}. & To Engineering Plan Reviewer. \\
-Engineering Plan Reviewer & Validates the engineering handoff before coding, including cost, price, and motion feasibility. & Engineering planner package, render evidence when required, and price validation results. & Stage-scoped review YAML pair via \texttt{submit\_review}. & Rejects to Engineering Planner; accept opens Engineering Coder. \\
-Engineering Coder & Implements the approved engineering plan in code and simulation artifacts. & Combined planner handoff, benchmark geometry, review outputs, renders, and helper files. & \texttt{solution\_script.py}, helper modules, \texttt{payload\_trajectory\_definition.yaml}, \texttt{journal.md}, and \texttt{plan\_refusal.md} only if the plan is infeasible; submits via \texttt{submit\_solution\_for\_review()} to \texttt{.manifests/engineering\_execution\_handoff\_manifest.json}. & To Engineering Execution Reviewer. \\
-Engineering Execution Reviewer & Final review after validation and simulation success; checks robustness, manufacturability, and evidence. & Latest validated implementation, simulation results, and required renders. & Stage-scoped review YAML pair via \texttt{submit\_review}. & Rejects to Engineering Coder; accept ends the main graph. \\
-\multicolumn{5}{@{}l}{\textbf{Development-only review path}}\\
-Electronics review & Development-tree electromechanical review artifacts for the non-public branch of the pipeline. & Development-tree electromechanical review artifacts. & \texttt{reviews/electronics-review-decision-round-<n>.yaml}, \texttt{reviews/electronics-review-comments-round-<n>.yaml}, and \texttt{.manifests/electronics\_review\_manifest.json}. & No model-facing follow-on; development-only gate. \\
-\multicolumn{5}{@{}l}{\textbf{Auxiliary roles}}\\
+Engineering Plan Reviewer & Validates the engineering handoff before coding, including cost, price, and motion feasibility. & Engineering planner package, render evidence when required, and price validation results. & Review YAML pair via \texttt{submit\_review}. & Rejects to Engineering Planner; acceptance opens Engineering Coder. \\
+Engineering Coder & Implements the approved engineering plan in code and simulation artifacts. & Combined planner handoff, benchmark geometry, review outputs, renders, and helper files. & \texttt{solution\_script.py}, helper modules, \texttt{payload\_trajectory\_definition.yaml}, and \texttt{plan\_refusal.md} only if the plan is infeasible; submits via \texttt{submit\_solution\_for\_review()} to \texttt{.manifests/engineering\_execution\_handoff\_manifest.json}. & To Engineering Execution Reviewer. \\
+Engineering Execution Reviewer & Final review after validation and simulation success; checks robustness, manufacturability, and evidence. & Latest validated implementation, simulation results, and required renders. & Review YAML pair via \texttt{submit\_review}. & Rejects to Engineering Coder; acceptance ends the main graph. \\
+\multicolumn{5}{@{}l}{\textbf{Development-only review agents}}\\
+Electronics review & Development-tree electromechanical review artifacts for the non-public branch of the pipeline. & Development-tree electromechanical review artifacts. & \texttt{reviews/electronics-review-decision-round-<n>.yaml}, \texttt{reviews/electronics-review-comments-round-<n>.yaml}, and \texttt{.manifests/electronics\_review\_manifest.json}. & No further handoff; development-only gate. \\
+\multicolumn{5}{@{}l}{\textbf{Auxiliary agents}}\\
 Journalling Agent & Compresses a run into \texttt{journal.md}. & Run transcript and artifact history. & \texttt{journal.md}. & No downstream handoff. \\
 Skill Agent & Stages skill deltas into \texttt{suggested\_skills/}. & Current skill state and run artifacts. & Staged skill drafts under \texttt{suggested\_skills/}. & No downstream handoff. \\
-Git Agent & Handles repository plumbing and is not a model-facing workflow role. & Working tree and repository state. & Git operations only. & No downstream handoff. \\
+Git Agent & Handles repository plumbing and is not part of the model-facing workflow. & Working tree and repository state. & Git operations only. & No further handoff. \\
+\end{longtable}
+\endgroup
+
+\section{Handoff Files}
+This appendix lists the files prepared and exchanged by the benchmark and engineering agents. Some file names are reused across both workflows, but the contents are agent-specific. System-owned gate metadata such as \texttt{.manifests/current\_role.json} is excluded because it is runtime state rather than an agent handoff file.
+
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\renewcommand{\arraystretch}{0.94}
+\sloppy
+\begin{longtable}{@{}%
+  >{\raggedright\arraybackslash}p{0.19\columnwidth}%
+  >{\raggedright\arraybackslash}p{0.14\columnwidth}%
+  >{\raggedright\arraybackslash}p{0.42\columnwidth}%
+  >{\raggedright\arraybackslash}p{0.19\columnwidth}@{}}
+\caption{Canonical handoff files and the content carried by each file.}\label{tab:handoff-files}\\
+\toprule\noalign{}
+File / pattern & Agent & Included handoff content & Use \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+File / pattern & Agent & Included handoff content & Use \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\multicolumn{4}{@{}l}{\textbf{Benchmark agents}}\\
+\texttt{benchmark\_plan.md} & Benchmark Planner & Benchmark goal, geometry, randomization, objectives, and authored assumptions. & Reviewed before implementation starts. \\
+\texttt{todo.md} & Benchmark Planner & Checklist of benchmark implementation tasks and open follow-ups. & Guides benchmark coding work. \\
+\texttt{benchmark\_definition.yaml} & Benchmark Planner & Objective AABBs, runtime randomization, cost/weight caps, and benchmark motion-visible metadata. & Used in benchmark review and engineering planning. \\
+\texttt{benchmark\_assembly\_definition.yaml} & Benchmark Planner & Benchmark-owned fixture inventory, labels, and geometry. & Read-only context for benchmark coding and engineering planning. \\
+\texttt{benchmark\_plan\_evidence\_script.py} & Benchmark Planner & Build123d sketch or preview evidence for the benchmark plan. & Lets the plan reviewer inspect the intended benchmark geometry. \\
+\texttt{.manifests/benchmark\_plan\_review\_manifest.json} & Submission gate & Stage metadata and latest planner revision for the plan-review gate. & Required for benchmark plan review entry. \\
+\texttt{reviews/benchmark-plan-review-decision-round-<n>.yaml} & Benchmark Plan Reviewer & Routing decision for the benchmark plan review round. & Drives accept/reject routing. \\
+\texttt{reviews/benchmark-plan-review-comments-round-<n>.yaml} & Benchmark Plan Reviewer & Checklist, critique, and supporting comments for the same review round. & Explanatory review record. \\
+\texttt{benchmark\_script.py} & Benchmark Coder & Executable benchmark implementation after plan approval. & Validated and reviewed before engineering starts. \\
+\texttt{.manifests/benchmark\_review\_manifest.json} & Submission gate & Gate metadata for benchmark execution review. & Required for benchmark execution review entry. \\
+\texttt{reviews/benchmark-execution-review-decision-round-<n>.yaml} & Benchmark Reviewer & Routing decision for benchmark execution review. & Drives accept/reject routing. \\
+\texttt{reviews/benchmark-execution-review-comments-round-<n>.yaml} & Benchmark Reviewer & Checklist and evidence notes for benchmark execution review. & Explanatory review record. \\
+\multicolumn{4}{@{}l}{\textbf{Engineering agents}}\\
+\texttt{engineering\_plan.md} & Engineering Planner & Implementation-ready mechanism plan, assumptions, and design decisions. & Reviewed before engineering coding starts. \\
+\texttt{todo.md} & Engineering Planner & Checklist of engineering implementation tasks and follow-up work. & Guides engineering coding work. \\
+\texttt{benchmark\_definition.yaml} & Engineering Planner & Reused objective, boundary, and constraint file for the engineering graph. & Read-only benchmark context in the engineering planner handoff. \\
+\texttt{assembly\_definition.yaml} & Engineering Planner & Per-part pricing inputs, \texttt{final\_assembly}, totals, and coarse \texttt{motion\_forecast}. & Core engineering handoff to the coder. \\
+\texttt{solution\_plan\_evidence\_script.py} & Engineering Planner & Build123d proof or preview of the proposed engineering geometry. & Lets the plan reviewer inspect the intended solution. \\
+\texttt{payload\_trajectory\_definition.yaml} & Engineering Planner / Coder & Refined payload path, clearance proof, timing, and orientation constraints. & Required for implementation and motion review. \\
+\texttt{.manifests/engineering\_plan\_review\_manifest.json} & Submission gate & Gate metadata for engineering plan review. & Required for engineering plan review entry. \\
+\texttt{reviews/engineering-plan-review-decision-round-<n>.yaml} & Engineering Plan Reviewer & Routing decision for the engineering plan review round. & Drives accept/reject routing. \\
+\texttt{reviews/engineering-plan-review-comments-round-<n>.yaml} & Engineering Plan Reviewer & Checklist, critique, and supporting comments for the same review round. & Explanatory review record. \\
+\texttt{solution\_script.py} & Engineering Coder & Executable solution implementation and simulation-facing artifacts. & Validated and reviewed before final approval. \\
+\texttt{journal.md} & Journalling Agent & Compressed run history and reasoning trace. & Used for retrospective compression and debugging context. \\
+\texttt{plan\_refusal.md} & Engineering Coder & Explicit infeasibility rationale and proof, only when a coder refuses. & Routed back through plan review when valid. \\
+\texttt{.manifests/engineering\_execution\_handoff\_manifest.json} & Submission gate & Latest revision metadata for execution review. & Required for engineering execution review entry. \\
+\texttt{reviews/engineering-execution-review-decision-round-<n>.yaml} & Engineering Execution Reviewer & Routing decision for execution review. & Drives accept/reject routing. \\
+\texttt{reviews/engineering-execution-review-comments-round-<n>.yaml} & Engineering Execution Reviewer & Checklist and evidence notes for execution review. & Explanatory review record. \\
+\multicolumn{4}{@{}l}{\textbf{Development-only review agents}}\\
+\texttt{reviews/electronics-review-decision-round-<n>.yaml} & Electronics review & Routing decision for the development-only electromechanical review path. & Drives accept/reject routing in the development tree. \\
+\texttt{reviews/electronics-review-comments-round-<n>.yaml} & Electronics review & Checklist and comments for the same development-only review. & Explanatory review record. \\
+\texttt{.manifests/electronics\_review\_manifest.json} & Submission gate & Gate metadata for the development-only electromechanical review path. & Required for electronics review entry. \\
+\multicolumn{4}{@{}l}{\textbf{Auxiliary agents}}\\
+\texttt{suggested\_skills/} & Skill Agent & Staged skill drafts and deltas for later promotion. & Used by the skill-improvement loop. \\
 \end{longtable}
 \endgroup
 
