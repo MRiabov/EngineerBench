@@ -151,8 +151,7 @@ guessing at the scope later.
   observation and trajectory policy blocks so the new rule is easy to find and
   does not get conflated with runtime monitoring.
 - Measure the angle as the downhill slope from the payload spawn position to
-  the goal zone bottom center, i.e. `atan2(payload_spawn_z - goal_bottom_z,
-  horizontal_distance)`. That is the simplest geometry definition and matches
+  the goal zone bottom center, i.e. `atan2(payload_spawn_z - goal_bottom_z, horizontal_distance)`. That is the simplest geometry definition and matches
   the plain-English rule in the request.
 - Treat the goal zone bottom center as the canonical target point for the
   first implementation. An explicit objective anchor can be added later if the
