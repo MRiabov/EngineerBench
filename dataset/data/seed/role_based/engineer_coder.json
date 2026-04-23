@@ -2,35 +2,35 @@
   {
     "id": "ec-002",
     "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded gap-bridge handoff package in the workspace to implement the baseline bridge in `solution_script.py`. Preserve the reviewed planner artifacts, keep the bridge passive, and route `transfer_cube` across the floor gap while respecting the seeded `left_start_deck`, `right_goal_deck`, `bridge_reference_table`, and `gap_floor_guard` context.",
-    "complexity_level": 1,
+    "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-002-gap-bridge",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder begins from a reviewed gap-bridge package, implements the passive bridge geometry in `solution_script.py`, and preserves the benchmark contract, the read-only fixture labels, and the baseline crossing assumptions."
   },
   {
     "id": "ec-003",
     "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded gap-bridge handoff package in the workspace to implement the longer-span bridge in `solution_script.py`. Preserve the reviewed planner artifacts, keep the bridge passive, and accommodate the farther `right_goal_deck` and shifted `bridge_reference_table` while still crossing the floor gap safely.",
-    "complexity_level": 1,
+    "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-003-gap-bridge",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed gap-bridge package, implements the passive bridge geometry in `solution_script.py`, and preserves the benchmark contract, the shifted gap geometry, and the longer-span crossing assumptions."
   },
   {
     "id": "ec-004",
     "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded gap-bridge handoff package in the workspace to implement the height-mismatch bridge in `solution_script.py`. Preserve the reviewed planner artifacts, keep the bridge passive, and respect the elevated deck positions and tighter goal envelope while crossing the floor gap.",
-    "complexity_level": 1,
+    "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-004-gap-bridge",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed gap-bridge package, implements the passive bridge geometry in `solution_script.py`, and preserves the benchmark contract, the height-mismatch geometry, and the tighter gap-crossing assumptions."
   },
   {
     "id": "ec-005",
     "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded gap-bridge handoff package in the workspace to implement the rotated-table bridge in `solution_script.py`. Preserve the reviewed planner artifacts, keep the bridge passive, and accommodate the yawed `bridge_reference_table` while maintaining safe transfer across the floor gap.",
-    "complexity_level": 1,
+    "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-005-gap-bridge",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed gap-bridge package, implements the passive bridge geometry in `solution_script.py`, and preserves the benchmark contract, the rotated bridge-table geometry, and the passive transfer assumptions."
   },
   {
     "id": "ec-006",
     "task": "Confirm `.manifests/current_role.json` names `engineer_coder` before using the seeded artifacts. Use the seeded gap-bridge handoff package in the workspace to implement the longest-span bridge in `solution_script.py`. Preserve the reviewed planner artifacts, keep the bridge passive, and accommodate the farther right-hand goal and elevated deck positions while still bridging the gap robustly.",
-    "complexity_level": 1,
+    "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_coder/ec-006-gap-bridge",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_coder` and the seeded workspace to match that role. Engineer coder starts from a reviewed gap-bridge package, implements the passive bridge geometry in `solution_script.py`, and preserves the benchmark contract, the longest-span geometry, and the robust gap-crossing assumptions."
   }

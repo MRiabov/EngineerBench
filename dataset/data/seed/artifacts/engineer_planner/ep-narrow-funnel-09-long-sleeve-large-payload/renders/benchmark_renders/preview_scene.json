@@ -47,7 +47,7 @@
       "object_type": "part",
       "object_id": 1,
       "pos_mm": [
-        -75.0,
+        -85.0,
         78.0,
         36.0
       ],
@@ -85,7 +85,7 @@
       "object_type": "part",
       "object_id": 2,
       "pos_mm": [
-        -75.0,
+        -85.0,
         -78.0,
         36.0
       ],
@@ -123,7 +123,7 @@
       "object_type": "part",
       "object_id": 3,
       "pos_mm": [
-        95.0,
+        100.0,
         60.0,
         36.0
       ],
@@ -161,7 +161,7 @@
       "object_type": "part",
       "object_id": 4,
       "pos_mm": [
-        95.0,
+        100.0,
         -60.0,
         36.0
       ],
@@ -199,7 +199,7 @@
       "object_type": "part",
       "object_id": 5,
       "pos_mm": [
-        245.0,
+        260.0,
         34.0,
         36.0
       ],
@@ -237,7 +237,7 @@
       "object_type": "part",
       "object_id": 6,
       "pos_mm": [
-        245.0,
+        260.0,
         -34.0,
         36.0
       ],
@@ -275,7 +275,7 @@
       "object_type": "part",
       "object_id": 7,
       "pos_mm": [
-        345.0,
+        360.0,
         0.0,
         42.0
       ],
@@ -313,7 +313,7 @@
       "object_type": "part",
       "object_id": 8,
       "pos_mm": [
-        415.0,
+        430.0,
         0.0,
         8.0
       ],
@@ -351,7 +351,7 @@
       "object_type": "part",
       "object_id": 9,
       "pos_mm": [
-        -260.0,
+        -255.0,
         0.0,
         36.0
       ],
@@ -389,7 +389,7 @@
       "object_type": "zone",
       "object_id": 10,
       "pos_mm": [
-        405.0,
+        417.5,
         0.0,
         52.5
       ],
@@ -400,7 +400,7 @@
       ],
       "mesh_paths": [],
       "box_size_mm": [
-        45.0,
+        42.5,
         40.0,
         32.5
       ],
@@ -429,7 +429,7 @@
       "object_type": "zone",
       "object_id": 11,
       "pos_mm": [
-        -75.0,
+        -85.0,
         78.0,
         36.0
       ],
@@ -469,7 +469,7 @@
       "object_type": "zone",
       "object_id": 12,
       "pos_mm": [
-        -75.0,
+        -85.0,
         -78.0,
         36.0
       ],
@@ -509,7 +509,7 @@
       "object_type": "zone",
       "object_id": 13,
       "pos_mm": [
-        95.0,
+        100.0,
         60.0,
         36.0
       ],
@@ -549,7 +549,7 @@
       "object_type": "zone",
       "object_id": 14,
       "pos_mm": [
-        95.0,
+        100.0,
         -60.0,
         36.0
       ],
@@ -589,7 +589,7 @@
       "object_type": "zone",
       "object_id": 15,
       "pos_mm": [
-        245.0,
+        260.0,
         34.0,
         36.0
       ],
@@ -629,7 +629,7 @@
       "object_type": "zone",
       "object_id": 16,
       "pos_mm": [
-        245.0,
+        260.0,
         -34.0,
         36.0
       ],
@@ -669,7 +669,7 @@
       "object_type": "zone",
       "object_id": 17,
       "pos_mm": [
-        345.0,
+        360.0,
         0.0,
         42.0
       ],

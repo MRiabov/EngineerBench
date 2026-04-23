@@ -18,7 +18,7 @@
   {
     "id": "bpr-006",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the narrow-goal funnel benchmark. Confirm the plan package is internally consistent across `benchmark_plan.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the wide capture region, narrowing throat, and final goal sleeve remain coherent under the seeded runtime jitter assumptions, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
-    "complexity_level": 1,
+    "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-006-narrow-goal",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid narrow-goal planner handoff, checks precision-geometry feasibility and plan completeness, and issues a structured review decision."
@@ -26,7 +26,7 @@
   {
     "id": "bpr-007",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the lower-bin redirection benchmark. Confirm the plan package is internally consistent across `benchmark_plan.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, verify that the deflector, lower-bin goal, and direct-drop dead zone remain coherent and feasible under the seeded ball randomization, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
-    "complexity_level": 1,
+    "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-007-lower-bin",
     "expected_decision": "APPROVED",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer starts from a contract-valid lower-bin planner handoff, checks gravity-aware feasibility and cross-artifact consistency, and issues a structured review decision."
@@ -34,7 +34,7 @@
   {
     "id": "bpr-010",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the gap-bridge transfer variant with a farther-right goal cradle and longer chute. Confirm the plan package is internally consistent across `benchmark_plan.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the revised geometry still stays inside the benchmark build envelope instead of quietly overhanging it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
-    "complexity_level": 1,
+    "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-010-gap-bridge-envelope",
     "expected_decision": "REJECT_PLAN",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the revised geometry quietly exceeds the allowed build envelope while claiming to remain self-contained."
@@ -42,7 +42,7 @@
   {
     "id": "bpr-013",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_plan_reviewer` before using the seeded artifacts. Review the seeded benchmark planner handoff for the narrow-goal funnel variant with a more aggressive throat squeeze. Confirm the plan package is internally consistent across `benchmark_plan.md`, `benchmark_definition.yaml`, and `benchmark_assembly_definition.yaml`, determine whether the throat still admits the seeded worst-case ball geometry with any meaningful tolerance instead of collapsing below it, inspect the seeded render evidence when present, and return a structured benchmark plan review decision grounded in the seeded artifacts.",
-    "complexity_level": 1,
+    "complexity_level": 0,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_plan_reviewer/bpr-013-narrow-goal-throat-mismatch",
     "expected_decision": "REJECT_PLAN",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_plan_reviewer` and the seeded workspace to match that role. Benchmark plan reviewer rejects the seeded handoff because the narrowed funnel throat is below the declared worst-case payload envelope."

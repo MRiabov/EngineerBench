@@ -4,7 +4,7 @@
   "created_at": "2026-04-23T15:24:18.830524+00:00",
   "episode_id": "11a5a69e-152c-5fe6-93c0-6497bdba7b59",
   "worker_session_id": "seed-renders-ep-terrain-ridge-03-8361e4bb",
-  "revision": "55bb64a6c5ecf7ae522dcef1013c7703de9089bb",
+  "revision": "7adbcbf31c6443d8a9fdc3a9e8b17e0775327795",
   "scene_hash": "584700b5e3ff23c4f5efb0650173ae605ae0576f3117120dd68548cd376bf39e",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": null,

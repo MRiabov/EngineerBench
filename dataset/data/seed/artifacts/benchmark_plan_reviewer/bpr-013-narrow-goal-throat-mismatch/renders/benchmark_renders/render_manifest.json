@@ -4,7 +4,7 @@
   "created_at": "2026-04-21T07:04:33.105042+00:00",
   "episode_id": "3276fc25-a750-5441-82ff-a72b8ebdbdbe",
   "worker_session_id": "seed-renders-bpr-013-narrow-goal-throat-mismatch-14367bc9",
-  "revision": "55bb64a6c5ecf7ae522dcef1013c7703de9089bb",
+  "revision": "7adbcbf31c6443d8a9fdc3a9e8b17e0775327795",
   "scene_hash": "82616c3d017ed88c5991b3decf89b960e45a517059afe98193fa29393b74bc5b",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",

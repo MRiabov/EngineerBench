@@ -1,0 +1,445 @@
+{
+  "component_label": "benchmark_fixtures",
+  "entities": [
+    {
+      "label": "upper_inlet_frame",
+      "semantic_label": "upper_inlet_frame",
+      "instance_id": "upper_inlet_frame",
+      "instance_name": "upper_inlet_frame",
+      "object_type": "part",
+      "object_id": 0,
+      "pos_mm": [
+        -260.0,
+        0.0,
+        170.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/upper_inlet_frame.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "upper_inlet_frame",
+      "geom_name": "upper_inlet_frame",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "upper_chute_step",
+      "semantic_label": "upper_chute_step",
+      "instance_id": "upper_chute_step",
+      "instance_name": "upper_chute_step",
+      "object_type": "part",
+      "object_id": 1,
+      "pos_mm": [
+        -150.0,
+        0.0,
+        135.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/upper_chute_step.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hdpe",
+      "body_name": "upper_chute_step",
+      "geom_name": "upper_chute_step",
+      "zone_type": null,
+      "color_rgba": [
+        0.9450980392156862,
+        0.9607843137254902,
+        0.9764705882352941,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        110,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "mid_chute_step",
+      "semantic_label": "mid_chute_step",
+      "instance_id": "mid_chute_step",
+      "instance_name": "mid_chute_step",
+      "object_type": "part",
+      "object_id": 2,
+      "pos_mm": [
+        -20.0,
+        0.0,
+        95.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/mid_chute_step.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hdpe",
+      "body_name": "mid_chute_step",
+      "geom_name": "mid_chute_step",
+      "zone_type": null,
+      "color_rgba": [
+        0.9450980392156862,
+        0.9607843137254902,
+        0.9764705882352941,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        161,
+        235,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "lower_chute_step",
+      "semantic_label": "lower_chute_step",
+      "instance_id": "lower_chute_step",
+      "instance_name": "lower_chute_step",
+      "object_type": "part",
+      "object_id": 3,
+      "pos_mm": [
+        120.0,
+        0.0,
+        55.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/lower_chute_step.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hdpe",
+      "body_name": "lower_chute_step",
+      "geom_name": "lower_chute_step",
+      "zone_type": null,
+      "color_rgba": [
+        0.9450980392156862,
+        0.9607843137254902,
+        0.9764705882352941,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        213
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "exit_tray",
+      "semantic_label": "exit_tray",
+      "instance_id": "exit_tray",
+      "instance_name": "exit_tray",
+      "object_type": "part",
+      "object_id": 4,
+      "pos_mm": [
+        265.0,
+        0.0,
+        20.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/exit_tray.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "exit_tray",
+      "geom_name": "exit_tray",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        235,
+        205
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "left_guard_rail",
+      "semantic_label": "left_guard_rail",
+      "instance_id": "left_guard_rail",
+      "instance_name": "left_guard_rail",
+      "object_type": "part",
+      "object_id": 5,
+      "pos_mm": [
+        -60.0,
+        -85.0,
+        100.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/left_guard_rail.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "aluminum_6061",
+      "body_name": "left_guard_rail",
+      "geom_name": "left_guard_rail",
+      "zone_type": null,
+      "color_rgba": [
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        154,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "right_guard_rail",
+      "semantic_label": "right_guard_rail",
+      "instance_id": "right_guard_rail",
+      "instance_name": "right_guard_rail",
+      "object_type": "part",
+      "object_id": 6,
+      "pos_mm": [
+        -60.0,
+        85.0,
+        100.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/right_guard_rail.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "aluminum_6061",
+      "body_name": "right_guard_rail",
+      "geom_name": "right_guard_rail",
+      "zone_type": null,
+      "color_rgba": [
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        103,
+        59,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "steel_ball",
+      "semantic_label": "steel_ball",
+      "instance_id": "steel_ball",
+      "instance_name": "steel_ball",
+      "object_type": "part",
+      "object_id": 7,
+      "pos_mm": [
+        -280.0,
+        0.0,
+        218.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [
+        "meshes/benchmark_payload__steel_ball.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "steel_carbon",
+      "body_name": "benchmark_payload__steel_ball",
+      "geom_name": "benchmark_payload__steel_ball",
+      "zone_type": null,
+      "color_rgba": [
+        0.43137254901960786,
+        0.45098039215686275,
+        0.4823529411764706,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        66,
+        235,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "zone_goal",
+      "semantic_label": "zone_goal",
+      "instance_id": "zone_goal",
+      "instance_name": "zone_goal",
+      "object_type": "zone",
+      "object_id": 8,
+      "pos_mm": [
+        272.5,
+        0.0,
+        45.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        42.5,
+        70.0,
+        35.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "goal",
+      "color_rgba": [
+        0.2,
+        0.72,
+        0.34,
+        0.22
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        117
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_0_chute_escape_floor",
+      "semantic_label": "zone_forbid_0_chute_escape_floor",
+      "instance_id": "zone_forbid_0_chute_escape_floor",
+      "instance_name": "zone_forbid_0_chute_escape_floor",
+      "object_type": "zone",
+      "object_id": 9,
+      "pos_mm": [
+        15.0,
+        0.0,
+        15.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        175.0,
+        150.0,
+        20.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        59,
+        169,
+        235
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_build",
+      "semantic_label": "zone_build",
+      "instance_id": "zone_build",
+      "instance_name": "zone_build",
+      "object_type": "zone",
+      "object_id": 10,
+      "pos_mm": [
+        5.0,
+        0.0,
+        130.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        355.0,
+        180.0,
+        130.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "build",
+      "color_rgba": [
+        0.55,
+        0.55,
+        0.55,
+        0.14
+      ],
+      "segmentation_color_rgb": [
+        220,
+        235,
+        59
+      ],
+      "include_in_segmentation": false
+    }
+  ],
+  "bounds_min_mm": [
+    -350.0,
+    -180.0,
+    -5.0
+  ],
+  "bounds_max_mm": [
+    360.0,
+    180.0,
+    260.0
+  ],
+  "center_mm": [
+    5.0,
+    0.0,
+    127.5
+  ],
+  "diagonal": 839.00238378684
+}

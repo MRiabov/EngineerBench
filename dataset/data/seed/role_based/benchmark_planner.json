@@ -14,55 +14,55 @@
   {
     "id": "bp-003",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a 60mm HDPE cube starts on a left platform and must be moved across a 180mm-wide floor gap to a right landing platform at the same height. The machine should have to bridge, hand off, or otherwise transfer the cube without dropping it into the gap.",
-    "complexity_level": 1,
+    "complexity_level": 0,
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines payload as a 60mm cube, explicit left and right platforms separated by about 180mm of empty space, a fall/forbid region under the gap, realistic build and simulation bounds, and success criteria based on the cube ending on the landing platform."
   },
   {
     "id": "bp-004",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where an aluminum cylinder 35mm radius and 120mm long starts on one side of the workspace and must be moved through a low-clearance gate into a goal zone beyond it. The gate should force the solution to respect vertical clearance rather than just pushing straight through bulky geometry.",
-    "complexity_level": 1,
+    "complexity_level": 0,
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a cylindrical payload with the stated dimensions, a divider or gate with a clear low-bar opening, realistic start and goal placement on opposite sides of the gate, feasible build bounds, and success criteria that require the cylinder to finish beyond the gate."
   },
   {
     "id": "bp-005",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where an 80mm-diameter rubber puck starts on an upper ledge and must descend through a spiky obstacle field into a lower goal basin. The benchmark should test downhill transport and obstacle avoidance rather than a flat push.",
-    "complexity_level": 1,
+    "complexity_level": 0,
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a disc or puck payload, a lower goal zone reached by descending through spike-like obstacles and explicit forbid zones, realistic workspace bounds for the downhill path, and success criteria requiring the puck to end inside the lower goal zone."
   },
   {
     "id": "bp-006",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a 30mm-radius steel ball starts on an elevated ledge and must be delivered into a catch bin that is about 250mm sideways and 400mm lower. The benchmark should test controlled release or redirection into a lower target rather than simple flat transport.",
-    "complexity_level": 1,
+    "complexity_level": 0,
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a steel spherical payload, an elevated start, a lower goal zone or bin offset sideways from the start, realistic gravity-aware bounds, and success criteria requiring the ball to come to rest in the catch region."
   },
   {
     "id": "bp-007",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a wooden rod 300mm long and 30mm in diameter starts on one side of a divider wall and must be moved through a rectangular window in the wall into a goal zone on the other side. The benchmark should require clearance-aware manipulation of a long object, not just translating a compact part.",
-    "complexity_level": 1,
+    "complexity_level": 0,
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a long cylindrical payload, a divider wall with a clearly specified pass-through opening, realistic start and goal zones on opposite sides, feasible build bounds that accommodate the rod length, and success criteria based on the rod ending beyond the divider."
   },
   {
     "id": "bp-008",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a steel ring with about 120mm outer diameter and 70mm inner diameter starts on the floor and must be moved to a goal region centered around a vertical post on the far side of the workspace. The benchmark should encourage alignment and controlled placement around a fixed obstacle at the goal.",
-    "complexity_level": 1,
+    "complexity_level": 0,
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines an annular payload, a fixed post or goal fixture near the goal, realistic clearance and workspace bounds, and success criteria based on the ring reaching a goal zone around the post without impossible geometry."
   },
   {
     "id": "bp-009",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a 50mm cube must move about 800mm to the goal while routing around two offset rectangular obstacles that create an S-shaped corridor. The benchmark should test planning through constrained free space rather than a direct line transfer.",
-    "complexity_level": 1,
+    "complexity_level": 0,
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a cubic payload, two offset forbid zones or obstacle blocks that force an S-shaped route, clear start and goal zones, realistic build bounds, and success criteria based on the cube ending at the goal without infeasible obstacle overlap."
   },
   {
     "id": "bp-010",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where a steel ball 25mm radius starts on flat ground and must be moved 700mm to a goal, but a rounded speed bump or ridge sits midway between start and goal. The benchmark should force the machine to handle a terrain discontinuity rather than a frictionless flat push.",
-    "complexity_level": 1,
+    "complexity_level": 0,
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a steel spherical payload, a midpoint ridge or bump with realistic dimensions, start and goal zones on opposite sides of the terrain feature, feasible simulation bounds, and success criteria based on the ball finishing beyond the bump in the goal zone."
   },
   {
     "id": "bp-011",
     "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where an ABS ball (~45mm radius) starts high at approximately (-200, 0, 260) and must be moved down to a lower goal zone centered around (375, 0, 60). A dense set of spike-like obstacles and a keepout band between x=180 and x=280 must remain clear so the route has to snake downhill instead of lifting the ball upward. The benchmark should test downhill obstacle avoidance with a clearance constraint rather than a flat push.",
-    "complexity_level": 1,
+    "complexity_level": 0,
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a spherical payload with ABS material, a lower goal zone roughly 200mm below the start level, explicit spike-like obstacle and keepout volumes that shape the downhill route, realistic build and simulation bounds, planner estimate fields for cost and weight, and success criteria requiring the ball to end inside the lower goal zone."
   }
 ]
