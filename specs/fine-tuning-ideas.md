@@ -88,4 +88,4 @@ Estimate a volume of a complex CAD feature without access to CAD kernel or inter
 
 ### Will feature pass through?
 
-You are given
+"You are given an "environment" renders and build123d CAD code and a "payload" render. You are also given a path of the payload. Based on the geometry and renders, will you pass the environment?
