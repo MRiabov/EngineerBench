@@ -9,20 +9,16 @@ objectives:
   build_zone_mm:
     min_mm: [-240.0, -180.0, 0.0]
     max_mm: [560.0, 180.0, 240.0]
-  fluid_objectives: []
-  stress_objectives: []
 benchmark_parts:
   - part_id: environment_fixture
     label: environment_fixture
     metadata:
-      fixed: true
+      is_fixed: true
       material_id: aluminum_6061
 
 physics:
   backend: GENESIS
-  fem_enabled: false
   compute_target: auto
-fluids: []
 simulation_bounds_mm:
   min_mm: [-300.0, -220.0, -10.0]
   max_mm: [620.0, 220.0, 280.0]

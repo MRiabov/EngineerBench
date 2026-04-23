@@ -9,35 +9,31 @@ objectives:
   build_zone_mm:
     min_mm: [-340.0, -180.0, 0.0]
     max_mm: [360.0, 180.0, 260.0]
-  fluid_objectives: []
-  stress_objectives: []
 benchmark_parts:
   - part_id: left_start_deck
     label: left_start_deck
     metadata:
-      fixed: true
+      is_fixed: true
       material_id: aluminum_6061
   - part_id: right_goal_deck
     label: right_goal_deck
     metadata:
-      fixed: true
+      is_fixed: true
       material_id: aluminum_6061
   - part_id: bridge_reference_table
     label: bridge_reference_table
     metadata:
-      fixed: true
+      is_fixed: true
       material_id: aluminum_6061
   - part_id: gap_floor_guard
     label: gap_floor_guard
     metadata:
-      fixed: true
+      is_fixed: true
       material_id: hdpe
 
 physics:
   backend: GENESIS
-  fem_enabled: false
   compute_target: auto
-fluids: []
 simulation_bounds_mm:
   min_mm: [-380.0, -220.0, -20.0]
   max_mm: [420.0, 220.0, 320.0]

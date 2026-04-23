@@ -3,7 +3,7 @@
   "reviewer_stage": "engineering_execution_reviewer",
   "timestamp": "2026-03-10T09:00:00Z",
   "session_id": "seed-bpr-008-gap-bridge-hidden-dof",
-  "revision": "f0c3744c2b6c6b3500afdcfc1fc189522ed30723",
+  "revision": "e95b38da421f0404ba7c8d9bd0e14e13c216155d",
   "script_path": "script.py",
   "script_sha256": "128e7970b620ff03656a737424eefc9c03ab1966e964415c92b61389221a9d53",
   "validation_success": true,
