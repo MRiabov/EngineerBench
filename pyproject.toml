@@ -87,6 +87,7 @@ dev = [
     "mdformat-frontmatter>=2.0.10",
     "pytest-randomly>=4.0.1",
     "ocp-vscode>=3.0.1",
+    "desloppify[full]>=0.9.15",
 ]
 
 [tool.ruff]

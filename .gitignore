@@ -60,6 +60,7 @@ events.jsonl
 # Local agent skills and suggestions
 suggested_skills/
 .codex/
+.desloppify/
 
 gha-creds-*.json
 logs/
