@@ -25,9 +25,9 @@
   },
   {
     "id": "bp-005",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where an 80mm-diameter rubber puck starts on the floor and must be moved onto a raised shelf 250mm higher and roughly 600mm away horizontally. The benchmark should test uphill transport against gravity rather than a flat push.",
+    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where an 80mm-diameter rubber puck starts on an upper ledge and must descend through a spiky obstacle field into a lower goal basin. The benchmark should test downhill transport and obstacle avoidance rather than a flat push.",
     "complexity_level": 1,
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a disc or puck payload, a raised goal platform about 250mm above the start level, realistic workspace bounds for the elevation change, and success criteria requiring the puck to end inside a goal zone on the upper shelf."
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a disc or puck payload, a lower goal zone reached by descending through spike-like obstacles and explicit forbid zones, realistic workspace bounds for the downhill path, and success criteria requiring the puck to end inside the lower goal zone."
   },
   {
     "id": "bp-006",
@@ -61,8 +61,8 @@
   },
   {
     "id": "bp-011",
-    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where an ABS ball (~45mm radius) starts near floor level at approximately (-200, 0, 60) and must be moved onto a raised shelf goal zone centered around (375, 0, 260). A vertical shelf-support keepout volume between x=180 and x=280 must remain clear. The benchmark should test uphill elevation transport with a clearance constraint rather than a flat push.",
+    "task": "Confirm `.manifests/current_role.json` names `benchmark_planner` before using the seeded artifacts. Create a benchmark where an ABS ball (~45mm radius) starts high at approximately (-200, 0, 260) and must be moved down to a lower goal zone centered around (375, 0, 60). A dense set of spike-like obstacles and a keepout band between x=180 and x=280 must remain clear so the route has to snake downhill instead of lifting the ball upward. The benchmark should test downhill obstacle avoidance with a clearance constraint rather than a flat push.",
     "complexity_level": 1,
-    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a spherical payload with ABS material, an elevated goal zone roughly 160mm above the start level, a vertical forbid zone representing shelf-support clearance, realistic build and simulation bounds, planner estimate fields for cost and weight, and success criteria requiring the ball to end inside the raised goal zone."
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_planner` and the seeded workspace to match that role. Plan defines a spherical payload with ABS material, a lower goal zone roughly 200mm below the start level, explicit spike-like obstacle and keepout volumes that shape the downhill route, realistic build and simulation bounds, planner estimate fields for cost and weight, and success criteria requiring the ball to end inside the lower goal zone."
   }
 ]

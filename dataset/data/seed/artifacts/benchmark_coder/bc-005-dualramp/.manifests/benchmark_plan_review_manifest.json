@@ -1,0 +1,13 @@
+{
+  "status": "ready_for_review",
+  "reviewer_stage": "benchmark_plan_reviewer",
+  "session_id": "bc-005-dualramp",
+  "planner_node_type": "benchmark_planner",
+  "artifact_hashes": {
+    "benchmark_assembly_definition.yaml": "2dd1009f823f58e46c80fb6084e83b446f493112a92de454d14ea1da1a240f8f",
+    "benchmark_definition.yaml": "fbc5cd01e3cce60b4278b729e24ccc06459b7f4e24812b4eb25663e33cd2cfa7",
+    "todo.md": "48bedf1e34b37e41cd188d38c5f11791cd94a7ac21b0ac199537feb7c9396c3a",
+    "benchmark_plan.md": "602adea285f843f3ba06aef506d655282dd11fbc935e5226d6001f88607fc78c",
+    "benchmark_plan_evidence_script.py": "0071c40f29a90ff0e0601ad01c7745ec014a1c288ae2ca0eb40e15b058f20d28"
+  }
+}

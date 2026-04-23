@@ -1,0 +1,64 @@
+objectives:
+  goal_zone_mm:
+    min_mm: [190.0, 55.0, 5.0]
+    max_mm: [250.0, 105.0, 28.0]
+  forbid_zones:
+    - name: direct_drop_trap
+      min_mm: [-24.0, -28.0, 0.0]
+      max_mm: [24.0, 28.0, 52.0]
+  build_zone_mm:
+    min_mm: [-190.0, -130.0, 0.0]
+    max_mm: [260.0, 130.0, 170.0]
+benchmark_parts:
+  - part_id: base_plate
+    label: base_plate
+    metadata:
+      fixed: true
+      material_id: aluminum_6061
+  - part_id: primary_ramp
+    label: primary_ramp
+    metadata:
+      fixed: true
+      material_id: aluminum_6061
+  - part_id: secondary_ramp
+    label: secondary_ramp
+    metadata:
+      fixed: true
+      material_id: aluminum_6061
+  - part_id: splitter_wall
+    label: splitter_wall
+    metadata:
+      fixed: true
+      material_id: aluminum_6061
+  - part_id: goal_wall
+    label: goal_wall
+    metadata:
+      fixed: true
+      material_id: aluminum_6061
+  - part_id: catch_bin
+    label: catch_bin
+    metadata:
+      fixed: true
+      material_id: hdpe
+physics:
+  backend: GENESIS
+  compute_target: auto
+simulation_bounds_mm:
+  min_mm: [-230.0, -170.0, -10.0]
+  max_mm: [300.0, 170.0, 210.0]
+payload:
+  label: projectile_ball
+  shape: sphere
+  material_id: abs
+  static_randomization:
+    radius_mm: [18.0, 22.0]
+  start_position_mm: [0.0, 0.0, 126.0]
+  runtime_jitter_mm: [8.0, 6.0, 4.0]
+constraints:
+  estimated_solution_cost_usd: 41.0
+  estimated_solution_weight_g: 860.0
+  max_unit_cost: 61.5
+  max_weight_g: 1290.0
+randomization:
+  static_variation_id: benchmark_coder_dual_ramp_v1
+  runtime_jitter_enabled: true

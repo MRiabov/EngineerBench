@@ -1,0 +1,18 @@
+{
+  "status": "ready_for_review",
+  "reviewer_stage": "benchmark_plan_reviewer",
+  "session_id": "bc-004-chicane-v2",
+  "planner_node_type": "benchmark_planner",
+  "episode_id": "f0de95b8-965e-4dbc-be78-c9850da2084e",
+  "worker_session_id": "bc-004-chicane-v2",
+  "benchmark_revision": "b32e93efd6ab1b575d5edc5315c150cf3710d3fb",
+  "environment_version": "1.0",
+  "artifact_hashes": {
+    "benchmark_plan.md": "a5ef456dd67879d1b799d73b68e017064c47925eab4d028fc8c172a55f8f15ef",
+    "todo.md": "48bedf1e34b37e41cd188d38c5f11791cd94a7ac21b0ac199537feb7c9396c3a",
+    "benchmark_definition.yaml": "6dbb72bb4727436e896175e9572d544dfef79634e1bccef2ad81aa29ea6f9149",
+    "benchmark_assembly_definition.yaml": "866b5b74fc7dcbc08c710c43ad4ce74771118bcd54d2d1962a583c267936f273",
+    "benchmark_plan_evidence_script.py": "587df1416b3f2bc3d67bb424d6e0f3f42bcfc3d10a7bad3c7f41fcc41a7103d3",
+    "manufacturing_config.yaml": "1850a98a7e7c34145b994cbe380eedf0ef4f6e71246ee8f10b2c576ef4409d18"
+  }
+}

@@ -1,0 +1,45 @@
+objectives:
+  goal_zone_mm:
+    min_mm: [0.43, 0.02, 0.0]
+    max_mm: [0.56, 0.10, 0.08]
+  forbid_zones:
+  - name: ceiling_exit
+    min_mm: [-0.6, -0.14, 0.20]
+    max_mm: [0.6, 0.12, 0.4]
+  build_zone_mm:
+    min_mm: [-0.48, -0.14, 0.0]
+    max_mm: [0.50, 0.14, 0.20]
+benchmark_parts:
+- part_id: environment_fixture
+  label: environment_fixture
+  metadata:
+    fixed: true
+    material_id: aluminum_6061
+
+physics:
+  backend: GENESIS
+  compute_target: auto
+simulation_bounds_mm:
+  min_mm: [-0.6, -0.14, 0.0]
+  max_mm: [0.6, 0.14, 0.4]
+payload:
+  label: tunnel_ball
+  shape: sphere
+  material_id: abs
+  static_randomization:
+    radius_mm: [0.03, 0.03]
+  start_position_mm: [-0.44, 0.0, 0.09]
+  runtime_jitter_mm: [0.01, 0.004, 0.004]
+constraints:
+  estimated_solution_cost_usd: 68.0
+  estimated_solution_weight_g: 2320.0
+  max_unit_cost: 102.0
+  max_weight_g: 3480.0
+randomization:
+  static_variation_id: tunnel-chicane-v1
+  runtime_jitter_enabled: true
+assembly_totals:
+  estimated_unit_cost_usd: 42.0
+  estimated_weight_g: 1800.0
+  budget_leeway_pct: 53.0
+  weight_leeway_pct: 43.0

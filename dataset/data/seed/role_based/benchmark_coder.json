@@ -12,5 +12,19 @@
     "complexity_level": 1,
     "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_coder/bc-003-sidedeflect",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_coder` and the seeded workspace to match that role. Writes benchmark implementation artifacts for a gravity-driven ball-deflection benchmark with `base_plate`, `deflector_ramp`, `side_goal_wall`, and `catch_bin` geometry that preserves the seeded benchmark context and handles the payload contract correctly."
+  },
+  {
+    "id": "bc-004-chicane-v2",
+    "task": "Use the seeded benchmark planner artifacts in the workspace to implement the chicane tunnel benchmark in `benchmark_script.py`. The benchmark guides a rolling ABS sphere through a two-bend tunnel with a side-shifted exit and a right-side goal box. Keep `benchmark_plan.md` and `benchmark_definition.yaml` consistent, preserve `benchmark_plan_evidence_script.py` as read-only planner context, and keep `benchmark_script.py` import-safe with no `__main__` block or in-module review submission call.",
+    "complexity_level": 2,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_coder/bc-004-chicane-v2",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_coder` and the seeded workspace to match that role. Produces benchmark implementation artifacts for a chicane-style tunnel with a single `environment_fixture` that preserves the seeded benchmark context and handles the payload contract, offset exit, and goal-zone alignment correctly."
+  },
+  {
+    "id": "bc-005-dualramp",
+    "task": "Use the seeded benchmark planner artifacts in the workspace to implement the dual-ramp benchmark in `benchmark_script.py`. The benchmark drops an ABS sphere onto a primary ramp, transfers it to a secondary ramp, and routes it into a side goal bin while avoiding a direct-drop trap below the spawn. Keep `benchmark_plan.md` and `benchmark_definition.yaml` consistent, preserve `benchmark_plan_evidence_script.py` as read-only planner context, and keep `benchmark_script.py` import-safe with no `__main__` block or in-module review submission call.",
+    "complexity_level": 2,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/benchmark_coder/bc-005-dualramp",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `benchmark_coder` and the seeded workspace to match that role. Produces benchmark implementation artifacts for a multi-part gravity redirection benchmark with `base_plate`, `primary_ramp`, `secondary_ramp`, `splitter_wall`, `goal_wall`, and `catch_bin` geometry that preserves the seeded benchmark context and handles the payload contract correctly."
   }
 ]
