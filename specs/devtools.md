@@ -150,16 +150,28 @@ The eval tooling mirrors the integration tooling, but it owns a separate lock, a
 - When `--workspace-root` is omitted, it creates its workspace tree and resume checkpoint under `/tmp/problemologist-evals/e2e_seed/` so repeated runs stay grouped instead of scattering `mkdtemp()` outputs across `/tmp`.
 - Resume checkpoints remain local to that workspace root, and explicit `--workspace-root` / `--resume-from-dir` arguments still take precedence when provided.
 
+### `dataset/evals/eval_inference_pipeline.py`
+
+- `dataset/evals/eval_inference_pipeline.py` is the canonical application inference entrypoint.
+- It loads `inference_config.yaml`, records explicit job progression state under `logs/evals/inference_pipeline/`, and dispatches the strict stage registry instead of hardcoding the `engineer_planner` / `seed_worker` compatibility path.
+- The first executable benchmark release wires `benchmark_planner`, `benchmark_plan_reviewer`, `benchmark_coder`, and `benchmark_reviewer`; engineer stages may remain declarative until their executor adapters are wired.
+- The pipeline can run in persistence mode or run-only mode. When persistence is enabled, successful benchmark reviewer output is copied into `engineer_planner` seed storage after the normal validation/review gates pass. Benchmark coder output is the same bundle without the review document when needed.
+- The stage graph and fan-out policy come from `inference_config.yaml`, so the application contract owns downstream multiplicity, resume policy, and executor wiring rather than hardcoding them into the worker prompt.
+- It must not call into `dataset/evals/eval_seed_update_autopilot_per_seed.py` or any other seed-maintenance devtool at runtime; shared workspace, validation, review, and copy-back logic belongs in extracted library helpers.
+- The pipeline keeps a separate job-state file for resume/replay and mirrors the compatibility seed task-state file only after successful copy-back.
+- It is the formal application-facing wrapper; the current engineer_planner seed corpus is a persistence sink under that contract, not the whole contract.
+
 ### `dataset/evals/eval_seed_update_autopilot.py`
 
-- `dataset/evals/eval_seed_update_autopilot.py` is the reusable seed-update autopilot for eval rows.
+- `dataset/evals/eval_seed_update_autopilot.py` remains the reusable seed-update compatibility entrypoint for eval rows and should be read as the maintenance compatibility shim, not the canonical application inference entrypoint.
 - It runs engineer_planner seed jobs one row at a time with process-level concurrency: each worker owns one seed worktree, launches the authoring Codex CLI, refreshes the seed artifacts, runs `scripts/validate_eval_seed.py`, and then runs a read-only review prompt before the relevant workspace files are copied back.
+- It is a separate maintenance pipeline from the application inference entrypoint; the two may share extracted helpers, but neither one should invoke the other as a runtime dependency.
 - For new rows, the worker bootstraps the worktree through `dataset/evals/materialize_seed_authoring_workspace.py` before authoring starts, so the blank workspace and `.venv` are already in place when the model receives the prompt.
 - The autopilot creates new rows and repairs broken existing rows: if a canonical `task_id` already exists in `dataset/data/seed/role_based/engineer_planner.json`, it is skipped when the persisted task-state record shows the current bundle fingerprint was already validated and reviewed cleanly, and it is requeued when the current `scripts/validate_eval_seed.py` check fails or the persisted task state is missing/stale.
 - The persisted task-state file lives at `logs/evals/seed_update_autopilot/task_state.json`; successful copy-back runs refresh it with the task id, bundle fingerprint, and the last validation/review outcome, so later runs do not need to re-review unchanged clean rows.
 - Its authoring and review prompts inline the row's task and expected criteria when available so the model can self-check exact role and label grounding before editing the workspace.
 - It keeps its per-seed logs, prompts, and per-seed run summaries under `logs/evals/seed_update_autopilot/`, and the worker count is configurable so 2-4 Codex CLIs can be active at once on different seeds.
-- The canonical entrypoint lives in `dataset/evals/eval_seed_update_autopilot.py`; the old family-batch idea is no longer the maintained contract.
+- The compatibility wrapper in `dataset/evals/eval_seed_update_autopilot.py` continues to point at the per-seed implementation for the old maintenance flow.
 
 ### Eval coordination helpers
 

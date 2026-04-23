@@ -1,0 +1,76 @@
+pipeline_name: application_inference
+version: 1
+mode: application
+entry_stage_name: benchmark_planner
+stages:
+  - name: benchmark_planner
+    agent_name: benchmark_planner
+    outputs_per_success: 3
+    persist_back_to_seed: false
+    downstream_stage_names:
+      - benchmark_plan_reviewer
+    executor: seed_worker
+    description: Initial benchmark planning stage.
+  - name: benchmark_plan_reviewer
+    agent_name: benchmark_plan_reviewer
+    outputs_per_success: 1
+    persist_back_to_seed: false
+    downstream_stage_names:
+      - benchmark_coder
+    executor: seed_worker
+    description: Benchmark plan review stage.
+  - name: benchmark_coder
+    agent_name: benchmark_coder
+    outputs_per_success: 2
+    persist_back_to_seed: false
+    downstream_stage_names:
+      - benchmark_reviewer
+    executor: seed_worker
+    description: Benchmark implementation stage.
+  - name: benchmark_reviewer
+    agent_name: benchmark_reviewer
+    outputs_per_success: 1
+    persist_back_to_seed: true
+    downstream_stage_names:
+      - engineer_planner
+    executor: seed_worker
+    description: Benchmark execution review stage.
+  - name: engineer_planner
+    agent_name: engineer_planner
+    outputs_per_success: 1
+    persist_back_to_seed: true
+    downstream_stage_names:
+      - engineer_coder
+    executor: seed_worker
+    description: Current executable compatibility stage.
+    worker_hints:
+      seed_workers: 4
+      author_retries: 1
+      queue: false
+      skip_env_up: false
+      validation_scope: current-and-previous-nodes
+      update_manifests: true
+  - name: engineer_coder
+    agent_name: engineer_coder
+    outputs_per_success: 1
+    persist_back_to_seed: true
+    downstream_stage_names: []
+    executor: planned
+    description: Engineer implementation stage.
+worker_hints:
+  seed_workers: 4
+  author_retries: 1
+retry_policy:
+  max_attempts_per_job: 2
+  retry_failed_validation: true
+  retry_failed_review: true
+resume_policy:
+  checkpoint_on:
+    - validated
+    - reviewed
+    - persisted
+    - failed
+deduplication:
+  skip_existing_clean_rows: true
+  skip_existing_repaired_rows: false
+  skip_existing_outputs: false

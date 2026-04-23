@@ -18,7 +18,11 @@ Benchmark-side routing rules:
 - `Benchmark Coder` can refuse and route back to `Benchmark Planner` when the approved plan is infeasible to implement. Benchmark Coder refusal is valid only for plan infeasibility, not for generic coding failure.
 - `Benchmark Reviewer` routes back to `Benchmark Coder` when the implemented environment CAD model does not adhere to the approved plan inventory, has invalid geometry such as intersections, violates the declared benchmark motion contract, or is unstable under benchmark simulation.
 
-Benchmark Reviewer "accepts" and passes the environment to the Engineering Planner model. (indirect contact - no actual "communication")
+Benchmark Reviewer acceptance is the handoff that opens the Engineering Planner path. (indirect contact - no actual "communication")
+
+These benchmark routing rules apply to the runnable benchmark stages in the application inference pipeline:
+`benchmark_planner`, `benchmark_plan_reviewer`, `benchmark_coder`, and `benchmark_reviewer`.
+Benchmark Reviewer acceptance is the handoff into the engineering graph, not proof that the benchmark itself solved the task.
 
 Engineering Planner -> Engineering Plan Reviewer -> Engineering Coder -> Engineering Execution Reviewer
 
@@ -47,6 +51,7 @@ Validation rule:
 
 - Reviewer entry is blocked if the reviewer-specific manifest for that stage is missing, stale, or invalid for the latest revision.
 - The stage-specific manifest must carry valid revision/session metadata and `reviewer_stage`; mismatch is a fail-closed handover error.
+- These manifests are the benchmark pipeline's stage gates, not seed-maintenance markers.
 - Review-content validation and `plan_refusal.md` checks must run against the worker filesystem session (`metadata.worker_session_id` when present, otherwise `episode_id` fallback) to prevent cross-session artifact lookups.
 - Benchmark review manifests record benchmark-neutral motion evidence verification, not benchmark-side goal completion. `goal_reached` remains engineer-owned.
 
