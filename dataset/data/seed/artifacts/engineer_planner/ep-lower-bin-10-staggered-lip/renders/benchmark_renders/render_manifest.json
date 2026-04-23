@@ -4,7 +4,7 @@
   "created_at": "2026-04-23T16:00:32.743230+00:00",
   "episode_id": "95b38151-8a19-5595-b6c2-cc6e10344761",
   "worker_session_id": "seed-renders-ep-lower-bin-10-staggered-lip-26b9f93f",
-  "revision": "7adbcbf31c6443d8a9fdc3a9e8b17e0775327795",
+  "revision": "2d698814b088761847b0773cff0076b84bdacf07",
   "scene_hash": "0e1a9c97ecdb3cf5926e1b6821e6fd61b0d72fc7545b09a620b5816d58085f22",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": null,

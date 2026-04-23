@@ -4,7 +4,7 @@
   "created_at": "2026-04-23T17:31:14.918734+00:00",
   "episode_id": "4cfbe99b-521e-5b80-8d0e-c56f15e74a5c",
   "worker_session_id": "seed-renders-ep-gravity-chute-07-tall-offset-tray-251c10f7",
-  "revision": "7adbcbf31c6443d8a9fdc3a9e8b17e0775327795",
+  "revision": "2d698814b088761847b0773cff0076b84bdacf07",
   "scene_hash": "842fef3ce6ab576cd5e7ac7bd09bd6bae3b683843f0c627b2fe6a4d6d0a94ff7",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",

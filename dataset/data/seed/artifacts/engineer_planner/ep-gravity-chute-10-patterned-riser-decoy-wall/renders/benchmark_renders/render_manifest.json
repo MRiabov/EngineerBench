@@ -4,7 +4,7 @@
   "created_at": "2026-04-23T17:34:19.802508+00:00",
   "episode_id": "6d4e3d02-88d2-554f-9f3c-dafe5894eaa6",
   "worker_session_id": "seed-renders-ep-gravity-chute-10-patterned-riser-decoy-wall-7307bc4c",
-  "revision": "7adbcbf31c6443d8a9fdc3a9e8b17e0775327795",
+  "revision": "2d698814b088761847b0773cff0076b84bdacf07",
   "scene_hash": "c41a55ae8f6f26b27464162c880a63c25c1b1fbb9fef9dea057e9cbff52abef3",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": null,

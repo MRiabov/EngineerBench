@@ -4,7 +4,7 @@
   "created_at": "2026-04-23T17:26:04.094907+00:00",
   "episode_id": "37b7b31b-be82-5935-a7f8-cec49516304f",
   "worker_session_id": "seed-renders-ep-gravity-chute-05-wide-inlet-long-runout-467beebd",
-  "revision": "7adbcbf31c6443d8a9fdc3a9e8b17e0775327795",
+  "revision": "2d698814b088761847b0773cff0076b84bdacf07",
   "scene_hash": "cde140b241c7df7ecdf8a1028163d776fd177bd09531bf12675706f327a14ee2",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",

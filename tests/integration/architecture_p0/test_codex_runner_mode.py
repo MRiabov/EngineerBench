@@ -3849,9 +3849,9 @@ def test_validate_eval_seed_removes_preview_bundles_from_all_seed_artifacts():
             "scripts/validate_eval_seed.py",
             "--skip-env-up",
             "--agent",
-            "benchmark_planner",
+            "engineer_coder",
             "--task-id",
-            "bp-001",
+            "ec-002",
             "--fail-fast",
             "--concurrency",
             "1",
@@ -3936,32 +3936,84 @@ def test_validate_eval_seed_can_filter_rows_by_complexity_level():
 
 @pytest.mark.integration_p0
 @pytest.mark.int_id("INT-270")
-def test_validate_eval_seed_errors_only_suppresses_pass_output():
+def test_validate_eval_seed_errors_only_is_default_and_no_errors_only_restores_pass_output(
+    tmp_path: Path,
+):
+    temp_dataset_root = ROOT / "test_output" / f"seed-datasets-{tmp_path.name}"
+    temp_dataset_root.mkdir(parents=True, exist_ok=True)
+    (temp_dataset_root / "engineer_coder.json").write_text(
+        json.dumps(
+            [
+                {
+                    "id": "ec-quiet",
+                    "task": "Prompt-only validation smoke test",
+                    "complexity_level": 0,
+                }
+            ],
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
     completed = subprocess.run(
         [
             sys.executable,
             "scripts/validate_eval_seed.py",
             "--skip-env-up",
             "--agent",
-            "benchmark_planner",
+            "engineer_coder",
             "--task-id",
-            "bp-001",
+            "ec-quiet",
             "--fail-fast",
             "--concurrency",
             "1",
-            "--errors-only",
         ],
         cwd=ROOT,
         capture_output=True,
         text=True,
         check=False,
         timeout=300,
-        env=_validate_eval_seed_env(),
+        env=_validate_eval_seed_env(
+            PROBLEMOLOGIST_SEED_DATASET_ROOTS=str(temp_dataset_root)
+        ),
     )
 
     assert completed.returncode == 0, completed.stderr
-    assert "PASS benchmark_planner bp-001:" not in completed.stdout
+    assert "PASS engineer_coder ec-quiet:" not in completed.stdout
     assert "Validated 1 row(s): all passed." not in completed.stdout
+
+    verbose_completed = subprocess.run(
+        [
+            sys.executable,
+            "scripts/validate_eval_seed.py",
+            "--skip-env-up",
+            "--agent",
+            "engineer_coder",
+            "--task-id",
+            "ec-quiet",
+            "--fail-fast",
+            "--concurrency",
+            "1",
+            "--no-errors-only",
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=300,
+        env=_validate_eval_seed_env(
+            PROBLEMOLOGIST_SEED_DATASET_ROOTS=str(temp_dataset_root)
+        ),
+    )
+
+    assert verbose_completed.returncode == 0, verbose_completed.stderr
+    assert "PASS engineer_coder ec-quiet:" in verbose_completed.stdout, (
+        verbose_completed.stdout
+    )
+    assert "Validated 1 row(s): all passed." in verbose_completed.stdout, (
+        verbose_completed.stdout
+    )
 
 
 @pytest.mark.integration_p0

@@ -4,7 +4,7 @@
   "created_at": "2026-04-23T17:30:06.854599+00:00",
   "episode_id": "aff08acf-2107-51c0-a69b-c6ef511a3096",
   "worker_session_id": "seed-renders-ep-gravity-chute-06-negative-y-bend-ba7f9f93",
-  "revision": "7adbcbf31c6443d8a9fdc3a9e8b17e0775327795",
+  "revision": "2d698814b088761847b0773cff0076b84bdacf07",
   "scene_hash": "c24abb72ad19c291a65821e6671a003b56025a71356830df0c190ec2ca4dfeec",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",

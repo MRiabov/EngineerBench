@@ -4,7 +4,7 @@
   "created_at": "2026-04-23T17:26:42.624626+00:00",
   "episode_id": "9d07c8eb-240b-55bc-8861-51995fd4a21f",
   "worker_session_id": "seed-renders-ep-gravity-chute-03-layered-offset-decoy-99ff0931",
-  "revision": "7adbcbf31c6443d8a9fdc3a9e8b17e0775327795",
+  "revision": "2d698814b088761847b0773cff0076b84bdacf07",
   "scene_hash": "9d08df6cf441fcc3ce3d20cdd256bf0b49f752af1c0a57a4e790b2b330fc1a8d",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": null,

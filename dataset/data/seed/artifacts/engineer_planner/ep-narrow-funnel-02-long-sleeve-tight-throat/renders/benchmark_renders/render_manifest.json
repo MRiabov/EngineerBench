@@ -1,9 +1,9 @@
 {
   "version": "1.0",
-  "bundle_id": "362f9a71-e655-575b-b3be-3b278cbc8125",
-  "created_at": "2026-04-23T17:46:31.231355+00:00",
-  "episode_id": "4750c918-5e28-582f-8d10-19a35e7e2184",
-  "worker_session_id": "seed-renders-ep-narrow-funnel-02-long-sleeve-tight-throat-1e47f5e8",
+  "bundle_id": "6981b546-8dd6-5846-856b-1db61df84133",
+  "created_at": "2026-04-23T18:17:04.534414+00:00",
+  "episode_id": "c1f919a8-b21c-51ff-9f33-ba3a58e82497",
+  "worker_session_id": "seed-renders-ep-narrow-funnel-02-long-sleeve-tight-throat-1eb37d71",
   "revision": null,
   "scene_hash": "72565ee7c2f04e3333742088e8beeb3626e3513ae39d4e9bfb3b944659829d23",
   "bundle_path": "renders/benchmark_renders",

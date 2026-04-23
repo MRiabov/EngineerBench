@@ -1,0 +1,485 @@
+{
+  "component_label": "benchmark_fixtures",
+  "entities": [
+    {
+      "label": "upper_start_platform",
+      "semantic_label": "upper_start_platform",
+      "instance_id": "upper_start_platform",
+      "instance_name": "upper_start_platform",
+      "object_type": "part",
+      "object_id": 0,
+      "pos_mm": [
+        -274.0,
+        2.0,
+        184.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/upper_start_platform.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "aluminum_6061",
+      "body_name": "upper_start_platform",
+      "geom_name": "upper_start_platform",
+      "zone_type": null,
+      "color_rgba": [
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "compact_mid_step",
+      "semantic_label": "compact_mid_step",
+      "instance_id": "compact_mid_step",
+      "instance_name": "compact_mid_step",
+      "object_type": "part",
+      "object_id": 1,
+      "pos_mm": [
+        -106.0,
+        -6.0,
+        136.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/compact_mid_step.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hdpe",
+      "body_name": "compact_mid_step",
+      "geom_name": "compact_mid_step",
+      "zone_type": null,
+      "color_rgba": [
+        0.9450980392156862,
+        0.9607843137254902,
+        0.9764705882352941,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        110,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "compact_lower_step",
+      "semantic_label": "compact_lower_step",
+      "instance_id": "compact_lower_step",
+      "instance_name": "compact_lower_step",
+      "object_type": "part",
+      "object_id": 2,
+      "pos_mm": [
+        28.0,
+        8.0,
+        84.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/compact_lower_step.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hdpe",
+      "body_name": "compact_lower_step",
+      "geom_name": "compact_lower_step",
+      "zone_type": null,
+      "color_rgba": [
+        0.9450980392156862,
+        0.9607843137254902,
+        0.9764705882352941,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        161,
+        235,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "shallow_goal_basin",
+      "semantic_label": "shallow_goal_basin",
+      "instance_id": "shallow_goal_basin",
+      "instance_name": "shallow_goal_basin",
+      "object_type": "part",
+      "object_id": 3,
+      "pos_mm": [
+        144.0,
+        12.0,
+        22.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/shallow_goal_basin.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "shallow_goal_basin",
+      "geom_name": "shallow_goal_basin",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        213
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "spike_front_left",
+      "semantic_label": "spike_front_left",
+      "instance_id": "spike_front_left",
+      "instance_name": "spike_front_left",
+      "object_type": "part",
+      "object_id": 4,
+      "pos_mm": [
+        -184.0,
+        -74.0,
+        170.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/spike_front_left.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "steel_carbon",
+      "body_name": "spike_front_left",
+      "geom_name": "spike_front_left",
+      "zone_type": null,
+      "color_rgba": [
+        0.43137254901960786,
+        0.45098039215686275,
+        0.4823529411764706,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        235,
+        205
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "spike_mid",
+      "semantic_label": "spike_mid",
+      "instance_id": "spike_mid",
+      "instance_name": "spike_mid",
+      "object_type": "part",
+      "object_id": 5,
+      "pos_mm": [
+        -24.0,
+        76.0,
+        110.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/spike_mid.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "steel_carbon",
+      "body_name": "spike_mid",
+      "geom_name": "spike_mid",
+      "zone_type": null,
+      "color_rgba": [
+        0.43137254901960786,
+        0.45098039215686275,
+        0.4823529411764706,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        154,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "spike_low_right",
+      "semantic_label": "spike_low_right",
+      "instance_id": "spike_low_right",
+      "instance_name": "spike_low_right",
+      "object_type": "part",
+      "object_id": 6,
+      "pos_mm": [
+        82.0,
+        -72.0,
+        104.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/spike_low_right.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "steel_carbon",
+      "body_name": "spike_low_right",
+      "geom_name": "spike_low_right",
+      "zone_type": null,
+      "color_rgba": [
+        0.43137254901960786,
+        0.45098039215686275,
+        0.4823529411764706,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        103,
+        59,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "steel_ball",
+      "semantic_label": "steel_ball",
+      "instance_id": "steel_ball",
+      "instance_name": "steel_ball",
+      "object_type": "part",
+      "object_id": 7,
+      "pos_mm": [
+        -326.0,
+        4.0,
+        230.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [
+        "meshes/benchmark_payload__steel_ball.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "steel_carbon",
+      "body_name": "benchmark_payload__steel_ball",
+      "geom_name": "benchmark_payload__steel_ball",
+      "zone_type": null,
+      "color_rgba": [
+        0.43137254901960786,
+        0.45098039215686275,
+        0.4823529411764706,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        66,
+        235,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "zone_goal",
+      "semantic_label": "zone_goal",
+      "instance_id": "zone_goal",
+      "instance_name": "zone_goal",
+      "object_type": "zone",
+      "object_id": 8,
+      "pos_mm": [
+        144.0,
+        14.0,
+        29.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        36.0,
+        54.0,
+        21.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "goal",
+      "color_rgba": [
+        0.2,
+        0.72,
+        0.34,
+        0.22
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        117
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_0_upper_descent_keepout",
+      "semantic_label": "zone_forbid_0_upper_descent_keepout",
+      "instance_id": "zone_forbid_0_upper_descent_keepout",
+      "instance_name": "zone_forbid_0_upper_descent_keepout",
+      "object_type": "zone",
+      "object_id": 9,
+      "pos_mm": [
+        -173.0,
+        0.0,
+        166.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        59.0,
+        96.0,
+        48.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        59,
+        169,
+        235
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_1_spike_field_keepout",
+      "semantic_label": "zone_forbid_1_spike_field_keepout",
+      "instance_id": "zone_forbid_1_spike_field_keepout",
+      "instance_name": "zone_forbid_1_spike_field_keepout",
+      "object_type": "zone",
+      "object_id": 10,
+      "pos_mm": [
+        -51.0,
+        0.0,
+        92.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        151.0,
+        80.0,
+        68.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        220,
+        235,
+        59
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_build",
+      "semantic_label": "zone_build",
+      "instance_id": "zone_build",
+      "instance_name": "zone_build",
+      "object_type": "zone",
+      "object_id": 11,
+      "pos_mm": [
+        0.0,
+        0.0,
+        130.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        420.0,
+        180.0,
+        130.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "build",
+      "color_rgba": [
+        0.55,
+        0.55,
+        0.55,
+        0.14
+      ],
+      "segmentation_color_rgb": [
+        198,
+        59,
+        235
+      ],
+      "include_in_segmentation": false
+    }
+  ],
+  "bounds_min_mm": [
+    -420.0,
+    -180.0,
+    0.0
+  ],
+  "bounds_max_mm": [
+    420.0,
+    180.0,
+    260.0
+  ],
+  "center_mm": [
+    0.0,
+    0.0,
+    130.0
+  ],
+  "diagonal": 950.1578816175762
+}
