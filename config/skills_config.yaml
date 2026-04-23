@@ -2,6 +2,10 @@ benchmark-coder:
   is_for_worker_agents: true
   project_to_agents:
     - benchmark_coder
+remix-eval-seeds:
+  is_for_worker_agents: true
+  project_to_agents:
+    - benchmark_coder
 benchmark-plan-reviewer:
   is_for_worker_agents: true
   project_to_agents:
