@@ -1,0 +1,49 @@
+objectives:
+  goal_zone_mm:
+    min_mm: [140.0, 60.0, 10.0]
+    max_mm: [220.0, 120.0, 70.0]
+  forbid_zones:
+    - name: central_blocker
+      min_mm: [-30.0, -40.0, 0.0]
+      max_mm: [30.0, 40.0, 50.0]
+  build_zone_mm:
+    min_mm: [-280.0, -160.0, 0.0]
+    max_mm: [320.0, 200.0, 180.0]
+benchmark_parts:
+  - part_id: left_start_pad
+    label: left_start_pad
+    metadata:
+      fixed: true
+      material_id: hardwood
+  - part_id: central_blocker
+    label: central_blocker
+    metadata:
+      fixed: true
+      material_id: hardwood
+  - part_id: right_goal_pad
+    label: right_goal_pad
+    metadata:
+      fixed: true
+      material_id: hardwood
+
+physics:
+  backend: GENESIS
+  compute_target: auto
+simulation_bounds_mm:
+  min_mm: [-320.0, -200.0, -20.0]
+  max_mm: [360.0, 220.0, 220.0]
+payload:
+  label: transfer_cube
+  shape: cube
+  material_id: abs
+  static_randomization: {}
+  start_position_mm: [-210.0, 0.0, 50.0]
+  runtime_jitter_mm: [8.0, 8.0, 5.0]
+constraints:
+  estimated_solution_cost_usd: 16.0
+  estimated_solution_weight_g: 280.8
+  max_unit_cost: 72.0
+  max_weight_g: 1300.0
+randomization:
+  static_variation_id: engineer_planner_central_bypass_v2
+  runtime_jitter_enabled: true
