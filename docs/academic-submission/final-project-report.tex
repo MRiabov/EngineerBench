@@ -30,7 +30,7 @@ x25194372@student.ncirl.ie}
 \maketitle
 
 \begin{abstract}
-Current large language models excel at symbolic reasoning and software engineering but frequently fail when tasked with mechanical engineering problems; this is in part due to a lack of training data and an inability to validate problems. We present \textbf{Problemologist}, an agentic framework designed to bridge this gap. The system employs a dual-agent architecture: a \textbf{Benchmark Generator} that autonomously synthesizes a dataset of problem setups for the engineering system to be trained on, and an \textbf{Engineer Agent} that discovers manufacturable, cost-constrained solutions through iterative CAD drafting, simulation, and design-for-manufacturability verification. By integrating a high-fidelity simulation engine (Genesis/MuJoCo) with real-world manufacturing processes (CNC, injection molding, 3D printing) and cost and weight constraints, Problemologist-AI provides a rigorous platform for evaluating and training the next generation of vision-language models in mechanical design. We open-source our framework at \url{https://github.com/MRiabov/Problemologist-AI}.
+Current large language models excel at software engineering, textual and visual reasoning but have not yet successfully solved mechanical engineering problems; this is in part due to a lack of training data and an inability to validate problems. We present \textbf{Problemologist}, an agentic framework designed to bridge this gap. The system employs a dual-agent architecture: a \textbf{Benchmark Generator} that autonomously synthesizes a dataset of solutions for the engineering system to be trained on conditions, and an \textbf{Engineer Agent} that discovers manufacturable, cost-constrained solutions through iterative CAD drafting, simulation, and design-for-manufacturability verification. By integrating a high-fidelity simulation engine (Genesis/MuJoCo) with real-world manufacturing processes (CNC, injection molding, 3D printing) and cost and weight constraints, Problemologist-AI provides a rigorous platform for training and evaluating the next generation of vision-language models in mechanical design. We open-source our framework at \url{https://github.com/MRiabov/Problemologist-AI}.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -64,8 +64,6 @@ The closest prior work to Problemologist-AI falls into two overlapping groups: C
 
 \textit{CAD reconstruction}: CAD Automation LLMs \cite{ref31}, STEP-LLM \cite{ref32}, and \texttt{cadrille} \cite{ref39} produce FreeCAD scripts or reconstruct STEP/B-Rep geometry, but their evaluation is largely limited to syntax, geometric fidelity, or representation rather than manufacturability, cost compliance, and functional behavior in simulation.
 
-VideoCAD \cite{ref41} is notable because it targets a neighboring problem: learning long-horizon 3D CAD UI interactions from video. That makes it complementary to our work, which focuses on generating and validating physically manufacturable mechanisms rather than imitating CAD interface behavior.
-
 \textit{Physics-tuned LLMs}: There are LLM models in particular tuned for physics problems, e.g. Cosmos-Reason \cite{ref33}, which could be an easy model to fine-tune; however, recent work such as \texttt{cadrille} does not use these methods.
 
 \textit{Automated evaluation environment generation}: EnvScaler \cite{ref29} and EnvGen \cite{ref30} show that LLMs can generate scenarios or tasks in software and game-like environments, but they do not focus on hardware design or physics-based validation of a resulting mechanism. EmboCoach-Bench \cite{ref28} and similar works synthesize tasks for robots to solve, but they do not make robot geometries.
@@ -84,7 +82,7 @@ However, it is unlikely that CAD generation models, inherently 3D models, will s
 \subsection{A synthetic dataset generation system}
 Similarly to present systems evaluating coding capabilities in greenfield repositories, we need to define a set of problems to be solved by the engineering system.
 
-\subsubsection{Types of problems to solve for a model solving dynamics}
+\subsubsection{Types of problems to solve by an model solving dynamics}
 As this class of problems is readily solvable by major simulation pipelines such as MuJoCo, we first aim to solve multibody dynamics problems. The objective is to: given a predefined starting position of an object, create such a system that would:
 
 \begin{itemize}
@@ -122,7 +120,7 @@ We also note that all aforementioned methods can be readily adapted to be evalua
 Two important findings allow us to use LLMs for engineering: first, code-CAD has emerged for more robust than before CAD engines and become readily accessible via tools like \texttt{build123d} \cite{ref4}. An important finding over the last three years is that LLMs are significantly superior in using code actions as a way to interact with the environment \cite{ref23}, more so than ReAct \cite{ref16}. As such, we choose to generate geometric code and other artifacts, for example plans, using agentic coding environments, similar to the OpenHands framework \cite{ref9}.
 
 \paragraph{Separating agents for different tasks}
-To separate agent concerns and prevent agents from overflowing in a context window, and make evaluation of individual agents both by humans and other agents easier, in line with previous work on multi-agent systems such as AutoGen \cite{ref24} and CAMEL \cite{ref25}, we separate agents. While a single ``general'' agent is common in some coding environments, we decompose work into smaller unit problems to keep each stage reviewable and within context limits. The resulting workflow with reviewer loops is summarized in Appendix~\ref{fig:agent-workflow}.
+To separate agent concerns and prevent agents from overflowing in a context window, and make evaluation of individual agents both by humans and other agents easier, in line with previous work on multi-agent systems such as AutoGen \cite{ref24} and CAMEL \cite{ref25}, we separate agents. While a single ``general'' agent is common in some coding environments, we decompose work into smaller unit problems to keep each stage reviewable and within context limits.
 
 We separate agents into:
 \begin{itemize}
@@ -144,6 +142,7 @@ We separate agents into:
     \item Other/infrastructure agents:
     \begin{itemize}
         \item Skill creator agent.
+        \item COTS search agent.
     \end{itemize}
 \end{itemize}
 
@@ -157,7 +156,7 @@ The critical component for our environment and evaluation system is a simulation
 
 Recent advancements in computing allowed for cheaper and faster simulation for small scale. While we acknowledge science-grade simulators like FEniCS \cite{ref7} and Project Chrono \cite{ref8}, it becomes infeasible compiling low-level code on every rerun of a simulation by an agent. In addition, the frameworks are mostly unknown and complex to deal with for machine learning practitioners, in part because they use C++ as their main codebases. We choose two simulators that fit the purpose of validation fast and efficiently: MuJoCo, a simulator commonly used in robotics simulation, and Genesis simulator. MuJoCo features basic multiphysics simulation, allowing for strong rigid-body problem validation and a familiar interface, while Genesis is a more modern option featuring, among others, deformable material simulation. MuJoCo is in particular attractive due to near-zero compilation times, allowing for cheap evaluation, while Genesis stands out for being feature-rich.
 
-During simulation, we assert that an object has moved into a position as said by the environment, and avoided the forbidden zones as described before. If motors are present, we assert that the motors have not been overloaded. If fluid and electronics are present, and if fluid happens to touch a sensitive piece of electronics, the simulation finishes. Many other features are omitted. In short, we define a feature-rich simulation that ensures that the simulation will work in the real world. The benchmark-versus-solution render comparison used to inspect these states is shown in Appendix~\ref{fig:appendix-render-collage}.
+During simulation, we assert that an object has moved into a position as said by the environment, and avoided the forbidden zones as described before. If motors are present, we assert that the motors have not been overloaded. If fluid and electronics are present, and if fluid happens to touch a sensitive piece of electronics, the simulation finishes. Many other features are omitted. In short, we define a feature-rich simulation that ensures that the simulation will work in the real world.
 
 \paragraph{Computer assisted design}
 We define the \texttt{build123d} framework as a framework for enabling 3D CAD construction. While other CodeCAD solutions exist, for example OpenSCAD \cite{ref5} or CadQuery \cite{ref6}, \texttt{build123d} importantly allows interoperability with real-world manufacturing solutions, such as STEP file export; while being modern in syntax, having a robust geometry engine under it, and having significant adoption. Critically, the framework is open-source unlike other closed-source solutions, such as SolidWorks.
@@ -183,7 +182,7 @@ A recent introduction of agent skills allows for tuning skills instead of prompt
 
 \begin{itemize}
     \item How to properly write \texttt{build123d} 3D models.
-    \item How to search for off-the-shelf components such as actuators and structural beams.
+    \item How to search for off-the-shelf components such as actuators and fasteners, structural beams.
     \item Evaluating designs of other agents for robustness.
     \item Planning for and creating robust solutions.
     \item Electronics knowledge, especially relevant to the current evaluation system.
@@ -194,14 +193,15 @@ The main advantage is that skills allow for offloading knowledge from the main p
 
 We update skills during rollouts, self-reflectively. We use an agent going through a \texttt{journal.md} file, a compressed history of all reasoning actions of agents with agents.
 
-\subsection{Experiments and optimization beyond optimizing prompts}
+\subsection{Experiments and optimization beyond optimizing propmts}
 
-Over the last week, we found that prompt tuning alone did not make the agents reliable enough.
+We found that prompt tuning alone did not make the agents reliable enough.
 
 The main failures came from weak handoffs: planners produced plausible but underspecified plans, and coders then improvised geometry instead of treating the plan as binding. We therefore tightened the agent-facing contracts around planning, handoff validation, and submission:
 \begin{itemize}
     \item \textbf{Planning precision and inventory consistency.} We made planner handoffs more exact about the parts, components, and quantities involved, so the next stage could verify the plan against the same inventory. We also asked for explicit assumptions and supporting calculations so numerical claims could be reviewed before implementation started.
     \item \textbf{Endpoint constraints for motion plans.} We tightened the motion-planning contract so the start state had to be safe and the intended end state had to be stated explicitly. That removed the ambiguity where a path looked plausible without making its endpoints reviewable.
+    \item \textbf{Payload path timing and collision checks.} We required engineer planners to draw the expected payload path through the simulation and to align that trajectory to subsecond timing. If the payload deviates, moves too slowly, or moves too fast relative to the approved path, the episode terminates early. This also made payload collision detection explicit instead of implicit.
     \item \textbf{Rotation safety and clearance checks.} We made the planned motion explicit about orientation and required clearance checks across the allowed range of motion. This closed the gap where a path could look valid in one pose but fail in another permitted pose.
     \item \textbf{Runtime fail-fast monitoring.} We added a runtime monitor that stops simulation as soon as the realized motion drifts outside the approved corridor or can no longer satisfy the required contact sequence or terminal state. Static validation alone was not enough once execution could diverge from the handoff.
     \item \textbf{Planner-facing technical drawings.} We introduced a planner-authored drafting layer so the geometry contract is visible before implementation. The drawing artifacts complement the narrative plan and give reviewers a concrete target to approve or reject.
@@ -213,31 +213,35 @@ The main failures came from weak handoffs: planners produced plausible but under
 We engineered our solution with extensibility and training scalability in mind.
 
 \paragraph{Scalability}
-First and foremost, we employ a distributed architecture, where the simulators such as MuJoCo and Genesis run on the ``heavy'' worker, with the ``controller'' serving as the ``brain'' application and ``worker-light'' serving as a support system. This is important to mention because a naive implementation of the system would block LLMs from running if a heavy worker were in place. We may expect our solution to handle 100--1000 requests per single controller and worker-light node, with more nodes devoted to computing the simulation and rendering.
+First and foremost, we employ a distributed architecture, where the simulators such as MuJoCo and Genesis run on the ``heavy'' worker, with the ``controller'' serving as the ``brain'' application, ``worker-light'' serving as a support system for storage and sandboxed execution of (most) scripts and a worker-renderer that decouples rendering from both worker-light and worker-heavy. This is important to mention because a naive implementation of the system would block LLMs from running if a heavy worker started a complex operation that may take minutes to process. We may expect our solution to handle 100--1000 requests per single controller and worker-light node, with more nodes devoted to computing the simulation and rendering.
+The split into worker-renderer has also proven important as we observed a) rendering pipelines being unstable across environments, and b) the desire of more advanced visualization capabilities that may require advanced simulators, such as VTK or blender; splitting the rendering capability into a separate worker allows for easy logic decoupling
 
 \paragraph{Adaptability and extensibility}
-The system is made with extensibility in mind. Researchers and practitioners can readily swap our physics simulation backends, agent tools, and add more multiphysics simulation.
+The system is made with extensibility in mind. Researchers and practitioners can readily swap our physics simulation backends, agent tools, agent models, rendering capabilties and add more multiphysics simulation which would ultimately allow for more diverse data.
 
 \section{Evaluating the system}
 
-We evaluate highly capable models such as GPT-5.4-mini and Qwen 3.6-Plus, both setting records in 3D software generation.
+We evaluate highly capable models such as GPT-5.4-mini and Qwen 3.6-Plus, both setting records in 3D software (e.g. rendering or video-games software) generation.
 
-We find that models are not yet capable of solving the tasks; despite a number of experiments attempting to improve the agent harness through more rigorous planning (planning a trajectory of a payload better, requiring a significantly more detailed physics reasoning calculating items like exact gravity models, friction, and others), agent harness such as skill improvement and agent harness, agents are in most cases stuck on problem such as collision detection (non-intersection of agent-generated 3d models).
-We consider an agent as "failed" if it wasn't able to solve a given problem after 30 minutes (roughly equal to 100k tokens on Qwen 3.6 and 200k tokens for gpt-5.4-mini). In our experience, models
+We find that models are already capable of solving tasks (with a number of trial and error) involving only static 3d generation. For example, models were able to produce correct and solvable benchmarks [Appendix 2], as well as plausible 3d-constrained engineering plans, which proves our concept. However, when attempting to solve engineering tasks, they were able to review simulation results in numerical format, however when it came to understanding the results of a simulation from images, they were barely capable of reasoning from the progressive video of the simulation.
 
-We, however, have managed to generate a small set of plausible problems to solve. Agents were capable (though not trivially) produce simple designs when instructed on how to generate appropriate benchmarks
-
-The system for evaluating models on low-complexity tasks has already yielded minor improvements in performance; however, the tasks are largely unsolved.
-
-When evaluating the system we will first create a ``golden dataset'' of relevant mechanical engineering problems, featuring tasks demanding 5--10 parts in simulation. To the best of our knowledge, the previous work has not yet scaled this complexity.
-
-We will first iterate on prompts using GEPA prompt optimization and skill evaluation, presenting evaluations only later, when the prompts are already near-optimal. We will also present ablation studies on removing Agent Skills. We will also present performance charts on solving rigid-body-only benchmarks, then with actuators, fluids, electronics, and environments.
+However, with trial and error, Benchmark Coder was able to be expanded to 100 entries - we find that gpt-5.4 running 100 tokens per second can produce approximately a valid candidate every 12 minutes, with benchmark_planner being able to generate ten plans for a benchmark plans within less than a minute.
 
 \section{Conclusions and Future Work}
-We present Problemologist, a scalable, extensible dataset generation engine and a post-training evaluation system for vision-language models to be evaluated on solving mechanical and electronics engineering problems, taking a significant improvement in providing a quality training signal during training and evaluation. Our goal was a system scalable and trustworthy enough that frontier research centres would start training models on mechanical engineering tasks. The system is not without shortcomings. For example, due to limitations of readily available simulators supporting heat, we cannot yet simulate heat transfer. Additionally, the electronics are rather basic, however we believe that this can be readily improved on once the system proves itself on rigid-body systems.
+We present Problemologist, a scalable, extensible dataset generation engine and a post-training evaluation system for vision-language models to be evaluated on solving mechanical and electronics engineering problems, taking a significant improvement in providing a quality training signal during training and evaluation. Our goal was a system scalable and trustworthy enough that frontier research centres would start training models on mechanical engineering tasks.
 
-The future work should focus on attempting to fine-tune a range of models on solving the system, and generate more useful data in the process.
 
+
+\paragraph{Future Work}
+The system opens vast training capabilities for the ML community, and a number of new models and approaches will need to be experimented on.
+\begin{itemize}
+    \item Reinforcement learning of the models instead of the skill and prompt tuning
+    \item Application of diffusion methods to solve the engineering problems, as well as multimodal problems
+    \item Adaptation of text-to-3d multimodal model to support precise enough generation required for engineering-level precision as well as reasoning.
+    \item Extension of the simulated logic to support more complex physical phenomena such as electromagnetic systems and signals
+\end{itemize}
+
+In essense, future work will need to both create more data and train the models on the data.
 \begin{thebibliography}{40}
 
 \bibitem{ref1}
@@ -360,9 +364,6 @@ M. Kolodiazhnyi et al., ``cadrille: Multi-modal CAD Reconstruction with Reinforc
 \bibitem{ref40}
 L. Zhang, B. Le, N. Akhtar, S.-K. Lam, and D. Ngo, ``Large language models for computer-aided design: A survey,'' \emph{ACM Comput. Surv.}, vol. 58, no. 9, 2026, doi:10.1145/3787499.
 
-\bibitem{ref41}
-K. Y. B. Man, G. Nehme, M. F. Alam, and F. Ahmed, ``VideoCAD: A Dataset and Model for Learning Long-Horizon 3D CAD UI Interactions from Video,'' NeurIPS Poster, 2025. [Online]. Available: \url{https://neurips.cc/virtual/2025/loc/san-diego/poster/121820}
-
 \end{thebibliography}
 
 \clearpage
@@ -417,42 +418,54 @@ Feedback / Formula
 \texttt{judge\_evaluation} & \texttt{robustness} & 0.01 & checklist item & Solution is robust rather than passing a single lucky run. & - \\
 \texttt{judge\_evaluation} & \texttt{cost\_weight\_compliance} & 0.005 & checklist item & Final solution stays within cost and weight targets. & - \\
 \texttt{judge\_evaluation} & \texttt{manufacturability\_compliance} & 0.01 & checklist item & Final solution remains manufacturable under the chosen process. & - \\
+\texttt{judge\_evaluation} & \texttt{dof\_deviation\_justified} & 0.005 & checklist item & Any DOF deviation from the approved plan is justified and reviewable. & - \\
 \texttt{judge\_evaluation} & \texttt{feedback\_response\_score} & 0.03 & partial score & Fraction of valid failed reviewer checklist items addressed on the next coding revision without introducing new blocker regressions. & Partial score. \\
 \texttt{judge\_evaluation} & \texttt{bad\_feedback\_resistance\_score} & 0.02 & partial score & Score for following valid reviewer feedback while resisting incorrect or non-applicable requests in mixed-quality review seeds. & Partial score. \\
 \end{longtable}
 \endgroup
 
-\clearpage
-\section{Representative Render Collage}
-This appendix figure combines six rendered images from two versions of the same environment: the benchmark render set in the top row and the solution render set in the bottom row. The source PNGs are archived under \texttt{render\_sources/} for reproducibility. The images show RGB (isometric view), depth (isometric view) and segmentation (sideways isometric view) views. All pictures show different views of the same environments. In particular, we can observe that:
-\begin{itemize}
-    \item RGB:
-    \begin{itemize}
-        \item Guard rails on the side will prevent a ball from falling outside to the forbidden bounds,
-        \item A platform below the objective that, once the ball will be spawned, will as a ramp, push a ball to the objective.
-        \item The green, transparent box as the objective
-        \item A cover on top to prevent the ball from accidentally moving out of the simulation
-    \end{itemize}
-    \item Segmentation and depth:
-    \begin{itemize}
-        \item Segmentation and depth maps show some objects translucently, allowing the render to be previewed.
-    \end{itemize}
-\end{itemize}
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.98\linewidth]{appendix_render_collage.png}
-\caption{Composite appendix render comparing benchmark and solution renders in RGB, depth, and segmentation order.}
-\label{fig:appendix-render-collage}
-\end{figure}
+\section{Agent Roles and Handoffs}
+This appendix summarizes the model-facing role graph, the stage-scoped handoff artifacts, and the auxiliary roles that support the pipeline but do not hand off to another model-facing role.
 
-\clearpage
-\section{Agent Workflow Graph}
-This appendix figure summarizes the linear agent flow used by the system. The benchmark path runs from \texttt{benchmark\_planner} to \texttt{benchmark\_reviewer}, and the engineering path continues from \texttt{engineer\_planner} to \texttt{engineer\_execution\_reviewer}. Reviewers can loop back to the previous node when a revision is required.
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.98\linewidth]{agent_workflow_two_line.png}
-\caption{Agent workflow graph with benchmark on the first line and engineering on the second, while reviewer loops still point back to the previous node.}
-\label{fig:agent-workflow}
-\end{figure}
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\renewcommand{\arraystretch}{0.94}
+\sloppy
+\begin{longtable}{@{}%
+  >{\raggedright\arraybackslash}p{0.13\columnwidth}%
+  >{\raggedright\arraybackslash}p{0.17\columnwidth}%
+  >{\raggedright\arraybackslash}p{0.20\columnwidth}%
+  >{\raggedright\arraybackslash}p{0.30\columnwidth}%
+  >{\raggedright\arraybackslash}p{0.15\columnwidth}@{}}
+\caption{Agent roles and stage-scoped handoffs in the codebase.}\label{tab:agent-handoffs}\\
+\toprule\noalign{}
+Stage / role & Purpose & Reads & Writes / handoff artifacts & Routing \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Stage / role & Purpose & Reads & Writes / handoff artifacts & Routing \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\multicolumn{5}{@{}l}{\textbf{Benchmark generator}}\\
+Benchmark Planner & Designs the benchmark task, geometry, randomization, and benchmark-owned fixture contract. & User prompt, benchmark context, and materials inventory. & \texttt{benchmark\_plan.md}, \texttt{todo.md}, \texttt{benchmark\_definition.yaml}, \texttt{benchmark\_assembly\_definition.yaml}, \texttt{benchmark\_plan\_evidence\_script.py}; submits via \texttt{submit\_benchmark\_plan()} to \texttt{.manifests/benchmark\_plan\_review\_manifest.json}. & To Benchmark Plan Reviewer. \\
+Benchmark Plan Reviewer & Verifies cross-artifact consistency before implementation starts. & Planner handoff package and any required render evidence. & Stage-scoped review YAML pair via \texttt{submit\_review}. & Rejects to Benchmark Planner; accept opens Benchmark Coder. \\
+Benchmark Coder & Implements the approved benchmark. & Approved benchmark plan and read-only benchmark evidence/context. & \texttt{benchmark\_script.py}, helper modules, progress TODO updates, and \texttt{plan\_refusal.md} only if the plan is infeasible; submits via \texttt{submit\_benchmark\_for\_review()} to \texttt{.manifests/benchmark\_review\_manifest.json}. & To Benchmark Reviewer. \\
+Benchmark Reviewer & Validates the benchmark implementation after validation and simulation. & Latest validated benchmark implementation, benchmark artifacts, and dynamic evidence for moving fixtures. & Stage-scoped review YAML pair via \texttt{submit\_review}. & Rejects to Benchmark Coder; accept opens Engineering Planner. \\
+\multicolumn{5}{@{}l}{\textbf{Engineering workflow}}\\
+Engineering Planner & Turns benchmark context into an implementation-ready engineering plan, including motion and cost/weight budgets. & Benchmark artifacts, objective geometry, read-only benchmark renders, and current constraints. & \texttt{engineering\_plan.md}, \texttt{todo.md}, \texttt{benchmark\_definition.yaml}, \texttt{assembly\_definition.yaml}, \texttt{solution\_plan\_evidence\_script.py}, \texttt{payload\_trajectory\_definition.yaml}; submits via \texttt{submit\_engineering\_plan()} to \texttt{.manifests/engineering\_plan\_review\_manifest.json}. & To Engineering Plan Reviewer. \\
+Engineering Plan Reviewer & Validates the engineering handoff before coding, including cost, price, and motion feasibility. & Engineering planner package, render evidence when required, and price validation results. & Stage-scoped review YAML pair via \texttt{submit\_review}. & Rejects to Engineering Planner; accept opens Engineering Coder. \\
+Engineering Coder & Implements the approved engineering plan in code and simulation artifacts. & Combined planner handoff, benchmark geometry, review outputs, renders, and helper files. & \texttt{solution\_script.py}, helper modules, \texttt{payload\_trajectory\_definition.yaml}, \texttt{journal.md}, and \texttt{plan\_refusal.md} only if the plan is infeasible; submits via \texttt{submit\_solution\_for\_review()} to \texttt{.manifests/engineering\_execution\_handoff\_manifest.json}. & To Engineering Execution Reviewer. \\
+Engineering Execution Reviewer & Final review after validation and simulation success; checks robustness, manufacturability, and evidence. & Latest validated implementation, simulation results, and required renders. & Stage-scoped review YAML pair via \texttt{submit\_review}. & Rejects to Engineering Coder; accept ends the main graph. \\
+\multicolumn{5}{@{}l}{\textbf{Development-only review path}}\\
+Electronics review & Development-tree electromechanical review artifacts for the non-public branch of the pipeline. & Development-tree electromechanical review artifacts. & \texttt{reviews/electronics-review-decision-round-<n>.yaml}, \texttt{reviews/electronics-review-comments-round-<n>.yaml}, and \texttt{.manifests/electronics\_review\_manifest.json}. & No model-facing follow-on; development-only gate. \\
+\multicolumn{5}{@{}l}{\textbf{Auxiliary roles}}\\
+Journalling Agent & Compresses a run into \texttt{journal.md}. & Run transcript and artifact history. & \texttt{journal.md}. & No downstream handoff. \\
+Skill Agent & Stages skill deltas into \texttt{suggested\_skills/}. & Current skill state and run artifacts. & Staged skill drafts under \texttt{suggested\_skills/}. & No downstream handoff. \\
+Git Agent & Handles repository plumbing and is not a model-facing workflow role. & Working tree and repository state. & Git operations only. & No downstream handoff. \\
+\end{longtable}
+\endgroup
 
 \end{document}
