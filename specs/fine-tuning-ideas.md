@@ -56,3 +56,36 @@ There is a number of RL interfaces already available. SWE-smith uses them
 
 Models struggle already, and cadquery has a supreme amount of training data on the internet. Fine-tuned models available already. Why bother training a model from scratch if I can train a CQ model?
 Also, CQ appears to be quite forgiving too.
+
+## Reuse already trained models
+
+Why bother with fine-tuning an existing model if I can fine-tune already strong for CAD models like InCoder and others? Yes, they are worse, but.
+
+## Boil the environment down?
+
+Planning is useful, but: not necessary
+What this entire architecture really needs is:
+
+1. We copy a set of scripts - to validate CAD and to validate agents, which are already mostly there
+2. We let it run on a daytona container.
+
+An environment is but a python package.
+
+## Other datasets:
+
+### Do features intersect?
+
+Give a set of build123d or cadquery code. Ask the model if the two intersect
+
+### Estimate the volume of a complex CAD feature
+
+Estimate a volume of a complex CAD feature without access to CAD kernel or internet (math feature, basically)
+
+#### Comparative features
+
+"You are given two CAD features. Which one from them has the lowest/largest volume"
+"You are given two CAD features, with different materials. Will it pass?
+
+### Will feature pass through?
+
+You are given
