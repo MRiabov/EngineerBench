@@ -122,6 +122,10 @@ class PayloadTrajectoryMonitorPolicy(BaseModel):
     consecutive_miss_count: int = Field(default=2, ge=1)
 
 
+class BenchmarkSolvabilityPolicy(BaseModel):
+    minimum_payload_to_goal_angle_deg: float = Field(default=25.0, ge=0.0)
+
+
 class BenchmarkPayloadObservationPolicy(BaseModel):
     window_s: float = Field(default=1.5, gt=0)
 
@@ -349,6 +353,9 @@ class AgentsConfig(BaseModel):
     )
     payload_trajectory_monitor: PayloadTrajectoryMonitorPolicy = Field(
         default_factory=PayloadTrajectoryMonitorPolicy
+    )
+    benchmark_solvability: BenchmarkSolvabilityPolicy = Field(
+        default_factory=BenchmarkSolvabilityPolicy
     )
     benchmark_payload_observation: BenchmarkPayloadObservationPolicy = Field(
         default_factory=BenchmarkPayloadObservationPolicy

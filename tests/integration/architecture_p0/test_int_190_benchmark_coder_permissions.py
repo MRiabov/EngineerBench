@@ -155,6 +155,15 @@ def test_int_190_agent_execution_timeouts_are_role_specific():
 @pytest.mark.integration
 @pytest.mark.integration_p0
 @pytest.mark.int_id("INT-190")
+def test_int_190_benchmark_solvability_threshold_is_configurable():
+    cfg = yaml.safe_load(Path("config/agents_config.yaml").read_text(encoding="utf-8"))
+
+    assert cfg["benchmark_solvability"]["minimum_payload_to_goal_angle_deg"] == 25.0
+
+
+@pytest.mark.integration
+@pytest.mark.integration_p0
+@pytest.mark.int_id("INT-190")
 @pytest.mark.parametrize(
     ("render_buckets", "expected_message"),
     [

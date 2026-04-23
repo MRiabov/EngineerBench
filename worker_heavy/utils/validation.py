@@ -517,6 +517,41 @@ def _validate_benchmark_definition_consistency(
             "goal_zone_mm does not overlap build_zone_mm",
         )
 
+    try:
+        solvability_policy = load_agents_config().benchmark_solvability
+    except Exception as exc:
+        return _benchmark_refusal_error(
+            BenchmarkRefusalReason.UNSOLVABLE_SCENARIO,
+            f"unable to load benchmark solvability policy: {exc}",
+        )
+
+    minimum_angle_deg = float(solvability_policy.minimum_payload_to_goal_angle_deg)
+    spawn_position_mm = tuple(
+        float(value) for value in objectives.payload.start_position_mm
+    )
+    goal_bottom_center_mm = (
+        (goal.min_mm[0] + goal.max_mm[0]) / 2.0,
+        (goal.min_mm[1] + goal.max_mm[1]) / 2.0,
+        goal.min_mm[2],
+    )
+    horizontal_distance_mm = math.hypot(
+        goal_bottom_center_mm[0] - spawn_position_mm[0],
+        goal_bottom_center_mm[1] - spawn_position_mm[1],
+    )
+    observed_angle_deg = math.degrees(
+        math.atan2(
+            spawn_position_mm[2] - goal_bottom_center_mm[2],
+            horizontal_distance_mm,
+        )
+    )
+    if observed_angle_deg + 1e-9 < minimum_angle_deg:
+        return _benchmark_refusal_error(
+            BenchmarkRefusalReason.UNSOLVABLE_SCENARIO,
+            "payload start position is too shallow relative to the goal bottom "
+            f"center: observed {observed_angle_deg:.2f}deg < required "
+            f"{minimum_angle_deg:.2f}deg",
+        )
+
     jitter = objectives.payload.runtime_jitter_mm
     start = objectives.payload.start_position_mm
     jitter_error = _validate_non_negative_range("payload.runtime_jitter_mm", jitter)

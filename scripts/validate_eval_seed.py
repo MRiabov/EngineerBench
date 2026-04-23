@@ -260,10 +260,11 @@ def _parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--errors-only",
-        action="store_true",
+        action=argparse.BooleanOptionalAction,
+        default=True,
         help=(
             "Suppress PASS/status output and validator success chatter. "
-            "Useful for bulk inventory sweeps such as --agent all."
+            "Enabled by default; use --no-errors-only for verbose output."
         ),
     )
     parser.add_argument(

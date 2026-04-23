@@ -1,9 +1,11 @@
+import math
 import os
 import uuid
 
 import httpx
 import pytest
 
+from shared.agents.config import load_agents_config
 from shared.current_role import current_role_manifest_json
 from shared.enums import AgentName
 from shared.models.schemas import (
@@ -121,8 +123,8 @@ Confirm the projectile starts outside the fixed geometry envelope.
         manufactured_parts=[],
         final_assembly=[],
         totals=CostTotals(
-            estimated_unit_cost_usd=10.0,
-            estimated_weight_g=100.0,
+            estimated_unit_cost_usd=0.0,
+            estimated_weight_g=0.0,
             estimate_confidence="high",
         ),
     )
@@ -513,6 +515,124 @@ async def test_int_008_objectives_semantic_validation_rejects_runtime_envelope_e
         assert "UNSOLVABLE_SCENARIO" in data.message
         assert "build_zone_mm" in data.message
         assert "axis x" in data.message
+
+
+@pytest.mark.integration_p0
+@pytest.mark.allow_backend_errors(
+    regexes=[
+        "benchmark_definition_yaml_invalid",
+        "benchmark_definition_yaml_validation_error",
+    ]
+)
+@pytest.mark.asyncio
+@pytest.mark.int_id("INT-008")
+async def test_int_008_objectives_semantic_validation_rejects_payload_goal_angle_below_threshold():
+    """
+    INT-008: benchmark_definition.yaml validation must fail closed when the
+    payload-to-goal line is too shallow for gravity-driven motion.
+    """
+    session_id = f"INT-008-OBJ-{uuid.uuid4().hex[:8]}"
+    headers = {"X-Session-ID": session_id}
+    valid_plan, valid_todo, valid_cost, minimal_script = (
+        _objective_validation_artifacts()
+    )
+    threshold_deg = (
+        load_agents_config().benchmark_solvability.minimum_payload_to_goal_angle_deg
+    )
+    shallow_objectives = _objective_validation_payload(
+        goal_zone_min_mm=[9.0, -1.0, 0.0],
+        goal_zone_max_mm=[11.0, 1.0, 1.0],
+        build_zone_min_mm=[-20.0, -20.0, 0.0],
+        build_zone_max_mm=[20.0, 20.0, 20.0],
+        start_position_mm=[0.0, 0.0, -1.0],
+        runtime_jitter_mm=[0.1, 0.1, 0.1],
+        radius_mm=[0.25, 0.25],
+    )
+
+    async with httpx.AsyncClient(timeout=300.0) as client:
+        await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
+        await _write_workspace_file(client, headers, "todo.md", valid_todo)
+        await _write_workspace_file(
+            client, headers, "assembly_definition.yaml", valid_cost
+        )
+        await _write_workspace_file(client, headers, "solution.py", minimal_script)
+        await _write_workspace_file(
+            client, headers, "benchmark_definition.yaml", shallow_objectives
+        )
+
+        resp = await client.post(
+            f"{WORKER_HEAVY_URL}/benchmark/submit",
+            json=BenchmarkToolRequest(
+                script_path="solution.py",
+                reviewer_stage=AgentName.ENGINEER_EXECUTION_REVIEWER,
+            ).model_dump(mode="json"),
+            headers=headers,
+        )
+        assert resp.status_code == 200, resp.text
+        data = BenchmarkToolResponse.model_validate(resp.json())
+        assert data.success is False
+        assert "UNSOLVABLE_SCENARIO" in data.message
+        assert "payload start position is too shallow" in data.message
+        assert f"{threshold_deg:.2f}deg" in data.message
+
+
+@pytest.mark.integration_p0
+@pytest.mark.allow_backend_errors(
+    regexes=[
+        "benchmark_definition_yaml_invalid",
+        "benchmark_definition_yaml_validation_error",
+    ]
+)
+@pytest.mark.asyncio
+@pytest.mark.int_id("INT-008")
+async def test_int_008_objectives_semantic_validation_allows_payload_goal_angle_at_threshold():
+    """
+    INT-008: benchmark_definition.yaml validation must accept geometry that is
+    exactly on the configured threshold, not just above it.
+    """
+    session_id = f"INT-008-OBJ-{uuid.uuid4().hex[:8]}"
+    headers = {"X-Session-ID": session_id}
+    valid_plan, valid_todo, valid_cost, minimal_script = (
+        _objective_validation_artifacts()
+    )
+    threshold_deg = (
+        load_agents_config().benchmark_solvability.minimum_payload_to_goal_angle_deg
+    )
+    horizontal_distance_mm = 10.0
+    start_height_mm = math.tan(math.radians(threshold_deg)) * horizontal_distance_mm
+    threshold_objectives = _objective_validation_payload(
+        goal_zone_min_mm=[9.0, -1.0, 0.0],
+        goal_zone_max_mm=[11.0, 1.0, 1.0],
+        build_zone_min_mm=[-20.0, -20.0, 0.0],
+        build_zone_max_mm=[20.0, 20.0, 20.0],
+        start_position_mm=[0.0, 0.0, start_height_mm],
+        runtime_jitter_mm=[0.1, 0.1, 0.1],
+        radius_mm=[0.25, 0.25],
+    )
+
+    async with httpx.AsyncClient(timeout=300.0) as client:
+        await _write_workspace_file(client, headers, "engineering_plan.md", valid_plan)
+        await _write_workspace_file(client, headers, "todo.md", valid_todo)
+        await _write_workspace_file(
+            client, headers, "assembly_definition.yaml", valid_cost
+        )
+        await _write_workspace_file(client, headers, "solution.py", minimal_script)
+        await _write_workspace_file(
+            client, headers, "benchmark_definition.yaml", threshold_objectives
+        )
+
+        resp = await client.post(
+            f"{WORKER_HEAVY_URL}/benchmark/submit",
+            json=BenchmarkToolRequest(
+                script_path="solution.py",
+                reviewer_stage=AgentName.ENGINEER_EXECUTION_REVIEWER,
+            ).model_dump(mode="json"),
+            headers=headers,
+        )
+        assert resp.status_code == 200, resp.text
+        data = BenchmarkToolResponse.model_validate(resp.json())
+        assert data.success is True, data.message
+        assert "UNSOLVABLE_SCENARIO" not in data.message
 
 
 @pytest.mark.integration_p0

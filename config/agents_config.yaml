@@ -102,6 +102,8 @@ payload_trajectory_monitor:
   enabled: true
   monitor_sample_stride_s: 0.3
   consecutive_miss_count: 2
+benchmark_solvability:
+  minimum_payload_to_goal_angle_deg: 25.0
 benchmark_payload_observation:
   window_s: 1.5
 defaults:
