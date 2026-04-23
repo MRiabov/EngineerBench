@@ -1,0 +1,173 @@
+{
+  "component_label": "benchmark_fixtures",
+  "entities": [
+    {
+      "label": "left_start_deck",
+      "semantic_label": "left_start_deck",
+      "instance_id": "left_start_deck",
+      "instance_name": "left_start_deck",
+      "object_type": "part",
+      "object_id": 0,
+      "pos_mm": [
+        -220.0,
+        0.0,
+        35.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/left_start_deck.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "aluminum_6061",
+      "body_name": "left_start_deck",
+      "geom_name": "left_start_deck",
+      "zone_type": null,
+      "color_rgba": [
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "right_goal_deck",
+      "semantic_label": "right_goal_deck",
+      "instance_id": "right_goal_deck",
+      "instance_name": "right_goal_deck",
+      "object_type": "part",
+      "object_id": 1,
+      "pos_mm": [
+        250.0,
+        0.0,
+        35.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/right_goal_deck.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "aluminum_6061",
+      "body_name": "right_goal_deck",
+      "geom_name": "right_goal_deck",
+      "zone_type": null,
+      "color_rgba": [
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        110,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "bridge_reference_table",
+      "semantic_label": "bridge_reference_table",
+      "instance_id": "bridge_reference_table",
+      "instance_name": "bridge_reference_table",
+      "object_type": "part",
+      "object_id": 2,
+      "pos_mm": [
+        70.0,
+        0.0,
+        55.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/bridge_reference_table.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "aluminum_6061",
+      "body_name": "bridge_reference_table",
+      "geom_name": "bridge_reference_table",
+      "zone_type": null,
+      "color_rgba": [
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        161,
+        235,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "gap_floor_guard",
+      "semantic_label": "gap_floor_guard",
+      "instance_id": "gap_floor_guard",
+      "instance_name": "gap_floor_guard",
+      "object_type": "part",
+      "object_id": 3,
+      "pos_mm": [
+        10.0,
+        0.0,
+        20.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/gap_floor_guard.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hdpe",
+      "body_name": "gap_floor_guard",
+      "geom_name": "gap_floor_guard",
+      "zone_type": null,
+      "color_rgba": [
+        0.9450980392156862,
+        0.9607843137254902,
+        0.9764705882352941,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        213
+      ],
+      "include_in_segmentation": true
+    }
+  ],
+  "bounds_min_mm": [
+    -310.0,
+    -150.0,
+    0.0
+  ],
+  "bounds_max_mm": [
+    350.0,
+    150.0,
+    70.0
+  ],
+  "center_mm": [
+    20.0,
+    0.0,
+    35.0
+  ],
+  "diagonal": 728.3543093852057
+}
