@@ -1,11 +1,12 @@
 {
   "artifact_hashes": {
-    "assembly_definition.yaml": "bef6394f8e4b541fd834720c525be19436c59157640fdf0edb797adaceb52b34",
-    "plan.md": "e71884a17f9f4b935dbdbb65fd0732178bd762703c5b06066a4fc746df832834",
-    "todo.md": "932d68bf7b03b64a3505c6b57b50f3ede1f1372f9b1bb75d07df66d6ff64e521"
+    "assembly_definition.yaml": "d69525181eb2d46ba207e2fbe667d487fd50ccb0e208592798d9a515d14f0b9d",
+    "engineering_plan.md": "aeb26e2b33b507105503f9fceec3d798fcefe667764af9030db018b9a8f6e1e2",
+    "solution_plan_evidence_script.py": "41131b9a242984fd58e29cbd2bc18a70e15cef8f60dd0fb0a8a4c3f8e18c0910",
+    "todo.md": "539d63d328a22e15ebc0c01da9624ba8b4270004848e9009e4d3710c5c211ddf"
   },
   "planner_node_type": "engineer_planner",
   "reviewer_stage": "engineer_plan_reviewer",
-  "session_id": "seed-ec-006-gap-bridge",
+  "session_id": "seed-ec-002-gap-bridge",
   "status": "ready_for_review"
 }

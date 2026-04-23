@@ -1,0 +1,472 @@
+{
+  "version": "1.0",
+  "bundle_id": "200833d3-ef60-5873-92f8-72ee01c513b2",
+  "created_at": "2026-04-23T17:04:11.558488+00:00",
+  "episode_id": "2d36fe8b-5bfd-5e74-bee1-ac4205bd7fdc",
+  "worker_session_id": "seed-renders-ep-clearance-gate-10-e398ce58",
+  "revision": "55bb64a6c5ecf7ae522dcef1013c7703de9089bb",
+  "scene_hash": "d5a5e50992ad66db87bf92f69471cef016026cd483008d78ac4430c0e72f04ea",
+  "bundle_path": "renders/benchmark_renders",
+  "environment_version": null,
+  "source_script_sha256": "843947e56a0636f88998224531e017dfe034cc4f34bb1901659fbadfbefc8325",
+  "preview_evidence_paths": [
+    "renders/benchmark_renders/benchmark_fixtures_render_e15_a0.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e15_a135.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e15_a180.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e15_a225.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e15_a270.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e15_a315.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e15_a45.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e15_a90.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e45_a0.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e45_a135.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e45_a180.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e45_a225.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e45_a270.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e45_a315.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e45_a45.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e45_a90.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e75_a0.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e75_a135.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e75_a180.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e75_a225.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e75_a270.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e75_a315.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e75_a45.png",
+    "renders/benchmark_renders/benchmark_fixtures_render_e75_a90.png"
+  ],
+  "artifacts": {
+    "renders/benchmark_renders/benchmark_fixtures_render_e15_a0.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e15_a0",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e15_a0.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e15_a0_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e15_a0_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e15_a45.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e15_a45",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e15_a45.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e15_a45_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e15_a45_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e15_a90.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e15_a90",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e15_a90.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e15_a90_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e15_a90_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e15_a135.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e15_a135",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e15_a135.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e15_a135_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e15_a135_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e15_a180.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e15_a180",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e15_a180.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e15_a180_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e15_a180_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e15_a225.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e15_a225",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e15_a225.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e15_a225_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e15_a225_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e15_a270.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e15_a270",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e15_a270.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e15_a270_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e15_a270_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e15_a315.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e15_a315",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e15_a315.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e15_a315_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e15_a315_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e45_a0.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e45_a0",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e45_a0.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e45_a0_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e45_a0_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e45_a45.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e45_a45",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e45_a45.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e45_a45_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e45_a45_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e45_a90.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e45_a90",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e45_a90.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e45_a90_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e45_a90_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e45_a135.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e45_a135",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e45_a135.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e45_a135_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e45_a135_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e45_a180.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e45_a180",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e45_a180.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e45_a180_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e45_a180_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e45_a225.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e45_a225",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e45_a225.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e45_a225_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e45_a225_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e45_a270.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e45_a270",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e45_a270.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e45_a270_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e45_a270_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e45_a315.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e45_a315",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e45_a315.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e45_a315_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e45_a315_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e75_a0.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e75_a0",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e75_a0.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e75_a0_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e75_a0_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e75_a45.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e75_a45",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e75_a45.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e75_a45_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e75_a45_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e75_a90.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e75_a90",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e75_a90.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e75_a90_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e75_a90_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e75_a135.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e75_a135",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e75_a135.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e75_a135_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e75_a135_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e75_a180.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e75_a180",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e75_a180.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e75_a180_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e75_a180_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e75_a225.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e75_a225",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e75_a225.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e75_a225_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e75_a225_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e75_a270.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e75_a270",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e75_a270.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e75_a270_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e75_a270_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    },
+    "renders/benchmark_renders/benchmark_fixtures_render_e75_a315.png": {
+      "modality": "rgb",
+      "group_key": "benchmark_fixtures_render_e75_a315",
+      "view_index": null,
+      "orbit_pitch_deg": null,
+      "orbit_yaw_deg": null,
+      "siblings": {
+        "rgb": "renders/benchmark_renders/benchmark_fixtures_render_e75_a315.png",
+        "depth": "renders/benchmark_renders/benchmark_fixtures_render_e75_a315_depth.png",
+        "segmentation": "renders/benchmark_renders/benchmark_fixtures_render_e75_a315_segmentation.png",
+        "svg": null,
+        "dxf": null
+      },
+      "depth_min_m": null,
+      "depth_max_m": null,
+      "depth_interpretation": null,
+      "segmentation_legend": []
+    }
+  }
+}

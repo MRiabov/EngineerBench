@@ -92,7 +92,7 @@
       "euler_deg": [
         -0.0,
         0.0,
-        -0.0
+        10.0
       ],
       "mesh_paths": [
         "meshes/bridge_reference_table.obj"
@@ -154,12 +154,164 @@
       "include_in_segmentation": true
     },
     {
+      "label": "left_guide_rail",
+      "semantic_label": "left_guide_rail",
+      "instance_id": "left_guide_rail",
+      "instance_name": "left_guide_rail",
+      "object_type": "part",
+      "object_id": 4,
+      "pos_mm": [
+        -10.0,
+        0.0,
+        4.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/left_guide_rail.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hdpe",
+      "body_name": "left_guide_rail",
+      "geom_name": "left_guide_rail",
+      "zone_type": null,
+      "color_rgba": [
+        0.9450980392156862,
+        0.9607843137254902,
+        0.9764705882352941,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        235,
+        205
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "right_guide_rail",
+      "semantic_label": "right_guide_rail",
+      "instance_id": "right_guide_rail",
+      "instance_name": "right_guide_rail",
+      "object_type": "part",
+      "object_id": 5,
+      "pos_mm": [
+        10.0,
+        6.0,
+        4.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/right_guide_rail.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hdpe",
+      "body_name": "right_guide_rail",
+      "geom_name": "right_guide_rail",
+      "zone_type": null,
+      "color_rgba": [
+        0.9450980392156862,
+        0.9607843137254902,
+        0.9764705882352941,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        154,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "center_pylon",
+      "semantic_label": "center_pylon",
+      "instance_id": "center_pylon",
+      "instance_name": "center_pylon",
+      "object_type": "part",
+      "object_id": 6,
+      "pos_mm": [
+        0.0,
+        12.0,
+        6.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/center_pylon.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hdpe",
+      "body_name": "center_pylon",
+      "geom_name": "center_pylon",
+      "zone_type": null,
+      "color_rgba": [
+        0.9450980392156862,
+        0.9607843137254902,
+        0.9764705882352941,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        103,
+        59,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "goal_lip",
+      "semantic_label": "goal_lip",
+      "instance_id": "goal_lip",
+      "instance_name": "goal_lip",
+      "object_type": "part",
+      "object_id": 7,
+      "pos_mm": [
+        50.0,
+        0.0,
+        4.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/goal_lip.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "goal_lip",
+      "geom_name": "goal_lip",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        66,
+        235,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
       "label": "transfer_cube",
       "semantic_label": "transfer_cube",
       "instance_id": "transfer_cube",
       "instance_name": "transfer_cube",
       "object_type": "part",
-      "object_id": 4,
+      "object_id": 8,
       "pos_mm": [
         -30.0,
         0.0,
@@ -185,9 +337,9 @@
         1.0
       ],
       "segmentation_color_rgb": [
-        59,
         235,
-        205
+        59,
+        117
       ],
       "include_in_segmentation": true
     },
@@ -197,7 +349,7 @@
       "instance_id": "zone_goal",
       "instance_name": "zone_goal",
       "object_type": "zone",
-      "object_id": 5,
+      "object_id": 9,
       "pos_mm": [
         32.0,
         0.0,
@@ -225,9 +377,9 @@
         0.22
       ],
       "segmentation_color_rgb": [
-        235,
-        154,
-        59
+        59,
+        169,
+        235
       ],
       "include_in_segmentation": false
     },
@@ -237,7 +389,7 @@
       "instance_id": "zone_forbid_0_floor_gap",
       "instance_name": "zone_forbid_0_floor_gap",
       "object_type": "zone",
-      "object_id": 6,
+      "object_id": 10,
       "pos_mm": [
         0.0,
         0.0,
@@ -265,9 +417,9 @@
         0.2
       ],
       "segmentation_color_rgb": [
-        103,
-        59,
-        235
+        220,
+        235,
+        59
       ],
       "include_in_segmentation": false
     },
@@ -277,7 +429,7 @@
       "instance_id": "zone_build",
       "instance_name": "zone_build",
       "object_type": "zone",
-      "object_id": 7,
+      "object_id": 11,
       "pos_mm": [
         0.0,
         0.0,
@@ -305,9 +457,9 @@
         0.14
       ],
       "segmentation_color_rgb": [
-        66,
-        235,
-        59
+        198,
+        59,
+        235
       ],
       "include_in_segmentation": false
     }

@@ -4,7 +4,7 @@
   "created_at": "2026-04-21T07:05:00.649828+00:00",
   "episode_id": "c1b47be5-9cc5-50d5-8c0b-84a1f733dc94",
   "worker_session_id": "seed-renders-bpr-006-narrow-goal-f33b95e4",
-  "revision": "69d31ff219a1e04b233a866258cee1e8929792c7",
+  "revision": "55bb64a6c5ecf7ae522dcef1013c7703de9089bb",
   "scene_hash": "82616c3d017ed88c5991b3decf89b960e45a517059afe98193fa29393b74bc5b",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",

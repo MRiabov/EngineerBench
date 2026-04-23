@@ -4,7 +4,7 @@
   "created_at": "2026-04-22T07:44:12.874446+00:00",
   "episode_id": "031897fd-414e-5d1b-abaf-e76dc461c13a",
   "worker_session_id": "seed-renders-ep-central-bypass-07-d2e5bcc3",
-  "revision": "69d31ff219a1e04b233a866258cee1e8929792c7",
+  "revision": "55bb64a6c5ecf7ae522dcef1013c7703de9089bb",
   "scene_hash": "7e5c8ca051e8d1f5f9dead0614568d8cbe36f5761a386c71a9c2aa99cd5fd577",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",

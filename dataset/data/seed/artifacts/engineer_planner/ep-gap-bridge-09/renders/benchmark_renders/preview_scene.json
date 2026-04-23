@@ -9,8 +9,8 @@
       "object_type": "part",
       "object_id": 0,
       "pos_mm": [
-        -220.0,
-        0.0,
+        -242.0,
+        -24.0,
         35.0
       ],
       "euler_deg": [
@@ -47,8 +47,8 @@
       "object_type": "part",
       "object_id": 1,
       "pos_mm": [
-        250.0,
-        0.0,
+        286.0,
+        20.0,
         35.0
       ],
       "euler_deg": [
@@ -85,14 +85,14 @@
       "object_type": "part",
       "object_id": 2,
       "pos_mm": [
-        70.0,
-        0.0,
-        55.0
+        88.0,
+        -10.0,
+        56.0
       ],
       "euler_deg": [
         -0.0,
         0.0,
-        -0.0
+        11.999999999999998
       ],
       "mesh_paths": [
         "meshes/bridge_reference_table.obj"
@@ -123,9 +123,9 @@
       "object_type": "part",
       "object_id": 3,
       "pos_mm": [
-        10.0,
+        24.0,
         0.0,
-        20.0
+        19.0
       ],
       "euler_deg": [
         -0.0,
@@ -152,22 +152,294 @@
         213
       ],
       "include_in_segmentation": true
+    },
+    {
+      "label": "center_divider",
+      "semantic_label": "center_divider",
+      "instance_id": "center_divider",
+      "instance_name": "center_divider",
+      "object_type": "part",
+      "object_id": 4,
+      "pos_mm": [
+        220.0,
+        150.0,
+        22.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/center_divider.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "center_divider",
+      "geom_name": "center_divider",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        235,
+        205
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "canted_mid_beam",
+      "semantic_label": "canted_mid_beam",
+      "instance_id": "canted_mid_beam",
+      "instance_name": "canted_mid_beam",
+      "object_type": "part",
+      "object_id": 5,
+      "pos_mm": [
+        152.0,
+        170.0,
+        48.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        28.0
+      ],
+      "mesh_paths": [
+        "meshes/canted_mid_beam.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "canted_mid_beam",
+      "geom_name": "canted_mid_beam",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        154,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "false_bridge_block",
+      "semantic_label": "false_bridge_block",
+      "instance_id": "false_bridge_block",
+      "instance_name": "false_bridge_block",
+      "object_type": "part",
+      "object_id": 6,
+      "pos_mm": [
+        150.0,
+        -58.0,
+        13.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/false_bridge_block.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hdpe",
+      "body_name": "false_bridge_block",
+      "geom_name": "false_bridge_block",
+      "zone_type": null,
+      "color_rgba": [
+        0.9450980392156862,
+        0.9607843137254902,
+        0.9764705882352941,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        103,
+        59,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "transfer_cube",
+      "semantic_label": "transfer_cube",
+      "instance_id": "transfer_cube",
+      "instance_name": "transfer_cube",
+      "object_type": "part",
+      "object_id": 7,
+      "pos_mm": [
+        -264.0,
+        -24.0,
+        80.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [
+        "meshes/benchmark_payload__transfer_cube.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "abs",
+      "body_name": "benchmark_payload__transfer_cube",
+      "geom_name": "benchmark_payload__transfer_cube",
+      "zone_type": null,
+      "color_rgba": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        66,
+        235,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "zone_goal",
+      "semantic_label": "zone_goal",
+      "instance_id": "zone_goal",
+      "instance_name": "zone_goal",
+      "object_type": "zone",
+      "object_id": 8,
+      "pos_mm": [
+        283.0,
+        1.0,
+        70.5
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        47.0,
+        61.0,
+        45.5
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "goal",
+      "color_rgba": [
+        0.2,
+        0.72,
+        0.34,
+        0.22
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        117
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_0_floor_gap",
+      "semantic_label": "zone_forbid_0_floor_gap",
+      "instance_id": "zone_forbid_0_floor_gap",
+      "instance_name": "zone_forbid_0_floor_gap",
+      "object_type": "zone",
+      "object_id": 9,
+      "pos_mm": [
+        6.0,
+        0.0,
+        21.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        102.0,
+        160.0,
+        25.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        59,
+        169,
+        235
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_build",
+      "semantic_label": "zone_build",
+      "instance_id": "zone_build",
+      "instance_name": "zone_build",
+      "object_type": "zone",
+      "object_id": 10,
+      "pos_mm": [
+        15.0,
+        0.0,
+        135.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        375.0,
+        190.0,
+        135.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "build",
+      "color_rgba": [
+        0.55,
+        0.55,
+        0.55,
+        0.14
+      ],
+      "segmentation_color_rgb": [
+        220,
+        235,
+        59
+      ],
+      "include_in_segmentation": false
     }
   ],
   "bounds_min_mm": [
-    -310.0,
-    -150.0,
-    0.0
+    -360.0,
+    -190.0,
+    -4.0
   ],
   "bounds_max_mm": [
-    350.0,
-    150.0,
-    70.0
+    390.0,
+    190.0,
+    270.0
   ],
   "center_mm": [
-    20.0,
+    15.0,
     0.0,
-    35.0
+    133.0
   ],
-  "diagonal": 728.3543093852057
+  "diagonal": 884.294068735056
 }

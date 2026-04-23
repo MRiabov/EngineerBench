@@ -1,0 +1,761 @@
+{
+  "component_label": "benchmark_fixtures",
+  "entities": [
+    {
+      "label": "left_start_pad",
+      "semantic_label": "left_start_pad",
+      "instance_id": "left_start_pad",
+      "instance_name": "left_start_pad",
+      "object_type": "part",
+      "object_id": 0,
+      "pos_mm": [
+        -245.0,
+        0.0,
+        8.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/left_start_pad.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "left_start_pad",
+      "geom_name": "left_start_pad",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "funnel_left_outer",
+      "semantic_label": "funnel_left_outer",
+      "instance_id": "funnel_left_outer",
+      "instance_name": "funnel_left_outer",
+      "object_type": "part",
+      "object_id": 1,
+      "pos_mm": [
+        -75.0,
+        74.0,
+        36.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/funnel_left_outer.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "funnel_left_outer",
+      "geom_name": "funnel_left_outer",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        110,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "funnel_right_outer",
+      "semantic_label": "funnel_right_outer",
+      "instance_id": "funnel_right_outer",
+      "instance_name": "funnel_right_outer",
+      "object_type": "part",
+      "object_id": 2,
+      "pos_mm": [
+        -75.0,
+        -74.0,
+        36.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/funnel_right_outer.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "funnel_right_outer",
+      "geom_name": "funnel_right_outer",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        161,
+        235,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "funnel_left_mid",
+      "semantic_label": "funnel_left_mid",
+      "instance_id": "funnel_left_mid",
+      "instance_name": "funnel_left_mid",
+      "object_type": "part",
+      "object_id": 3,
+      "pos_mm": [
+        95.0,
+        62.0,
+        36.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/funnel_left_mid.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "funnel_left_mid",
+      "geom_name": "funnel_left_mid",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        213
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "funnel_right_mid",
+      "semantic_label": "funnel_right_mid",
+      "instance_id": "funnel_right_mid",
+      "instance_name": "funnel_right_mid",
+      "object_type": "part",
+      "object_id": 4,
+      "pos_mm": [
+        95.0,
+        -54.0,
+        36.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/funnel_right_mid.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "funnel_right_mid",
+      "geom_name": "funnel_right_mid",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        235,
+        205
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "funnel_left_inner",
+      "semantic_label": "funnel_left_inner",
+      "instance_id": "funnel_left_inner",
+      "instance_name": "funnel_left_inner",
+      "object_type": "part",
+      "object_id": 5,
+      "pos_mm": [
+        245.0,
+        34.0,
+        36.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/funnel_left_inner.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "funnel_left_inner",
+      "geom_name": "funnel_left_inner",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        154,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "funnel_right_inner",
+      "semantic_label": "funnel_right_inner",
+      "instance_id": "funnel_right_inner",
+      "instance_name": "funnel_right_inner",
+      "object_type": "part",
+      "object_id": 6,
+      "pos_mm": [
+        245.0,
+        -30.0,
+        36.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/funnel_right_inner.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "funnel_right_inner",
+      "geom_name": "funnel_right_inner",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        103,
+        59,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "goal_throat_frame",
+      "semantic_label": "goal_throat_frame",
+      "instance_id": "goal_throat_frame",
+      "instance_name": "goal_throat_frame",
+      "object_type": "part",
+      "object_id": 7,
+      "pos_mm": [
+        345.0,
+        0.0,
+        42.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/goal_throat_frame.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "goal_throat_frame",
+      "geom_name": "goal_throat_frame",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        66,
+        235,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "right_goal_pad",
+      "semantic_label": "right_goal_pad",
+      "instance_id": "right_goal_pad",
+      "instance_name": "right_goal_pad",
+      "object_type": "part",
+      "object_id": 8,
+      "pos_mm": [
+        415.0,
+        0.0,
+        8.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/right_goal_pad.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "right_goal_pad",
+      "geom_name": "right_goal_pad",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        117
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "projectile_ball",
+      "semantic_label": "projectile_ball",
+      "instance_id": "projectile_ball",
+      "instance_name": "projectile_ball",
+      "object_type": "part",
+      "object_id": 9,
+      "pos_mm": [
+        -260.0,
+        0.0,
+        36.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [
+        "meshes/benchmark_payload__projectile_ball.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "abs",
+      "body_name": "benchmark_payload__projectile_ball",
+      "geom_name": "benchmark_payload__projectile_ball",
+      "zone_type": null,
+      "color_rgba": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        169,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "zone_goal",
+      "semantic_label": "zone_goal",
+      "instance_id": "zone_goal",
+      "instance_name": "zone_goal",
+      "object_type": "zone",
+      "object_id": 10,
+      "pos_mm": [
+        405.0,
+        0.0,
+        52.5
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        45.0,
+        40.0,
+        32.5
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "goal",
+      "color_rgba": [
+        0.2,
+        0.72,
+        0.34,
+        0.22
+      ],
+      "segmentation_color_rgb": [
+        220,
+        235,
+        59
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_0_funnel_left_outer",
+      "semantic_label": "zone_forbid_0_funnel_left_outer",
+      "instance_id": "zone_forbid_0_funnel_left_outer",
+      "instance_name": "zone_forbid_0_funnel_left_outer",
+      "object_type": "zone",
+      "object_id": 11,
+      "pos_mm": [
+        -75.0,
+        74.0,
+        36.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        55.0,
+        8.0,
+        36.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        198,
+        59,
+        235
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_1_funnel_right_outer",
+      "semantic_label": "zone_forbid_1_funnel_right_outer",
+      "instance_id": "zone_forbid_1_funnel_right_outer",
+      "instance_name": "zone_forbid_1_funnel_right_outer",
+      "object_type": "zone",
+      "object_id": 12,
+      "pos_mm": [
+        -75.0,
+        -74.0,
+        36.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        55.0,
+        8.0,
+        36.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        59,
+        235,
+        146
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_2_funnel_left_mid",
+      "semantic_label": "zone_forbid_2_funnel_left_mid",
+      "instance_id": "zone_forbid_2_funnel_left_mid",
+      "instance_name": "zone_forbid_2_funnel_left_mid",
+      "object_type": "zone",
+      "object_id": 13,
+      "pos_mm": [
+        95.0,
+        62.0,
+        36.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        70.0,
+        8.0,
+        36.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        235,
+        95,
+        59
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_3_funnel_right_mid",
+      "semantic_label": "zone_forbid_3_funnel_right_mid",
+      "instance_id": "zone_forbid_3_funnel_right_mid",
+      "instance_name": "zone_forbid_3_funnel_right_mid",
+      "object_type": "zone",
+      "object_id": 14,
+      "pos_mm": [
+        95.0,
+        -54.0,
+        36.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        70.0,
+        8.0,
+        36.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        59,
+        74,
+        235
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_4_funnel_left_inner",
+      "semantic_label": "zone_forbid_4_funnel_left_inner",
+      "instance_id": "zone_forbid_4_funnel_left_inner",
+      "instance_name": "zone_forbid_4_funnel_left_inner",
+      "object_type": "zone",
+      "object_id": 15,
+      "pos_mm": [
+        245.5,
+        34.0,
+        36.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        62.5,
+        8.0,
+        36.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        125,
+        235,
+        59
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_5_funnel_right_inner",
+      "semantic_label": "zone_forbid_5_funnel_right_inner",
+      "instance_id": "zone_forbid_5_funnel_right_inner",
+      "instance_name": "zone_forbid_5_funnel_right_inner",
+      "object_type": "zone",
+      "object_id": 16,
+      "pos_mm": [
+        245.5,
+        -30.0,
+        36.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        62.5,
+        8.0,
+        36.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        176
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_6_goal_throat_frame",
+      "semantic_label": "zone_forbid_6_goal_throat_frame",
+      "instance_id": "zone_forbid_6_goal_throat_frame",
+      "instance_name": "zone_forbid_6_goal_throat_frame",
+      "object_type": "zone",
+      "object_id": 17,
+      "pos_mm": [
+        345.0,
+        0.0,
+        42.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        10.0,
+        48.0,
+        42.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        59,
+        228,
+        235
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_build",
+      "semantic_label": "zone_build",
+      "instance_id": "zone_build",
+      "instance_name": "zone_build",
+      "object_type": "zone",
+      "object_id": 18,
+      "pos_mm": [
+        75.0,
+        0.0,
+        120.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        415.0,
+        180.0,
+        120.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "build",
+      "color_rgba": [
+        0.55,
+        0.55,
+        0.55,
+        0.14
+      ],
+      "segmentation_color_rgb": [
+        235,
+        190,
+        59
+      ],
+      "include_in_segmentation": false
+    }
+  ],
+  "bounds_min_mm": [
+    -340.0,
+    -180.0,
+    0.0
+  ],
+  "bounds_max_mm": [
+    490.0,
+    180.0,
+    240.0
+  ],
+  "center_mm": [
+    75.0,
+    0.0,
+    120.0
+  ],
+  "diagonal": 936.0021367496978
+}

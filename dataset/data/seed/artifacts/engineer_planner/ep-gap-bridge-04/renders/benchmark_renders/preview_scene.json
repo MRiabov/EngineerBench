@@ -9,8 +9,8 @@
       "object_type": "part",
       "object_id": 0,
       "pos_mm": [
-        -220.0,
-        0.0,
+        -224.0,
+        -10.0,
         35.0
       ],
       "euler_deg": [
@@ -47,8 +47,8 @@
       "object_type": "part",
       "object_id": 1,
       "pos_mm": [
-        250.0,
-        0.0,
+        252.0,
+        10.0,
         35.0
       ],
       "euler_deg": [
@@ -85,9 +85,9 @@
       "object_type": "part",
       "object_id": 2,
       "pos_mm": [
-        70.0,
+        68.0,
         0.0,
-        55.0
+        54.0
       ],
       "euler_deg": [
         -0.0,
@@ -123,9 +123,9 @@
       "object_type": "part",
       "object_id": 3,
       "pos_mm": [
-        10.0,
+        12.0,
         0.0,
-        20.0
+        18.0
       ],
       "euler_deg": [
         -0.0,
@@ -154,12 +154,50 @@
       "include_in_segmentation": true
     },
     {
+      "label": "false_bridge_block",
+      "semantic_label": "false_bridge_block",
+      "instance_id": "false_bridge_block",
+      "instance_name": "false_bridge_block",
+      "object_type": "part",
+      "object_id": 4,
+      "pos_mm": [
+        18.0,
+        82.0,
+        42.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/false_bridge_block.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "abs",
+      "body_name": "false_bridge_block",
+      "geom_name": "false_bridge_block",
+      "zone_type": null,
+      "color_rgba": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        235,
+        205
+      ],
+      "include_in_segmentation": true
+    },
+    {
       "label": "transfer_cube",
       "semantic_label": "transfer_cube",
       "instance_id": "transfer_cube",
       "instance_name": "transfer_cube",
       "object_type": "part",
-      "object_id": 4,
+      "object_id": 5,
       "pos_mm": [
         -250.0,
         0.0,
@@ -185,9 +223,9 @@
         1.0
       ],
       "segmentation_color_rgb": [
-        59,
         235,
-        205
+        154,
+        59
       ],
       "include_in_segmentation": true
     },
@@ -197,9 +235,9 @@
       "instance_id": "zone_goal",
       "instance_name": "zone_goal",
       "object_type": "zone",
-      "object_id": 5,
+      "object_id": 6,
       "pos_mm": [
-        265.0,
+        267.0,
         0.0,
         72.5
       ],
@@ -211,7 +249,7 @@
       "mesh_paths": [],
       "box_size_mm": [
         55.0,
-        70.0,
+        74.0,
         47.5
       ],
       "material_id": null,
@@ -225,9 +263,9 @@
         0.22
       ],
       "segmentation_color_rgb": [
-        235,
-        154,
-        59
+        103,
+        59,
+        235
       ],
       "include_in_segmentation": false
     },
@@ -237,9 +275,9 @@
       "instance_id": "zone_forbid_0_floor_gap",
       "instance_name": "zone_forbid_0_floor_gap",
       "object_type": "zone",
-      "object_id": 6,
+      "object_id": 7,
       "pos_mm": [
-        10.0,
+        11.0,
         0.0,
         20.0
       ],
@@ -250,9 +288,9 @@
       ],
       "mesh_paths": [],
       "box_size_mm": [
-        80.0,
-        150.0,
-        25.0
+        83.0,
+        154.0,
+        24.0
       ],
       "material_id": null,
       "body_name": null,
@@ -265,9 +303,9 @@
         0.2
       ],
       "segmentation_color_rgb": [
-        103,
-        59,
-        235
+        66,
+        235,
+        59
       ],
       "include_in_segmentation": false
     },
@@ -277,7 +315,7 @@
       "instance_id": "zone_build",
       "instance_name": "zone_build",
       "object_type": "zone",
-      "object_id": 7,
+      "object_id": 8,
       "pos_mm": [
         10.0,
         0.0,
@@ -305,9 +343,9 @@
         0.14
       ],
       "segmentation_color_rgb": [
-        66,
         235,
-        59
+        59,
+        117
       ],
       "include_in_segmentation": false
     }
@@ -315,7 +353,7 @@
   "bounds_min_mm": [
     -340.0,
     -180.0,
-    -5.0
+    -4.0
   ],
   "bounds_max_mm": [
     360.0,
@@ -325,7 +363,7 @@
   "center_mm": [
     10.0,
     0.0,
-    127.5
+    128.0
   ],
-  "diagonal": 830.5570419904944
+  "diagonal": 830.2385199447205
 }

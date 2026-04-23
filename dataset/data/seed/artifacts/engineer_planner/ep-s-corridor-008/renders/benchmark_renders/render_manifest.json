@@ -4,7 +4,7 @@
   "created_at": "2026-04-23T15:49:10.792740+00:00",
   "episode_id": "bdebe53c-8fc9-5ccd-803a-ee32796d026a",
   "worker_session_id": "seed-renders-ep-s-corridor-008-d64cf0a5",
-  "revision": "69d31ff219a1e04b233a866258cee1e8929792c7",
+  "revision": "55bb64a6c5ecf7ae522dcef1013c7703de9089bb",
   "scene_hash": "7f5d2c91b55116ba8af6dedf2cba62921b2a549c791a755c49db3b1d2c2f35ef",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": null,

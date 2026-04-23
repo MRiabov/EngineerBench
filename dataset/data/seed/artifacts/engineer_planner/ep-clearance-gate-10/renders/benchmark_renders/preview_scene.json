@@ -1,0 +1,329 @@
+{
+  "component_label": "benchmark_fixtures",
+  "entities": [
+    {
+      "label": "left_start_pad",
+      "semantic_label": "left_start_pad",
+      "instance_id": "left_start_pad",
+      "instance_name": "left_start_pad",
+      "object_type": "part",
+      "object_id": 0,
+      "pos_mm": [
+        -225.0,
+        0.0,
+        8.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/left_start_pad.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "aluminum_6061",
+      "body_name": "left_start_pad",
+      "geom_name": "left_start_pad",
+      "zone_type": null,
+      "color_rgba": [
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "front_gate_wall",
+      "semantic_label": "front_gate_wall",
+      "instance_id": "front_gate_wall",
+      "instance_name": "front_gate_wall",
+      "object_type": "part",
+      "object_id": 1,
+      "pos_mm": [
+        0.0,
+        -6.0,
+        58.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        8.000000000000002
+      ],
+      "mesh_paths": [
+        "meshes/front_gate_wall.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "aluminum_6061",
+      "body_name": "front_gate_wall",
+      "geom_name": "front_gate_wall",
+      "zone_type": null,
+      "color_rgba": [
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        110,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "step_plinth",
+      "semantic_label": "step_plinth",
+      "instance_id": "step_plinth",
+      "instance_name": "step_plinth",
+      "object_type": "part",
+      "object_id": 2,
+      "pos_mm": [
+        38.0,
+        -60.0,
+        18.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/step_plinth.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "aluminum_6061",
+      "body_name": "step_plinth",
+      "geom_name": "step_plinth",
+      "zone_type": null,
+      "color_rgba": [
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        161,
+        235,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "rear_gate_wall",
+      "semantic_label": "rear_gate_wall",
+      "instance_id": "rear_gate_wall",
+      "instance_name": "rear_gate_wall",
+      "object_type": "part",
+      "object_id": 3,
+      "pos_mm": [
+        74.0,
+        8.0,
+        72.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        -6.000000000000003
+      ],
+      "mesh_paths": [
+        "meshes/rear_gate_wall.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "aluminum_6061",
+      "body_name": "rear_gate_wall",
+      "geom_name": "rear_gate_wall",
+      "zone_type": null,
+      "color_rgba": [
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        213
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "right_goal_pad",
+      "semantic_label": "right_goal_pad",
+      "instance_id": "right_goal_pad",
+      "instance_name": "right_goal_pad",
+      "object_type": "part",
+      "object_id": 4,
+      "pos_mm": [
+        225.0,
+        0.0,
+        8.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/right_goal_pad.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "aluminum_6061",
+      "body_name": "right_goal_pad",
+      "geom_name": "right_goal_pad",
+      "zone_type": null,
+      "color_rgba": [
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        235,
+        205
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "transfer_cube",
+      "semantic_label": "transfer_cube",
+      "instance_id": "transfer_cube",
+      "instance_name": "transfer_cube",
+      "object_type": "part",
+      "object_id": 5,
+      "pos_mm": [
+        -250.0,
+        -8.0,
+        40.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [
+        "meshes/benchmark_payload__transfer_cube.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "abs",
+      "body_name": "benchmark_payload__transfer_cube",
+      "geom_name": "benchmark_payload__transfer_cube",
+      "zone_type": null,
+      "color_rgba": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        154,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "zone_goal",
+      "semantic_label": "zone_goal",
+      "instance_id": "zone_goal",
+      "instance_name": "zone_goal",
+      "object_type": "zone",
+      "object_id": 6,
+      "pos_mm": [
+        245.0,
+        0.0,
+        50.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        57.0,
+        36.0,
+        28.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "goal",
+      "color_rgba": [
+        0.2,
+        0.72,
+        0.34,
+        0.22
+      ],
+      "segmentation_color_rgb": [
+        103,
+        59,
+        235
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_build",
+      "semantic_label": "zone_build",
+      "instance_id": "zone_build",
+      "instance_name": "zone_build",
+      "object_type": "zone",
+      "object_id": 7,
+      "pos_mm": [
+        5.0,
+        -2.5,
+        95.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        325.0,
+        157.5,
+        95.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "build",
+      "color_rgba": [
+        0.55,
+        0.55,
+        0.55,
+        0.14
+      ],
+      "segmentation_color_rgb": [
+        66,
+        235,
+        59
+      ],
+      "include_in_segmentation": false
+    }
+  ],
+  "bounds_min_mm": [
+    -320.0,
+    -160.0,
+    0.0
+  ],
+  "bounds_max_mm": [
+    330.0,
+    155.0,
+    190.0
+  ],
+  "center_mm": [
+    5.0,
+    -2.5,
+    95.0
+  ],
+  "diagonal": 746.8768305416897
+}

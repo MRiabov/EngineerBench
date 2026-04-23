@@ -66,6 +66,7 @@ reaches roughly 100 total rows.
 | `central_bypass` | A central blocker sits between spawn and goal. | Blocker width, blocker height, route side, corridor width, goal shift, forbid-zone inflation. | Easy to medium. | 10 |
 | `narrow_funnel` | A wide capture area narrows into a tight goal throat. | Throat width, funnel angle, capture mouth size, sleeve length, payload size, jitter envelope. | Medium. | 10 |
 | `lower_bin` | The payload starts elevated and must land in a lower bin or catch zone. | Drop height, bin offset, deflector angle, rebound damping, lip geometry, release alignment. | Medium. | 10 |
+| `gravity_chute` | A payload drops into an upper inlet and slides through a guided chute to a lower outlet or catch tray. | Chute slope, inlet height, chute length, bend count, wall height, throat width, exit offset. | Easy to medium. | 10 |
 | `spiky_descent` | The route descends through spike-like obstacles and forbid zones into a lower goal basin. | Start height, descent slope, spike count, obstacle spacing, forbid-zone inflation, landing basin depth. | Medium. | 10 |
 | `clearance_gate` | A long object must pass through a window or gate in a wall. | Window width, window height, wall thickness, rod length, approach angle, tilt tolerance. | Medium. | 10 |
 | `s_corridor` | Two or more offset obstacles force a bent route. | Obstacle count, offsets, bend angle, pinch width, dead-end length, goal placement. | Medium. | 10 |
@@ -127,6 +128,23 @@ Good variants include:
 - Escape lip added to prevent overshoot.
 
 The important signal is gravity-aware redirection, not flat transfer.
+
+### `gravity_chute`
+
+This family teaches a planner to keep a payload inside a strictly downward
+guided channel.
+
+Good variants include:
+
+- A straight, shallow chute with a generous inlet.
+- A slightly steeper chute that keeps the same outlet.
+- A single-bend chute that still drains cleanly into the lower target.
+- A narrower throat that increases jam risk without changing the underlying
+  descent.
+
+Avoid turning this into a lower-bin family or a generic corridor problem. The
+key question is whether the payload can remain guided through a continuous
+downward chute without bouncing out or hanging up.
 
 ### `spiky_descent`
 
@@ -220,6 +238,7 @@ Examples:
 - `ep-gap-bridge-01`
 - `ep-gap-bridge-07`
 - `ep-central-bypass-03`
+- `ep-gravity-chute-01`
 
 The exact prefix can follow local corpus conventions, but the family and
 variant should be obvious from the id.
@@ -246,7 +265,7 @@ the context is still local.
   - bypassing an obstacle,
   - narrowing a goal,
   - dropping into a lower target,
-  - climbing to a higher target,
+  - feeding through a gravity-fed chute,
   - clearing a gate or window,
   - routing through a bent corridor,
   - surviving a terrain discontinuity,

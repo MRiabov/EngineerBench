@@ -9,8 +9,8 @@
       "object_type": "part",
       "object_id": 0,
       "pos_mm": [
-        -220.0,
-        0.0,
+        -238.0,
+        -18.0,
         35.0
       ],
       "euler_deg": [
@@ -47,8 +47,8 @@
       "object_type": "part",
       "object_id": 1,
       "pos_mm": [
-        250.0,
-        0.0,
+        278.0,
+        16.0,
         35.0
       ],
       "euler_deg": [
@@ -85,8 +85,8 @@
       "object_type": "part",
       "object_id": 2,
       "pos_mm": [
-        70.0,
-        0.0,
+        74.0,
+        -4.0,
         55.0
       ],
       "euler_deg": [
@@ -123,9 +123,9 @@
       "object_type": "part",
       "object_id": 3,
       "pos_mm": [
-        10.0,
+        18.0,
         0.0,
-        20.0
+        18.0
       ],
       "euler_deg": [
         -0.0,
@@ -161,8 +161,8 @@
       "object_type": "part",
       "object_id": 4,
       "pos_mm": [
-        -250.0,
-        0.0,
+        -258.0,
+        -16.0,
         80.0
       ],
       "euler_deg": [
@@ -199,9 +199,9 @@
       "object_type": "zone",
       "object_id": 5,
       "pos_mm": [
-        265.0,
+        279.0,
         0.0,
-        72.5
+        71.5
       ],
       "euler_deg": [
         0.0,
@@ -210,9 +210,9 @@
       ],
       "mesh_paths": [],
       "box_size_mm": [
-        55.0,
-        70.0,
-        47.5
+        47.0,
+        66.0,
+        46.5
       ],
       "material_id": null,
       "body_name": null,
@@ -239,7 +239,7 @@
       "object_type": "zone",
       "object_id": 6,
       "pos_mm": [
-        10.0,
+        5.0,
         0.0,
         20.0
       ],
@@ -250,9 +250,9 @@
       ],
       "mesh_paths": [],
       "box_size_mm": [
-        80.0,
-        150.0,
-        25.0
+        95.0,
+        156.0,
+        24.0
       ],
       "material_id": null,
       "body_name": null,
@@ -315,17 +315,17 @@
   "bounds_min_mm": [
     -340.0,
     -180.0,
-    -5.0
+    -4.0
   ],
   "bounds_max_mm": [
-    360.0,
+    378.0,
     180.0,
     260.0
   ],
   "center_mm": [
-    10.0,
+    19.0,
     0.0,
-    127.5
+    128.0
   ],
-  "diagonal": 830.5570419904944
+  "diagonal": 845.4702833334829
 }
