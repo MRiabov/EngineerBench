@@ -651,6 +651,7 @@ def _render_single_preview(
             include_edges=include_rgb_edges,
             include_fill=True,
             axes_color=_RGB_AXES_COLOR,
+            axes_shadow=False,
             edge_color=_RGB_EDGE_COLOR,
             background=(0.98, 0.98, 0.99),
         )
@@ -713,6 +714,7 @@ def _render_single_preview(
             include_edges=False,
             include_fill=True,
             axes_color=_OVERLAY_AXES_COLOR,
+            axes_shadow=False,
             edge_color=_OVERLAY_EDGE_COLOR,
             background=(0.98, 0.98, 0.99),
         )
@@ -727,6 +729,7 @@ def _render_single_preview(
                 include_edges=include_depth_edges,
                 include_fill=False,
                 axes_color=_OVERLAY_AXES_COLOR,
+                axes_shadow=True,
                 edge_color=_OVERLAY_EDGE_COLOR,
                 background=(0.0, 0.0, 0.0),
             )
@@ -793,6 +796,7 @@ def _render_single_preview(
             include_edges=False,
             include_fill=True,
             axes_color=_OVERLAY_AXES_COLOR,
+            axes_shadow=False,
             edge_color=_OVERLAY_EDGE_COLOR,
             background=(0.0, 0.0, 0.0),
         )
@@ -807,6 +811,7 @@ def _render_single_preview(
                 include_edges=include_segmentation_edges,
                 include_fill=False,
                 axes_color=_OVERLAY_AXES_COLOR,
+                axes_shadow=True,
                 edge_color=_OVERLAY_EDGE_COLOR,
                 background=(0.0, 0.0, 0.0),
             )

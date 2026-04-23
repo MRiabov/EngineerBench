@@ -69,6 +69,7 @@ from tests.integration.agent.helpers import (
     build_solution_plan_evidence_script_content,
 )
 from worker_renderer.utils.build123d_rendering import (
+    _OVERLAY_AXES_COLOR,
     export_preview_scene_bundle,
     render_preview_view,
 )
@@ -128,6 +129,27 @@ def _parse_trailing_json(stdout: str) -> dict[str, object]:
         if isinstance(payload, dict):
             return payload
     raise AssertionError("Expected a trailing JSON payload in stdout")
+
+
+def _relative_luminance(rgb: tuple[float, float, float]) -> float:
+    def _linearize(channel: float) -> float:
+        if channel <= 0.04045:
+            return channel / 12.92
+        return ((channel + 0.055) / 1.055) ** 2.4
+
+    red, green, blue = (_linearize(channel) for channel in rgb)
+    return 0.2126 * red + 0.7152 * green + 0.0722 * blue
+
+
+def _contrast_ratio(
+    foreground: tuple[float, float, float],
+    background: tuple[float, float, float],
+) -> float:
+    foreground_lum = _relative_luminance(foreground)
+    background_lum = _relative_luminance(background)
+    lighter = max(foreground_lum, background_lum)
+    darker = min(foreground_lum, background_lum)
+    return (lighter + 0.05) / (darker + 0.05)
 
 
 def test_review_artifact_loader_reads_yaml_comment_pair(tmp_path: Path) -> None:
@@ -2580,6 +2602,7 @@ def test_run_evals_codex_vtk_preview_renders_headlessly(tmp_path, monkeypatch):
     assert rendered_path == output_path
     assert output_path.exists(), output_path
     assert output_path.stat().st_size > 0
+    assert _contrast_ratio(_OVERLAY_AXES_COLOR, (1.0, 1.0, 1.0)) >= 4.5
 
 
 @pytest.mark.integration_p0

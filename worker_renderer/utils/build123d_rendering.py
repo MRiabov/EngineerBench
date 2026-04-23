@@ -145,7 +145,7 @@ def _hex_from_rgb(color_rgb: tuple[int, int, int]) -> str:
 _RGB_EDGE_COLOR = (0.14, 0.14, 0.14)
 _OVERLAY_EDGE_COLOR = (0.95, 0.68, 0.18)
 _RGB_AXES_COLOR = (0.12, 0.12, 0.12)
-_OVERLAY_AXES_COLOR = (0.94, 0.94, 0.94)
+_OVERLAY_AXES_COLOR = (0.28, 0.28, 0.28)
 _PREVIEW_EDGE_OPACITY = 0.96
 _PREVIEW_EDGE_LINE_WIDTH = 2.4
 _PREVIEW_EDGE_LINE_OFFSET = (1.0, 1.0)
@@ -475,6 +475,7 @@ def _build_axes_actor(
     renderer: vtkRenderer,
     *,
     color: tuple[float, float, float] = _RGB_AXES_COLOR,
+    shadow: bool = False,
 ) -> vtkCubeAxesActor2D:
     tick_count = _scene_axis_tick_count(scene)
     axes_actor = vtkCubeAxesActor2D()
@@ -499,8 +500,12 @@ def _build_axes_actor(
     axes_actor.GetAxisLabelTextProperty().SetFontSize(12)
     axes_actor.GetAxisTitleTextProperty().SetColor(*color)
     axes_actor.GetAxisTitleTextProperty().SetFontSize(13)
-    axes_actor.GetAxisLabelTextProperty().ShadowOff()
-    axes_actor.GetAxisTitleTextProperty().ShadowOff()
+    if shadow:
+        axes_actor.GetAxisLabelTextProperty().ShadowOn()
+        axes_actor.GetAxisTitleTextProperty().ShadowOn()
+    else:
+        axes_actor.GetAxisLabelTextProperty().ShadowOff()
+        axes_actor.GetAxisTitleTextProperty().ShadowOff()
     return axes_actor
 
 
@@ -843,6 +848,7 @@ def _build_renderer(
     include_edges: bool,
     include_fill: bool,
     axes_color: tuple[float, float, float],
+    axes_shadow: bool,
     edge_color: tuple[float, float, float],
     background: tuple[float, float, float],
 ) -> _RendererBundle:
@@ -867,7 +873,9 @@ def _build_renderer(
         )
 
     if include_axes:
-        axes_actor = _build_axes_actor(scene, renderer, color=axes_color)
+        axes_actor = _build_axes_actor(
+            scene, renderer, color=axes_color, shadow=axes_shadow
+        )
         renderer.AddActor2D(axes_actor)
 
     render_window = create_headless_vtk_render_window()
@@ -1046,6 +1054,7 @@ def render_preview_scene(
         include_edges=include_edges,
         include_fill=True,
         axes_color=_RGB_AXES_COLOR,
+        axes_shadow=False,
         edge_color=_RGB_EDGE_COLOR,
         background=(0.98, 0.98, 0.99),
     )
@@ -1368,6 +1377,7 @@ def _render_preview_modality_bundle(
             include_edges=rgb_edges,
             include_fill=True,
             axes_color=_RGB_AXES_COLOR,
+            axes_shadow=False,
             edge_color=_RGB_EDGE_COLOR,
             background=(0.98, 0.98, 0.99),
         )
@@ -1388,6 +1398,7 @@ def _render_preview_modality_bundle(
             include_edges=False,
             include_fill=True,
             axes_color=_OVERLAY_AXES_COLOR,
+            axes_shadow=False,
             edge_color=_OVERLAY_EDGE_COLOR,
             background=(0.98, 0.98, 0.99),
         )
@@ -1402,6 +1413,7 @@ def _render_preview_modality_bundle(
                 include_edges=depth_edges,
                 include_fill=False,
                 axes_color=_OVERLAY_AXES_COLOR,
+                axes_shadow=True,
                 edge_color=_OVERLAY_EDGE_COLOR,
                 background=(0.0, 0.0, 0.0),
             )
@@ -1415,6 +1427,7 @@ def _render_preview_modality_bundle(
             include_edges=False,
             include_fill=True,
             axes_color=_OVERLAY_AXES_COLOR,
+            axes_shadow=False,
             edge_color=_OVERLAY_EDGE_COLOR,
             background=(0.0, 0.0, 0.0),
         )
@@ -1429,6 +1442,7 @@ def _render_preview_modality_bundle(
                 include_edges=segmentation_edges,
                 include_fill=False,
                 axes_color=_OVERLAY_AXES_COLOR,
+                axes_shadow=True,
                 edge_color=_OVERLAY_EDGE_COLOR,
                 background=(0.0, 0.0, 0.0),
             )
@@ -1630,6 +1644,7 @@ class Build123dRendererBackend(RendererBackend):
                 include_edges=self.rgb_edges,
                 include_fill=True,
                 axes_color=_RGB_AXES_COLOR,
+                axes_shadow=False,
                 edge_color=_RGB_EDGE_COLOR,
                 background=(0.98, 0.98, 0.99),
             )
@@ -1699,6 +1714,7 @@ class Build123dRendererBackend(RendererBackend):
                     include_edges=self.rgb_edges,
                     include_fill=True,
                     axes_color=_RGB_AXES_COLOR,
+                    axes_shadow=False,
                     edge_color=_RGB_EDGE_COLOR,
                     background=(0.98, 0.98, 0.99),
                 )
@@ -1715,6 +1731,7 @@ class Build123dRendererBackend(RendererBackend):
                     include_edges=False,
                     include_fill=True,
                     axes_color=_OVERLAY_AXES_COLOR,
+                    axes_shadow=False,
                     edge_color=_OVERLAY_EDGE_COLOR,
                     background=(0.98, 0.98, 0.99),
                 )
@@ -1728,6 +1745,7 @@ class Build123dRendererBackend(RendererBackend):
                         include_edges=self.depth_edges,
                         include_fill=False,
                         axes_color=_OVERLAY_AXES_COLOR,
+                        axes_shadow=True,
                         edge_color=_OVERLAY_EDGE_COLOR,
                         background=(0.0, 0.0, 0.0),
                     )
@@ -1744,6 +1762,7 @@ class Build123dRendererBackend(RendererBackend):
                     include_edges=False,
                     include_fill=True,
                     axes_color=_OVERLAY_AXES_COLOR,
+                    axes_shadow=False,
                     edge_color=_OVERLAY_EDGE_COLOR,
                     background=(0.0, 0.0, 0.0),
                 )
@@ -1757,6 +1776,7 @@ class Build123dRendererBackend(RendererBackend):
                         include_edges=self.segmentation_edges,
                         include_fill=False,
                         axes_color=_OVERLAY_AXES_COLOR,
+                        axes_shadow=True,
                         edge_color=_OVERLAY_EDGE_COLOR,
                         background=(0.0, 0.0, 0.0),
                     )
