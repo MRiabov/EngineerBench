@@ -356,49 +356,30 @@ def _write_current_role_manifest(dst_root: Path, agent_name: AgentName) -> str:
 
 
 def sync_repo_venv(workspace_dir: Path) -> Path:
-    """Synchronize the repository's local `.venv` into a workspace root."""
+    """Link the repository's local `.venv` into a workspace root."""
 
     source_dir = ROOT / ".venv"
     if not source_dir.is_dir():
         raise FileNotFoundError(f"Repository virtualenv not found: {source_dir}")
 
-    rsync = shutil.which("rsync")
-    if rsync is None:
-        raise RuntimeError("rsync is required to synchronize the repository .venv")
-
     workspace_dir = workspace_dir.expanduser().resolve()
     destination_dir = workspace_dir / ".venv"
     destination_dir.parent.mkdir(parents=True, exist_ok=True)
-    destination_dir.mkdir(parents=True, exist_ok=True)
 
-    same_device = source_dir.stat().st_dev == destination_dir.parent.stat().st_dev
-    rsync_args = [
-        rsync,
-        "-a",
-        "--delete",
-    ]
-    if same_device:
-        # Hardlink unchanged venv files instead of duplicating the whole tree.
-        rsync_args.append(f"--link-dest={source_dir.as_posix().rstrip('/')}")
-    rsync_args.extend(
-        [
-            f"{source_dir.as_posix().rstrip('/')}/",
-            f"{destination_dir.as_posix().rstrip('/')}/",
-        ]
-    )
+    if destination_dir.is_symlink():
+        try:
+            if destination_dir.resolve() == source_dir.resolve():
+                return destination_dir
+        except FileNotFoundError:
+            pass
+        destination_dir.unlink()
+    elif destination_dir.exists():
+        if destination_dir.is_dir():
+            shutil.rmtree(destination_dir)
+        else:
+            destination_dir.unlink()
 
-    completed = subprocess.run(
-        rsync_args,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
-    if completed.returncode != 0:
-        raise RuntimeError(
-            completed.stderr
-            or completed.stdout
-            or "rsync failed while copying the repository .venv"
-        )
+    destination_dir.symlink_to(source_dir.resolve(), target_is_directory=True)
     return destination_dir
 
 
@@ -1230,7 +1211,7 @@ def _load_review_artifacts_local(
             return None, None, f"failed to read {comments_path}: {exc}"
         comments_data, comments_error = _parse_review_comments_yaml(
             comments_content,
-            comments_path=comments_path.as_posix(),
+            review_path=comments_path.as_posix(),
         )
         if comments_error is not None:
             return None, None, comments_error

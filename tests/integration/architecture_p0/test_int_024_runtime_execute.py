@@ -826,3 +826,105 @@ print(f"VALIDATE_MESSAGE={message}")
         assert "VALIDATE_SUCCESS=False" in data.stdout
         assert "build_zone None" not in data.stdout
         assert "payload start pose intersects benchmark geometry" in data.stdout
+
+
+@pytest.mark.integration_p0
+@pytest.mark.xdist_group(name="physics_sims")
+@pytest.mark.asyncio
+@pytest.mark.int_id("INT-024")
+async def test_int_024_runtime_validate_normalizes_meter_scale_build_zone_bounds():
+    """
+    INT-024: legacy benchmark definitions that still serialize sub-meter
+    spatial bounds must not fail the build-zone check when the authored
+    geometry is already expressed in millimeters.
+    """
+    session_id = f"INT-024-METER-BZ-{uuid.uuid4().hex[:8]}"
+    headers = {"X-Session-ID": session_id}
+
+    script = """
+from build123d import Align, Box, Location
+from utils.metadata import PartMetadata
+from utils.submission import validate_benchmark
+
+def build():
+    fixture = Box(908, 80, 80, align=(Align.CENTER, Align.CENTER, Align.MIN))
+    fixture = fixture.move(Location((-5, 0, 50)))
+    fixture.label = "environment_fixture"
+    fixture.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
+    return fixture
+
+result = build()
+success, message = validate_benchmark(result)
+print(f"VALIDATE_SUCCESS={success}")
+print(f"VALIDATE_MESSAGE={message}")
+"""
+
+    objectives = BenchmarkDefinition(
+        objectives=ObjectivesSection(
+            goal_zone_mm=BoundingBox(
+                min_mm=(0.42, -0.04, 0.0), max_mm=(0.54, 0.04, 0.08)
+            ),
+            forbid_zones=[
+                ForbidZone(
+                    name="ceiling_exit",
+                    min_mm=(-0.6, -0.12, 0.18),
+                    max_mm=(0.6, 0.12, 0.4),
+                )
+            ],
+            build_zone_mm=BoundingBox(
+                min_mm=(-0.46, -0.12, 0.0), max_mm=(0.45, 0.12, 0.18)
+            ),
+        ),
+        benchmark_parts=_default_benchmark_parts(),
+        simulation_bounds_mm=BoundingBox(
+            min_mm=(-0.6, -0.12, 0.0), max_mm=(0.6, 0.12, 0.4)
+        ),
+        payload=Payload(
+            label="tunnel_ball",
+            shape="sphere",
+            material_id="abs",
+            static_randomization=StaticRandomization(radius_mm=(0.03, 0.03)),
+            start_position_mm=(0.42, 0.0, 0.09),
+            runtime_jitter_mm=(0.01, 0.004, 0.004),
+        ),
+        constraints=Constraints(max_unit_cost=90.0, max_weight_g=3200.0),
+    )
+
+    async with httpx.AsyncClient(timeout=300.0) as client:
+        await _seed_current_role_manifest(client, session_id=session_id)
+        write_script = await client.post(
+            f"{WORKER_LIGHT_URL}/fs/write",
+            json=WriteFileRequest(
+                path="benchmark_script.py",
+                content=script,
+                overwrite=True,
+            ).model_dump(mode="json"),
+            headers=headers,
+        )
+        assert write_script.status_code == 200, write_script.text
+
+        write_objectives = await client.post(
+            f"{WORKER_LIGHT_URL}/fs/write",
+            json=WriteFileRequest(
+                path="benchmark_definition.yaml",
+                content=dump_yaml_model(objectives),
+                overwrite=True,
+            ).model_dump(mode="json"),
+            headers=headers,
+        )
+        assert write_objectives.status_code == 200, write_objectives.text
+
+        exec_response = await client.post(
+            f"{WORKER_LIGHT_URL}/runtime/execute",
+            json=ExecuteRequest(
+                code=_runtime_validate_command(),
+                timeout=120,
+            ).model_dump(mode="json"),
+            headers=headers,
+            timeout=180.0,
+        )
+        assert exec_response.status_code == 200, exec_response.text
+        data = ExecuteResponse.model_validate(exec_response.json())
+        assert data.exit_code == 0
+        assert "VALIDATE_SUCCESS=True" in data.stdout
+        assert "Build zone violation:" not in data.stdout

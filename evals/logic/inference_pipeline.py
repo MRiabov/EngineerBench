@@ -129,9 +129,7 @@ class InferenceStageConfig(StrictModel):
 
     @field_validator("downstream_stage_names", mode="before")
     @classmethod
-    def _normalize_downstream_stage_names(
-        cls, value: object
-    ) -> list[str] | object:
+    def _normalize_downstream_stage_names(cls, value: object) -> list[str] | object:
         if value is None:
             return []
         if isinstance(value, str):
@@ -190,8 +188,7 @@ class InferencePipelineConfig(StrictModel):
 
         if self.entry_stage_name not in stage_names:
             raise ValueError(
-                f"entry_stage_name {self.entry_stage_name!r} is not declared "
-                "in stages"
+                f"entry_stage_name {self.entry_stage_name!r} is not declared in stages"
             )
 
         for stage in self.stages:

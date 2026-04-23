@@ -68,6 +68,8 @@ def test_seed_authoring_workspace_bootstrapper_materializes_starter_files(
     assert prompt_path == workspace_dir / "prompt.md"
     assert prompt_path.exists()
     assert venv_path == workspace_dir / ".venv"
+    assert venv_path.is_symlink()
+    assert venv_path.resolve() == ROOT / ".venv"
     assert (venv_path / "bin" / "python").exists()
     source_python = ROOT / ".venv" / "bin" / "python"
     dest_python = venv_path / "bin" / "python"

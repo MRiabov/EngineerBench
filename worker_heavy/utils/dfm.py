@@ -103,6 +103,20 @@ def _part_reports_for_analysis(part: Part | Compound) -> list[Part | Compound]:
     ]
 
 
+def _normalize_mixed_unit_bounds_for_compare(
+    bounds: BoundingBox,
+) -> tuple[tuple[float, float, float], tuple[float, float, float]]:
+    """Normalize legacy sub-meter bounds to the millimeter coordinate space."""
+
+    min_mm = tuple(float(value) for value in bounds.min_mm)
+    max_mm = tuple(float(value) for value in bounds.max_mm)
+    max_abs = max(abs(value) for value in (*min_mm, *max_mm))
+    if 0.0 < max_abs < 1.0:
+        min_mm = tuple(value * 1000.0 for value in min_mm)
+        max_mm = tuple(value * 1000.0 for value in max_mm)
+    return min_mm, max_mm
+
+
 def _is_within_bounds(
     part: Part | Compound, build_zone: BoundingBox
 ) -> tuple[bool, str]:
@@ -114,32 +128,35 @@ def _is_within_bounds(
         (False, error_message) if out of bounds
     """
     bbox = part.bounding_box()
+    build_zone_min_mm, build_zone_max_mm = _normalize_mixed_unit_bounds_for_compare(
+        build_zone
+    )
 
     # Check each dimension
     violations = []
-    if build_zone.min_mm[0] > bbox.min.X:
+    if build_zone_min_mm[0] > bbox.min.X:
         violations.append(
-            f"X min ({bbox.min.X:.2f}) < build zone min ({build_zone.min_mm[0]:.2f})"
+            f"X min ({bbox.min.X:.2f}) < build zone min ({build_zone_min_mm[0]:.2f})"
         )
-    if build_zone.min_mm[1] > bbox.min.Y:
+    if build_zone_min_mm[1] > bbox.min.Y:
         violations.append(
-            f"Y min ({bbox.min.Y:.2f}) < build zone min ({build_zone.min_mm[1]:.2f})"
+            f"Y min ({bbox.min.Y:.2f}) < build zone min ({build_zone_min_mm[1]:.2f})"
         )
-    if build_zone.min_mm[2] > bbox.min.Z:
+    if build_zone_min_mm[2] > bbox.min.Z:
         violations.append(
-            f"Z min ({bbox.min.Z:.2f}) < build zone min ({build_zone.min_mm[2]:.2f})"
+            f"Z min ({bbox.min.Z:.2f}) < build zone min ({build_zone_min_mm[2]:.2f})"
         )
-    if build_zone.max_mm[0] < bbox.max.X:
+    if build_zone_max_mm[0] < bbox.max.X:
         violations.append(
-            f"X max ({bbox.max.X:.2f}) > build zone max ({build_zone.max_mm[0]:.2f})"
+            f"X max ({bbox.max.X:.2f}) > build zone max ({build_zone_max_mm[0]:.2f})"
         )
-    if build_zone.max_mm[1] < bbox.max.Y:
+    if build_zone_max_mm[1] < bbox.max.Y:
         violations.append(
-            f"Y max ({bbox.max.Y:.2f}) > build zone max ({build_zone.max_mm[1]:.2f})"
+            f"Y max ({bbox.max.Y:.2f}) > build zone max ({build_zone_max_mm[1]:.2f})"
         )
-    if build_zone.max_mm[2] < bbox.max.Z:
+    if build_zone_max_mm[2] < bbox.max.Z:
         violations.append(
-            f"Z max ({bbox.max.Z:.2f}) > build zone max ({build_zone.max_mm[2]:.2f})"
+            f"Z max ({bbox.max.Z:.2f}) > build zone max ({build_zone_max_mm[2]:.2f})"
         )
 
     if violations:

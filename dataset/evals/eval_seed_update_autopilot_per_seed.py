@@ -970,7 +970,7 @@ def _build_authoring_prompt(
                 "- This workspace was initialized by "
                 "`dataset/evals/materialize_seed_authoring_workspace.py`.",
                 "- The workspace skeleton, current-role manifest, and "
-                "synced `.venv` are already present.",
+                "workspace-local `.venv` link are already present.",
                 "",
             ]
         )

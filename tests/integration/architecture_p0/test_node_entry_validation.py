@@ -20,13 +20,17 @@ from controller.agent.node_entry_validation import (
 )
 from controller.clients.worker import WorkerClient
 from evals.logic.models import EvalDatasetItem
+from evals.logic.specs import AGENT_SPECS
 from evals.logic.workspace import (
     InMemorySeedWorkspaceClient,
+    SeededEntryContractError,
     materialize_seed_workspace_snapshot,
+    preflight_seeded_entry_contract,
 )
 from shared.agent_templates import load_role_template_files
 from shared.current_role import current_role_manifest_json
 from shared.enums import AgentName
+from shared.logging import get_logger
 from shared.models.schemas import (
     AssemblyConstraints,
     AssemblyDefinition,
@@ -61,6 +65,7 @@ FIXTURE_DATASET_ROOT = (
 ROLE_BASED_SEED_DATASET_ROOT = ROOT / "dataset" / "data" / "seed" / "role_based"
 
 WORKER_LIGHT_URL = os.getenv("WORKER_LIGHT_URL", "http://127.0.0.1:18001")
+LOGGER = get_logger(__name__)
 
 pytestmark = pytest.mark.xdist_group(name="physics_sims")
 
@@ -560,7 +565,7 @@ async def test_int_engineer_planner_seed_rejects_presolved_engineering_plan():
 
 @pytest.mark.integration_p0
 @pytest.mark.asyncio
-async def test_int_engineer_planner_seed_accepts_template_free_seed_under_scope():
+async def test_int_engineer_planner_seed_requires_benchmark_definition_under_scope():
     item = _load_role_based_seed_item(AgentName.ENGINEER_PLANNER, "ep-001")
 
     session_id = f"INT-STARTER-{uuid.uuid4().hex[:8]}"
@@ -574,13 +579,62 @@ async def test_int_engineer_planner_seed_accepts_template_free_seed_under_scope(
         update_manifests=True,
     )
 
-    errors = await validate_seeded_workspace_handoff_artifacts(
-        worker_client=snapshot_client,
-        target_node=AgentName.ENGINEER_PLANNER,
-        validation_scope=ValidationScope.CURRENT_AND_PREVIOUS_NODES,
+    with pytest.raises(SeededEntryContractError) as excinfo:
+        await preflight_seeded_entry_contract(
+            item=item,
+            session_id=session_id,
+            agent_name=AgentName.ENGINEER_PLANNER,
+            spec=AGENT_SPECS[AgentName.ENGINEER_PLANNER],
+            root=ROOT,
+            worker_light_url=WORKER_LIGHT_URL,
+            logger=LOGGER,
+            workspace_client=snapshot_client,
+            validation_scope=ValidationScope.CURRENT_NODE,
+        )
+
+    report = excinfo.value.report
+    assert any(
+        error.artifact_path == "benchmark_definition.yaml"
+        for error in report.entry_validation_result.errors
     )
 
-    assert not errors, errors
+
+@pytest.mark.integration_p0
+@pytest.mark.asyncio
+async def test_int_engineer_planner_seed_accepts_complete_handoff_under_scope():
+    item = _load_role_based_seed_item(AgentName.ENGINEER_PLANNER, "ep-001")
+    benchmark_definition_yaml = dump_yaml_model(_cross_contract_benchmark_definition())
+    item = item.model_copy(
+        update={
+            "seed_files": {
+                **(item.seed_files or {}),
+                "benchmark_definition.yaml": benchmark_definition_yaml,
+            }
+        }
+    )
+
+    session_id = f"INT-STARTER-{uuid.uuid4().hex[:8]}"
+    snapshot_client = InMemorySeedWorkspaceClient(session_id=session_id)
+    await materialize_seed_workspace_snapshot(
+        item=item,
+        session_id=session_id,
+        agent_name=AgentName.ENGINEER_PLANNER,
+        root=ROOT,
+        workspace_client=snapshot_client,
+        update_manifests=True,
+    )
+
+    await preflight_seeded_entry_contract(
+        item=item,
+        session_id=session_id,
+        agent_name=AgentName.ENGINEER_PLANNER,
+        spec=AGENT_SPECS[AgentName.ENGINEER_PLANNER],
+        root=ROOT,
+        worker_light_url=WORKER_LIGHT_URL,
+        logger=LOGGER,
+        workspace_client=snapshot_client,
+        validation_scope=ValidationScope.CURRENT_NODE,
+    )
 
 
 @pytest.mark.integration_p0

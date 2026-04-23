@@ -33,6 +33,7 @@ _CURRENT_SEED_WORKSPACE_FILES: dict[AgentName, tuple[str, ...]] = {
     ),
     AgentName.ENGINEER_PLANNER: (
         "benchmark_plan.md",
+        "benchmark_definition.yaml",
         "benchmark_assembly_definition.yaml",
         BENCHMARK_SCRIPT_PATH,
         BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,

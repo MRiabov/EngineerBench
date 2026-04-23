@@ -342,12 +342,7 @@ def _benchmark_coder_entry_artifacts() -> list[str]:
 
 def _engineer_planner_entry_artifacts() -> list[str]:
     """Artifacts the engineering planner needs before it can start planning."""
-    return [
-        "benchmark_plan.md",
-        "benchmark_assembly_definition.yaml",
-        "benchmark_script.py",
-        BENCHMARK_PLAN_EVIDENCE_SCRIPT_PATH,
-    ]
+    return list(ENGINEER_PLANNER_HANDOFF_ARTIFACTS)
 
 
 def _engineer_coder_entry_artifacts() -> list[str]:

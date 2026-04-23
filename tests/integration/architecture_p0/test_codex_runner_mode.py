@@ -33,6 +33,7 @@ from evals.logic.codex_session_trace import (
 )
 from evals.logic.codex_workspace import (
     CodexExecRunResult,
+    _load_review_artifacts_local,
     build_cli_env,
     launch_cli_exec,
     materialize_seed_workspace,
@@ -127,6 +128,48 @@ def _parse_trailing_json(stdout: str) -> dict[str, object]:
         if isinstance(payload, dict):
             return payload
     raise AssertionError("Expected a trailing JSON payload in stdout")
+
+
+def test_review_artifact_loader_reads_yaml_comment_pair(tmp_path: Path) -> None:
+    workspace_dir = tmp_path / "workspace"
+    reviews_dir = workspace_dir / "reviews"
+    reviews_dir.mkdir(parents=True, exist_ok=True)
+
+    (reviews_dir / "benchmark-plan-review-decision-round-1.yaml").write_text(
+        yaml.safe_dump(
+            {
+                "decision": "APPROVED",
+                "comments": ["ok"],
+                "evidence": {"render_count": 1},
+            },
+            sort_keys=False,
+        ),
+        encoding="utf-8",
+    )
+    (reviews_dir / "benchmark-plan-review-comments-round-1.yaml").write_text(
+        yaml.safe_dump(
+            {
+                "summary": "APPROVED: looks good",
+                "comments": ["ok"],
+                "required_fixes": [],
+                "checklist": {"render_count": 1},
+            },
+            sort_keys=False,
+        ),
+        encoding="utf-8",
+    )
+
+    review_data, comments_data, error = _load_review_artifacts_local(
+        workspace_dir=workspace_dir,
+        review_filename_prefix="benchmark-plan-review",
+        session_id="test-session",
+    )
+
+    assert error is None
+    assert review_data is not None
+    assert comments_data is not None
+    assert review_data.decision.value == "APPROVED"
+    assert comments_data.summary.startswith("APPROVED")
 
 
 def _load_dataset_item(_dataset_rel_path: str, row_id: str) -> EvalDatasetItem:
@@ -3622,7 +3665,6 @@ def test_validate_eval_seed_accepts_curated_rows_and_preserves_redundancy_metada
         ("benchmark_plan_reviewer", "bpr-002"),
         ("benchmark_coder", "bc-001"),
         ("benchmark_reviewer", "br-001"),
-        ("engineer_planner", "ep-002"),
         ("engineer_plan_reviewer", "epr-002"),
         ("engineer_coder", "ec-001"),
         ("engineer_execution_reviewer", "eer-002"),
@@ -3884,11 +3926,12 @@ def test_validate_eval_seed_json_mode_emits_machine_readable_results(tmp_path: P
     payload = _parse_trailing_json(completed.stdout)
     assert payload["checked"] == 1, payload
     assert payload["passed"] + payload["failed"] == 1, payload
+    assert payload["failed"] == 1, payload
     assert len(payload["results"]) == 1, payload
     result = payload["results"][0]
     assert result["task_id"] == "ep-001", payload
     assert result["agent"] == "engineer_planner", payload
-    assert isinstance(result["ok"], bool), payload
+    assert result["ok"] is False, payload
 
 
 @pytest.mark.integration_p0

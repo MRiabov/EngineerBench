@@ -12,18 +12,18 @@ is wired while the outer orchestration becomes a product-level pipeline.
 
 from __future__ import annotations
 
-import asyncio
 import argparse
+import asyncio
 import hashlib
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
-import shutil
 import time
-from dataclasses import dataclass
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -31,14 +31,14 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from evals.logic.dataset_selection import (  # noqa: E402
-    parse_level_filters,
-    parse_task_id_filters,
-)
 from evals.logic.codex_workspace import (  # noqa: E402
     launch_cli_exec,
     materialize_seed_workspace,
     verify_workspace_for_agent,
+)
+from evals.logic.dataset_selection import (  # noqa: E402
+    parse_level_filters,
+    parse_task_id_filters,
 )
 from evals.logic.inference_pipeline import (  # noqa: E402
     DEFAULT_INFERENCE_CONFIG_PATH,
@@ -62,9 +62,8 @@ from evals.logic.models import EvalDatasetItem  # noqa: E402
 from evals.logic.seed_maintenance import (  # noqa: E402
     refresh_seed_artifact_manifests,
 )
-from shared.eval_artifacts import workspace_artifacts_for_agent  # noqa: E402
 from shared.enums import AgentName  # noqa: E402
-
+from shared.eval_artifacts import workspace_artifacts_for_agent  # noqa: E402
 
 DEFAULT_PROVIDER = "codex"
 DEFAULT_SEED_WORKERS = 4
@@ -106,6 +105,14 @@ def _parse_args() -> argparse.Namespace:
         help=(
             "Pipeline stage to execute. Defaults to the config entry stage. "
             "The selected stage must have a wired executor."
+        ),
+    )
+    parser.add_argument(
+        "--run-until-stage",
+        default=None,
+        help=(
+            "Drain downstream stages through this stage and then stop. "
+            "The named stage must be reachable from the selected start stage."
         ),
     )
     parser.add_argument(
@@ -224,9 +231,7 @@ def _sanitize_slug(value: str) -> str:
     return cleaned or "item"
 
 
-def _workspace_dir_for_item(
-    run_dir: Path, stage_name: str, item_id: str
-) -> Path:
+def _workspace_dir_for_item(run_dir: Path, stage_name: str, item_id: str) -> Path:
     return run_dir / "workspaces" / _sanitize_slug(stage_name) / _sanitize_slug(item_id)
 
 
@@ -248,6 +253,8 @@ def _job_id(stage_name: str, task_id: str) -> str:
 
 def _job_state_allows_retry(status: InferenceJobStatus) -> bool:
     return status in {
+        InferenceJobStatus.QUEUED,
+        InferenceJobStatus.RUNNING,
         InferenceJobStatus.FAILED,
         InferenceJobStatus.INTERRUPTED,
     }
@@ -257,9 +264,7 @@ def _fanout_output_job_ids(stage: InferenceStageConfig, job_id: str) -> list[str
     output_job_ids: list[str] = []
     for downstream_stage_name in stage.downstream_stage_names:
         for index in range(1, stage.outputs_per_success + 1):
-            output_job_ids.append(
-                f"{job_id}->{downstream_stage_name}#{index:02d}"
-            )
+            output_job_ids.append(f"{job_id}->{downstream_stage_name}#{index:02d}")
     return output_job_ids
 
 
@@ -315,16 +320,20 @@ def _apply_resume_token(
     return selected_items[resume_index + 1 :], job_ids[: resume_index + 1]
 
 
-def _stage_persistence_target_dir(stage: InferenceStageConfig, item: EvalDatasetItem) -> Path | None:
+def _stage_persistence_target_dir(
+    stage: InferenceStageConfig, item: EvalDatasetItem
+) -> Path | None:
     if item.seed_artifact_dir is None:
         return None
     if stage.agent_name == AgentName.ENGINEER_PLANNER:
         return ROOT / item.seed_artifact_dir
-    return ROOT / "dataset" / "data" / "seed" / "artifacts" / "engineer_planner" / item.id
+    return (
+        ROOT / "dataset" / "data" / "seed" / "artifacts" / "engineer_planner" / item.id
+    )
 
 
 def _load_resume_state_skip_ids(
-    pipeline_states: dict[str, InferenceJobState]
+    pipeline_states: dict[str, InferenceJobState],
 ) -> set[str]:
     skipped: set[str] = set()
     for job_id, state in pipeline_states.items():
@@ -339,20 +348,52 @@ def _job_state_from_result(
     started_at: str,
     finished_at: str | None = None,
 ) -> InferenceJobState:
-    return InferenceJobState(
+    return _job_state_from_request(
         job_id=result.job_id,
         stage_name=result.stage_name,
         agent_name=result.agent_name,
         status=result.status,
         source_job_id=result.source_job_id,
+        started_at=started_at,
+        finished_at=finished_at,
         bundle_fingerprint=result.bundle_fingerprint,
-        last_validation_passed=result.validation_passed,
-        last_review_passed=result.review_passed,
-        source_run_started_at=started_at,
-        source_run_finished_at=finished_at,
-        recorded_at=finished_at or started_at,
+        validation_passed=result.validation_passed,
+        review_passed=result.review_passed,
         failure_reason=result.failure_reason,
         output_job_ids=result.output_job_ids,
+    )
+
+
+def _job_state_from_request(
+    *,
+    job_id: str,
+    stage_name: str,
+    agent_name: AgentName,
+    status: InferenceJobStatus,
+    started_at: str,
+    finished_at: str | None = None,
+    recorded_at: str | None = None,
+    source_job_id: str | None = None,
+    bundle_fingerprint: str | None = None,
+    validation_passed: bool | None = None,
+    review_passed: bool | None = None,
+    failure_reason: str | None = None,
+    output_job_ids: list[str] | None = None,
+) -> InferenceJobState:
+    return InferenceJobState(
+        job_id=job_id,
+        stage_name=stage_name,
+        agent_name=agent_name,
+        status=status,
+        source_job_id=source_job_id,
+        bundle_fingerprint=bundle_fingerprint,
+        last_validation_passed=validation_passed,
+        last_review_passed=review_passed,
+        source_run_started_at=started_at,
+        source_run_finished_at=finished_at,
+        recorded_at=recorded_at or finished_at or started_at,
+        failure_reason=failure_reason,
+        output_job_ids=list(output_job_ids or []),
     )
 
 
@@ -373,7 +414,9 @@ class SelectedStageItem:
 
 
 def _seed_dataset_path_for_agent(agent_name: AgentName) -> Path:
-    return ROOT / "dataset" / "data" / "seed" / "role_based" / f"{agent_name.value}.json"
+    return (
+        ROOT / "dataset" / "data" / "seed" / "role_based" / f"{agent_name.value}.json"
+    )
 
 
 def _infer_row_family(agent_name: AgentName, raw_row: dict[str, Any]) -> str | None:
@@ -404,7 +447,9 @@ def _load_stage_items(
 ) -> tuple[list[SelectedStageItem], list[str]]:
     dataset_path = _seed_dataset_path_for_agent(stage.agent_name)
     if not dataset_path.exists():
-        raise FileNotFoundError(f"Missing seed dataset for {stage.agent_name.value}: {dataset_path}")
+        raise FileNotFoundError(
+            f"Missing seed dataset for {stage.agent_name.value}: {dataset_path}"
+        )
 
     try:
         rows = json.loads(dataset_path.read_text(encoding="utf-8"))
@@ -467,6 +512,269 @@ def _load_stage_items(
     return selected, []
 
 
+def _stage_execution_order(
+    config: InferencePipelineConfig, start_stage_name: str
+) -> list[InferenceStageConfig]:
+    ordered_stages: list[InferenceStageConfig] = []
+    pending_stage_names = [start_stage_name]
+    seen_stage_names: set[str] = set()
+
+    while pending_stage_names:
+        stage_name = pending_stage_names.pop(0)
+        if stage_name in seen_stage_names:
+            continue
+        seen_stage_names.add(stage_name)
+        stage = config.stage(stage_name)
+        ordered_stages.append(stage)
+        for downstream_stage_name in stage.downstream_stage_names:
+            if downstream_stage_name not in seen_stage_names:
+                pending_stage_names.append(downstream_stage_name)
+
+    return ordered_stages
+
+
+def _validate_run_until_stage(
+    config: InferencePipelineConfig,
+    *,
+    start_stage_name: str,
+    run_until_stage_name: str | None,
+) -> str | None:
+    if run_until_stage_name is None:
+        return None
+    try:
+        config.stage(run_until_stage_name)
+    except KeyError as exc:
+        raise SystemExit(f"Unknown --run-until-stage {run_until_stage_name!r}") from exc
+
+    ordered_stage_names = [
+        stage.name for stage in _stage_execution_order(config, start_stage_name)
+    ]
+    if run_until_stage_name not in ordered_stage_names:
+        raise SystemExit(
+            f"--run-until-stage {run_until_stage_name!r} is not reachable from "
+            f"start stage {start_stage_name!r}"
+        )
+    return run_until_stage_name
+
+
+def _select_stage_items_for_run(
+    *,
+    stage: InferenceStageConfig,
+    families: list[str] | None,
+    task_ids: set[str] | None,
+    levels: set[int] | None,
+    limit: int,
+    pipeline_task_state: dict[str, InferenceJobState],
+    compatibility_task_state: dict[str, dict[str, Any]],
+    pipeline_skip_ids: set[str],
+    resume_token: str | None,
+) -> tuple[list[SelectedStageItem], list[str], list[str]]:
+    selected_items, _ = _load_stage_items(
+        stage=stage,
+        families=families,
+        task_ids=task_ids,
+        levels=levels,
+        limit=limit,
+    )
+    resumed_job_ids: list[str] = []
+    if resume_token is not None:
+        selected_items, resumed_job_ids = _apply_resume_token(
+            selected_items,
+            stage=stage,
+            resume_token=resume_token,
+        )
+
+    skipped_existing_job_ids: list[str] = []
+    if stage.agent_name == AgentName.ENGINEER_PLANNER:
+        retained_items: list[SelectedStageItem] = []
+        for selected in selected_items:
+            item = selected.item
+            task_id = item.id
+            source_dir = item.seed_artifact_dir
+            if source_dir is None:
+                retained_items.append(selected)
+                continue
+            current_dir = ROOT / source_dir
+            current_fingerprint = _bundle_fingerprint(current_dir)
+            current_state = compatibility_task_state.get(task_id)
+            if (
+                current_state
+                and current_state.get("bundle_fingerprint") == current_fingerprint
+                and current_state.get("last_validation_passed")
+                and current_state.get("last_review_passed")
+            ):
+                skipped_existing_job_ids.append(_job_id(stage.name, task_id))
+                continue
+            retained_items.append(selected)
+        selected_items = retained_items
+
+    skipped_pipeline = [
+        _job_id(stage.name, selected.item.id)
+        for selected in selected_items
+        if _job_id(stage.name, selected.item.id) in pipeline_skip_ids
+    ]
+    selected_items = [
+        selected
+        for selected in selected_items
+        if _job_id(stage.name, selected.item.id) not in pipeline_skip_ids
+    ]
+    selected_job_ids = [
+        _job_id(stage.name, selected.item.id) for selected in selected_items
+    ]
+    skipped_job_ids = sorted(
+        set(skipped_existing_job_ids) | set(skipped_pipeline) | set(resumed_job_ids)
+    )
+    return selected_items, selected_job_ids, skipped_job_ids
+
+
+def _execute_stage_batch(
+    *,
+    stage: InferenceStageConfig,
+    stage_config: InferencePipelineConfig,
+    selected_items: list[SelectedStageItem],
+    provider_name: str,
+    run_dir: Path,
+    persist_results: bool,
+    validate_only: bool,
+    update_manifests: bool,
+    seed_workers: int,
+    summary: InferenceRunSummary,
+    pipeline_job_state: dict[str, InferenceJobState],
+) -> tuple[dict[str, InferenceJobState], list[str], bool]:
+    if not selected_items:
+        return pipeline_job_state, [], False
+
+    selected_requests = [
+        (
+            selected,
+            _job_request_for_item(
+                stage=stage,
+                item=selected.item,
+                persist_results=persist_results,
+                raw_row=selected.raw_row,
+            ),
+        )
+        for selected in selected_items
+    ]
+    selected_request_by_id = {
+        selected.item.id: request for selected, request in selected_requests
+    }
+
+    pipeline_job_state = dict(pipeline_job_state)
+    failures: list[str] = []
+    checkpointed_at = time.strftime("%Y-%m-%dT%H:%M:%S%z")
+    for selected, request in selected_requests:
+        pipeline_job_state[request.job_id] = _job_state_from_request(
+            job_id=request.job_id,
+            stage_name=stage.name,
+            agent_name=stage.agent_name,
+            status=InferenceJobStatus.QUEUED,
+            source_job_id=request.metadata.get("upstream_job_id"),
+            started_at=summary.started_at,
+            finished_at=None,
+            recorded_at=checkpointed_at,
+            output_job_ids=_fanout_output_job_ids(stage, request.job_id),
+        )
+    write_inference_job_state(ROOT, pipeline_job_state)
+
+    refreshed_compatibility_state = False
+    with ThreadPoolExecutor(max_workers=seed_workers) as pool:
+        future_map = {}
+        for selected, request in selected_requests:
+            pipeline_job_state[request.job_id] = _job_state_from_request(
+                job_id=request.job_id,
+                stage_name=stage.name,
+                agent_name=stage.agent_name,
+                status=InferenceJobStatus.RUNNING,
+                source_job_id=request.metadata.get("upstream_job_id"),
+                started_at=summary.started_at,
+                finished_at=None,
+                recorded_at=time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                output_job_ids=_fanout_output_job_ids(stage, request.job_id),
+            )
+            write_inference_job_state(ROOT, pipeline_job_state)
+            future = pool.submit(
+                _run_workspace_job,
+                stage=stage,
+                item=selected.item,
+                raw_row=selected.raw_row,
+                provider_name=provider_name,
+                run_dir=run_dir,
+                persist_results=persist_results,
+                validate_only=validate_only,
+                update_manifests=update_manifests,
+            )
+            future_map[future] = selected
+
+        for future in as_completed(future_map):
+            selected = future_map[future]
+            request = selected_request_by_id[selected.item.id]
+            try:
+                result = future.result()
+            except Exception as exc:
+                result = InferenceJobResult(
+                    job_id=request.job_id,
+                    stage_name=stage.name,
+                    agent_name=stage.agent_name,
+                    status=InferenceJobStatus.FAILED,
+                    task_id=selected.item.id,
+                    workspace_dir=_workspace_dir_for_item(
+                        run_dir, stage.name, selected.item.id
+                    ),
+                    run_dir=run_dir,
+                    failure_reason=str(exc),
+                )
+
+            summary.jobs.append(result)
+            if result.status == InferenceJobStatus.PERSISTED:
+                summary.completed_job_ids.append(result.job_id)
+                summary.persisted_job_ids.append(result.job_id)
+                print(f"[job] PERSISTED {result.job_id}")
+            elif result.status in {
+                InferenceJobStatus.REVIEWED,
+                InferenceJobStatus.VALIDATED,
+            }:
+                summary.completed_job_ids.append(result.job_id)
+                print(f"[job] COMPLETED {result.job_id} status={result.status.value}")
+            else:
+                summary.failed_job_ids.append(result.job_id)
+                failures.append(result.job_id)
+                print(
+                    f"[job] FAIL {result.job_id}: "
+                    f"{result.failure_reason or 'unknown failure'}"
+                )
+
+            pipeline_job_state[result.job_id] = _job_state_from_result(
+                result=result,
+                started_at=summary.started_at,
+                finished_at=None,
+            )
+            if result.status != InferenceJobStatus.FAILED:
+                queued_at = time.strftime("%Y-%m-%dT%H:%M:%S%z")
+                _queue_downstream_job_states(
+                    pipeline_job_state=pipeline_job_state,
+                    summary=summary,
+                    stage=stage,
+                    source_job_id=result.job_id,
+                    started_at=summary.started_at,
+                    finished_at=queued_at,
+                    recorded_at=queued_at,
+                    stage_config=stage_config,
+                )
+            write_inference_job_state(ROOT, pipeline_job_state)
+
+            if result.copied_back:
+                refreshed_compatibility_state = True
+
+            if result.workspace_dir is not None:
+                shutil.rmtree(result.workspace_dir, ignore_errors=True)
+
+            summary_path = _write_summary(run_dir, summary)
+            print(f"Summary written to {summary_path}")
+
+    return pipeline_job_state, failures, refreshed_compatibility_state
+
+
 def _compatibility_state_path(root: Path) -> Path:
     return root / ENGINEER_TASK_STATE_REL
 
@@ -520,6 +828,11 @@ def _bundle_fingerprint(root: Path) -> str:
 
 
 def _bundle_copy_allowed(rel_path: str, stage_agent_name: AgentName) -> bool:
+    if stage_agent_name == AgentName.BENCHMARK_CODER and rel_path.startswith(
+        "reviews/"
+    ):
+        return False
+
     allowed_exact = set(workspace_artifacts_for_agent(stage_agent_name))
     allowed_prefixes = (
         ".manifests/",
@@ -564,6 +877,16 @@ def _refresh_persisted_bundle_artifacts(
     target_dir: Path, *, update_manifests: bool
 ) -> None:
     refresh_seed_artifact_manifests(target_dir, fix=update_manifests)
+
+
+def _is_engineer_planner_seed_storage_dir(target_dir: Path) -> bool:
+    try:
+        target_dir.relative_to(
+            ROOT / "dataset" / "data" / "seed" / "artifacts" / "engineer_planner"
+        )
+    except ValueError:
+        return False
+    return True
 
 
 def _job_request_for_item(
@@ -632,7 +955,9 @@ def _run_workspace_job(
         persist_results=persist_results,
         raw_row=raw_row,
     )
-    session_id = f"{stage.name}-{_sanitize_slug(item.id)}-{time.strftime('%Y%m%d_%H%M%S')}"
+    session_id = (
+        f"{stage.name}-{_sanitize_slug(item.id)}-{time.strftime('%Y%m%d_%H%M%S')}"
+    )
 
     try:
         materialized = materialize_seed_workspace(
@@ -684,7 +1009,8 @@ def _run_workspace_job(
                 task_id=item.id,
                 workspace_dir=materialized.workspace_dir,
                 run_dir=run_dir,
-                failure_reason="; ".join(verification.errors) or verification.verification_name,
+                failure_reason="; ".join(verification.errors)
+                or verification.verification_name,
                 selected_task_ids=[],
                 completed_task_ids=[],
                 skipped_task_ids=[],
@@ -704,7 +1030,7 @@ def _run_workspace_job(
                 update_manifests=update_manifests,
             )
             copied_back = True
-            if stage.agent_name == AgentName.ENGINEER_PLANNER:
+            if _is_engineer_planner_seed_storage_dir(target_dir):
                 compatibility_state = _load_compatibility_seed_state(ROOT)
                 compatibility_state[item.id] = {
                     "task_id": item.id,
@@ -794,6 +1120,11 @@ def main() -> int:
 
     config = load_inference_config(args.config)
     selected_stage = _load_selected_stage(config, args.stage)
+    run_until_stage_name = _validate_run_until_stage(
+        config,
+        start_stage_name=selected_stage.name,
+        run_until_stage_name=args.run_until_stage,
+    )
     stage_executor = EXECUTOR_REGISTRY.get(selected_stage.executor)
     if stage_executor is None:
         raise SystemExit(
@@ -809,15 +1140,6 @@ def main() -> int:
         else config.worker_hints.seed_workers
         if config.worker_hints.seed_workers is not None
         else DEFAULT_SEED_WORKERS
-    )
-    author_retries = (
-        args.author_retries
-        if args.author_retries is not None
-        else selected_stage.worker_hints.author_retries
-        if selected_stage.worker_hints.author_retries is not None
-        else config.worker_hints.author_retries
-        if config.worker_hints.author_retries is not None
-        else DEFAULT_AUTHOR_RETRIES
     )
     queue = (
         args.queue
@@ -837,15 +1159,6 @@ def main() -> int:
         if config.worker_hints.skip_env_up is not None
         else False
     )
-    validation_scope = (
-        args.validation_scope
-        if args.validation_scope is not None
-        else selected_stage.worker_hints.validation_scope
-        if selected_stage.worker_hints.validation_scope is not None
-        else config.worker_hints.validation_scope
-        if config.worker_hints.validation_scope is not None
-        else DEFAULT_VALIDATION_SCOPE
-    )
     update_manifests = (
         args.update_manifests
         if args.update_manifests is not None
@@ -861,15 +1174,6 @@ def main() -> int:
         else selected_stage.persist_back_to_seed
     )
 
-    selected_families = (
-        list(args.family)
-        if args.family is not None
-        else (
-            list(DEFAULT_FAMILIES)
-            if selected_stage.agent_name == AgentName.ENGINEER_PLANNER
-            else None
-        )
-    )
     requested_task_ids = parse_task_id_filters(args.task_id)
     selected_levels = parse_level_filters(args.level)
     if args.level and not selected_levels:
@@ -891,63 +1195,39 @@ def main() -> int:
         config_path=args.config,
         run_dir=run_dir,
     )
-
-    selected_items, _ = _load_stage_items(
+    compatibility_task_state = _load_compatibility_seed_state(ROOT)
+    entry_stage_families = (
+        list(args.family)
+        if args.family is not None
+        and selected_stage.agent_name == AgentName.ENGINEER_PLANNER
+        else (
+            list(DEFAULT_FAMILIES)
+            if selected_stage.agent_name == AgentName.ENGINEER_PLANNER
+            else None
+        )
+    )
+    selected_items, selected_job_ids, skipped_job_ids = _select_stage_items_for_run(
         stage=selected_stage,
-        families=selected_families,
+        families=entry_stage_families,
         task_ids=set(requested_task_ids) if requested_task_ids else None,
         levels=selected_levels,
         limit=args.limit,
-    )
-    selected_items, resumed_job_ids = _apply_resume_token(
-        selected_items,
-        stage=selected_stage,
+        pipeline_task_state=pipeline_task_state,
+        compatibility_task_state=compatibility_task_state,
+        pipeline_skip_ids=pipeline_skip_ids,
         resume_token=args.resume_token,
     )
-    compatibility_task_state = _load_compatibility_seed_state(ROOT)
-    skipped_existing_job_ids: list[str] = []
-    if selected_stage.agent_name == AgentName.ENGINEER_PLANNER:
-        retained_items: list[SelectedStageItem] = []
-        for selected in selected_items:
-            item = selected.item
-            task_id = item.id
-            source_dir = item.seed_artifact_dir
-            if source_dir is None:
-                retained_items.append(selected)
-                continue
-            current_dir = ROOT / source_dir
-            current_fingerprint = _bundle_fingerprint(current_dir)
-            current_state = compatibility_task_state.get(task_id)
-            if (
-                current_state
-                and current_state.get("bundle_fingerprint") == current_fingerprint
-                and current_state.get("last_validation_passed")
-                and current_state.get("last_review_passed")
-            ):
-                skipped_existing_job_ids.append(_job_id(selected_stage.name, task_id))
-                continue
-            retained_items.append(selected)
-        selected_items = retained_items
-
-    skipped_pipeline = [
-        _job_id(selected_stage.name, selected.item.id)
-        for selected in selected_items
-        if _job_id(selected_stage.name, selected.item.id) in pipeline_skip_ids
-    ]
-    selected_items = [
-        selected
-        for selected in selected_items
-        if _job_id(selected_stage.name, selected.item.id) not in pipeline_skip_ids
-    ]
-    summary.selected_job_ids = [
-        _job_id(selected_stage.name, selected.item.id) for selected in selected_items
-    ]
-    summary.skipped_job_ids = sorted(
-        set(skipped_existing_job_ids) | set(skipped_pipeline) | set(resumed_job_ids)
-    )
+    stage_order = _stage_execution_order(config, selected_stage.name)
+    summary.selected_job_ids = list(selected_job_ids)
+    summary.skipped_job_ids = list(skipped_job_ids)
 
     if not selected_items:
-        if summary.skipped_job_ids:
+        if summary.skipped_job_ids and len(stage_order) > 1:
+            print(
+                f"Start stage {selected_stage.name!r} has no runnable jobs; "
+                "continuing graph drain through downstream stages."
+            )
+        elif summary.skipped_job_ids:
             summary.finished_at = time.strftime("%Y-%m-%dT%H:%M:%S%z")
             summary.success = True
             summary.next_resume_token = summary.resume_token
@@ -959,27 +1239,33 @@ def main() -> int:
                 "or intentionally skipped."
             )
             return 0
-        summary.finished_at = time.strftime("%Y-%m-%dT%H:%M:%S%z")
-        summary.success = False
-        summary.next_resume_token = summary.resume_token
-        summary_path = _write_summary(run_dir, summary)
-        print(f"Summary written to {summary_path}")
-        raise SystemExit("No inference jobs matched the selection.")
+        else:
+            summary.finished_at = time.strftime("%Y-%m-%dT%H:%M:%S%z")
+            summary.success = False
+            summary.next_resume_token = summary.resume_token
+            summary_path = _write_summary(run_dir, summary)
+            print(f"Summary written to {summary_path}")
+            raise SystemExit("No inference jobs matched the selection.")
 
-    if args.dry_run:
-        queued_job_ids: list[str] = []
-        for selected in selected_items:
-            request = _job_request_for_item(
+    selected_requests = [
+        (
+            selected,
+            _job_request_for_item(
                 stage=selected_stage,
                 item=selected.item,
                 persist_results=persist_results,
                 raw_row=selected.raw_row,
-            )
+            ),
+        )
+        for selected in selected_items
+    ]
+
+    if args.dry_run:
+        queued_job_ids: list[str] = []
+        for selected, request in selected_requests:
             raw_variant = selected.raw_row.get("variant")
             variant_text = (
-                f"{int(raw_variant):02d}"
-                if isinstance(raw_variant, int)
-                else "n/a"
+                f"{int(raw_variant):02d}" if isinstance(raw_variant, int) else "n/a"
             )
             print(
                 f"DRY RUN {request.job_id}: family={selected.family or 'n/a'} "
@@ -991,24 +1277,23 @@ def main() -> int:
             )
         summary.jobs = [
             InferenceJobResult(
-                job_id=_job_id(selected_stage.name, selected.item.id),
+                job_id=request.job_id,
                 stage_name=selected_stage.name,
                 agent_name=selected_stage.agent_name,
                 status=InferenceJobStatus.QUEUED,
                 task_id=selected.item.id,
                 run_dir=run_dir,
                 selected_task_ids=[selected.item.id],
-                output_job_ids=_fanout_output_job_ids(
-                    selected_stage,
-                    _job_id(selected_stage.name, selected.item.id),
-                ),
+                output_job_ids=_fanout_output_job_ids(selected_stage, request.job_id),
             )
-            for selected in selected_items
+            for selected, request in selected_requests
         ]
         summary.queued_job_ids = sorted(set(queued_job_ids))
         summary.finished_at = time.strftime("%Y-%m-%dT%H:%M:%S%z")
         summary.success = True
-        summary.next_resume_token = summary.jobs[-1].job_id if summary.jobs else summary.resume_token
+        summary.next_resume_token = (
+            summary.jobs[-1].job_id if summary.jobs else summary.resume_token
+        )
         summary_path = _write_summary(run_dir, summary)
         print(f"Summary written to {summary_path}")
         print(f"Run directory: {run_dir}")
@@ -1043,95 +1328,103 @@ def main() -> int:
 
     pipeline_job_state = dict(pipeline_task_state)
     failures: list[str] = []
-
-    with ThreadPoolExecutor(max_workers=seed_workers) as pool:
-        future_map = {}
-        for selected in selected_items:
-            future = pool.submit(
-                _run_workspace_job,
-                stage=selected_stage,
-                item=selected.item,
-                raw_row=selected.raw_row,
+    current_stage = selected_stage
+    current_selected_items = selected_items
+    current_persist_results = persist_results
+    current_seed_workers = seed_workers
+    if current_selected_items:
+        pipeline_job_state, stage_failures, refreshed_compatibility_state = (
+            _execute_stage_batch(
+                stage=current_stage,
+                stage_config=config,
+                selected_items=current_selected_items,
                 provider_name=args.provider,
                 run_dir=run_dir,
-                persist_results=persist_results,
+                persist_results=current_persist_results,
                 validate_only=args.validate_only,
                 update_manifests=update_manifests,
+                seed_workers=current_seed_workers,
+                summary=summary,
+                pipeline_job_state=pipeline_job_state,
             )
-            future_map[future] = selected
+        )
+        failures.extend(stage_failures)
+        if refreshed_compatibility_state:
+            compatibility_task_state = _load_compatibility_seed_state(ROOT)
 
-        for future in as_completed(future_map):
-            selected = future_map[future]
-            request = _job_request_for_item(
-                stage=selected_stage,
-                item=selected.item,
-                persist_results=persist_results,
-                raw_row=selected.raw_row,
+    for followup_stage in stage_order[1:]:
+        if followup_stage.executor == InferenceStageExecutorName.PLANNED:
+            print(
+                f"Stopping graph drain before declared-only stage {followup_stage.name!r}"
             )
-            try:
-                result = future.result()
-            except Exception as exc:
-                result = InferenceJobResult(
-                    job_id=request.job_id,
-                    stage_name=selected_stage.name,
-                    agent_name=selected_stage.agent_name,
-                    status=InferenceJobStatus.FAILED,
-                    task_id=selected.item.id,
-                    workspace_dir=_workspace_dir_for_item(
-                        run_dir, selected_stage.name, selected.item.id
-                    ),
-                    run_dir=run_dir,
-                    failure_reason=str(exc),
-                )
+            break
 
-            summary.jobs.append(result)
-            if result.status == InferenceJobStatus.PERSISTED:
-                summary.completed_job_ids.append(result.job_id)
-                summary.persisted_job_ids.append(result.job_id)
-                print(f"[job] PERSISTED {result.job_id}")
-            elif result.status in {
-                InferenceJobStatus.REVIEWED,
-                InferenceJobStatus.VALIDATED,
-            }:
-                summary.completed_job_ids.append(result.job_id)
-                print(f"[job] COMPLETED {result.job_id} status={result.status.value}")
-            else:
-                summary.failed_job_ids.append(result.job_id)
-                failures.append(result.job_id)
-                print(
-                    f"[job] FAIL {result.job_id}: "
-                    f"{result.failure_reason or 'unknown failure'}"
-                )
-
-            pipeline_job_state[result.job_id] = _job_state_from_result(
-                result=result,
-                started_at=summary.started_at,
-                finished_at=None,
+        followup_seed_workers = (
+            args.seed_workers
+            if args.seed_workers is not None
+            else followup_stage.worker_hints.seed_workers
+            if followup_stage.worker_hints.seed_workers is not None
+            else config.worker_hints.seed_workers
+            if config.worker_hints.seed_workers is not None
+            else DEFAULT_SEED_WORKERS
+        )
+        followup_persist_results = (
+            args.persist_results
+            if args.persist_results is not None
+            else followup_stage.persist_back_to_seed
+        )
+        followup_families = (
+            list(DEFAULT_FAMILIES)
+            if followup_stage.agent_name == AgentName.ENGINEER_PLANNER
+            else None
+        )
+        followup_selected_items, followup_selected_job_ids, followup_skipped_job_ids = (
+            _select_stage_items_for_run(
+                stage=followup_stage,
+                families=followup_families,
+                task_ids=None,
+                levels=None,
+                limit=args.limit,
+                pipeline_task_state=pipeline_job_state,
+                compatibility_task_state=compatibility_task_state,
+                pipeline_skip_ids=_load_resume_state_skip_ids(pipeline_job_state),
+                resume_token=None,
             )
-            if result.status != InferenceJobStatus.FAILED:
-                queued_at = time.strftime("%Y-%m-%dT%H:%M:%S%z")
-                _queue_downstream_job_states(
-                    pipeline_job_state=pipeline_job_state,
-                    summary=summary,
-                    stage=selected_stage,
-                    source_job_id=result.job_id,
-                    started_at=summary.started_at,
-                    finished_at=queued_at,
-                    recorded_at=queued_at,
-                    stage_config=config,
-                )
-            write_inference_job_state(ROOT, pipeline_job_state)
+        )
+        summary.selected_job_ids.extend(followup_selected_job_ids)
+        summary.skipped_job_ids.extend(followup_skipped_job_ids)
+        if not followup_selected_items:
+            continue
 
-            if result.workspace_dir is not None:
-                shutil.rmtree(result.workspace_dir, ignore_errors=True)
-
-            summary_path = _write_summary(run_dir, summary)
-            print(f"Summary written to {summary_path}")
+        pipeline_job_state, stage_failures, refreshed_compatibility_state = (
+            _execute_stage_batch(
+                stage=followup_stage,
+                stage_config=config,
+                selected_items=followup_selected_items,
+                provider_name=args.provider,
+                run_dir=run_dir,
+                persist_results=followup_persist_results,
+                validate_only=args.validate_only,
+                update_manifests=update_manifests,
+                seed_workers=followup_seed_workers,
+                summary=summary,
+                pipeline_job_state=pipeline_job_state,
+            )
+        )
+        failures.extend(stage_failures)
+        if refreshed_compatibility_state:
+            compatibility_task_state = _load_compatibility_seed_state(ROOT)
+        if run_until_stage_name == followup_stage.name:
+            break
 
     summary.finished_at = time.strftime("%Y-%m-%dT%H:%M:%S%z")
     summary.success = not failures
+    summary.selected_job_ids = list(dict.fromkeys(summary.selected_job_ids))
+    summary.skipped_job_ids = list(dict.fromkeys(summary.skipped_job_ids))
     summary.queued_job_ids = sorted(set(summary.queued_job_ids))
-    summary.next_resume_token = summary.jobs[-1].job_id if summary.jobs else summary.resume_token
+    summary.next_resume_token = (
+        summary.jobs[-1].job_id if summary.jobs else summary.resume_token
+    )
 
     for job in summary.jobs:
         state = pipeline_job_state.get(job.job_id)
