@@ -1,0 +1,125 @@
+version: "1.0"
+units:
+  length: "mm"
+  volume: "mm3"
+  mass: "g"
+  currency: "USD"
+constraints:
+  benchmark_max_unit_cost_usd: 72.0
+  benchmark_max_weight_g: 1300.0
+  planner_target_max_unit_cost_usd: 56.0
+  planner_target_max_weight_g: 1200.0
+manufactured_parts:
+  - part_name: left_launch_pad
+    part_id: left_launch_pad
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 144000.0
+    stock_bbox_mm:
+      x: 80.0
+      y: 60.0
+      z: 30.0
+    stock_volume_mm3: 144000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 10.0
+  - part_name: corridor_block_a
+    part_id: corridor_block_a
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 336000.0
+    stock_bbox_mm:
+      x: 60.0
+      y: 70.0
+      z: 80.0
+    stock_volume_mm3: 336000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 8.0
+  - part_name: corridor_block_b
+    part_id: corridor_block_b
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 336000.0
+    stock_bbox_mm:
+      x: 60.0
+      y: 70.0
+      z: 80.0
+    stock_volume_mm3: 336000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 8.0
+  - part_name: corridor_block_c
+    part_id: corridor_block_c
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 336000.0
+    stock_bbox_mm:
+      x: 60.0
+      y: 70.0
+      z: 80.0
+    stock_volume_mm3: 336000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 8.0
+  - part_name: corridor_block_d
+    part_id: corridor_block_d
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 336000.0
+    stock_bbox_mm:
+      x: 60.0
+      y: 70.0
+      z: 80.0
+    stock_volume_mm3: 336000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 8.0
+  - part_name: corridor_block_e
+    part_id: corridor_block_e
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 336000.0
+    stock_bbox_mm:
+      x: 60.0
+      y: 70.0
+      z: 80.0
+    stock_volume_mm3: 336000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 8.0
+  - part_name: goal_catch_tray
+    part_id: goal_catch_tray
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 162000.0
+    stock_bbox_mm:
+      x: 90.0
+      y: 60.0
+      z: 30.0
+    stock_volume_mm3: 162000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 4.0
+final_assembly:
+  - name: left_launch_pad
+    config:
+  - name: corridor_block_a
+    config:
+  - name: corridor_block_b
+    config:
+  - name: corridor_block_c
+    config:
+  - name: corridor_block_d
+    config:
+  - name: corridor_block_e
+    config:
+  - name: goal_catch_tray
+    config:
+totals:
+  estimated_unit_cost_usd: 54.0
+  estimated_weight_g: 1180.0
+  estimate_confidence: high
+dfm_suggestions:
+  - Keep the corridor blocks static and axis-aligned so the compressed weave remains easy to inspect.
+  - Use a shallow goal tray pocket rather than a concealed catch feature so the benchmark stays legible.

@@ -1,0 +1,64 @@
+objectives:
+  goal_zone_mm:
+    min_mm: [240.0, -80.0, 10.0]
+    max_mm: [335.0, 30.0, 95.0]
+  forbid_zones:
+    - name: direct_drop_dead_zone
+      min_mm: [-80.0, -55.0, 0.0]
+      max_mm: [80.0, 45.0, 132.0]
+  build_zone_mm:
+    min_mm: [-140.0, -180.0, 0.0]
+    max_mm: [360.0, 180.0, 280.0]
+benchmark_parts:
+  - part_id: upper_start_ledge
+    label: upper_start_ledge
+    metadata:
+      is_fixed: true
+      material_id: aluminum_6061
+  - part_id: deflector_ramp
+    label: deflector_ramp
+    metadata:
+      is_fixed: true
+      material_id: hdpe
+  - part_id: direct_drop_shield
+    label: direct_drop_shield
+    metadata:
+      is_fixed: true
+      material_id: aluminum_6061
+  - part_id: rear_stop
+    label: rear_stop
+    metadata:
+      is_fixed: true
+      material_id: aluminum_6061
+  - part_id: side_wall
+    label: side_wall
+    metadata:
+      is_fixed: true
+      material_id: aluminum_6061
+  - part_id: lower_bin
+    label: lower_bin
+    metadata:
+      is_fixed: true
+      material_id: hdpe
+physics:
+  backend: GENESIS
+  compute_target: auto
+simulation_bounds_mm:
+  min_mm: [-190.0, -210.0, -10.0]
+  max_mm: [430.0, 210.0, 320.0]
+payload:
+  label: projectile_ball
+  shape: sphere
+  material_id: abs
+  static_randomization:
+    radius_mm: [28.0, 30.0]
+  start_position_mm: [-50.0, -5.0, 225.0]
+  runtime_jitter_mm: [8.0, 8.0, 6.0]
+constraints:
+  estimated_solution_cost_usd: 52.0
+  estimated_solution_weight_g: 930.0
+  max_unit_cost: 78.0
+  max_weight_g: 1450.0
+randomization:
+  static_variation_id: engineer_planner_lower_bin_v09
+  runtime_jitter_enabled: true

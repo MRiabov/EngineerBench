@@ -66,7 +66,7 @@ to handle harder benchmark shapes.
 | `central_bypass` | A central blocker sits between spawn and goal. | Blocker width, blocker height, route side, corridor width, goal shift, forbid-zone inflation. | Easy to medium. | 10 |
 | `narrow_funnel` | A wide capture area narrows into a tight goal throat. | Throat width, funnel angle, capture mouth size, sleeve length, payload size, jitter envelope. | Medium. | 10 |
 | `lower_bin` | The payload starts elevated and must land in a lower bin or catch zone. | Drop height, bin offset, deflector angle, rebound damping, lip geometry, release alignment. | Medium. | 10 |
-| `shelf_ascent` | The goal sits on an elevated shelf above the start region. | Shelf height, ramp slope, run-up length, support spacing, payload mass, goal lip depth. | Medium. | 10 |
+| `spiky_descent` | The route descends through spike-like obstacles and forbid zones into a lower goal basin. | Start height, descent slope, spike count, obstacle spacing, forbid-zone inflation, landing basin depth. | Medium. | 10 |
 | `clearance_gate` | A long object must pass through a window or gate in a wall. | Window width, window height, wall thickness, rod length, approach angle, tilt tolerance. | Medium. | 10 |
 | `s_corridor` | Two or more offset obstacles force a bent route. | Obstacle count, offsets, bend angle, pinch width, dead-end length, goal placement. | Medium. | 10 |
 | `terrain_ridge` | The route crosses a bump, ridge, shallow step, or slope break. | Ridge height, slope length, crest radius, friction, start elevation, catch zone shape. | Medium to hard. | 10 |
@@ -131,18 +131,23 @@ Good variants include:
 
 The important signal is gravity-aware redirection, not flat transfer.
 
-### `shelf_ascent`
+### `spiky_descent`
 
-This family teaches uphill transport to a raised goal.
+This family teaches downhill transport through a dense field of obstacles and
+forbid zones.
 
 Good variants include:
 
-- Shelf height changed while keeping the same ramp concept.
-- Ramp slope made slightly steeper while keeping the same footprint.
-- Shelf lip made shallower or deeper.
-- Run-up region shortened to force a more compact design.
+- Start height changed while keeping the same descending footprint.
+- Descent slope made slightly steeper while keeping the same horizontal span.
+- Spike count or spacing tightened to create a more cluttered downhill route.
+- Forbid-zone placement shifted or inflated to force lateral avoidance while
+  descending.
+- Landing basin made shallower or deeper.
+- Run-out region shortened to force a more compact downhill design.
 
-The family should remain an ascent problem, not a gap bridge problem.
+The family should remain a descent problem with obstacle avoidance, not an
+ascent problem, a gap bridge problem, or a terrain ridge problem.
 
 ### `clearance_gate`
 

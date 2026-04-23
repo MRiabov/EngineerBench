@@ -1,0 +1,1345 @@
+{
+  "component_label": "benchmark_fixtures",
+  "entities": [
+    {
+      "label": "corridor_floor",
+      "semantic_label": "corridor_floor",
+      "instance_id": "corridor_floor",
+      "instance_name": "corridor_floor",
+      "object_type": "part",
+      "object_id": 0,
+      "pos_mm": [
+        250.0,
+        0.0,
+        3.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/corridor_floor.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "corridor_floor",
+      "geom_name": "corridor_floor",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "perimeter_wall_north",
+      "semantic_label": "perimeter_wall_north",
+      "instance_id": "perimeter_wall_north",
+      "instance_name": "perimeter_wall_north",
+      "object_type": "part",
+      "object_id": 1,
+      "pos_mm": [
+        250.0,
+        287.0,
+        96.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/perimeter_wall_north.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "perimeter_wall_north",
+      "geom_name": "perimeter_wall_north",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        110,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "perimeter_wall_south",
+      "semantic_label": "perimeter_wall_south",
+      "instance_id": "perimeter_wall_south",
+      "instance_name": "perimeter_wall_south",
+      "object_type": "part",
+      "object_id": 2,
+      "pos_mm": [
+        250.0,
+        -287.0,
+        96.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/perimeter_wall_south.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "perimeter_wall_south",
+      "geom_name": "perimeter_wall_south",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        161,
+        235,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "perimeter_wall_west",
+      "semantic_label": "perimeter_wall_west",
+      "instance_id": "perimeter_wall_west",
+      "instance_name": "perimeter_wall_west",
+      "object_type": "part",
+      "object_id": 3,
+      "pos_mm": [
+        -314.0,
+        0.0,
+        96.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/perimeter_wall_west.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "perimeter_wall_west",
+      "geom_name": "perimeter_wall_west",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        213
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "perimeter_wall_east",
+      "semantic_label": "perimeter_wall_east",
+      "instance_id": "perimeter_wall_east",
+      "instance_name": "perimeter_wall_east",
+      "object_type": "part",
+      "object_id": 4,
+      "pos_mm": [
+        814.0,
+        0.0,
+        96.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/perimeter_wall_east.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "perimeter_wall_east",
+      "geom_name": "perimeter_wall_east",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        235,
+        205
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "left_launch_pad",
+      "semantic_label": "left_launch_pad",
+      "instance_id": "left_launch_pad",
+      "instance_name": "left_launch_pad",
+      "object_type": "part",
+      "object_id": 5,
+      "pos_mm": [
+        -250.0,
+        -190.0,
+        21.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/left_launch_pad.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "left_launch_pad",
+      "geom_name": "left_launch_pad",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        154,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "corridor_block_a",
+      "semantic_label": "corridor_block_a",
+      "instance_id": "corridor_block_a",
+      "instance_name": "corridor_block_a",
+      "object_type": "part",
+      "object_id": 6,
+      "pos_mm": [
+        -170.0,
+        -120.0,
+        91.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/corridor_block_a.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "corridor_block_a",
+      "geom_name": "corridor_block_a",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        103,
+        59,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "corridor_block_b",
+      "semantic_label": "corridor_block_b",
+      "instance_id": "corridor_block_b",
+      "instance_name": "corridor_block_b",
+      "object_type": "part",
+      "object_id": 7,
+      "pos_mm": [
+        -20.0,
+        110.0,
+        91.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/corridor_block_b.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "corridor_block_b",
+      "geom_name": "corridor_block_b",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        66,
+        235,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "corridor_block_c",
+      "semantic_label": "corridor_block_c",
+      "instance_id": "corridor_block_c",
+      "instance_name": "corridor_block_c",
+      "object_type": "part",
+      "object_id": 8,
+      "pos_mm": [
+        130.0,
+        -110.0,
+        91.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/corridor_block_c.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "corridor_block_c",
+      "geom_name": "corridor_block_c",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        117
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "center_divider",
+      "semantic_label": "center_divider",
+      "instance_id": "center_divider",
+      "instance_name": "center_divider",
+      "object_type": "part",
+      "object_id": 9,
+      "pos_mm": [
+        350.0,
+        0.0,
+        96.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/center_divider.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "center_divider",
+      "geom_name": "center_divider",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        169,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "noise_pillar_a",
+      "semantic_label": "noise_pillar_a",
+      "instance_id": "noise_pillar_a",
+      "instance_name": "noise_pillar_a",
+      "object_type": "part",
+      "object_id": 10,
+      "pos_mm": [
+        40.0,
+        0.0,
+        66.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/noise_pillar_a.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "noise_pillar_a",
+      "geom_name": "noise_pillar_a",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        220,
+        235,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "corridor_block_d",
+      "semantic_label": "corridor_block_d",
+      "instance_id": "corridor_block_d",
+      "instance_name": "corridor_block_d",
+      "object_type": "part",
+      "object_id": 11,
+      "pos_mm": [
+        280.0,
+        115.0,
+        91.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/corridor_block_d.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "corridor_block_d",
+      "geom_name": "corridor_block_d",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        198,
+        59,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "noise_beam_a",
+      "semantic_label": "noise_beam_a",
+      "instance_id": "noise_beam_a",
+      "instance_name": "noise_beam_a",
+      "object_type": "part",
+      "object_id": 12,
+      "pos_mm": [
+        350.0,
+        0.0,
+        220.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/noise_beam_a.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "noise_beam_a",
+      "geom_name": "noise_beam_a",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        235,
+        146
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "corridor_block_e",
+      "semantic_label": "corridor_block_e",
+      "instance_id": "corridor_block_e",
+      "instance_name": "corridor_block_e",
+      "object_type": "part",
+      "object_id": 13,
+      "pos_mm": [
+        430.0,
+        -105.0,
+        91.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/corridor_block_e.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "corridor_block_e",
+      "geom_name": "corridor_block_e",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        95,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "noise_pillar_b",
+      "semantic_label": "noise_pillar_b",
+      "instance_id": "noise_pillar_b",
+      "instance_name": "noise_pillar_b",
+      "object_type": "part",
+      "object_id": 14,
+      "pos_mm": [
+        610.0,
+        0.0,
+        66.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/noise_pillar_b.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "noise_pillar_b",
+      "geom_name": "noise_pillar_b",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        74,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "corridor_block_f",
+      "semantic_label": "corridor_block_f",
+      "instance_id": "corridor_block_f",
+      "instance_name": "corridor_block_f",
+      "object_type": "part",
+      "object_id": 15,
+      "pos_mm": [
+        570.0,
+        120.0,
+        91.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/corridor_block_f.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "corridor_block_f",
+      "geom_name": "corridor_block_f",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        125,
+        235,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "goal_catch_tray",
+      "semantic_label": "goal_catch_tray",
+      "instance_id": "goal_catch_tray",
+      "instance_name": "goal_catch_tray",
+      "object_type": "part",
+      "object_id": 16,
+      "pos_mm": [
+        760.0,
+        160.0,
+        21.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/goal_catch_tray.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "goal_catch_tray",
+      "geom_name": "goal_catch_tray",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        176
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "transfer_cube",
+      "semantic_label": "transfer_cube",
+      "instance_id": "transfer_cube",
+      "instance_name": "transfer_cube",
+      "object_type": "part",
+      "object_id": 17,
+      "pos_mm": [
+        -250.0,
+        190.0,
+        65.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [
+        "meshes/benchmark_payload__transfer_cube.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "abs",
+      "body_name": "benchmark_payload__transfer_cube",
+      "geom_name": "benchmark_payload__transfer_cube",
+      "zone_type": null,
+      "color_rgba": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        228,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "zone_goal",
+      "semantic_label": "zone_goal",
+      "instance_id": "zone_goal",
+      "instance_name": "zone_goal",
+      "object_type": "zone",
+      "object_id": 18,
+      "pos_mm": [
+        760.0,
+        -190.0,
+        42.5
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        35.0,
+        30.0,
+        27.5
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "goal",
+      "color_rgba": [
+        0.2,
+        0.72,
+        0.34,
+        0.22
+      ],
+      "segmentation_color_rgb": [
+        235,
+        190,
+        59
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_0_perimeter_wall_north",
+      "semantic_label": "zone_forbid_0_perimeter_wall_north",
+      "instance_id": "zone_forbid_0_perimeter_wall_north",
+      "instance_name": "zone_forbid_0_perimeter_wall_north",
+      "object_type": "zone",
+      "object_id": 19,
+      "pos_mm": [
+        250.0,
+        287.0,
+        96.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        560.0,
+        7.0,
+        90.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        139,
+        59,
+        235
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_1_perimeter_wall_south",
+      "semantic_label": "zone_forbid_1_perimeter_wall_south",
+      "instance_id": "zone_forbid_1_perimeter_wall_south",
+      "instance_name": "zone_forbid_1_perimeter_wall_south",
+      "object_type": "zone",
+      "object_id": 20,
+      "pos_mm": [
+        250.0,
+        -287.0,
+        96.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        560.0,
+        7.0,
+        90.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        59,
+        235,
+        88
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_2_perimeter_wall_west",
+      "semantic_label": "zone_forbid_2_perimeter_wall_west",
+      "instance_id": "zone_forbid_2_perimeter_wall_west",
+      "instance_name": "zone_forbid_2_perimeter_wall_west",
+      "object_type": "zone",
+      "object_id": 21,
+      "pos_mm": [
+        -314.0,
+        0.0,
+        96.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        7.0,
+        280.0,
+        90.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        81
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_3_perimeter_wall_east",
+      "semantic_label": "zone_forbid_3_perimeter_wall_east",
+      "instance_id": "zone_forbid_3_perimeter_wall_east",
+      "instance_name": "zone_forbid_3_perimeter_wall_east",
+      "object_type": "zone",
+      "object_id": 22,
+      "pos_mm": [
+        814.0,
+        0.0,
+        96.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        7.0,
+        280.0,
+        90.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        59,
+        132,
+        235
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_4_corridor_block_a",
+      "semantic_label": "zone_forbid_4_corridor_block_a",
+      "instance_id": "zone_forbid_4_corridor_block_a",
+      "instance_name": "zone_forbid_4_corridor_block_a",
+      "object_type": "zone",
+      "object_id": 23,
+      "pos_mm": [
+        -170.0,
+        120.0,
+        88.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        40.0,
+        65.0,
+        88.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        184,
+        235,
+        59
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_5_corridor_block_b",
+      "semantic_label": "zone_forbid_5_corridor_block_b",
+      "instance_id": "zone_forbid_5_corridor_block_b",
+      "instance_name": "zone_forbid_5_corridor_block_b",
+      "object_type": "zone",
+      "object_id": 24,
+      "pos_mm": [
+        -20.0,
+        -110.0,
+        88.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        40.0,
+        65.0,
+        88.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        234,
+        59,
+        235
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_6_corridor_block_c",
+      "semantic_label": "zone_forbid_6_corridor_block_c",
+      "instance_id": "zone_forbid_6_corridor_block_c",
+      "instance_name": "zone_forbid_6_corridor_block_c",
+      "object_type": "zone",
+      "object_id": 25,
+      "pos_mm": [
+        130.0,
+        120.0,
+        88.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        40.0,
+        65.0,
+        88.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        59,
+        235,
+        183
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_7_center_divider",
+      "semantic_label": "zone_forbid_7_center_divider",
+      "instance_id": "zone_forbid_7_center_divider",
+      "instance_name": "zone_forbid_7_center_divider",
+      "object_type": "zone",
+      "object_id": 26,
+      "pos_mm": [
+        350.0,
+        0.0,
+        96.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        20.0,
+        210.0,
+        90.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        235,
+        131,
+        59
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_8_noise_pillar_a",
+      "semantic_label": "zone_forbid_8_noise_pillar_a",
+      "instance_id": "zone_forbid_8_noise_pillar_a",
+      "instance_name": "zone_forbid_8_noise_pillar_a",
+      "object_type": "zone",
+      "object_id": 27,
+      "pos_mm": [
+        40.0,
+        0.0,
+        66.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        21.0,
+        21.0,
+        60.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        80,
+        59,
+        235
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_9_corridor_block_d",
+      "semantic_label": "zone_forbid_9_corridor_block_d",
+      "instance_id": "zone_forbid_9_corridor_block_d",
+      "instance_name": "zone_forbid_9_corridor_block_d",
+      "object_type": "zone",
+      "object_id": 28,
+      "pos_mm": [
+        280.0,
+        -115.0,
+        88.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        40.0,
+        65.0,
+        88.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        89,
+        235,
+        59
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_10_noise_beam_a",
+      "semantic_label": "zone_forbid_10_noise_beam_a",
+      "instance_id": "zone_forbid_10_noise_beam_a",
+      "instance_name": "zone_forbid_10_noise_beam_a",
+      "object_type": "zone",
+      "object_id": 29,
+      "pos_mm": [
+        350.0,
+        0.0,
+        220.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        110.0,
+        15.0,
+        12.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        140
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_11_corridor_block_e",
+      "semantic_label": "zone_forbid_11_corridor_block_e",
+      "instance_id": "zone_forbid_11_corridor_block_e",
+      "instance_name": "zone_forbid_11_corridor_block_e",
+      "object_type": "zone",
+      "object_id": 30,
+      "pos_mm": [
+        430.0,
+        110.0,
+        88.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        40.0,
+        65.0,
+        88.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        59,
+        191,
+        235
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_12_noise_pillar_b",
+      "semantic_label": "zone_forbid_12_noise_pillar_b",
+      "instance_id": "zone_forbid_12_noise_pillar_b",
+      "instance_name": "zone_forbid_12_noise_pillar_b",
+      "object_type": "zone",
+      "object_id": 31,
+      "pos_mm": [
+        610.0,
+        0.0,
+        66.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        21.0,
+        21.0,
+        60.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        235,
+        227,
+        59
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_forbid_13_corridor_block_f",
+      "semantic_label": "zone_forbid_13_corridor_block_f",
+      "instance_id": "zone_forbid_13_corridor_block_f",
+      "instance_name": "zone_forbid_13_corridor_block_f",
+      "object_type": "zone",
+      "object_id": 32,
+      "pos_mm": [
+        570.0,
+        -120.0,
+        88.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        40.0,
+        65.0,
+        88.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "forbid",
+      "color_rgba": [
+        0.83,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "segmentation_color_rgb": [
+        175,
+        59,
+        235
+      ],
+      "include_in_segmentation": false
+    },
+    {
+      "label": "zone_build",
+      "semantic_label": "zone_build",
+      "instance_id": "zone_build",
+      "instance_name": "zone_build",
+      "object_type": "zone",
+      "object_id": 33,
+      "pos_mm": [
+        255.0,
+        0.0,
+        140.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_paths": [],
+      "box_size_mm": [
+        585.0,
+        300.0,
+        140.0
+      ],
+      "material_id": null,
+      "body_name": null,
+      "geom_name": null,
+      "zone_type": "build",
+      "color_rgba": [
+        0.55,
+        0.55,
+        0.55,
+        0.14
+      ],
+      "segmentation_color_rgb": [
+        59,
+        235,
+        124
+      ],
+      "include_in_segmentation": false
+    }
+  ],
+  "bounds_min_mm": [
+    -330.0,
+    -300.0,
+    0.0
+  ],
+  "bounds_max_mm": [
+    840.0,
+    300.0,
+    280.0
+  ],
+  "center_mm": [
+    255.0,
+    0.0,
+    140.0
+  ],
+  "diagonal": 1344.3585831168707
+}

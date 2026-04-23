@@ -1,0 +1,63 @@
+objectives:
+  goal_zone_mm:
+    min_mm: [320.0, -90.0, 25.0]
+    max_mm: [390.0, 90.0, 90.0]
+  forbid_zones:
+    - name: ridge_keepout
+      min_mm: [-72.0, -130.0, 12.0]
+      max_mm: [72.0, 130.0, 36.0]
+  build_zone_mm:
+    min_mm: [-420.0, -160.0, 0.0]
+    max_mm: [420.0, 160.0, 220.0]
+benchmark_parts:
+  - part_id: terrain_base
+    label: terrain_base
+    metadata:
+      material_id: hardwood
+  - part_id: terrain_ridge
+    label: terrain_ridge
+    metadata:
+      material_id: hdpe
+  - part_id: north_wall
+    label: north_wall
+    metadata:
+      material_id: hdpe
+  - part_id: south_wall
+    label: south_wall
+    metadata:
+      material_id: hdpe
+  - part_id: west_wall
+    label: west_wall
+    metadata:
+      material_id: hdpe
+  - part_id: east_wall
+    label: east_wall
+    metadata:
+      material_id: hdpe
+  - part_id: goal_catch_tray
+    label: goal_catch_tray
+    metadata:
+      material_id: hardwood
+
+physics:
+  backend: GENESIS
+  compute_target: auto
+simulation_bounds_mm:
+  min_mm: [-460.0, -200.0, -20.0]
+  max_mm: [460.0, 200.0, 260.0]
+payload:
+  label: steel_ball
+  shape: sphere
+  material_id: steel_carbon
+  static_randomization:
+    radius_mm: [25.0, 25.0]
+  start_position_mm: [-348.0, 0.0, 52.0]
+  runtime_jitter_mm: [12.0, 12.0, 4.0]
+constraints:
+  estimated_solution_cost_usd: 22.0
+  estimated_solution_weight_g: 1567.1
+  max_unit_cost: 120.0
+  max_weight_g: 2200.0
+randomization:
+  static_variation_id: engineer_planner_terrain_ridge_v4
+  runtime_jitter_enabled: true

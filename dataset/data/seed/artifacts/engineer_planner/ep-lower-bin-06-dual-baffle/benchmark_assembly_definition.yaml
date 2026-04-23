@@ -1,0 +1,110 @@
+version: "1.0"
+units:
+  length: "mm"
+  volume: "mm3"
+  mass: "g"
+  currency: "USD"
+constraints:
+  benchmark_max_unit_cost_usd: 78.0
+  benchmark_max_weight_g: 1450.0
+  planner_target_max_unit_cost_usd: 62.0
+  planner_target_max_weight_g: 1200.0
+manufactured_parts:
+  - part_name: upper_start_ledge
+    part_id: upper_start_ledge
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 236000.0
+    stock_bbox_mm:
+      x: 140.0
+      y: 125.0
+      z: 24.0
+    stock_volume_mm3: 420000.0
+    removed_volume_mm3: 184000.0
+    estimated_unit_cost_usd: 8.0
+  - part_name: deflector_ramp
+    part_id: deflector_ramp
+    manufacturing_method: CNC
+    material_id: hdpe
+    quantity: 1
+    part_volume_mm3: 222000.0
+    stock_bbox_mm:
+      x: 185.0
+      y: 85.0
+      z: 22.0
+    stock_volume_mm3: 346750.0
+    removed_volume_mm3: 124750.0
+    estimated_unit_cost_usd: 7.0
+  - part_name: direct_drop_shield
+    part_id: direct_drop_shield
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 300000.0
+    stock_bbox_mm:
+      x: 100.0
+      y: 80.0
+      z: 70.0
+    stock_volume_mm3: 560000.0
+    removed_volume_mm3: 260000.0
+    estimated_unit_cost_usd: 10.0
+  - part_name: midway_baffle_left
+    part_id: midway_baffle_left
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 126000.0
+    stock_bbox_mm:
+      x: 30.0
+      y: 60.0
+      z: 70.0
+    stock_volume_mm3: 126000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 5.0
+  - part_name: midway_baffle_right
+    part_id: midway_baffle_right
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 126000.0
+    stock_bbox_mm:
+      x: 30.0
+      y: 60.0
+      z: 70.0
+    stock_volume_mm3: 126000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 5.0
+  - part_name: lower_bin
+    part_id: lower_bin
+    manufacturing_method: CNC
+    material_id: hdpe
+    quantity: 1
+    part_volume_mm3: 188000.0
+    stock_bbox_mm:
+      x: 125.0
+      y: 105.0
+      z: 48.0
+    stock_volume_mm3: 630000.0
+    removed_volume_mm3: 442000.0
+    estimated_unit_cost_usd: 6.0
+final_assembly:
+  - name: upper_start_ledge
+    config:
+  - name: deflector_ramp
+    config:
+  - name: direct_drop_shield
+    config:
+  - name: midway_baffle_left
+    config:
+  - name: midway_baffle_right
+    config:
+  - name: lower_bin
+    config:
+totals:
+  estimated_unit_cost_usd: 41.0
+  estimated_weight_g: 950.0
+  estimate_confidence: high
+dfm_suggestions:
+  - Keep the two baffles visually matched so the repeated obstruction pattern is obvious.
+  - Preserve the static ramp and shield relationship; the challenge should be the paired blockers.

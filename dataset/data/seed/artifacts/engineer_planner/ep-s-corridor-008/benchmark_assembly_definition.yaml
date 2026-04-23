@@ -1,0 +1,245 @@
+version: "1.0"
+units:
+  length: "mm"
+  volume: "mm3"
+  mass: "g"
+  currency: "USD"
+constraints:
+  benchmark_max_unit_cost_usd: 72.0
+  benchmark_max_weight_g: 1300.0
+  planner_target_max_unit_cost_usd: 56.0
+  planner_target_max_weight_g: 1200.0
+manufactured_parts:
+  - part_name: corridor_floor
+    part_id: corridor_floor
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 3763200.0
+    stock_bbox_mm:
+      x: 1120.0
+      y: 560.0
+      z: 6.0
+    stock_volume_mm3: 3763200.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 4.0
+  - part_name: perimeter_wall_north
+    part_id: perimeter_wall_north
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 2216707.8
+    stock_bbox_mm:
+      x: 1120.0
+      y: 14.0
+      z: 180.0
+    stock_volume_mm3: 2822400.0
+    removed_volume_mm3: 605692.2
+    estimated_unit_cost_usd: 3.0
+  - part_name: perimeter_wall_south
+    part_id: perimeter_wall_south
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 2216707.8
+    stock_bbox_mm:
+      x: 1120.0
+      y: 14.0
+      z: 180.0
+    stock_volume_mm3: 2822400.0
+    removed_volume_mm3: 605692.2
+    estimated_unit_cost_usd: 3.0
+  - part_name: perimeter_wall_west
+    part_id: perimeter_wall_west
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 1108353.9
+    stock_bbox_mm:
+      x: 14.0
+      y: 560.0
+      z: 180.0
+    stock_volume_mm3: 1411200.0
+    removed_volume_mm3: 302846.1
+    estimated_unit_cost_usd: 3.0
+  - part_name: perimeter_wall_east
+    part_id: perimeter_wall_east
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 1108353.9
+    stock_bbox_mm:
+      x: 14.0
+      y: 560.0
+      z: 180.0
+    stock_volume_mm3: 1411200.0
+    removed_volume_mm3: 302846.1
+    estimated_unit_cost_usd: 3.0
+  - part_name: left_launch_pad
+    part_id: left_launch_pad
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 144000.0
+    stock_bbox_mm:
+      x: 80.0
+      y: 60.0
+      z: 30.0
+    stock_volume_mm3: 144000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 10.0
+  - part_name: corridor_block_a
+    part_id: corridor_block_a
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 1768000.0
+    stock_bbox_mm:
+      x: 80.0
+      y: 130.0
+      z: 170.0
+    stock_volume_mm3: 1768000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 4.0
+  - part_name: corridor_block_b
+    part_id: corridor_block_b
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 1768000.0
+    stock_bbox_mm:
+      x: 80.0
+      y: 130.0
+      z: 170.0
+    stock_volume_mm3: 1768000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 4.0
+  - part_name: corridor_block_c
+    part_id: corridor_block_c
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 1768000.0
+    stock_bbox_mm:
+      x: 80.0
+      y: 130.0
+      z: 170.0
+    stock_volume_mm3: 1768000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 4.0
+  - part_name: noise_pillar_a
+    part_id: noise_pillar_a
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 211680.0
+    stock_bbox_mm:
+      x: 42.0
+      y: 42.0
+      z: 120.0
+    stock_volume_mm3: 211680.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 1.0
+  - part_name: corridor_block_d
+    part_id: corridor_block_d
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 1768000.0
+    stock_bbox_mm:
+      x: 80.0
+      y: 130.0
+      z: 170.0
+    stock_volume_mm3: 1768000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 4.0
+  - part_name: noise_beam_a
+    part_id: noise_beam_a
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 144000.0
+    stock_bbox_mm:
+      x: 200.0
+      y: 30.0
+      z: 24.0
+    stock_volume_mm3: 144000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 1.0
+  - part_name: corridor_block_e
+    part_id: corridor_block_e
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 1768000.0
+    stock_bbox_mm:
+      x: 80.0
+      y: 130.0
+      z: 170.0
+    stock_volume_mm3: 1768000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 4.0
+  - part_name: corridor_block_f
+    part_id: corridor_block_f
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 1768000.0
+    stock_bbox_mm:
+      x: 80.0
+      y: 130.0
+      z: 170.0
+    stock_volume_mm3: 1768000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 4.0
+  - part_name: goal_catch_tray
+    part_id: goal_catch_tray
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 162000.0
+    stock_bbox_mm:
+      x: 90.0
+      y: 60.0
+      z: 30.0
+    stock_volume_mm3: 162000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 2.0
+final_assembly:
+  - name: corridor_floor
+    config:
+  - name: perimeter_wall_north
+    config:
+  - name: perimeter_wall_south
+    config:
+  - name: perimeter_wall_west
+    config:
+  - name: perimeter_wall_east
+    config:
+  - name: left_launch_pad
+    config:
+  - name: corridor_block_a
+    config:
+  - name: corridor_block_b
+    config:
+  - name: corridor_block_c
+    config:
+  - name: noise_pillar_a
+    config:
+  - name: corridor_block_d
+    config:
+  - name: noise_beam_a
+    config:
+  - name: corridor_block_e
+    config:
+  - name: corridor_block_f
+    config:
+  - name: goal_catch_tray
+    config:
+totals:
+  estimated_unit_cost_usd: 54.0
+  estimated_weight_g: 1190.0
+  estimate_confidence: high
+dfm_suggestions:
+  - Keep the rounded perimeter walls continuous so the arena reads as a fully boxed-in scene.
+  - Use small fillets and chamfers only on the interior blocks and noise features so the route remains visible while still feeling machined.

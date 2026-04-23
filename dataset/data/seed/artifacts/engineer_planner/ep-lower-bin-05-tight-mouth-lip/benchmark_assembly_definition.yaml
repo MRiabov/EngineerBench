@@ -1,0 +1,95 @@
+version: "1.0"
+units:
+  length: "mm"
+  volume: "mm3"
+  mass: "g"
+  currency: "USD"
+constraints:
+  benchmark_max_unit_cost_usd: 78.0
+  benchmark_max_weight_g: 1450.0
+  planner_target_max_unit_cost_usd: 61.0
+  planner_target_max_weight_g: 1190.0
+manufactured_parts:
+  - part_name: upper_start_ledge
+    part_id: upper_start_ledge
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 221000.0
+    stock_bbox_mm:
+      x: 145.0
+      y: 128.0
+      z: 24.0
+    stock_volume_mm3: 446400.0
+    removed_volume_mm3: 225400.0
+    estimated_unit_cost_usd: 8.0
+  - part_name: deflector_ramp
+    part_id: deflector_ramp
+    manufacturing_method: CNC
+    material_id: hdpe
+    quantity: 1
+    part_volume_mm3: 210000.0
+    stock_bbox_mm:
+      x: 180.0
+      y: 88.0
+      z: 22.0
+    stock_volume_mm3: 349440.0
+    removed_volume_mm3: 139440.0
+    estimated_unit_cost_usd: 7.0
+  - part_name: direct_drop_shield
+    part_id: direct_drop_shield
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 280000.0
+    stock_bbox_mm:
+      x: 95.0
+      y: 70.0
+      z: 70.0
+    stock_volume_mm3: 465500.0
+    removed_volume_mm3: 185500.0
+    estimated_unit_cost_usd: 10.0
+  - part_name: lower_bin
+    part_id: lower_bin
+    manufacturing_method: CNC
+    material_id: hdpe
+    quantity: 1
+    part_volume_mm3: 175000.0
+    stock_bbox_mm:
+      x: 110.0
+      y: 90.0
+      z: 46.0
+    stock_volume_mm3: 455400.0
+    removed_volume_mm3: 280400.0
+    estimated_unit_cost_usd: 6.0
+  - part_name: catch_lip
+    part_id: catch_lip
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 65000.0
+    stock_bbox_mm:
+      x: 120.0
+      y: 90.0
+      z: 12.0
+    stock_volume_mm3: 129600.0
+    removed_volume_mm3: 64600.0
+    estimated_unit_cost_usd: 4.0
+final_assembly:
+  - name: upper_start_ledge
+    config:
+  - name: deflector_ramp
+    config:
+  - name: direct_drop_shield
+    config:
+  - name: lower_bin
+    config:
+  - name: catch_lip
+    config:
+totals:
+  estimated_unit_cost_usd: 35.0
+  estimated_weight_g: 915.0
+  estimate_confidence: high
+dfm_suggestions:
+  - Keep the lip thin and separate from the bin so the tightened mouth is easy to read.
+  - Preserve one shield and one ramp; the challenge should come from the mouth geometry, not extra motion.

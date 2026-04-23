@@ -1,0 +1,157 @@
+objectives:
+  goal_zone_mm:
+    min_mm: [725.0, -220.0, 15.0]
+    max_mm: [795.0, -160.0, 70.0]
+  forbid_zones:
+    - name: perimeter_wall_north
+      min_mm: [-310.0, 280.0, 6.0]
+      max_mm: [810.0, 294.0, 186.0]
+    - name: perimeter_wall_south
+      min_mm: [-310.0, -294.0, 6.0]
+      max_mm: [810.0, -280.0, 186.0]
+    - name: perimeter_wall_west
+      min_mm: [-321.0, -280.0, 6.0]
+      max_mm: [-307.0, 280.0, 186.0]
+    - name: perimeter_wall_east
+      min_mm: [807.0, -280.0, 6.0]
+      max_mm: [821.0, 280.0, 186.0]
+    - name: corridor_block_a
+      min_mm: [-210.0, 55.0, 0.0]
+      max_mm: [-130.0, 185.0, 176.0]
+    - name: corridor_block_b
+      min_mm: [-60.0, -175.0, 0.0]
+      max_mm: [20.0, -45.0, 176.0]
+    - name: corridor_block_c
+      min_mm: [90.0, 55.0, 0.0]
+      max_mm: [170.0, 185.0, 176.0]
+    - name: center_divider
+      min_mm: [330.0, -210.0, 6.0]
+      max_mm: [370.0, 210.0, 186.0]
+    - name: noise_pillar_a
+      min_mm: [19.0, -21.0, 6.0]
+      max_mm: [61.0, 21.0, 126.0]
+    - name: corridor_block_d
+      min_mm: [240.0, -180.0, 0.0]
+      max_mm: [320.0, -50.0, 176.0]
+    - name: noise_beam_a
+      min_mm: [240.0, -15.0, 208.0]
+      max_mm: [460.0, 15.0, 232.0]
+    - name: corridor_block_e
+      min_mm: [390.0, 45.0, 0.0]
+      max_mm: [470.0, 175.0, 176.0]
+    - name: noise_pillar_b
+      min_mm: [589.0, -21.0, 6.0]
+      max_mm: [631.0, 21.0, 126.0]
+    - name: corridor_block_f
+      min_mm: [530.0, -185.0, 0.0]
+      max_mm: [610.0, -55.0, 176.0]
+  build_zone_mm:
+    min_mm: [-330.0, -300.0, 0.0]
+    max_mm: [840.0, 300.0, 280.0]
+benchmark_parts:
+  - part_id: corridor_floor
+    label: corridor_floor
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: perimeter_wall_north
+    label: perimeter_wall_north
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: perimeter_wall_south
+    label: perimeter_wall_south
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: perimeter_wall_west
+    label: perimeter_wall_west
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: perimeter_wall_east
+    label: perimeter_wall_east
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: left_launch_pad
+    label: left_launch_pad
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: corridor_block_a
+    label: corridor_block_a
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: corridor_block_b
+    label: corridor_block_b
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: corridor_block_c
+    label: corridor_block_c
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: center_divider
+    label: center_divider
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: noise_pillar_a
+    label: noise_pillar_a
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: corridor_block_d
+    label: corridor_block_d
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: noise_beam_a
+    label: noise_beam_a
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: corridor_block_e
+    label: corridor_block_e
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: noise_pillar_b
+    label: noise_pillar_b
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: corridor_block_f
+    label: corridor_block_f
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: goal_catch_tray
+    label: goal_catch_tray
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+physics:
+  backend: GENESIS
+  compute_target: auto
+simulation_bounds_mm:
+  min_mm: [-360.0, -320.0, -20.0]
+  max_mm: [860.0, 320.0, 320.0]
+payload:
+  label: transfer_cube
+  shape: cube
+  material_id: abs
+  static_randomization: {}
+  start_position_mm: [-250.0, 190.0, 65.0]
+  runtime_jitter_mm: [14.0, 14.0, 6.0]
+constraints:
+  estimated_solution_cost_usd: 54.0
+  estimated_solution_weight_g: 1190.0
+  max_unit_cost: 72.0
+  max_weight_g: 1300.0
+randomization:
+  static_variation_id: engineer_planner_s_corridor_v009
+  runtime_jitter_enabled: true

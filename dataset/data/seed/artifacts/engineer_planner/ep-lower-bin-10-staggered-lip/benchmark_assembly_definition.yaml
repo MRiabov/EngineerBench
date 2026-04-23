@@ -1,0 +1,110 @@
+version: "1.0"
+units:
+  length: "mm"
+  volume: "mm3"
+  mass: "g"
+  currency: "USD"
+constraints:
+  benchmark_max_unit_cost_usd: 78.0
+  benchmark_max_weight_g: 1450.0
+  planner_target_max_unit_cost_usd: 61.0
+  planner_target_max_weight_g: 1180.0
+manufactured_parts:
+  - part_name: upper_start_ledge
+    part_id: upper_start_ledge
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 358800.0
+    stock_bbox_mm:
+      x: 130.0
+      y: 115.0
+      z: 24.0
+    stock_volume_mm3: 358800.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 8.0
+  - part_name: deflector_ramp
+    part_id: deflector_ramp
+    manufacturing_method: CNC
+    material_id: hdpe
+    quantity: 1
+    part_volume_mm3: 299200.0
+    stock_bbox_mm:
+      x: 170.0
+      y: 80.0
+      z: 22.0
+    stock_volume_mm3: 299200.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 7.0
+  - part_name: direct_drop_shield
+    part_id: direct_drop_shield
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 439280.0
+    stock_bbox_mm:
+      x: 95.0
+      y: 68.0
+      z: 68.0
+    stock_volume_mm3: 439280.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 10.0
+  - part_name: release_lip
+    part_id: release_lip
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 52800.0
+    stock_bbox_mm:
+      x: 24.0
+      y: 110.0
+      z: 20.0
+    stock_volume_mm3: 52800.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 4.0
+  - part_name: front_lip
+    part_id: front_lip
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 52800.0
+    stock_bbox_mm:
+      x: 110.0
+      y: 16.0
+      z: 30.0
+    stock_volume_mm3: 52800.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 4.0
+  - part_name: lower_bin
+    part_id: lower_bin
+    manufacturing_method: CNC
+    material_id: hdpe
+    quantity: 1
+    part_volume_mm3: 495000.0
+    stock_bbox_mm:
+      x: 110.0
+      y: 90.0
+      z: 50.0
+    stock_volume_mm3: 495000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 6.0
+final_assembly:
+  - name: upper_start_ledge
+    config:
+  - name: deflector_ramp
+    config:
+  - name: direct_drop_shield
+    config:
+  - name: release_lip
+    config:
+  - name: front_lip
+    config:
+  - name: lower_bin
+    config:
+totals:
+  estimated_unit_cost_usd: 39.0
+  estimated_weight_g: 938.0
+  estimate_confidence: high
+dfm_suggestions:
+  - Keep the staggered lips visually distinct so the diagonal release path is easy to audit.
+  - Preserve a single passive ramp and shield; the rest of the challenge should come from the offset lip geometry.

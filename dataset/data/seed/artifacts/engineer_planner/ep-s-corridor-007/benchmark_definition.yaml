@@ -1,0 +1,101 @@
+objectives:
+  goal_zone_mm:
+    min_mm: [725.0, 130.0, 15.0]
+    max_mm: [795.0, 190.0, 70.0]
+  forbid_zones:
+    - name: corridor_block_a
+      min_mm: [-190.0, -185.0, 0.0]
+      max_mm: [-110.0, -55.0, 176.0]
+    - name: corridor_block_b
+      min_mm: [-60.0, 45.0, 0.0]
+      max_mm: [20.0, 175.0, 176.0]
+    - name: corridor_block_c
+      min_mm: [80.0, -175.0, 0.0]
+      max_mm: [160.0, -45.0, 176.0]
+    - name: corridor_block_d
+      min_mm: [220.0, 50.0, 0.0]
+      max_mm: [300.0, 180.0, 176.0]
+    - name: corridor_block_e
+      min_mm: [360.0, -170.0, 0.0]
+      max_mm: [440.0, -40.0, 176.0]
+    - name: corridor_block_f
+      min_mm: [500.0, 55.0, 0.0]
+      max_mm: [580.0, 185.0, 176.0]
+    - name: corridor_block_g
+      min_mm: [640.0, -165.0, 0.0]
+      max_mm: [720.0, -35.0, 176.0]
+  build_zone_mm:
+    min_mm: [-320.0, -260.0, 0.0]
+    max_mm: [820.0, 260.0, 280.0]
+benchmark_parts:
+  - part_id: corridor_floor
+    label: corridor_floor
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: left_launch_pad
+    label: left_launch_pad
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: corridor_block_a
+    label: corridor_block_a
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: corridor_block_b
+    label: corridor_block_b
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: corridor_block_c
+    label: corridor_block_c
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: corridor_block_d
+    label: corridor_block_d
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: corridor_block_e
+    label: corridor_block_e
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: corridor_block_f
+    label: corridor_block_f
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: corridor_block_g
+    label: corridor_block_g
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: goal_catch_tray
+    label: goal_catch_tray
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+physics:
+  backend: GENESIS
+  compute_target: auto
+simulation_bounds_mm:
+  min_mm: [-360.0, -300.0, -20.0]
+  max_mm: [860.0, 300.0, 320.0]
+payload:
+  label: transfer_cube
+  shape: cube
+  material_id: abs
+  static_randomization: {}
+  start_position_mm: [-250.0, -190.0, 65.0]
+  runtime_jitter_mm: [14.0, 14.0, 6.0]
+constraints:
+  estimated_solution_cost_usd: 54.0
+  estimated_solution_weight_g: 1190.0
+  max_unit_cost: 72.0
+  max_weight_g: 1300.0
+randomization:
+  static_variation_id: engineer_planner_s_corridor_v007
+  runtime_jitter_enabled: true

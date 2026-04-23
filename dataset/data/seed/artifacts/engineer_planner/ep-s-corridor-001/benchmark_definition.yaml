@@ -41,7 +41,6 @@ benchmark_parts:
     metadata:
       fixed: true
       material_id: hardwood
-
 physics:
   backend: GENESIS
   compute_target: auto
@@ -56,10 +55,10 @@ payload:
   start_position_mm: [-220.0, -110.0, 65.0]
   runtime_jitter_mm: [10.0, 10.0, 5.0]
 constraints:
-  estimated_solution_cost_usd: 44.0
-  estimated_solution_weight_g: 620.0
+  estimated_solution_cost_usd: 51.0
+  estimated_solution_weight_g: 1080.0
   max_unit_cost: 72.0
   max_weight_g: 1300.0
 randomization:
-  static_variation_id: engineer_planner_s_corridor_v1
+  static_variation_id: engineer_planner_s_corridor_v001
   runtime_jitter_enabled: true

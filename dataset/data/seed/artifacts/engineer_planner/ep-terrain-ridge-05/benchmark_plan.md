@@ -1,0 +1,82 @@
+## 1. Learning Objective
+
+Test whether an engineer can carry a 25 mm-radius steel ball over a chamfered,
+filleted step ridge while navigating a full four-sided perimeter wall enclosure
+with extra interior clutter and without relying on hidden benchmark motion or
+a frictionless flat push.
+
+## 2. Environment Geometry
+
+- `terrain_base`: flat route slab centered at `[0, 0, 6]` with size
+  `[720, 180, 12]`.
+- `terrain_ridge`: softened step centered at `[0, 0, 21]` with size
+  `[140, 150, 18]`; this is the benchmark-side terrain discontinuity, not an
+  actuator.
+- `north_wall`: perimeter wall centered at `[0, 89, 17]` with size
+  `[700, 2, 10]`.
+- `south_wall`: perimeter wall centered at `[0, -89, 17]` with size
+  `[700, 2, 10]`.
+- `west_wall`: perimeter wall centered at `[-405, 0, 17]` with size
+  `[2, 176, 10]`.
+- `east_wall`: perimeter wall centered at `[405, 0, 17]` with size
+  `[2, 176, 10]`.
+- `left_noise_block`: asymmetrical clutter block centered at `[-190, -56, 22]`
+  with size `[34, 44, 20]`.
+- `right_noise_block`: asymmetrical clutter block centered at `[176, 58, 21]`
+  with size `[42, 36, 18]`.
+- `midway_baffle`: mid-course obstruction centered at `[120, 24, 20]` with size
+  `[22, 54, 16]`.
+- `goal_catch_tray`: passive capture tray centered at `[355, 0, 24]` with size
+  `[70, 120, 12]`.
+
+The route still runs from left to right across the slab, but the wall enclosure
+narrows the visual field and the ridge sits inside a tray-like perimeter.
+
+## 3. Input Objective
+
+- Shape: `sphere`
+- Label: `steel_ball`
+- Static randomization:
+  - radius held fixed at `25 mm`
+  - no alternate shapes or size variants
+- Nominal start position: `[-348, 0, 52]`
+- Runtime jitter: `[12, 12, 4]` mm
+
+## 4. Objectives
+
+- `goal_zone_mm`: min_mm `[320, -90, 25]`, max_mm `[390, 90, 90]`
+- `forbid_zones`:
+  - `ridge_keepout`: min_mm `[-72, -130, 12]`, max_mm `[72, 130, 36]`
+- `build_zone_mm`: min_mm `[-420, -160, 0]`, max_mm `[420, 160, 220]`
+
+## 5. Simulation Bounds
+
+- min_mm `[-460, -200, -20]`, max_mm `[460, 200, 260]`
+
+## 6. Constraints Handed To Engineering
+
+- Benchmark/customer caps: `max_unit_cost <= 120 USD`, `max_weight <= 2200 g`
+- All benchmark-owned geometry is static; the benchmark should not imply any
+  hidden powered cradle, moving ridge, or actuator.
+- The ridge edges are softened with chamfers and fillets, and the perimeter
+  rails are read-only enclosure geometry rather than solution aids.
+
+## 7. Success Criteria
+
+- Success if the ball ends inside `goal_zone_mm` without entering
+  `ridge_keepout`.
+- Fail if the ball leaves `simulation_bounds_mm` or if the benchmark requires
+  undeclared motion to cross the softened step ridge.
+
+## 8. Planner Artifacts
+
+- `todo.md` captures the engineer-planner checklist for the ridge-crossing
+  guide solution.
+- `benchmark_definition.yaml` mirrors the declared zones, ridge geometry, and
+  cost caps.
+- `benchmark_assembly_definition.yaml` records the benchmark-local manufactured
+  parts and confirms the benchmark is fully static.
+- `benchmark_plan_evidence_script.py` provides the previewable benchmark
+  evidence scene.
+- `submit_benchmark_plan()` persists
+  `.manifests/benchmark_plan_review_manifest.json`.

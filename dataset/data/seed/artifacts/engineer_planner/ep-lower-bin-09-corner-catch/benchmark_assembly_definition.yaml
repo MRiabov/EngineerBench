@@ -1,0 +1,110 @@
+version: "1.0"
+units:
+  length: "mm"
+  volume: "mm3"
+  mass: "g"
+  currency: "USD"
+constraints:
+  benchmark_max_unit_cost_usd: 78.0
+  benchmark_max_weight_g: 1450.0
+  planner_target_max_unit_cost_usd: 60.0
+  planner_target_max_weight_g: 1170.0
+manufactured_parts:
+  - part_name: upper_start_ledge
+    part_id: upper_start_ledge
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 224000.0
+    stock_bbox_mm:
+      x: 140.0
+      y: 125.0
+      z: 24.0
+    stock_volume_mm3: 420000.0
+    removed_volume_mm3: 196000.0
+    estimated_unit_cost_usd: 8.0
+  - part_name: deflector_ramp
+    part_id: deflector_ramp
+    manufacturing_method: CNC
+    material_id: hdpe
+    quantity: 1
+    part_volume_mm3: 218000.0
+    stock_bbox_mm:
+      x: 180.0
+      y: 85.0
+      z: 22.0
+    stock_volume_mm3: 346750.0
+    removed_volume_mm3: 128750.0
+    estimated_unit_cost_usd: 7.0
+  - part_name: direct_drop_shield
+    part_id: direct_drop_shield
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 280000.0
+    stock_bbox_mm:
+      x: 95.0
+      y: 70.0
+      z: 70.0
+    stock_volume_mm3: 465500.0
+    removed_volume_mm3: 185500.0
+    estimated_unit_cost_usd: 10.0
+  - part_name: rear_stop
+    part_id: rear_stop
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 154000.0
+    stock_bbox_mm:
+      x: 110.0
+      y: 20.0
+      z: 70.0
+    stock_volume_mm3: 154000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 5.0
+  - part_name: side_wall
+    part_id: side_wall
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 126000.0
+    stock_bbox_mm:
+      x: 20.0
+      y: 90.0
+      z: 70.0
+    stock_volume_mm3: 126000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 5.0
+  - part_name: lower_bin
+    part_id: lower_bin
+    manufacturing_method: CNC
+    material_id: hdpe
+    quantity: 1
+    part_volume_mm3: 165000.0
+    stock_bbox_mm:
+      x: 110.0
+      y: 90.0
+      z: 50.0
+    stock_volume_mm3: 495000.0
+    removed_volume_mm3: 330000.0
+    estimated_unit_cost_usd: 6.0
+final_assembly:
+  - name: upper_start_ledge
+    config:
+  - name: deflector_ramp
+    config:
+  - name: direct_drop_shield
+    config:
+  - name: rear_stop
+    config:
+  - name: side_wall
+    config:
+  - name: lower_bin
+    config:
+totals:
+  estimated_unit_cost_usd: 41.0
+  estimated_weight_g: 915.0
+  estimate_confidence: high
+dfm_suggestions:
+  - Keep the corner cradle elements separate so the final capture shape remains obvious.
+  - Preserve a single passive ramp and shield; the rest of the challenge should come from the corner geometry.

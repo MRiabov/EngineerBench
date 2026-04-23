@@ -1,0 +1,72 @@
+objectives:
+  goal_zone_mm:
+    min_mm: [610.0, -150.0, 15.0]
+    max_mm: [690.0, -90.0, 70.0]
+  forbid_zones:
+    - name: corridor_block_a
+      min_mm: [-105.0, 50.0, 0.0]
+      max_mm: [-35.0, 120.0, 80.0]
+    - name: corridor_block_b
+      min_mm: [85.0, -105.0, 0.0]
+      max_mm: [155.0, -15.0, 80.0]
+    - name: corridor_block_c
+      min_mm: [285.0, 55.0, 0.0]
+      max_mm: [355.0, 125.0, 80.0]
+    - name: corridor_block_d
+      min_mm: [465.0, -85.0, 0.0]
+      max_mm: [535.0, -15.0, 80.0]
+  build_zone_mm:
+    min_mm: [-320.0, -240.0, 0.0]
+    max_mm: [720.0, 240.0, 260.0]
+benchmark_parts:
+  - part_id: left_launch_pad
+    label: left_launch_pad
+    metadata:
+      fixed: true
+      material_id: hardwood
+  - part_id: corridor_block_a
+    label: corridor_block_a
+    metadata:
+      fixed: true
+      material_id: hardwood
+  - part_id: corridor_block_b
+    label: corridor_block_b
+    metadata:
+      fixed: true
+      material_id: hardwood
+  - part_id: corridor_block_c
+    label: corridor_block_c
+    metadata:
+      fixed: true
+      material_id: hardwood
+  - part_id: corridor_block_d
+    label: corridor_block_d
+    metadata:
+      fixed: true
+      material_id: hardwood
+  - part_id: goal_catch_tray
+    label: goal_catch_tray
+    metadata:
+      fixed: true
+      material_id: hardwood
+physics:
+  backend: GENESIS
+  compute_target: auto
+simulation_bounds_mm:
+  min_mm: [-360.0, -280.0, -20.0]
+  max_mm: [760.0, 280.0, 300.0]
+payload:
+  label: transfer_cube
+  shape: cube
+  material_id: abs
+  static_randomization: {}
+  start_position_mm: [-240.0, -130.0, 65.0]
+  runtime_jitter_mm: [12.0, 12.0, 5.0]
+constraints:
+  estimated_solution_cost_usd: 55.0
+  estimated_solution_weight_g: 1175.0
+  max_unit_cost: 72.0
+  max_weight_g: 1300.0
+randomization:
+  static_variation_id: engineer_planner_s_corridor_v002
+  runtime_jitter_enabled: true

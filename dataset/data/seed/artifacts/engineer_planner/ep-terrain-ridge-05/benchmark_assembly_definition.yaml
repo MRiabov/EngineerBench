@@ -1,0 +1,167 @@
+version: "1.0"
+units:
+  length: "mm"
+  volume: "mm3"
+  mass: "g"
+  currency: "USD"
+constraints:
+  benchmark_max_unit_cost_usd: 120.0
+  benchmark_max_weight_g: 2200.0
+  planner_target_max_unit_cost_usd: 90.0
+  planner_target_max_weight_g: 1800.0
+manufactured_parts:
+- part_name: terrain_base
+  part_id: terrain_base
+  manufacturing_method: CNC
+  material_id: hardwood
+  quantity: 1
+  part_volume_mm3: 1555200.0
+  stock_bbox_mm:
+    x: 720.0
+    y: 180.0
+    z: 12.0
+  stock_volume_mm3: 1555200.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 5.0
+- part_name: terrain_ridge
+  part_id: terrain_ridge
+  manufacturing_method: CNC
+  material_id: hdpe
+  quantity: 1
+  part_volume_mm3: 307200.0
+  stock_bbox_mm:
+    x: 120.0
+    y: 160.0
+    z: 16.0
+  stock_volume_mm3: 307200.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 1.0
+- part_name: left_noise_block
+  part_id: left_noise_block
+  manufacturing_method: CNC
+  material_id: hardwood
+  quantity: 1
+  part_volume_mm3: 29920.0
+  stock_bbox_mm:
+    x: 34.0
+    y: 44.0
+    z: 20.0
+  stock_volume_mm3: 29920.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 2.0
+- part_name: right_noise_block
+  part_id: right_noise_block
+  manufacturing_method: CNC
+  material_id: hdpe
+  quantity: 1
+  part_volume_mm3: 27216.0
+  stock_bbox_mm:
+    x: 42.0
+    y: 36.0
+    z: 18.0
+  stock_volume_mm3: 27216.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 1.0
+- part_name: midway_baffle
+  part_id: midway_baffle
+  manufacturing_method: CNC
+  material_id: hdpe
+  quantity: 1
+  part_volume_mm3: 19008.0
+  stock_bbox_mm:
+    x: 22.0
+    y: 54.0
+    z: 16.0
+  stock_volume_mm3: 19008.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 1.0
+- part_name: north_wall
+  part_id: north_wall
+  manufacturing_method: CNC
+  material_id: hdpe
+  quantity: 1
+  part_volume_mm3: 14000.0
+  stock_bbox_mm:
+    x: 700.0
+    y: 2.0
+    z: 10.0
+  stock_volume_mm3: 14000.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 1.0
+- part_name: south_wall
+  part_id: south_wall
+  manufacturing_method: CNC
+  material_id: hdpe
+  quantity: 1
+  part_volume_mm3: 14000.0
+  stock_bbox_mm:
+    x: 700.0
+    y: 2.0
+    z: 10.0
+  stock_volume_mm3: 14000.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 1.0
+- part_name: west_wall
+  part_id: west_wall
+  manufacturing_method: CNC
+  material_id: hdpe
+  quantity: 1
+  part_volume_mm3: 3520.0
+  stock_bbox_mm:
+    x: 2.0
+    y: 176.0
+    z: 10.0
+  stock_volume_mm3: 3520.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 1.0
+- part_name: east_wall
+  part_id: east_wall
+  manufacturing_method: CNC
+  material_id: hdpe
+  quantity: 1
+  part_volume_mm3: 3520.0
+  stock_bbox_mm:
+    x: 2.0
+    y: 176.0
+    z: 10.0
+  stock_volume_mm3: 3520.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 1.0
+- part_name: goal_catch_tray
+  part_id: goal_catch_tray
+  manufacturing_method: CNC
+  material_id: hardwood
+  quantity: 1
+  part_volume_mm3: 100800.0
+  stock_bbox_mm:
+    x: 70.0
+    y: 120.0
+    z: 12.0
+  stock_volume_mm3: 100800.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 2.0
+final_assembly:
+- name: terrain_base
+  config:
+- name: terrain_ridge
+  config:
+- name: north_wall
+  config:
+- name: south_wall
+  config:
+- name: west_wall
+  config:
+- name: east_wall
+  config:
+- name: goal_catch_tray
+  config:
+totals:
+  estimated_unit_cost_usd: 16.0
+  estimated_weight_g: 1700.7
+  estimate_confidence: high
+dfm_suggestions:
+- Keep the ridge softened with chamfers and fillets so the machined terrain
+  remains legible without becoming a different family.
+- Keep the perimeter walls low enough to preserve the ridge silhouette while
+  the extra obstruction layer still reads as deliberate noise instead of a new
+  family.
