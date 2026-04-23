@@ -69,7 +69,7 @@ def build() -> Compound:
                 "spike_front_left",
                 16.0,
                 58.0,
-                (-184.0, -84.0, 170.0),
+                (-184.0, -108.0, 170.0),
                 "steel_carbon",
             ),
             _make_spike(

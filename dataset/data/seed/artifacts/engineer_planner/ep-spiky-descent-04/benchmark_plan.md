@@ -37,7 +37,7 @@ basin is shallower.
 - `forbid_zones`:
   - `upper_descent_keepout`: min_mm `[-232, -96, 118]`, max_mm
     `[-114, 96, 214]`
-  - `spike_field_keepout`: min_mm `[-202, -90, 24]`, max_mm
+  - `spike_field_keepout`: min_mm `[-202, -120, 24]`, max_mm
     `[100, 80, 160]`
 - `build_zone_mm`: min_mm `[-420, -180, 0]`, max_mm `[420, 180, 260]`
 

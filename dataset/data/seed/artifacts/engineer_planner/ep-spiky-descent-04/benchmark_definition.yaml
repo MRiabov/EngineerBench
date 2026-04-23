@@ -7,7 +7,7 @@ objectives:
       min_mm: [-232.0, -96.0, 118.0]
       max_mm: [-114.0, 96.0, 214.0]
     - name: spike_field_keepout
-      min_mm: [-202.0, -90.0, 24.0]
+      min_mm: [-202.0, -120.0, 24.0]
       max_mm: [100.0, 80.0, 160.0]
   build_zone_mm:
     min_mm: [-420.0, -180.0, 0.0]
