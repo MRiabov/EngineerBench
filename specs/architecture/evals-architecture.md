@@ -105,6 +105,10 @@ Proposal: normalize the simulation to the center bottom of the build zone. So th
      - And other numerical parameters specified in benchmark_definition.yaml.
 5. The benchmark generator would be able to predict the price and weight the engineer will solve the solution in the range of 80-120% (with 20% error) of the final price in 80% of the cases, within 50-150% in 97% of cases (this is the standard price, not the "safe" price)
 6. Benchmark-side motion is judged on explicit contract and evidence.
+7. Benchmark-definition validation also rejects payload placements whose
+   spawn-to-goal bottom-center angle falls below the configured solvability
+   threshold, because gravity-driven benchmarks need a steep enough downhill
+   run to stay plausibly solvable.
 
 ##### Medium evals - Benchmark Plan Reviewer
 

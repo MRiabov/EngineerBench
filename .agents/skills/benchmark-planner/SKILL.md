@@ -86,6 +86,9 @@ Read these before drafting or revising the handoff:
 - Keep every dimension formula-backed; if the handoff is missing a needed length, thickness, clearance, or placement datum, fix the source rather than guessing.
 - Use `render_cad(...)` for live scene previews and objective-overlay evidence.
 - Use `payload_path=True` on `render_cad(...)` when the live payload-path overlay is part of the inspection.
+- Keep the payload-to-goal bottom-center angle above the configured
+  `benchmark_solvability.minimum_payload_to_goal_angle_deg` threshold so the
+  benchmark is plausibly solvable with gravity-driven motion.
 - After any significant blocker or repeated failure on the same issue, inspect the current render evidence before the next plan revision. If the same issue has failed more than three times in a row, keep inspecting render evidence on every subsequent retry until the blocker changes; use `../render-evidence/SKILL.md` as the visual-inspection playbook.
 - If simulation evidence already exists, inspect the MP4 and the sampled frame-indexed `objects.parquet` pose-history sidecar together; `frames.jsonl` is sparse timing metadata, not pose history.
 - If the review depends on bundle identity or a click-to-world answer, select the exact bundle with `list_render_bundles()` and inspect or query that bundle-local snapshot instead of assuming the newest visible render is the right one.

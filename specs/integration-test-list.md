@@ -149,7 +149,7 @@ These runner, bootstrap, and seed-maintenance contracts are useful regression co
 | INT-267 | Curated seed validation preserves redundancy metadata | `validate_eval_seed.py` passes representative curated rows and the generated manifests retain accepted/rejected counts plus lineage/drop metadata. |
 | INT-268 | Seed validator removes preview bundles from seed artifacts | Validation strips transient `current-episode` and `tmp` directories from seeded artifacts. |
 | INT-269 | Seed validator filters by complexity level | `--level 0` filters the validation run to the requested row and still passes. |
-| INT-270 | `errors-only` suppresses pass output | `--errors-only` succeeds without printing pass lines or the all-passed summary. |
+| INT-270 | `errors-only` is the default and suppresses pass output | Default validation omits pass lines and the all-passed summary, while `--no-errors-only` restores them. |
 | INT-271 | Skip-env-up can join a shared eval lock | Validation runs under a shared eval lock and cleans up state. |
 | INT-272 | Skip-env-up fails while exclusive eval lock is held | Validation exits 1 with the lock-held error and leaves no state file. |
 | INT-273 | `run_evals` skip-env-up can join a shared eval lock | `run_evals.py --skip-env-up` succeeds under a shared lock and tears down cleanly. |

@@ -50,6 +50,10 @@ The Benchmark Coder turns an approved benchmark handoff into `benchmark_script.p
 - `benchmark_definition.yaml` and `benchmark_assembly_definition.yaml` are read-only context after plan approval.
 - The benchmark coder preserves the approved labels and repeated quantities exactly.
 - `benchmark_plan_evidence_script.py` is the inspectable source of the approved geometry; do not reinterpret it.
+- The payload-to-goal bottom-center angle must satisfy the configured
+  `benchmark_solvability.minimum_payload_to_goal_angle_deg` threshold; if the
+  benchmark is too shallow for gravity-driven motion, the handoff is
+  unsolvable rather than a geometry you should try to "fix" in code.
 - The coder should validate and simulate the latest revision with `validate_benchmark()` / `simulate_benchmark()` before any review handoff, where `simulate_benchmark()` is a stability/evidence pass rather than a goal-reaching pass, then call `submit_benchmark_for_review()`.
 - This role's policy defines the render images and simulation video it expects for the current revision; inspect those artifacts before finishing.
 - If bug-report mode is enabled and runtime plumbing blocks progress, write `bug_report.md` at the workspace root, keep `journal.md` for task-facing notes, and continue working unless the task is genuinely blocked.
@@ -59,6 +63,8 @@ The Benchmark Coder turns an approved benchmark handoff into `benchmark_script.p
 
 - `benchmark_script.py` imports safely.
 - The implementation matches the approved benchmark contract.
+- The benchmark definition remains solvable under the configured
+  gravity-driven angle threshold.
 - Validation passes.
 - Simulation is stable for the latest revision and benchmark motion evidence matches the declared contract.
 - Review handoff happens only after the latest revision is valid and simulated.

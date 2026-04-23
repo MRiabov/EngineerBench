@@ -94,6 +94,12 @@ Failure is achieved via either of:
    - This is a startup validation failure, not a physics-side collision event.
    - Reject the benchmark before the first simulation step if the spawn pose is not clear.
 
+7. The benchmark payload-to-goal line is too shallow for gravity-driven motion.
+
+   - Benchmark definition validation must measure the spawn position against the
+     bottom center of the goal objective and fail closed when the configured
+     minimum slope threshold is not met.
+
 ## Conversion of CAD to mesh and to MuJoCo/Genesis
 
 We will convert `build123d` CAD files into `obj` format (not STL, because the it is very bulky), and then put the obj into mesh. I think build123d allows a `export_obj(Compound|Part)` function.

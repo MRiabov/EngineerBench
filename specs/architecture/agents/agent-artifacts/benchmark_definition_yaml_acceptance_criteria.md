@@ -11,6 +11,10 @@ It is worth being a first-class agent artifact because downstream roles, validat
 - Goal-zone, forbid-zone, and build-zone geometry are exact and internally consistent.
 - The payload has a top-level `start_position`, stable labels, and a `material_id` that resolves to a known material from `manufacturing_config.yaml`.
 - The payload’s declared start pose is collision-free against benchmark-owned fixture geometry; startup overlap is a hard validation failure.
+- The line from `payload.start_position_mm` to the bottom center of
+  `objectives.goal_zone_mm` is steep enough for gravity-driven motion: the
+  spawn-to-goal angle must meet the configured
+  `benchmark_solvability.minimum_payload_to_goal_angle_deg` threshold.
 - The payload contract stays explicit enough for the runtime to apply the benchmark-payload observation window from `config/agents_config.yaml` (`benchmark_payload_observation.window_s`, default `1.5s`) without guessing hidden benchmark behavior.
 - Deprecated aliases `moved_part`, `moving_part`, and `moved_object` are not valid forward-contract names for this artifact.
 - Static and runtime randomization ranges are exact, bounded, and materialized at seed time.
@@ -33,6 +37,7 @@ It is worth being a first-class agent artifact because downstream roles, validat
 - `payload.material_id` is missing, empty, or unknown to `manufacturing_config.yaml`.
 - Runtime or static randomization pushes the object out of bounds or into an impossible start state.
 - The benchmark definition relies on late rescue behavior to stay valid instead of declaring a clear start pose and goal objective.
+- The payload spawn-to-goal line is too shallow relative to the goal-zone bottom center for gravity-driven motion.
 - Hidden benchmark motion or unsupported fixture declarations appear in the file.
 - Cap, estimate, or label drift appears across the handoff package.
 

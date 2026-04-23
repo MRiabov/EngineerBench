@@ -405,6 +405,9 @@ The Assumption Register captures the source-backed inputs that make the plan aud
 #   1. Staying WITHIN the `build_zone` (you cannot build outside it)
 #   2. AVOIDING all `forbid_zones` (contact = failure)
 #   3. Respecting runtime-derived `max_unit_cost` and `max_weight` caps
+#   4. Keeping the payload-to-goal bottom-center angle above the configured
+#      benchmark solvability threshold so gravity-driven motion remains
+#      plausible
 #
 # Benchmark-owned environment geometry and metadata in this file are READ-ONLY.
 # Engineering assembly motion metadata is stored under engineering
@@ -483,6 +486,7 @@ randomization:
 3. It does not own engineer solution metadata, part costing inputs, or engineer motion/control metadata.
 4. Engineer solution metadata stays in `assembly_definition.yaml` and runtime CAD `.metadata`.
 5. `payload.material_id` is mandatory and must be a known material ID from `manufacturing_config.yaml`, and for benchmark-planner handoff `constraints.estimated_solution_cost_usd` and `constraints.estimated_solution_weight_g` are planner-authored while runtime derives `max_unit_cost` and `max_weight_g` from those estimates during `submit_benchmark_plan()`.
+6. Benchmark solvability is checked from the payload start position to the goal zone bottom center, and benchmarks that are too shallow for gravity-driven motion fail closed during validation.
 
 <!-- Note: we are using metric units and degrees. -->
 

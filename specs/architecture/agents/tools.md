@@ -228,6 +228,7 @@ I propose the following set of tools (their usage is below). Notably, the tools 
   - Top-level authored part labels must be non-empty, unique, and must not be `environment` or start with `zone_`, because the runtime reserves those names for the scene root and generated objective bodies.
   - `validate_benchmark()` fails closed on missing or blank authored labels and does not invent fallback names for unlabeled parts.
   - Benchmark-owned moving fixtures must declare their motion contract explicitly; `validate_benchmark()` rejects missing, contradictory, or unsupported motion metadata.
+  - Benchmark definition validation also rejects payload placements whose spawn-to-goal bottom-center angle falls below the configured gravity-driven solvability threshold.
 
   Validated under all environment randomization.
 

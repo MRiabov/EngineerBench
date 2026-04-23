@@ -131,6 +131,8 @@ downstream_job_id = <job_id>-><downstream_stage>#<NN>
 - Stage selection reads the role-based seed datasets under `dataset/data/seed/role_based/<agent>.json`.
 - `--task-id`, `--family`, `--level`, and `--limit` filter the candidate set before execution.
 - `--family` only applies when the selected stage agent is `engineer_planner`.
+- `engineer_planner` rows use a required, non-empty `family_name` field as the canonical family selector for automatic discovery.
+- `scripts/validate_eval_seed.py` fails closed on `engineer_planner` rows that omit or blank out `family_name`, so the CLI and pipeline discover the same family set.
 - If no stage is passed, the pipeline starts at `entry_stage_name`.
 - `--resume-token` trims the candidate list at the matching job id and fails closed if the token does not match a candidate.
 - The summary records both the input `resume_token` and the next resume cursor.

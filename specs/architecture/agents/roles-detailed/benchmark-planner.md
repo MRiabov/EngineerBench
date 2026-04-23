@@ -53,6 +53,9 @@ The Benchmark Planner turns a problem brief into a benchmark handoff package. It
 - The benchmark handoff must stay exact across `benchmark_plan.md`, the YAML files, and both planner scripts.
 - `payload.material_id` must resolve to a known material from `manufacturing_config.yaml`.
 - Moving benchmark-owned fixtures need explicit, reviewer-visible motion facts.
+- The payload-to-goal bottom-center angle must meet the configured
+  `benchmark_solvability.minimum_payload_to_goal_angle_deg` threshold so the
+  benchmark remains solvable with gravity-driven motion.
 - If bug-report mode is enabled and runtime plumbing blocks progress, write `bug_report.md` at the workspace root and keep working unless the task is genuinely blocked.
 - This role's policy defines the benchmark render images it expects for the current revision; inspect those images with `inspect_media()` before submission.
 - Do not expect `benchmark_script.py` in the workspace until after plan approval.
@@ -64,6 +67,8 @@ The Benchmark Planner turns a problem brief into a benchmark handoff package. It
 - The geometry is valid and the objective bodies do not overlap the forbidden or spawn regions.
 - The planner scripts preserve the same labels and repeated quantities as the plan.
 - The planner wrote realistic estimated cost and weight values before submission.
+- The payload-to-goal bottom-center angle is steep enough for gravity-driven
+  motion under the configured benchmark solvability policy.
 
 ## Related Skills
 

@@ -47,6 +47,10 @@ from utils.preview import (
 - Do not guess a number. If the handoff or workspace context is missing a needed value, treat it as a defect and stop.
 - For moving benchmark fixtures, derive pose and travel from the declared axis or joint frame, not from an arbitrary world coordinate.
 - Prefer selector-driven placement over free-form XYZ positioning. Use face/axis selectors and explicit mates/joints when materializing the approved benchmark geometry; if the plan truly requires absolute 3-coordinate anchors, preserve only the few already approved and treat them as prone to mispositioning.
+- Preserve the benchmark solvability rule: the payload-to-goal bottom-center
+  angle must stay above the configured
+  `benchmark_solvability.minimum_payload_to_goal_angle_deg` threshold, or the
+  benchmark definition should be refused before review.
 
 ## What This Skill Owns
 
