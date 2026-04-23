@@ -10,9 +10,10 @@ def _make_box(
     size: tuple[float, float, float],
     center: tuple[float, float, float],
     material_id: str,
+    rotation: tuple[float, float, float] | None = None,
 ):
     part = Box(*size, align=(Align.CENTER, Align.CENTER, Align.CENTER)).move(
-        Location(center)
+        Location(center, rotation or (0.0, 0.0, 0.0))
     )
     part.label = label
     part.metadata = PartMetadata(material_id=material_id, is_fixed=True)
@@ -41,12 +42,37 @@ def build() -> Compound:
                 (8.0, 8.0, 18.0),
                 (0.0, 0.0, 9.0),
                 "aluminum_6061",
+                rotation=(0.0, 0.0, 10.0),
             ),
             _make_box(
                 "gap_floor_guard",
                 (18.0, 4.0, 6.0),
                 (0.0, -14.0, 3.0),
                 "hdpe",
+            ),
+            _make_box(
+                "left_guide_rail",
+                (4.0, 16.0, 6.0),
+                (-10.0, 0.0, 4.0),
+                "hdpe",
+            ),
+            _make_box(
+                "right_guide_rail",
+                (4.0, 16.0, 6.0),
+                (10.0, 6.0, 4.0),
+                "hdpe",
+            ),
+            _make_box(
+                "center_pylon",
+                (6.0, 6.0, 10.0),
+                (0.0, 12.0, 6.0),
+                "hdpe",
+            ),
+            _make_box(
+                "goal_lip",
+                (10.0, 4.0, 4.0),
+                (50.0, 0.0, 4.0),
+                "hardwood",
             ),
         ]
     )

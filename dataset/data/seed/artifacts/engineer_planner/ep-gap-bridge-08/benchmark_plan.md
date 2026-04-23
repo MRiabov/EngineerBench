@@ -1,32 +1,34 @@
 ## 1. Learning Objective
 
-Test whether an engineer can bridge or hand off a low-friction cube across a floor gap while respecting a fixed gap forbid volume and purely static benchmark geometry.
+Test whether an engineer can bridge or hand off a low-friction cube across a floor gap while accounting for stepped terraces, an offset bridge reference, and a fully static benchmark scene.
 
 - **Core Challenge**: A static gap separates `left_start_deck` and `right_goal_deck`; downstream engineering must span the void while keeping `transfer_cube` clear of `floor_gap`.
 - **Key Principle**: The benchmark geometry stays fixed; the downstream engineer supplies the crossing structure.
-- **Robustness Strategy**: Wide landing decks, the `bridge_reference_table`, and the `gap_floor_guard` make the challenge legible across the declared jitter envelope.
+- **Robustness Strategy**: Wide landing decks, the `bridge_reference_table`, the `gap_floor_guard`, and the pair of offset terraces make the challenge legible across the declared jitter envelope.
 
 ## 2. Environment Geometry
 
-- `left_start_deck`: box centered at `[-220, 0, 35]` with size `[180, 180, 70]`.
-- `right_goal_deck`: box centered at `[250, 0, 35]` with size `[200, 180, 70]`.
-- `bridge_reference_table`: static top surface centered at `[70, 0, 55]` with size `[140, 120, 30]`; this is a passive benchmark fixture, not an actuator.
-- `gap_floor_guard`: static lower wall centered at `[10, 0, 20]` with size `[160, 300, 40]` to keep the gap visually explicit.
+- `left_start_deck`: box centered at `[-228, -20, 33]` with size `[180, 170, 66]`.
+- `right_goal_deck`: box centered at `[268, 18, 39]` with size `[192, 174, 78]`.
+- `bridge_reference_table`: static top surface centered at `[70, -8, 58]` with size `[136, 96, 24]`; this is a passive benchmark fixture, not an actuator.
+- `gap_floor_guard`: static lower wall centered at `[12, 0, 18]` with size `[200, 300, 36]` to keep the gap visually explicit.
+- `left_terrace`: stepped support centered at `[-176, -150, 14]` with size `[86, 40, 12]` to break the left-side height profile.
+- `right_terrace`: stepped support centered at `[214, 130, 14]` with size `[86, 40, 12]` to create an asymmetric landing shelf.
 
 ## 3. Input Objective
 
 - Shape: `cube`
 - Label: `transfer_cube`
 - Static randomization: none beyond the declared cube size
-- Nominal start position: `[-250, 0, 80]`
-- Runtime jitter: `[8, 8, 5]` mm
+- Nominal start position: `[-246, -18, 80]`
+- Runtime jitter: `[9, 9, 5]` mm
 
 ## 4. Objectives
 
-- `goal_zone_mm`: min_mm `[210, -70, 25]`, max_mm `[320, 70, 120]`
+- `goal_zone_mm`: min_mm `[228, -62, 26]`, max_mm `[318, 62, 126]`
 - `forbid_zones`:
-  - `floor_gap`: min_mm `[-70, -150, -5]`, max_mm `[90, 150, 45]`
-- `build_zone_mm`: min_mm `[-340, -180, 0]`, max_mm `[360, 180, 260]`
+  - `floor_gap`: min_mm `[-92, -154, -4]`, max_mm `[102, 154, 46]`
+- `build_zone_mm`: min_mm `[-350, -180, 0]`, max_mm `[380, 180, 270]`
 
 ## 5. Simulation Bounds
 
@@ -44,8 +46,8 @@ Test whether an engineer can bridge or hand off a low-friction cube across a flo
 
 ## 8. Planner Artifacts
 
-- `todo.md` captures the benchmark-planner checklist for the gap geometry and payload objective.
-- `benchmark_definition.yaml` mirrors the declared zones, decks, and cost caps.
+- `todo.md` captures the implementation checklist for the decks, terraces, gap visualization, and passive bridge reference.
+- `benchmark_definition.yaml` mirrors the declared zones, decks, guard, terraces, and cost caps.
 - `benchmark_assembly_definition.yaml` records the benchmark-local fixture inventory and confirms the benchmark is fully static.
 - `benchmark_plan_evidence_script.py` provides the previewable benchmark evidence scene.
 - `submit_benchmark_plan()` persists `.manifests/benchmark_plan_review_manifest.json`.

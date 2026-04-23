@@ -8,7 +8,7 @@ constraints:
   benchmark_max_unit_cost_usd: 80.0
   benchmark_max_weight_g: 1400.0
   planner_target_max_unit_cost_usd: 30.0
-  planner_target_max_weight_g: 1300.0
+  planner_target_max_weight_g: 1400.0
 manufactured_parts:
 - part_name: left_start_pad
   part_id: left_start_pad

@@ -69,7 +69,6 @@ DEFAULT_FAMILIES = [
     "s_corridor",
     "terrain_ridge",
     "post_capture",
-    "motion_aware",
 ]
 DEFAULT_COMPLEXITY_BY_FAMILY = {
     "gap_bridge": 1,
@@ -81,7 +80,6 @@ DEFAULT_COMPLEXITY_BY_FAMILY = {
     "s_corridor": 2,
     "terrain_ridge": 3,
     "post_capture": 3,
-    "motion_aware": 4,
 }
 FAMILY_PLAN_REL = Path(
     "dataset/data/seed/artifacts/engineer_planner/engineer_planner_seed_family_plan.md"

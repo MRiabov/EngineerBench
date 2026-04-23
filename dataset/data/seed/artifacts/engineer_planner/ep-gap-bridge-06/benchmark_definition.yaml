@@ -1,0 +1,62 @@
+objectives:
+  goal_zone_mm:
+    min_mm: [232.0, -74.0, 25.0]
+    max_mm: [340.0, 74.0, 120.0]
+  forbid_zones:
+    - name: floor_gap
+      min_mm: [-92.0, -160.0, -4.0]
+      max_mm: [100.0, 160.0, 44.0]
+  build_zone_mm:
+    min_mm: [-340.0, -180.0, 0.0]
+    max_mm: [390.0, 180.0, 260.0]
+benchmark_parts:
+  - part_id: left_start_deck
+    label: left_start_deck
+    metadata:
+      material_id: aluminum_6061
+  - part_id: right_goal_deck
+    label: right_goal_deck
+    metadata:
+      material_id: aluminum_6061
+  - part_id: bridge_reference_table
+    label: bridge_reference_table
+    metadata:
+      material_id: aluminum_6061
+  - part_id: gap_floor_guard
+    label: gap_floor_guard
+    metadata:
+      material_id: hdpe
+  - part_id: left_noise_wall
+    label: left_noise_wall
+    metadata:
+      material_id: aluminum_6061
+  - part_id: right_noise_wall
+    label: right_noise_wall
+    metadata:
+      material_id: aluminum_6061
+  - part_id: false_bridge_block
+    label: false_bridge_block
+    metadata:
+      material_id: abs
+
+physics:
+  backend: GENESIS
+  compute_target: auto
+simulation_bounds_mm:
+  min_mm: [-380.0, -220.0, -20.0]
+  max_mm: [420.0, 220.0, 320.0]
+payload:
+  label: transfer_cube
+  shape: cube
+  material_id: abs
+  static_randomization: {}
+  start_position_mm: [-260.0, -12.0, 80.0]
+  runtime_jitter_mm: [8.0, 10.0, 5.0]
+constraints:
+  estimated_solution_cost_usd: 63.5
+  estimated_solution_weight_g: 486.0
+  max_unit_cost: 120.0
+  max_weight_g: 2200.0
+randomization:
+  static_variation_id: engineer_planner_gap_bridge_cluttered_variant_v1
+  runtime_jitter_enabled: true

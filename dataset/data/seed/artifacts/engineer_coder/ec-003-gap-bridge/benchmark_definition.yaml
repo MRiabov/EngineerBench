@@ -1,7 +1,7 @@
 objectives:
   goal_zone_mm:
-    min_mm: [225.0, -70.0, 25.0]
-    max_mm: [340.0, 70.0, 120.0]
+    min_mm: [315.0, -70.0, 25.0]
+    max_mm: [360.0, 70.0, 120.0]
   forbid_zones:
     - name: floor_gap
       min_mm: [-70.0, -150.0, -5.0]
@@ -42,13 +42,13 @@ payload:
   shape: cube
   material_id: abs
   static_randomization: {}
-  start_position_mm: [-260.0, 0.0, 82.0]
-  runtime_jitter_mm: [9.0, 8.0, 5.0]
+  start_position_mm: [-330.0, 0.0, 80.0]
+  runtime_jitter_mm: [8.0, 8.0, 5.0]
 constraints:
   estimated_solution_cost_usd: 57.5
   estimated_solution_weight_g: 451.0
   max_unit_cost: 120.0
   max_weight_g: 2200.0
 randomization:
-  static_variation_id: engineer_coder_gap_bridge_v3
+  static_variation_id: engineer_coder_gap_bridge_v2
   runtime_jitter_enabled: true

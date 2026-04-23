@@ -1,0 +1,51 @@
+objectives:
+  goal_zone_mm:
+    min_mm: [185.0, -40.0, 22.0]
+    max_mm: [295.0, 40.0, 76.0]
+  forbid_zones: []
+  build_zone_mm:
+    min_mm: [-320.0, -160.0, 0.0]
+    max_mm: [330.0, 155.0, 190.0]
+physics:
+  backend: GENESIS
+  compute_target: auto
+simulation_bounds_mm:
+  min_mm: [-360.0, -200.0, -20.0]
+  max_mm: [360.0, 200.0, 220.0]
+payload:
+  label: transfer_cube
+  shape: cube
+  material_id: abs
+  static_randomization:
+    radius_mm: [16.0, 18.0]
+  start_position_mm: [-250.0, -6.0, 38.0]
+  runtime_jitter_mm: [6.0, 6.0, 4.0]
+benchmark_parts:
+  - part_id: left_start_pad
+    label: left_start_pad
+    metadata:
+      is_fixed: true
+      material_id: aluminum_6061
+  - part_id: front_gate_wall
+    label: front_gate_wall
+    metadata:
+      is_fixed: true
+      material_id: aluminum_6061
+  - part_id: rear_gate_wall
+    label: rear_gate_wall
+    metadata:
+      is_fixed: true
+      material_id: aluminum_6061
+  - part_id: right_goal_pad
+    label: right_goal_pad
+    metadata:
+      is_fixed: true
+      material_id: aluminum_6061
+constraints:
+  estimated_solution_cost_usd: 35.8
+  estimated_solution_weight_g: 2472.6384
+  max_unit_cost: 55.0
+  max_weight_g: 2500.0
+randomization:
+  static_variation_id: clearance_gate_layered_depth_v1
+  runtime_jitter_enabled: true

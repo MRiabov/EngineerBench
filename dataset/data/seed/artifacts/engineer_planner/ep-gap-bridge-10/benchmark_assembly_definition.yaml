@@ -62,6 +62,58 @@ manufactured_parts:
     stock_volume_mm3: 432.0
     removed_volume_mm3: 0.0
     estimated_unit_cost_usd: 1.0
+  - part_name: left_guide_rail
+    part_id: left_guide_rail
+    manufacturing_method: CNC
+    material_id: hdpe
+    quantity: 1
+    part_volume_mm3: 96.0
+    stock_bbox_mm:
+      x: 4.0
+      y: 16.0
+      z: 6.0
+    stock_volume_mm3: 384.0
+    removed_volume_mm3: 288.0
+    estimated_unit_cost_usd: 1.0
+  - part_name: right_guide_rail
+    part_id: right_guide_rail
+    manufacturing_method: CNC
+    material_id: hdpe
+    quantity: 1
+    part_volume_mm3: 96.0
+    stock_bbox_mm:
+      x: 4.0
+      y: 16.0
+      z: 6.0
+    stock_volume_mm3: 384.0
+    removed_volume_mm3: 288.0
+    estimated_unit_cost_usd: 1.0
+  - part_name: center_pylon
+    part_id: center_pylon
+    manufacturing_method: CNC
+    material_id: hdpe
+    quantity: 1
+    part_volume_mm3: 180.0
+    stock_bbox_mm:
+      x: 6.0
+      y: 6.0
+      z: 10.0
+    stock_volume_mm3: 360.0
+    removed_volume_mm3: 180.0
+    estimated_unit_cost_usd: 1.0
+  - part_name: goal_lip
+    part_id: goal_lip
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 80.0
+    stock_bbox_mm:
+      x: 10.0
+      y: 4.0
+      z: 4.0
+    stock_volume_mm3: 160.0
+    removed_volume_mm3: 80.0
+    estimated_unit_cost_usd: 1.0
 final_assembly:
   - name: left_start_deck
     config:
@@ -71,10 +123,18 @@ final_assembly:
     config:
   - name: gap_floor_guard
     config:
+  - name: left_guide_rail
+    config:
+  - name: right_guide_rail
+    config:
+  - name: center_pylon
+    config:
+  - name: goal_lip
+    config:
 totals:
-  estimated_unit_cost_usd: 14.0
-  estimated_weight_g: 14.4072
+  estimated_unit_cost_usd: 18.0
+  estimated_weight_g: 18.0
   estimate_confidence: high
 dfm_suggestions:
   - Keep the start and goal decks static and planar so the benchmark remains easy to read.
-  - Treat the floor guard as a read-only clearance reference rather than an engineer-owned feature.
+  - Treat the floor guard, rails, pylon, and lip as read-only clearance references rather than engineer-owned features.

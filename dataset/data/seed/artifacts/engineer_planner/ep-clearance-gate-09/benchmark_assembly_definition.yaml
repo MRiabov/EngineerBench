@@ -1,0 +1,80 @@
+version: "1.0"
+units:
+  length: "mm"
+  volume: "mm3"
+  mass: "g"
+  currency: "USD"
+constraints:
+  benchmark_max_unit_cost_usd: 55.0
+  benchmark_max_weight_g: 2500.0
+  planner_target_max_unit_cost_usd: 30.0
+  planner_target_max_weight_g: 2400.0
+manufactured_parts:
+  - part_name: left_start_pad
+    part_id: left_start_pad
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 312000.0
+    stock_bbox_mm:
+      x: 150.0
+      y: 130.0
+      z: 16.0
+    stock_volume_mm3: 312000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 8.0
+  - part_name: gate_wall
+    part_id: gate_wall
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 169984.0
+    stock_bbox_mm:
+      x: 22.0
+      y: 128.0
+      z: 128.0
+    stock_volume_mm3: 360448.0
+    removed_volume_mm3: 190464.0
+    estimated_unit_cost_usd: 10.5
+  - part_name: upper_shroud
+    part_id: upper_shroud
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 19712.0
+    stock_bbox_mm:
+      x: 92.0
+      y: 10.0
+      z: 18.0
+    stock_volume_mm3: 16560.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 3.2
+  - part_name: right_goal_pad
+    part_id: right_goal_pad
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 312000.0
+    stock_bbox_mm:
+      x: 150.0
+      y: 130.0
+      z: 16.0
+    stock_volume_mm3: 312000.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 8.0
+final_assembly:
+  - name: left_start_pad
+    config:
+  - name: gate_wall
+    config:
+  - name: upper_shroud
+    config:
+  - name: right_goal_pad
+    config:
+totals:
+  estimated_unit_cost_usd: 29.7
+  estimated_weight_g: 2294.3168
+  estimate_confidence: high
+dfm_suggestions:
+  - Keep the wall canted enough to create a visible yaw problem without blocking the opening.
+  - Use flat pads on both sides to stabilize the transfer block before and after the gate.

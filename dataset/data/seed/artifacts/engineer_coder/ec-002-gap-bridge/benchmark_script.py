@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from build123d import Align, Box, Compound, Location
 
-from utils.metadata import CompoundMetadata, PartMetadata
+from shared.models.schemas import CompoundMetadata, PartMetadata
 
 
 def _make_box(

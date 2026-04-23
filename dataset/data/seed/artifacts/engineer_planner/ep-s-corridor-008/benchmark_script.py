@@ -1,6 +1,16 @@
 from __future__ import annotations
 
-from build123d import Align, Axis, Box, BuildPart, BuildSketch, Compound, Ellipse, Location, extrude
+from build123d import (
+    Align,
+    Axis,
+    Box,
+    BuildPart,
+    BuildSketch,
+    Compound,
+    Ellipse,
+    Location,
+    extrude,
+)
 
 from utils.metadata import CompoundMetadata, PartMetadata
 

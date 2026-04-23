@@ -38,8 +38,7 @@ benchmark instance and its own engineer-planner seed bundle.
   time.
 - Do not mix two unrelated benchmark families in one row.
 - Prefer passive or near-passive mechanics first.
-- Reserve motion-aware or interaction-heavy cases for a smaller subset of the
-  corpus.
+- Reserve interaction-heavy cases for a smaller subset of the corpus.
 - Keep benchmark-owned fixtures read-only in every engineer seed.
 - Keep the engineer-planner seed files exact and starter-like, not solved.
 - Make the row id reveal the family and variant so the corpus is easy to
@@ -47,16 +46,17 @@ benchmark instance and its own engineer-planner seed bundle.
 
 ## Recommended Distribution
 
-Use 10 families with 10 rows each for a total of 100 seeds.
+Use the active families to build about 100 seeds in total.
 
 The recommended split is:
 
 - 80 passive or mostly passive rows.
-- 20 advanced rows with tighter geometry, motion contracts, or interaction
-  constraints.
+- 20 advanced rows with tighter geometry or interaction constraints.
 
 This keeps most of the corpus cheap to review while still teaching the model
-to handle harder benchmark shapes.
+to handle harder benchmark shapes. Treat the per-family target rows as a
+baseline and add extra variants to the strongest families until the corpus
+reaches roughly 100 total rows.
 
 ## Family Matrix
 
@@ -71,9 +71,6 @@ to handle harder benchmark shapes.
 | `s_corridor` | Two or more offset obstacles force a bent route. | Obstacle count, offsets, bend angle, pinch width, dead-end length, goal placement. | Medium. | 10 |
 | `terrain_ridge` | The route crosses a bump, ridge, shallow step, or slope break. | Ridge height, slope length, crest radius, friction, start elevation, catch zone shape. | Medium to hard. | 10 |
 | `post_capture` | The goal is centered around a post or ring-like target. | Post diameter, ring inner and outer diameter, concentricity offset, capture depth, landing pad size. | Harder precision case. | 10 |
-| `motion_aware` | A benchmark-owned fixture moves or must be interacted with explicitly. | Motion type, travel range, phase timing, allowed interaction, trigger condition, safety margin. | Hardest family. | 10 |
-
-## Family Notes
 
 ### `gap_bridge`
 
@@ -202,20 +199,6 @@ Good variants include:
 
 This family should remain a capture-and-settle case, not a generic funnel.
 
-### `motion_aware`
-
-This family teaches explicit benchmark-side motion and interaction facts.
-
-Good variants include:
-
-- Rotating, sliding, or latch-like benchmark fixtures.
-- Motion that is always on, conditional, or triggered.
-- A fixture that the engineer may interact with in a narrow, explicit way.
-- A motion envelope that is stable but not trivial.
-
-Keep this family last in the build order. It is the most expensive to author
-and review, so it should not block the simpler passive families.
-
 ## Variant Ladder
 
 Within every family, keep the variants in a clear difficulty progression:
@@ -237,7 +220,6 @@ Examples:
 - `ep-gap-bridge-01`
 - `ep-gap-bridge-07`
 - `ep-central-bypass-03`
-- `ep-motion-aware-09`
 
 The exact prefix can follow local corpus conventions, but the family and
 variant should be obvious from the id.
@@ -268,10 +250,8 @@ the context is still local.
   - clearing a gate or window,
   - routing through a bent corridor,
   - surviving a terrain discontinuity,
-  - capturing around a post,
-  - reasoning about moving benchmark-owned fixtures.
+  - capturing around a post.
 - Keep the majority of rows in the passive families.
-- Keep the motion-aware family small enough that review time stays bounded.
 - Keep the benchmark geometry family-pure; do not blend two ideas just to fill
   quota.
 

@@ -1,0 +1,155 @@
+version: "1.0"
+units:
+  length: "mm"
+  volume: "mm3"
+  mass: "g"
+  currency: "USD"
+constraints:
+  benchmark_max_unit_cost_usd: 120.0
+  benchmark_max_weight_g: 2200.0
+  planner_target_max_unit_cost_usd: 90.0
+  planner_target_max_weight_g: 1800.0
+manufactured_parts:
+  - part_name: upper_start_platform
+    part_id: upper_start_platform
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 604800.0
+    stock_bbox_mm:
+      x: 180.0
+      y: 150.0
+      z: 28.0
+    stock_volume_mm3: 756000.0
+    removed_volume_mm3: 151200.0
+    estimated_unit_cost_usd: 9.5
+  - part_name: mid_descent_step
+    part_id: mid_descent_step
+    manufacturing_method: CNC
+    material_id: hdpe
+    quantity: 1
+    part_volume_mm3: 390000.0
+    stock_bbox_mm:
+      x: 150.0
+      y: 130.0
+      z: 24.0
+    stock_volume_mm3: 468000.0
+    removed_volume_mm3: 78000.0
+    estimated_unit_cost_usd: 6.0
+  - part_name: lower_descent_step
+    part_id: lower_descent_step
+    manufacturing_method: CNC
+    material_id: hdpe
+    quantity: 1
+    part_volume_mm3: 330000.0
+    stock_bbox_mm:
+      x: 150.0
+      y: 130.0
+      z: 22.0
+    stock_volume_mm3: 429000.0
+    removed_volume_mm3: 99000.0
+    estimated_unit_cost_usd: 5.5
+  - part_name: goal_basin
+    part_id: goal_basin
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 378000.0
+    stock_bbox_mm:
+      x: 150.0
+      y: 138.0
+      z: 20.0
+    stock_volume_mm3: 414000.0
+    removed_volume_mm3: 36000.0
+    estimated_unit_cost_usd: 7.5
+  - part_name: spike_a
+    part_id: spike_a
+    manufacturing_method: CNC
+    material_id: steel_carbon
+    quantity: 1
+    part_volume_mm3: 45200.0
+    stock_bbox_mm:
+      x: 36.0
+      y: 36.0
+      z: 58.0
+    stock_volume_mm3: 75264.0
+    removed_volume_mm3: 30064.0
+    estimated_unit_cost_usd: 3.0
+  - part_name: spike_b
+    part_id: spike_b
+    manufacturing_method: CNC
+    material_id: steel_carbon
+    quantity: 1
+    part_volume_mm3: 45200.0
+    stock_bbox_mm:
+      x: 36.0
+      y: 36.0
+      z: 58.0
+    stock_volume_mm3: 75264.0
+    removed_volume_mm3: 30064.0
+    estimated_unit_cost_usd: 3.0
+  - part_name: spike_c
+    part_id: spike_c
+    manufacturing_method: CNC
+    material_id: steel_carbon
+    quantity: 1
+    part_volume_mm3: 45200.0
+    stock_bbox_mm:
+      x: 36.0
+      y: 36.0
+      z: 58.0
+    stock_volume_mm3: 75264.0
+    removed_volume_mm3: 30064.0
+    estimated_unit_cost_usd: 3.0
+  - part_name: spike_d
+    part_id: spike_d
+    manufacturing_method: CNC
+    material_id: steel_carbon
+    quantity: 1
+    part_volume_mm3: 45200.0
+    stock_bbox_mm:
+      x: 36.0
+      y: 36.0
+      z: 58.0
+    stock_volume_mm3: 75264.0
+    removed_volume_mm3: 30064.0
+    estimated_unit_cost_usd: 3.0
+  - part_name: spike_e
+    part_id: spike_e
+    manufacturing_method: CNC
+    material_id: steel_carbon
+    quantity: 1
+    part_volume_mm3: 45200.0
+    stock_bbox_mm:
+      x: 36.0
+      y: 36.0
+      z: 58.0
+    stock_volume_mm3: 75264.0
+    removed_volume_mm3: 30064.0
+    estimated_unit_cost_usd: 3.0
+final_assembly:
+  - name: upper_start_platform
+    config:
+  - name: mid_descent_step
+    config:
+  - name: lower_descent_step
+    config:
+  - name: goal_basin
+    config:
+  - name: spike_a
+    config:
+  - name: spike_b
+    config:
+  - name: spike_c
+    config:
+  - name: spike_d
+    config:
+  - name: spike_e
+    config:
+totals:
+  estimated_unit_cost_usd: 43.5
+  estimated_weight_g: 1780.0
+  estimate_confidence: high
+dfm_suggestions:
+  - Keep the five spike bodies visibly separated so the dense field reads as a single family of obstacles rather than merged clutter.
+  - Keep the goal basin narrow enough to preserve the tighter landing challenge but open enough that the route still reads as downhill capture.

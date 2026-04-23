@@ -3,7 +3,7 @@ from __future__ import annotations
 import yaml
 from build123d import Align, Box, Compound, Cylinder, Location, Sphere
 
-from utils.metadata import CompoundMetadata, PartMetadata
+from shared.models.schemas import CompoundMetadata, PartMetadata
 
 
 def _load_payload() -> dict:

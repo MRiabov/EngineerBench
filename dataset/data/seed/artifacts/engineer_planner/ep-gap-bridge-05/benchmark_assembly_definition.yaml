@@ -15,13 +15,13 @@ manufactured_parts:
   manufacturing_method: CNC
   material_id: aluminum_6061
   quantity: 1
-  part_volume_mm3: 900000.0
+  part_volume_mm3: 920000.0
   stock_bbox_mm:
-    x: 180.0
+    x: 184.0
     y: 180.0
     z: 70.0
-  stock_volume_mm3: 2268000.0
-  removed_volume_mm3: 1368000.0
+  stock_volume_mm3: 2318400.0
+  removed_volume_mm3: 1398400.0
   estimated_unit_cost_usd: 20.0
 - part_name: right_goal_deck
   part_id: right_goal_deck
@@ -41,26 +41,26 @@ manufactured_parts:
   manufacturing_method: CNC
   material_id: aluminum_6061
   quantity: 1
-  part_volume_mm3: 180000.0
+  part_volume_mm3: 185000.0
   stock_bbox_mm:
-    x: 140.0
-    y: 120.0
+    x: 150.0
+    y: 110.0
     z: 30.0
-  stock_volume_mm3: 504000.0
-  removed_volume_mm3: 324000.0
-  estimated_unit_cost_usd: 8.0
+  stock_volume_mm3: 495000.0
+  removed_volume_mm3: 310000.0
+  estimated_unit_cost_usd: 8.5
 - part_name: gap_floor_guard
   part_id: gap_floor_guard
   manufacturing_method: CNC
   material_id: hdpe
   quantity: 1
-  part_volume_mm3: 420000.0
+  part_volume_mm3: 468000.0
   stock_bbox_mm:
-    x: 160.0
-    y: 300.0
-    z: 40.0
-  stock_volume_mm3: 1920000.0
-  removed_volume_mm3: 1500000.0
+    x: 190.0
+    y: 320.0
+    z: 36.0
+  stock_volume_mm3: 2188800.0
+  removed_volume_mm3: 1720800.0
   estimated_unit_cost_usd: 18.0
 final_assembly:
 - name: left_start_deck
@@ -72,8 +72,8 @@ final_assembly:
 - name: gap_floor_guard
   config:
 totals:
-  estimated_unit_cost_usd: 67.0
-  estimated_weight_g: 1540.0
+  estimated_unit_cost_usd: 67.5
+  estimated_weight_g: 1570.0
   estimate_confidence: high
 dfm_suggestions:
 - Keep the start and goal decks static and planar so the benchmark remains easy to read.

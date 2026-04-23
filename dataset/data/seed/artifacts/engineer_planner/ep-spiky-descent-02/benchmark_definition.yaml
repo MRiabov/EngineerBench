@@ -1,0 +1,82 @@
+objectives:
+  goal_zone_mm:
+    min_mm: [278.0, -60.0, 12.0]
+    max_mm: [350.0, 60.0, 58.0]
+  forbid_zones:
+    - name: upper_descent_keepout
+      min_mm: [-230.0, -100.0, 118.0]
+      max_mm: [-120.0, 100.0, 214.0]
+    - name: spike_field_keepout
+      min_mm: [-140.0, -82.0, 28.0]
+      max_mm: [190.0, 82.0, 174.0]
+  build_zone_mm:
+    min_mm: [-420.0, -180.0, 0.0]
+    max_mm: [420.0, 180.0, 260.0]
+benchmark_parts:
+  - part_id: upper_start_platform
+    label: upper_start_platform
+    metadata:
+      is_fixed: true
+      material_id: aluminum_6061
+  - part_id: mid_descent_step
+    label: mid_descent_step
+    metadata:
+      is_fixed: true
+      material_id: hdpe
+  - part_id: lower_descent_step
+    label: lower_descent_step
+    metadata:
+      is_fixed: true
+      material_id: hdpe
+  - part_id: goal_basin
+    label: goal_basin
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: spike_a
+    label: spike_a
+    metadata:
+      is_fixed: true
+      material_id: steel_carbon
+  - part_id: spike_b
+    label: spike_b
+    metadata:
+      is_fixed: true
+      material_id: steel_carbon
+  - part_id: spike_c
+    label: spike_c
+    metadata:
+      is_fixed: true
+      material_id: steel_carbon
+  - part_id: spike_d
+    label: spike_d
+    metadata:
+      is_fixed: true
+      material_id: steel_carbon
+  - part_id: spike_e
+    label: spike_e
+    metadata:
+      is_fixed: true
+      material_id: steel_carbon
+physics:
+  backend: GENESIS
+  compute_target: auto
+simulation_bounds_mm:
+  min_mm: [-460.0, -200.0, -20.0]
+  max_mm: [460.0, 200.0, 280.0]
+payload:
+  label: steel_ball
+  shape: sphere
+  material_id: steel_carbon
+  static_randomization:
+    radius_mm: [25.0, 25.0]
+  start_position_mm: [-322.0, 0.0, 220.0]
+  runtime_jitter_mm: [12.0, 12.0, 4.0]
+constraints:
+  estimated_solution_cost_usd: 25.5
+  estimated_solution_weight_g: 1780.0
+  max_unit_cost: 120.0
+  max_weight_g: 2200.0
+randomization:
+  static_variation_id: engineer_planner_spiky_descent_v02_dense_spikes
+  runtime_jitter_enabled: true

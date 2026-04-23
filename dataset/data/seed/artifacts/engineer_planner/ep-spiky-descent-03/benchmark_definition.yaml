@@ -1,0 +1,77 @@
+objectives:
+  goal_zone_mm:
+    min_mm: [276.0, 10.0, 12.0]
+    max_mm: [356.0, 82.0, 60.0]
+  forbid_zones:
+    - name: upper_descent_keepout
+      min_mm: [-255.0, -70.0, 130.0]
+      max_mm: [-135.0, 70.0, 238.0]
+    - name: offset_spike_field_keepout
+      min_mm: [-170.0, -60.0, 28.0]
+      max_mm: [200.0, 70.0, 184.0]
+  build_zone_mm:
+    min_mm: [-420.0, -180.0, 0.0]
+    max_mm: [420.0, 180.0, 260.0]
+benchmark_parts:
+  - part_id: upper_start_platform
+    label: upper_start_platform
+    metadata:
+      is_fixed: true
+      material_id: aluminum_6061
+  - part_id: upper_mid_step
+    label: upper_mid_step
+    metadata:
+      is_fixed: true
+      material_id: hdpe
+  - part_id: lower_mid_step
+    label: lower_mid_step
+    metadata:
+      is_fixed: true
+      material_id: hdpe
+  - part_id: offset_goal_basin
+    label: offset_goal_basin
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: north_spike
+    label: north_spike
+    metadata:
+      is_fixed: true
+      material_id: steel_carbon
+  - part_id: south_spike
+    label: south_spike
+    metadata:
+      is_fixed: true
+      material_id: steel_carbon
+  - part_id: center_spike
+    label: center_spike
+    metadata:
+      is_fixed: true
+      material_id: steel_carbon
+  - part_id: tail_spike
+    label: tail_spike
+    metadata:
+      is_fixed: true
+      material_id: steel_carbon
+physics:
+  backend: GENESIS
+  compute_target: auto
+simulation_bounds_mm:
+  min_mm: [-460.0, -200.0, -20.0]
+  max_mm: [460.0, 200.0, 280.0]
+payload:
+  label: steel_ball
+  shape: sphere
+  material_id: steel_carbon
+  static_randomization:
+    radius_mm: [25.0, 25.0]
+  start_position_mm: [-335.0, -18.0, 230.0]
+  runtime_jitter_mm: [12.0, 12.0, 4.0]
+constraints:
+  estimated_solution_cost_usd: 41.0
+  estimated_solution_weight_g: 1765.0
+  max_unit_cost: 120.0
+  max_weight_g: 2200.0
+randomization:
+  static_variation_id: engineer_planner_spiky_descent_v03_offset_basin
+  runtime_jitter_enabled: true

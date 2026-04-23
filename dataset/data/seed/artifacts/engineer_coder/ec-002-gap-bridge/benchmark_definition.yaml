@@ -1,7 +1,7 @@
 objectives:
   goal_zone_mm:
-    min_mm: [210.0, -70.0, 25.0]
-    max_mm: [320.0, 70.0, 120.0]
+    min_mm: [315.0, -70.0, 25.0]
+    max_mm: [360.0, 70.0, 120.0]
   forbid_zones:
     - name: floor_gap
       min_mm: [-70.0, -150.0, -5.0]
@@ -42,7 +42,7 @@ payload:
   shape: cube
   material_id: abs
   static_randomization: {}
-  start_position_mm: [-250.0, 0.0, 80.0]
+  start_position_mm: [-330.0, 0.0, 80.0]
   runtime_jitter_mm: [8.0, 8.0, 5.0]
 constraints:
   estimated_solution_cost_usd: 57.5

@@ -1,35 +1,39 @@
 objectives:
   goal_zone_mm:
-    min_mm: [210.0, -70.0, 25.0]
-    max_mm: [320.0, 70.0, 120.0]
+    min_mm: [228.0, -62.0, 26.0]
+    max_mm: [318.0, 62.0, 126.0]
   forbid_zones:
     - name: floor_gap
-      min_mm: [-70.0, -150.0, -5.0]
-      max_mm: [90.0, 150.0, 45.0]
+      min_mm: [-92.0, -154.0, -4.0]
+      max_mm: [102.0, 154.0, 46.0]
   build_zone_mm:
-    min_mm: [-340.0, -180.0, 0.0]
-    max_mm: [360.0, 180.0, 260.0]
+    min_mm: [-350.0, -180.0, 0.0]
+    max_mm: [380.0, 180.0, 270.0]
 benchmark_parts:
   - part_id: left_start_deck
     label: left_start_deck
     metadata:
-      fixed: true
       material_id: aluminum_6061
   - part_id: right_goal_deck
     label: right_goal_deck
     metadata:
-      fixed: true
       material_id: aluminum_6061
   - part_id: bridge_reference_table
     label: bridge_reference_table
     metadata:
-      fixed: true
       material_id: aluminum_6061
   - part_id: gap_floor_guard
     label: gap_floor_guard
     metadata:
-      fixed: true
       material_id: hdpe
+  - part_id: left_terrace
+    label: left_terrace
+    metadata:
+      material_id: hardwood
+  - part_id: right_terrace
+    label: right_terrace
+    metadata:
+      material_id: hardwood
 
 physics:
   backend: GENESIS
@@ -42,13 +46,13 @@ payload:
   shape: cube
   material_id: abs
   static_randomization: {}
-  start_position_mm: [-250.0, 0.0, 80.0]
-  runtime_jitter_mm: [8.0, 8.0, 5.0]
+  start_position_mm: [-246.0, -18.0, 80.0]
+  runtime_jitter_mm: [9.0, 9.0, 5.0]
 constraints:
-  estimated_solution_cost_usd: 57.5
-  estimated_solution_weight_g: 451.0
+  estimated_solution_cost_usd: 67.0
+  estimated_solution_weight_g: 1640.0
   max_unit_cost: 120.0
   max_weight_g: 2200.0
 randomization:
-  static_variation_id: engineer_coder_gap_bridge_v2
+  static_variation_id: engineer_planner_gap_bridge_v08_terraced_offset
   runtime_jitter_enabled: true
