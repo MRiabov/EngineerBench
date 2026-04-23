@@ -160,11 +160,7 @@
       "instance_name": "projectile_ball",
       "object_type": "part",
       "object_id": 4,
-      "pos_mm": [
-        -245.0,
-        0.0,
-        70.0
-      ],
+      "pos_mm": [-245.0, 0.0, 185.0],
       "euler_deg": [
         0.0,
         0.0,

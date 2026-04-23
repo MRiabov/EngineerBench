@@ -62,7 +62,7 @@ payload:
   start_position_mm:
   - -250.0
   - 0.0
-  - 70.0
+  - 187.0
   runtime_jitter_mm:
   - 10.0
   - 10.0

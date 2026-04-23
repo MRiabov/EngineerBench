@@ -17,7 +17,7 @@ The route is intentionally simple. The challenge is the final capture precision 
 - Label: `projectile_ball`
 - Static randomization:
   - radius_mm in `[18, 20]` mm
-- Nominal start position: [-250.0, 0, 70]
+- Nominal start position: [-250.0, 0, 187]
 - Runtime jitter: [9.0, 9.0, 5.0] mm
 
 ## 4. Objectives
