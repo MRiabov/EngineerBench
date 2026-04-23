@@ -74,7 +74,7 @@ DEFAULT_FAMILIES = [
     "central_bypass",
     "narrow_funnel",
     "lower_bin",
-    "shelf_ascent",
+    "spiky_descent",
     "clearance_gate",
     "s_corridor",
     "terrain_ridge",

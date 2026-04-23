@@ -28,6 +28,7 @@ from shared.enums import AgentName
 from shared.git_utils import repo_revision
 from shared.models.schemas import BenchmarkDefinition, CompoundMetadata, PartMetadata
 from shared.rendering import (
+    export_preview_scene_bundle,
     materialize_render_artifacts,
     normalize_render_manifest,
     render_static_preview,
@@ -359,6 +360,12 @@ def _refresh_benchmark_bundle(
     staging_root: Path,
     session_id: str,
 ) -> list[str]:
+    definition = _load_benchmark_definition(artifact_dir)
+    benchmark_script_path = artifact_dir / BENCHMARK_SCRIPT_PATH
+    if not benchmark_script_path.exists():
+        raise FileNotFoundError(
+            f"{benchmark_script_path.name} missing in {artifact_dir}"
+        )
     role_manifest_path = staging_root / CURRENT_ROLE_MANIFEST_PATH
     original_role_manifest = (
         role_manifest_path.read_text(encoding="utf-8")
@@ -370,12 +377,17 @@ def _refresh_benchmark_bundle(
         current_role_manifest_json(AgentName.BENCHMARK_REVIEWER), encoding="utf-8"
     )
     try:
-        bundle_base64 = bundle_workspace_base64(staging_root)
+        preview_bundle_base64 = export_preview_scene_bundle(
+            _load_preview_component(artifact_dir, definition, "benchmark_reviewer"),
+            objectives=definition,
+            workspace_root=staging_root,
+        )
         response = render_static_preview(
-            bundle_base64=bundle_base64,
+            bundle_base64=preview_bundle_base64,
             script_path=Path(BENCHMARK_SCRIPT_PATH).name,
             session_id=session_id,
             agent_role="benchmark_reviewer",
+            script_content=benchmark_script_path.read_text(encoding="utf-8"),
         )
     finally:
         if original_role_manifest is None:

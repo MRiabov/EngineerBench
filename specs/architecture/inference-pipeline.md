@@ -142,15 +142,15 @@ Resume is a selection policy, not an execution shortcut. The persisted job-state
 
 ## Execution Flow
 
-1. Load the config and the current job-state file.
-2. Resolve the selected stage and validate the requested downstream cutoff, if any.
-3. Resolve worker hints by precedence: CLI flag, then stage hints, then pipeline hints, then hardcoded default.
-4. Build the run summary and the per-job request list.
-5. Write queued job state before dispatch so a crash does not erase progress.
-6. Run the selected stage batch with the wired executor.
-7. Materialize a workspace, launch the provider session, and verify the workspace with the role-scoped validation helper.
-8. Copy back only when persistence is enabled and the run is not in validate-only mode.
-9. Refresh manifests and the compatibility mirror only after a successful copy-back.
+01. Load the config and the current job-state file.
+02. Resolve the selected stage and validate the requested downstream cutoff, if any.
+03. Resolve worker hints by precedence: CLI flag, then stage hints, then pipeline hints, then hardcoded default.
+04. Build the run summary and the per-job request list.
+05. Write queued job state before dispatch so a crash does not erase progress.
+06. Run the selected stage batch with the wired executor.
+07. Materialize a workspace, launch the provider session, and verify the workspace with the role-scoped validation helper.
+08. Copy back only when persistence is enabled and the run is not in validate-only mode.
+09. Refresh manifests and the compatibility mirror only after a successful copy-back.
 10. Queue downstream job states from the declared graph and write the updated state file.
 11. Drain downstream stages in graph order until the declared cutoff or the first declared-only stage.
 
