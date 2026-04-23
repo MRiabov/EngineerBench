@@ -1,26 +1,30 @@
 # TODO List
 
-## Phase 1: Ground the Handoff
+## Phase 1: Ground the Starter
 
-- [ ] Confirm `.manifests/current_role.json` names `engineer_planner`
-- [ ] Re-read `benchmark_definition.yaml` and `benchmark_assembly_definition.yaml` for the fixed gap geometry
-- [ ] Note the exact `transfer_cube`, `left_start_deck`, `right_goal_deck`, `bridge_reference_table`, and `gap_floor_guard` labels
+- [ ] Confirm `benchmark_definition.yaml` and `benchmark_assembly_definition.yaml`
+  are read-only inputs for the current workspace.
+- [ ] Keep `starter_stub_block` and `starter_stub_assembly` stable until a real
+  task-specific revision is written.
 
 ## Phase 2: Keep The Planner Artifacts Aligned
 
-- [ ] Keep `engineering_plan.md` grounded to `transfer_cube` and the 280 mm gap span
-- [ ] Keep `assembly_definition.yaml` aligned with the same part names, costs, and coarse trajectory
-- [ ] Keep `solution_plan_evidence_script.py` as a readable preview of the four-part bridge assembly
+- [ ] Keep `engineering_plan.md` aligned with `assembly_definition.yaml`
+  and `solution_plan_evidence_script.py`.
+- [ ] Keep the evidence scene compact and non-exploded so the starter remains
+  easy to inspect.
 
 ## Phase 3: Cross-Check Coherence
 
-- [ ] Verify the part dimensions, volumes, and totals match across the plan and YAML
-- [ ] Verify the first trajectory anchor starts at the payload spawn position
-- [ ] Verify the last trajectory anchor ends at the goal-zone center
-- [ ] Verify the evidence scene shows the bridge deck, anchor blocks, and exit lip
+- [ ] Verify the part label, assembly label, and evidence script all use the
+  same starter identifiers.
+- [ ] Verify the declared cost and weight totals match the YAML and the plan.
+- [ ] Verify the scene contains one visible block and nothing that looks like a
+  solved mechanism.
 
 ## Phase 4: Handoff Ready
 
-- [ ] Leave benchmark-owned files unchanged
-- [ ] Keep the workspace starter-like rather than solved
-- [ ] Do not add downstream implementation work to this planner seed
+- [ ] Leave benchmark-owned files unchanged.
+- [ ] Keep the workspace starter-like rather than solved.
+- [ ] Replace the stub with task-specific engineering labels only when the real
+  plan is ready.

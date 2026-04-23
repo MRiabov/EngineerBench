@@ -23,32 +23,14 @@ def build() -> Compound:
     assembly = Compound(
         children=[
             _make_box(
-                "bridge_deck",
-                (300.0, 95.0, 8.0),
-                (10.0, 0.0, 74.0),
-                "aluminum_6061",
-            ),
-            _make_box(
-                "left_support",
-                (24.0, 95.0, 18.0),
-                (-128.0, 0.0, 61.0),
-                "aluminum_6061",
-            ),
-            _make_box(
-                "right_support",
-                (24.0, 95.0, 18.0),
-                (148.0, 0.0, 61.0),
-                "aluminum_6061",
-            ),
-            _make_box(
-                "stop_lip",
-                (8.0, 95.0, 12.0),
-                (156.0, 0.0, 84.0),
+                "starter_stub_block",
+                (5.0, 5.0, 5.0),
+                (0.0, 0.0, 0.0),
                 "aluminum_6061",
             ),
         ]
     )
-    assembly.label = "solution_plan_evidence"
+    assembly.label = "starter_stub_assembly"
     assembly.metadata = CompoundMetadata()
     return assembly
 
