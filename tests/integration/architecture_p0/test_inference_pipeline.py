@@ -10,6 +10,7 @@ import pytest
 
 from dataset.evals.eval_inference_pipeline import (
     _bundle_fingerprint,
+    _discover_stage_families,
     _load_resume_state_skip_ids,
     _load_stage_items,
     _run_workspace_job,
@@ -511,6 +512,69 @@ def test_inference_pipeline_internally_persisted_state_only_ignores_compatibilit
     assert [item.item.id for item in filtered_items] == [selected.item.id]
     assert selected_job_ids == [f"engineer_planner:{selected.item.id}"]
     assert skipped_job_ids == []
+
+
+def test_inference_pipeline_discovers_families_from_family_name_field(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    dataset_path = tmp_path / "engineer_planner.json"
+    dataset_path.write_text(
+        json.dumps(
+            [
+                {
+                    "id": "custom-family-01",
+                    "task": "Synthetic family-name discovery row.",
+                    "complexity_level": 0,
+                    "family_name": "gravity_chute",
+                    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/custom-family-01",
+                    "expected_criteria": "Synthetic family-name discovery row.",
+                },
+                {
+                    "id": "custom-family-02",
+                    "task": "Synthetic family-name discovery row.",
+                    "complexity_level": 0,
+                    "family_name": "gap_bridge",
+                    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/custom-family-02",
+                    "expected_criteria": "Synthetic family-name discovery row.",
+                },
+            ],
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(
+        "dataset.evals.eval_inference_pipeline._seed_dataset_path_for_agent",
+        lambda _agent: dataset_path,
+    )
+    monkeypatch.setattr(
+        "dataset.evals.eval_inference_pipeline.ROOT",
+        tmp_path,
+    )
+
+    assert _discover_stage_families(AgentName.ENGINEER_PLANNER) == [
+        "gap_bridge",
+        "gravity_chute",
+    ]
+
+    stage = InferenceStageConfig(
+        name="engineer_planner",
+        agent_name=AgentName.ENGINEER_PLANNER,
+        outputs_per_success=1,
+        downstream_stage_names=[],
+        executor=InferenceStageExecutorName.SEED_WORKER,
+    )
+    selected_items, _ = _load_stage_items(
+        stage=stage,
+        families=["gravity_chute"],
+        task_ids=None,
+        levels=None,
+        limit=10,
+    )
+
+    assert [item.item.id for item in selected_items] == ["custom-family-01"]
+    assert selected_items[0].family == "gravity_chute"
 
 
 def test_inference_pipeline_benchmark_stage_dry_run_writes_summary() -> None:

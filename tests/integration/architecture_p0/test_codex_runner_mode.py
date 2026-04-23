@@ -3766,6 +3766,58 @@ def test_validate_eval_seed_accepts_curated_rows_and_preserves_redundancy_metada
 
 
 @pytest.mark.integration_p0
+@pytest.mark.int_id("INT-267a")
+def test_validate_eval_seed_rejects_missing_engineer_planner_family_name_metadata(
+    tmp_path: Path,
+):
+    missing_family_root = (
+        ROOT / "test_output" / f"missing-family-name-datasets-{tmp_path.name}"
+    )
+    missing_family_root.mkdir(parents=True, exist_ok=True)
+    missing_family_dataset_path = missing_family_root / "engineer_planner.json"
+    engineer_planner_rows = json.loads(
+        (ROOT / "dataset/data/seed/role_based/engineer_planner.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    engineer_planner_rows[0].pop("family_name", None)
+    missing_family_dataset_path.write_text(
+        json.dumps(engineer_planner_rows, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "scripts/validate_eval_seed.py",
+            "--skip-env-up",
+            "--agent",
+            "engineer_planner",
+            "--task-id",
+            "ep-001",
+            "--fail-fast",
+            "--concurrency",
+            "1",
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=300,
+        env=_validate_eval_seed_env(
+            PROBLEMOLOGIST_SEED_DATASET_ROOTS=str(missing_family_root)
+        ),
+    )
+
+    combined_output = "\n".join(
+        part for part in (completed.stdout, completed.stderr) if part
+    )
+
+    assert completed.returncode != 0, combined_output
+    assert "family_name" in combined_output, combined_output
+
+
+@pytest.mark.integration_p0
 @pytest.mark.int_id("INT-268")
 def test_validate_eval_seed_removes_preview_bundles_from_all_seed_artifacts():
     completed = subprocess.run(

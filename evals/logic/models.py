@@ -23,6 +23,7 @@ class EvalDatasetItem(BaseModel):
     id: str
     task: str
     complexity_level: int = Field(ge=0, le=5)
+    family_name: str | None = None
     seed_dataset: Path | None = None
     seed_artifact_dir: Path | None = None
     seed_files: dict[str, str] | None = None

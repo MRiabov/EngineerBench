@@ -69,21 +69,63 @@ DEFAULT_PROVIDER = "codex"
 DEFAULT_SEED_WORKERS = 4
 DEFAULT_AUTHOR_RETRIES = 1
 DEFAULT_VALIDATION_SCOPE = "current-and-previous-nodes"
-DEFAULT_FAMILIES = [
+DEFAULT_ENGINEER_PLANNER_FAMILIES = [
     "gap_bridge",
     "central_bypass",
     "narrow_funnel",
     "lower_bin",
+    "gravity_chute",
     "spiky_descent",
     "clearance_gate",
     "s_corridor",
     "terrain_ridge",
     "post_capture",
-    "motion_aware",
 ]
 ENGINEER_TASK_STATE_REL = Path("logs/evals/seed_update_autopilot/task_state.json")
 _ENGINEER_TASK_ID_RE = re.compile(r"^ep-(?P<family>[a-z-]+)-(?P<variant>\d{2})$")
 _WORKSPACE_SKIP_DIR_NAMES = {".git", "__pycache__", ".mypy_cache", ".pytest_cache"}
+
+
+def _normalize_family_name(value: Any) -> str | None:
+    if not isinstance(value, str):
+        return None
+    family = value.strip()
+    if not family:
+        return None
+    return family.replace("-", "_")
+
+
+def _discover_stage_families(agent_name: AgentName) -> list[str]:
+    if agent_name != AgentName.ENGINEER_PLANNER:
+        return []
+
+    dataset_path = _seed_dataset_path_for_agent(agent_name)
+    if not dataset_path.exists():
+        return list(DEFAULT_ENGINEER_PLANNER_FAMILIES)
+
+    try:
+        rows = json.loads(dataset_path.read_text(encoding="utf-8"))
+    except Exception:
+        return list(DEFAULT_ENGINEER_PLANNER_FAMILIES)
+    if not isinstance(rows, list):
+        return list(DEFAULT_ENGINEER_PLANNER_FAMILIES)
+
+    families: list[str] = []
+    seen: set[str] = set()
+    for raw_row in rows:
+        if not isinstance(raw_row, dict):
+            continue
+        family = _infer_row_family(agent_name, raw_row)
+        if family is None or family in seen:
+            continue
+        seen.add(family)
+        families.append(family)
+
+    canonical_order = list(DEFAULT_ENGINEER_PLANNER_FAMILIES)
+    canonical_members = [family for family in canonical_order if family in seen]
+    extras = [family for family in families if family not in canonical_order]
+    ordered_families = canonical_members + extras
+    return ordered_families or list(DEFAULT_ENGINEER_PLANNER_FAMILIES)
 
 
 def _parse_args() -> argparse.Namespace:
@@ -123,7 +165,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--family",
         action="append",
-        choices=DEFAULT_FAMILIES,
+        choices=_discover_stage_families(AgentName.ENGINEER_PLANNER),
         default=None,
         help="Restrict the run to one or more engineer_planner families.",
     )
@@ -430,9 +472,10 @@ def _seed_dataset_path_for_agent(agent_name: AgentName) -> Path:
 
 
 def _infer_row_family(agent_name: AgentName, raw_row: dict[str, Any]) -> str | None:
-    family = raw_row.get("family")
-    if isinstance(family, str) and family.strip():
-        return family.strip()
+    for key in ("family_name", "family-name", "family"):
+        family = _normalize_family_name(raw_row.get(key))
+        if family is not None:
+            return family
 
     if agent_name != AgentName.ENGINEER_PLANNER:
         return None
@@ -922,6 +965,7 @@ def _job_request_for_item(
     row_family = _infer_row_family(stage.agent_name, raw_row)
     if row_family is not None:
         metadata["family"] = row_family
+        metadata["family_name"] = row_family
     if isinstance(raw_row.get("variant"), int):
         metadata["variant"] = int(raw_row["variant"])
     return InferenceJobRequest(
@@ -1225,7 +1269,7 @@ def main() -> int:
         if args.family is not None
         and selected_stage.agent_name == AgentName.ENGINEER_PLANNER
         else (
-            list(DEFAULT_FAMILIES)
+            _discover_stage_families(AgentName.ENGINEER_PLANNER)
             if selected_stage.agent_name == AgentName.ENGINEER_PLANNER
             else None
         )
@@ -1400,7 +1444,7 @@ def main() -> int:
             else followup_stage.persist_back_to_seed
         )
         followup_families = (
-            list(DEFAULT_FAMILIES)
+            _discover_stage_families(AgentName.ENGINEER_PLANNER)
             if followup_stage.agent_name == AgentName.ENGINEER_PLANNER
             else None
         )

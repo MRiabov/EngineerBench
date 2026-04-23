@@ -344,6 +344,19 @@ def _load_yaml_mapping(path: Path) -> dict[str, object] | None:
     return data
 
 
+def _validate_seed_row_metadata(
+    agent: AgentName, item: EvalDatasetItem
+) -> tuple[bool, str]:
+    if agent == AgentName.ENGINEER_PLANNER:
+        family_name = item.family_name.strip() if item.family_name else ""
+        if not family_name:
+            return False, (
+                "engineer_planner rows must include a non-empty family_name field"
+            )
+
+    return True, "seed metadata valid"
+
+
 def _resolve_workspace_dir(
     raw_workspace_dir: object, *, session_dir: Path | None = None
 ) -> Path | None:
@@ -647,7 +660,30 @@ async def _async_main(args: argparse.Namespace) -> int:
             if args.fail_fast:
                 break
             continue
-        work_items.extend((agent, item) for item in dataset)
+        for item in dataset:
+            metadata_ok, metadata_detail = _validate_seed_row_metadata(agent, item)
+            if not metadata_ok:
+                checked += 1
+                if not args.errors_only:
+                    print(
+                        _format_failure_message(agent.value, item.id, metadata_detail)
+                    )
+                failures.append((agent.value, item.id, metadata_detail))
+                json_results.append(
+                    {
+                        "agent": agent.value,
+                        "task_id": item.id,
+                        "ok": False,
+                        "detail": metadata_detail,
+                    }
+                )
+                if args.fail_fast:
+                    break
+                continue
+            work_items.append((agent, item))
+
+        if args.fail_fast and failures:
+            break
 
     if args.run_judge and not failures and len(work_items) > 10 and not args.yes:
         raise SystemExit(

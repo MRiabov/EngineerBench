@@ -479,9 +479,15 @@ def _build_axes_actor(
     tick_count = _scene_axis_tick_count(scene)
     axes_actor = vtkCubeAxesActor2D()
     axes_actor.SetCamera(renderer.GetActiveCamera())
+    bounds_min = _scene_bounds_min(scene)
+    bounds_max = _scene_bounds_max(scene)
     axes_actor.SetBounds(
-        *_scene_bounds_min(scene),
-        *_scene_bounds_max(scene),
+        bounds_min[0],
+        bounds_max[0],
+        bounds_min[1],
+        bounds_max[1],
+        bounds_min[2],
+        bounds_max[2],
     )
     axes_actor.SetFlyModeToOuterEdges()
     axes_actor.SetNumberOfLabels(tick_count)
