@@ -317,6 +317,17 @@ def _parse_args() -> argparse.Namespace:
         action="store_true",
         help="Print the planned commands without executing them.",
     )
+    parser.add_argument(
+        "--persist-results",
+        dest="persist_results",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help=(
+            "Copy successful outputs back into the seed corpus after the "
+            "normal validation and review gates. Use --no-persist-results "
+            "to keep the run artifacts only."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -958,9 +969,8 @@ def _build_authoring_prompt(
                 "Bootstrap state:",
                 "- This workspace was initialized by "
                 "`dataset/evals/materialize_seed_authoring_workspace.py`.",
-                "- The starter/template files, current-role manifest, and "
+                "- The workspace skeleton, current-role manifest, and "
                 "synced `.venv` are already present.",
-                "- Start from that scaffold; do not rebuild the starter set by hand.",
                 "",
             ]
         )
@@ -971,10 +981,10 @@ def _build_authoring_prompt(
             "the target artifact directory.",
             "- Repair the existing seed in place when a previous round failed; do "
             "not restart from scratch or switch to a different task id.",
+            "- If seeds from the same family prefix already exist, you may reuse their broad family pattern and variation knobs, but do not clone the layout or make cosmetic changes; the new benchmark must be materially distorted and clearly distinct so the corpus stays high quality.",
             "- Keep `seed_artifact_dir` stable and pointing at the canonical "
             "artifact directory for this task id.",
             "- Keep benchmark-owned context read-only and exact-grounded.",
-            "- Keep the engineer_planner starter files starter-like, not solved.",
             "- Do not run validation, render, or judge helpers. The maintainer "
             "driver handles those steps.",
             "- Do not touch unrelated files.",
@@ -995,7 +1005,6 @@ def _build_authoring_prompt(
             "- `.manifests/current_role.json` must name `engineer_planner`.",
             "- `seed_artifact_dir` must stay stable for this task id.",
             "- benchmark-owned files stay read-only and exact-grounded.",
-            "- starter scaffold files stay starter-like, not solved.",
             "- every role, object, and payload label in the task or criteria must "
             "remain exact-grounded; do not substitute generic names.",
             "",
@@ -1031,8 +1040,8 @@ def _build_review_prompt(
         "shape, variant progression, and row naming.",
         "Inspect dataset/data/seed/role_based/engineer_planner.json, the "
         "target artifact dir, and the validation evidence in this workspace.",
-        "Judge the seed as an engineer-planner starter workspace, not as a "
-        "benchmark-execution handoff.",
+        "Judge the seed against the row contract and stored corpus only.",
+        "If seeds from the same family prefix already exist, you may reuse their broad family pattern and variation knobs, but do not clone the layout or make cosmetic changes; the new benchmark must be materially distorted and clearly distinct so the corpus stays high quality.",
         "",
         "Validation tail:",
         validation_tail or "(no validation output)",
@@ -1064,7 +1073,6 @@ def _build_review_prompt(
             "- `.manifests/current_role.json` names `engineer_planner`.",
             "- the seeded workspace matches the row's artifact directory exactly.",
             "- benchmark-owned files remain read-only and exact-grounded.",
-            "- starter scaffold files are starter-like, not pre-solved outputs.",
             "- role/object/payload labels match the row contract without generic "
             "substitutions.",
         ]
@@ -1478,6 +1486,7 @@ def _run_seed_job(
     validation_scope: str,
     dry_run: bool,
     validate_only: bool,
+    persist_results: bool,
 ) -> SeedJobRun:
     job_dir = run_dir / "jobs" / _sanitize_slug(spec.task_id)
     worktree_dir = run_dir / "worktrees" / _sanitize_slug(spec.task_id)
@@ -1631,21 +1640,38 @@ def _run_seed_job(
             job.changed_task_ids = changed_ids
             job.introduced_paths = introduced_paths
             job.copied_back = False
+            try:
+                job.bundle_fingerprint = _seed_bundle_fingerprint(
+                    worktree_dir, spec.task_id
+                )
+            except Exception:
+                job.bundle_fingerprint = None
             return job
 
-        _copy_seed_dataset_file(root=ROOT, workspace_dir=worktree_dir)
-        _copy_seed_artifact_dir(root=ROOT, spec=spec, workspace_dir=worktree_dir)
-        refresh_seed_artifact_manifests(
-            ROOT / ARTIFACT_ROOT_REL / spec.task_id,
-            fix=update_manifests,
-        )
+        if persist_results:
+            _copy_seed_dataset_file(root=ROOT, workspace_dir=worktree_dir)
+            _copy_seed_artifact_dir(root=ROOT, spec=spec, workspace_dir=worktree_dir)
+            refresh_seed_artifact_manifests(
+                ROOT / ARTIFACT_ROOT_REL / spec.task_id,
+                fix=update_manifests,
+            )
         job.changed_task_ids = changed_ids
         job.introduced_paths = introduced_paths
-        job.copied_back = True
+        job.copied_back = persist_results
         job.success = True
         job.last_validation_passed = validation_passed
         job.last_review_passed = review_passed if not validate_only else False
-        job.bundle_fingerprint = _seed_bundle_fingerprint(ROOT, spec.task_id)
+        try:
+            fingerprint_root = (
+                ROOT / ARTIFACT_ROOT_REL / spec.task_id
+                if persist_results
+                else worktree_dir
+            )
+            job.bundle_fingerprint = _seed_bundle_fingerprint(
+                fingerprint_root, spec.task_id
+            )
+        except Exception:
+            job.bundle_fingerprint = None
         return job
 
     job.failure_reason = repair_note or "seed job exhausted its repair rounds"
@@ -1832,6 +1858,7 @@ def main() -> int:
                 validation_scope=args.validation_scope,
                 dry_run=args.dry_run,
                 validate_only=args.validate_only,
+                persist_results=args.persist_results,
             ): spec
             for spec in selected_specs
         }
