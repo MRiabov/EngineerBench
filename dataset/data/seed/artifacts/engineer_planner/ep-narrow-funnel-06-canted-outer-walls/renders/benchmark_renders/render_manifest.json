@@ -4,7 +4,7 @@
   "created_at": "2026-04-23T18:17:23.554491+00:00",
   "episode_id": "ec25e314-7ca0-5d75-9838-4441a90dc279",
   "worker_session_id": "seed-renders-ep-narrow-funnel-06-canted-outer-walls-7e7cdb37",
-  "revision": null,
+  "revision": "b384d3b700553611d4a1ab58da3f7e6d706d29a5",
   "scene_hash": "ef10704a73eeef95bee626aebe02adad43497247f23f91a923fb6d22162b1413",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": null,

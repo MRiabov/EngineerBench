@@ -4,7 +4,7 @@
   "created_at": "2026-04-23T18:18:15.013608+00:00",
   "episode_id": "7b5ad22c-9df1-5876-9be1-3d6d6b79c9d1",
   "worker_session_id": "seed-renders-ep-gap-bridge-04-d8448e30",
-  "revision": null,
+  "revision": "b384d3b700553611d4a1ab58da3f7e6d706d29a5",
   "scene_hash": "db431b843273e2d1f5cbebf1772de256550d7af6bae1b7f29294feb7ccaceb91",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": null,

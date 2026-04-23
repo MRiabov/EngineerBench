@@ -48,13 +48,13 @@
       "object_id": 1,
       "pos_mm": [
         0.0,
-        10.0,
-        68.0
+        6.0,
+        66.0
       ],
       "euler_deg": [
         -0.0,
         0.0,
-        -0.0
+        11.999999999999998
       ],
       "mesh_paths": [
         "meshes/gate_wall.obj"
@@ -78,12 +78,50 @@
       "include_in_segmentation": true
     },
     {
+      "label": "upper_shroud",
+      "semantic_label": "upper_shroud",
+      "instance_id": "upper_shroud",
+      "instance_name": "upper_shroud",
+      "object_type": "part",
+      "object_id": 2,
+      "pos_mm": [
+        24.0,
+        28.0,
+        142.0
+      ],
+      "euler_deg": [
+        0.0,
+        0.0,
+        -10.0
+      ],
+      "mesh_paths": [
+        "meshes/upper_shroud.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "aluminum_6061",
+      "body_name": "upper_shroud",
+      "geom_name": "upper_shroud",
+      "zone_type": null,
+      "color_rgba": [
+        0.7529411764705882,
+        0.7529411764705882,
+        0.7529411764705882,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        161,
+        235,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
       "label": "right_goal_pad",
       "semantic_label": "right_goal_pad",
       "instance_id": "right_goal_pad",
       "instance_name": "right_goal_pad",
       "object_type": "part",
-      "object_id": 2,
+      "object_id": 3,
       "pos_mm": [
         225.0,
         0.0,
@@ -109,9 +147,9 @@
         1.0
       ],
       "segmentation_color_rgb": [
-        161,
         235,
-        59
+        59,
+        213
       ],
       "include_in_segmentation": true
     },
@@ -121,11 +159,11 @@
       "instance_id": "transfer_cube",
       "instance_name": "transfer_cube",
       "object_type": "part",
-      "object_id": 3,
+      "object_id": 4,
       "pos_mm": [
-        -250.0,
-        -12.0,
-        34.0
+        -248.0,
+        10.0,
+        119.0
       ],
       "euler_deg": [
         0.0,
@@ -147,9 +185,9 @@
         1.0
       ],
       "segmentation_color_rgb": [
-        235,
         59,
-        213
+        235,
+        205
       ],
       "include_in_segmentation": true
     },
@@ -159,11 +197,11 @@
       "instance_id": "zone_goal",
       "instance_name": "zone_goal",
       "object_type": "zone",
-      "object_id": 4,
+      "object_id": 5,
       "pos_mm": [
-        235.0,
+        245.0,
         0.0,
-        50.0
+        49.0
       ],
       "euler_deg": [
         0.0,
@@ -172,9 +210,9 @@
       ],
       "mesh_paths": [],
       "box_size_mm": [
-        65.0,
         55.0,
-        30.0
+        35.0,
+        27.0
       ],
       "material_id": null,
       "body_name": null,
@@ -187,9 +225,9 @@
         0.22
       ],
       "segmentation_color_rgb": [
-        59,
         235,
-        205
+        154,
+        59
       ],
       "include_in_segmentation": false
     },
@@ -199,11 +237,11 @@
       "instance_id": "zone_build",
       "instance_name": "zone_build",
       "object_type": "zone",
-      "object_id": 5,
+      "object_id": 6,
       "pos_mm": [
         5.0,
-        0.0,
-        90.0
+        -2.5,
+        95.0
       ],
       "euler_deg": [
         0.0,
@@ -213,8 +251,8 @@
       "mesh_paths": [],
       "box_size_mm": [
         325.0,
-        160.0,
-        90.0
+        157.5,
+        95.0
       ],
       "material_id": null,
       "body_name": null,
@@ -227,9 +265,9 @@
         0.14
       ],
       "segmentation_color_rgb": [
-        235,
-        154,
-        59
+        103,
+        59,
+        235
       ],
       "include_in_segmentation": false
     }
@@ -241,13 +279,13 @@
   ],
   "bounds_max_mm": [
     330.0,
-    160.0,
-    180.0
+    155.0,
+    190.0
   ],
   "center_mm": [
     5.0,
-    0.0,
-    90.0
+    -2.5,
+    95.0
   ],
-  "diagonal": 746.5252842335616
+  "diagonal": 746.8768305416897
 }
