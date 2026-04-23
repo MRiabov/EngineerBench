@@ -1,0 +1,65 @@
+version: "1.0"
+units:
+  length: "mm"
+  volume: "mm3"
+  mass: "g"
+  currency: "USD"
+constraints:
+  benchmark_max_unit_cost_usd: 24.0
+  benchmark_max_weight_g: 24.0
+  planner_target_max_unit_cost_usd: 18.0
+  planner_target_max_weight_g: 20.0
+manufactured_parts:
+  - part_name: left_start_deck
+    part_id: left_start_deck
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 2016.0
+    stock_bbox_mm:
+      x: 28.0
+      y: 18.0
+      z: 4.0
+    stock_volume_mm3: 2016.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 4.0
+  - part_name: right_goal_deck
+    part_id: right_goal_deck
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 2016.0
+    stock_bbox_mm:
+      x: 28.0
+      y: 18.0
+      z: 4.0
+    stock_volume_mm3: 2016.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 4.0
+  - part_name: central_blocker
+    part_id: central_blocker
+    manufacturing_method: CNC
+    material_id: hdpe
+    quantity: 1
+    part_volume_mm3: 6048.0
+    stock_bbox_mm:
+      x: 12.0
+      y: 14.0
+      z: 36.0
+    stock_volume_mm3: 6048.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 6.5
+final_assembly:
+  - name: left_start_deck
+    config:
+  - name: right_goal_deck
+    config:
+  - name: central_blocker
+    config:
+totals:
+  estimated_unit_cost_usd: 14.5
+  estimated_weight_g: 16.632
+  estimate_confidence: high
+dfm_suggestions:
+  - Keep the decks static and planar so the bypass lanes stay legible.
+  - Keep the blocker a single rigid volume with no hidden motion or compliant features.

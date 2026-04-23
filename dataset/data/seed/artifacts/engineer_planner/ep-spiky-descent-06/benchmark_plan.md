@@ -1,25 +1,26 @@
 ## 1. Learning Objective
 
-Test whether an engineer can carry a `steel_ball` down a compressed stepped
-descent with a shortened runout and a shallow landing basin while staying
-clear of a compact spike trio and without relying on hidden benchmark motion.
+Test whether an engineer can carry a `steel_ball` down an offset descent with
+a positive-Y shifted basin mouth and a six-spike asymmetric field while
+staying within the benchmark motion contract.
 
 ## 2. Environment Geometry
 
-- `upper_start_platform`: elevated release platform centered at `[-274, 2, 184]`
-  with size `[174, 148, 28]`.
-- `compact_mid_step`: intermediate shelf centered at `[-106, -6, 136]` with
-  size `[146, 122, 24]`.
-- `compact_lower_step`: lower shelf centered at `[28, 8, 84]` with size
-  `[144, 118, 22]`.
-- `shallow_goal_basin`: passive capture basin centered at `[144, 12, 22]` with
-  size `[148, 126, 18]`.
-- `spike_front_left`, `spike_mid`, `spike_low_right`: fixed spike-like
-  obstacles arranged on a shortened downhill diagonal.
+- `upper_start_platform`: elevated release platform centered at `[-298, 18, 188]`
+  with size `[178, 150, 28]`.
+- `upper_mid_step`: intermediate shelf centered at `[-126, 16, 140]` with
+  size `[150, 124, 24]`.
+- `lower_mid_step`: lower shelf centered at `[44, 20, 86]` with size
+  `[146, 118, 22]`.
+- `offset_goal_basin`: passive capture basin centered at `[160, 34, 24]` with
+  size `[160, 136, 18]`.
+- `spike_nw`, `spike_ne`, `spike_center`, `spike_sw`, `spike_tail_left`, and
+  `spike_tail_right`: fixed spike-like obstacles spread across the route with
+  a stronger positive-Y bias near the basin.
 
-The route still descends from the upper platform into the basin, but the
-horizontal span is more compact than the baseline variant and the landing
-basin is shallower.
+The route still descends from the upper platform into the basin, but the basin
+is laterally offset and the spikes occupy both upper and lower lanes instead of
+forming a compact diagonal.
 
 ## 3. Input Objective
 
@@ -28,17 +29,17 @@ basin is shallower.
 - Static randomization:
   - radius held fixed at `25 mm`
   - no alternate shapes or size variants
-- Nominal start position: `[-326, 4, 230]`
+- Nominal start position: `[-334, 18, 231]`
 - Runtime jitter: `[12, 12, 4]` mm
 
 ## 4. Objectives
 
-- `goal_zone_mm`: min_mm `[108, -40, 8]`, max_mm `[180, 68, 50]`
+- `goal_zone_mm`: min_mm `[142, 8, 0]`, max_mm `[178, 60, 48]`
 - `forbid_zones`:
   - `upper_descent_keepout`: min_mm `[-232, -96, 118]`, max_mm
-    `[-114, 96, 214]`
-  - `spike_field_keepout`: min_mm `[-202, -120, 24]`, max_mm
-    `[100, 100, 160]`
+    `[-108, 96, 214]`
+  - `spike_field_keepout`: min_mm `[-420, -100, 24]`, max_mm
+    `[140, 120, 166]`
 - `build_zone_mm`: min_mm `[-420, -180, 0]`, max_mm `[420, 180, 260]`
 
 ## 5. Simulation Bounds
@@ -56,11 +57,12 @@ basin is shallower.
 - Success if the ball ends inside `goal_zone_mm` without entering
   `spike_field_keepout`.
 - Fail if the ball leaves `simulation_bounds_mm` or if the benchmark requires
-  undeclared motion to traverse the compact descent.
+  undeclared motion to traverse the offset descent.
 
 ## 8. Planner Artifacts
 
-- `todo.md` captures the engineer-planner checklist for the compact runout.
+- `todo.md` captures the engineer-planner checklist for the offset basin and
+  six-spike field.
 - `benchmark_definition.yaml` mirrors the declared zones, shelf geometry, and
   cost caps.
 - `benchmark_assembly_definition.yaml` records the benchmark-local parts and

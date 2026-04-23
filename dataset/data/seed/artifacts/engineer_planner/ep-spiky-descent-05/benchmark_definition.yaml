@@ -1,14 +1,14 @@
 objectives:
   goal_zone_mm:
-    min_mm: [108.0, -40.0, 8.0]
-    max_mm: [180.0, 68.0, 50.0]
+    min_mm: [142.0, 0.0, 0.0]
+    max_mm: [178.0, 52.0, 50.0]
   forbid_zones:
     - name: upper_descent_keepout
-      min_mm: [-232.0, -96.0, 118.0]
-      max_mm: [-114.0, 96.0, 214.0]
+      min_mm: [-228.0, -96.0, 118.0]
+      max_mm: [-108.0, 96.0, 214.0]
     - name: spike_field_keepout
-      min_mm: [-202.0, -120.0, 24.0]
-      max_mm: [100.0, 100.0, 160.0]
+      min_mm: [-220.0, -130.0, 24.0]
+      max_mm: [140.0, 110.0, 166.0]
   build_zone_mm:
     min_mm: [-420.0, -180.0, 0.0]
     max_mm: [420.0, 180.0, 260.0]
@@ -18,33 +18,43 @@ benchmark_parts:
     metadata:
       is_fixed: true
       material_id: aluminum_6061
-  - part_id: compact_mid_step
-    label: compact_mid_step
+  - part_id: mid_descent_step
+    label: mid_descent_step
     metadata:
       is_fixed: true
       material_id: hdpe
-  - part_id: compact_lower_step
-    label: compact_lower_step
+  - part_id: lower_descent_step
+    label: lower_descent_step
     metadata:
       is_fixed: true
       material_id: hdpe
-  - part_id: shallow_goal_basin
-    label: shallow_goal_basin
+  - part_id: goal_basin
+    label: goal_basin
     metadata:
       is_fixed: true
       material_id: hardwood
-  - part_id: spike_front_left
-    label: spike_front_left
+  - part_id: spike_a
+    label: spike_a
     metadata:
       is_fixed: true
       material_id: steel_carbon
-  - part_id: spike_mid
-    label: spike_mid
+  - part_id: spike_b
+    label: spike_b
     metadata:
       is_fixed: true
       material_id: steel_carbon
-  - part_id: spike_low_right
-    label: spike_low_right
+  - part_id: spike_c
+    label: spike_c
+    metadata:
+      is_fixed: true
+      material_id: steel_carbon
+  - part_id: spike_d
+    label: spike_d
+    metadata:
+      is_fixed: true
+      material_id: steel_carbon
+  - part_id: spike_e
+    label: spike_e
     metadata:
       is_fixed: true
       material_id: steel_carbon
@@ -60,13 +70,13 @@ payload:
   material_id: steel_carbon
   static_randomization:
     radius_mm: [25.0, 25.0]
-  start_position_mm: [-326.0, 4.0, 230.0]
+  start_position_mm: [-334.0, -10.0, 231.0]
   runtime_jitter_mm: [12.0, 12.0, 4.0]
 constraints:
-  estimated_solution_cost_usd: 39.5
-  estimated_solution_weight_g: 1750.0
+  estimated_solution_cost_usd: 44.5
+  estimated_solution_weight_g: 1795.0
   max_unit_cost: 120.0
   max_weight_g: 2200.0
 randomization:
-  static_variation_id: engineer_planner_spiky_descent_v04_compact_runout
+  static_variation_id: engineer_planner_spiky_descent_v05_wide_basin_five_spikes
   runtime_jitter_enabled: true

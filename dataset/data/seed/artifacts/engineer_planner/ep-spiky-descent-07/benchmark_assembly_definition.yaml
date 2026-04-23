@@ -1,0 +1,140 @@
+version: "1.0"
+units:
+  length: "mm"
+  volume: "mm3"
+  mass: "g"
+  currency: "USD"
+constraints:
+  benchmark_max_unit_cost_usd: 120.0
+  benchmark_max_weight_g: 2200.0
+  planner_target_max_unit_cost_usd: 90.0
+  planner_target_max_weight_g: 1800.0
+manufactured_parts:
+  - part_name: upper_start_platform
+    part_id: upper_start_platform
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 747600.0
+    stock_bbox_mm:
+      x: 178.0
+      y: 150.0
+      z: 28.0
+    stock_volume_mm3: 747600.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 9.5
+  - part_name: upper_mid_step
+    part_id: upper_mid_step
+    manufacturing_method: CNC
+    material_id: hdpe
+    quantity: 1
+    part_volume_mm3: 465696.0
+    stock_bbox_mm:
+      x: 154.0
+      y: 126.0
+      z: 24.0
+    stock_volume_mm3: 465696.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 6.5
+  - part_name: lower_mid_step
+    part_id: lower_mid_step
+    manufacturing_method: CNC
+    material_id: hdpe
+    quantity: 1
+    part_volume_mm3: 385440.0
+    stock_bbox_mm:
+      x: 146.0
+      y: 120.0
+      z: 22.0
+    stock_volume_mm3: 385440.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 5.5
+  - part_name: goal_basin
+    part_id: goal_basin
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 471440.0
+    stock_bbox_mm:
+      x: 166.0
+      y: 142.0
+      z: 20.0
+    stock_volume_mm3: 471440.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 7.5
+  - part_name: spike_high_left
+    part_id: spike_high_left
+    manufacturing_method: CNC
+    material_id: steel_carbon
+    quantity: 1
+    part_volume_mm3: 45200.0
+    stock_bbox_mm:
+      x: 36.0
+      y: 36.0
+      z: 58.0
+    stock_volume_mm3: 75264.0
+    removed_volume_mm3: 30064.0
+    estimated_unit_cost_usd: 3.0
+  - part_name: spike_high_right
+    part_id: spike_high_right
+    manufacturing_method: CNC
+    material_id: steel_carbon
+    quantity: 1
+    part_volume_mm3: 45200.0
+    stock_bbox_mm:
+      x: 36.0
+      y: 36.0
+      z: 58.0
+    stock_volume_mm3: 75264.0
+    removed_volume_mm3: 30064.0
+    estimated_unit_cost_usd: 3.0
+  - part_name: spike_low_left
+    part_id: spike_low_left
+    manufacturing_method: CNC
+    material_id: steel_carbon
+    quantity: 1
+    part_volume_mm3: 45200.0
+    stock_bbox_mm:
+      x: 36.0
+      y: 36.0
+      z: 58.0
+    stock_volume_mm3: 75264.0
+    removed_volume_mm3: 30064.0
+    estimated_unit_cost_usd: 3.0
+  - part_name: spike_tail
+    part_id: spike_tail
+    manufacturing_method: CNC
+    material_id: steel_carbon
+    quantity: 1
+    part_volume_mm3: 45200.0
+    stock_bbox_mm:
+      x: 36.0
+      y: 36.0
+      z: 58.0
+    stock_volume_mm3: 75264.0
+    removed_volume_mm3: 30064.0
+    estimated_unit_cost_usd: 3.0
+final_assembly:
+  - name: upper_start_platform
+    config:
+  - name: upper_mid_step
+    config:
+  - name: lower_mid_step
+    config:
+  - name: goal_basin
+    config:
+  - name: spike_high_left
+    config:
+  - name: spike_high_right
+    config:
+  - name: spike_low_left
+    config:
+  - name: spike_tail
+    config:
+totals:
+  estimated_unit_cost_usd: 41.5
+  estimated_weight_g: 1775.0
+  estimate_confidence: high
+dfm_suggestions:
+  - Keep the upper and lower spike rows visibly separated so the layered field reads as two alternating bands.
+  - Keep the basin offset obvious in oblique views while preserving a tight enough goal mouth that the descent still reads as a challenge.

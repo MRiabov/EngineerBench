@@ -9,9 +9,9 @@
       "object_type": "part",
       "object_id": 0,
       "pos_mm": [
-        -274.0,
-        2.0,
-        184.0
+        -292.0,
+        -10.0,
+        186.0
       ],
       "euler_deg": [
         -0.0,
@@ -40,16 +40,16 @@
       "include_in_segmentation": true
     },
     {
-      "label": "compact_mid_step",
-      "semantic_label": "compact_mid_step",
-      "instance_id": "compact_mid_step",
-      "instance_name": "compact_mid_step",
+      "label": "mid_descent_step",
+      "semantic_label": "mid_descent_step",
+      "instance_id": "mid_descent_step",
+      "instance_name": "mid_descent_step",
       "object_type": "part",
       "object_id": 1,
       "pos_mm": [
-        -106.0,
-        -6.0,
-        136.0
+        -120.0,
+        0.0,
+        138.0
       ],
       "euler_deg": [
         -0.0,
@@ -57,12 +57,12 @@
         -0.0
       ],
       "mesh_paths": [
-        "meshes/compact_mid_step.obj"
+        "meshes/mid_descent_step.obj"
       ],
       "box_size_mm": null,
       "material_id": "hdpe",
-      "body_name": "compact_mid_step",
-      "geom_name": "compact_mid_step",
+      "body_name": "mid_descent_step",
+      "geom_name": "mid_descent_step",
       "zone_type": null,
       "color_rgba": [
         0.9450980392156862,
@@ -78,15 +78,15 @@
       "include_in_segmentation": true
     },
     {
-      "label": "compact_lower_step",
-      "semantic_label": "compact_lower_step",
-      "instance_id": "compact_lower_step",
-      "instance_name": "compact_lower_step",
+      "label": "lower_descent_step",
+      "semantic_label": "lower_descent_step",
+      "instance_id": "lower_descent_step",
+      "instance_name": "lower_descent_step",
       "object_type": "part",
       "object_id": 2,
       "pos_mm": [
-        28.0,
-        8.0,
+        40.0,
+        12.0,
         84.0
       ],
       "euler_deg": [
@@ -95,12 +95,12 @@
         -0.0
       ],
       "mesh_paths": [
-        "meshes/compact_lower_step.obj"
+        "meshes/lower_descent_step.obj"
       ],
       "box_size_mm": null,
       "material_id": "hdpe",
-      "body_name": "compact_lower_step",
-      "geom_name": "compact_lower_step",
+      "body_name": "lower_descent_step",
+      "geom_name": "lower_descent_step",
       "zone_type": null,
       "color_rgba": [
         0.9450980392156862,
@@ -116,16 +116,16 @@
       "include_in_segmentation": true
     },
     {
-      "label": "shallow_goal_basin",
-      "semantic_label": "shallow_goal_basin",
-      "instance_id": "shallow_goal_basin",
-      "instance_name": "shallow_goal_basin",
+      "label": "goal_basin",
+      "semantic_label": "goal_basin",
+      "instance_id": "goal_basin",
+      "instance_name": "goal_basin",
       "object_type": "part",
       "object_id": 3,
       "pos_mm": [
-        144.0,
-        12.0,
-        22.0
+        160.0,
+        26.0,
+        24.0
       ],
       "euler_deg": [
         -0.0,
@@ -133,12 +133,12 @@
         -0.0
       ],
       "mesh_paths": [
-        "meshes/shallow_goal_basin.obj"
+        "meshes/goal_basin.obj"
       ],
       "box_size_mm": null,
       "material_id": "hardwood",
-      "body_name": "shallow_goal_basin",
-      "geom_name": "shallow_goal_basin",
+      "body_name": "goal_basin",
+      "geom_name": "goal_basin",
       "zone_type": null,
       "color_rgba": [
         0.5450980392156862,
@@ -154,15 +154,15 @@
       "include_in_segmentation": true
     },
     {
-      "label": "spike_front_left",
-      "semantic_label": "spike_front_left",
-      "instance_id": "spike_front_left",
-      "instance_name": "spike_front_left",
+      "label": "spike_a",
+      "semantic_label": "spike_a",
+      "instance_id": "spike_a",
+      "instance_name": "spike_a",
       "object_type": "part",
       "object_id": 4,
       "pos_mm": [
-        -184.0,
-        -108.0,
+        -198.0,
+        -122.0,
         170.0
       ],
       "euler_deg": [
@@ -171,12 +171,12 @@
         -0.0
       ],
       "mesh_paths": [
-        "meshes/spike_front_left.obj"
+        "meshes/spike_a.obj"
       ],
       "box_size_mm": null,
       "material_id": "steel_carbon",
-      "body_name": "spike_front_left",
-      "geom_name": "spike_front_left",
+      "body_name": "spike_a",
+      "geom_name": "spike_a",
       "zone_type": null,
       "color_rgba": [
         0.43137254901960786,
@@ -192,16 +192,16 @@
       "include_in_segmentation": true
     },
     {
-      "label": "spike_mid",
-      "semantic_label": "spike_mid",
-      "instance_id": "spike_mid",
-      "instance_name": "spike_mid",
+      "label": "spike_b",
+      "semantic_label": "spike_b",
+      "instance_id": "spike_b",
+      "instance_name": "spike_b",
       "object_type": "part",
       "object_id": 5,
       "pos_mm": [
-        -24.0,
-        92.0,
-        110.0
+        -68.0,
+        88.0,
+        144.0
       ],
       "euler_deg": [
         -0.0,
@@ -209,12 +209,12 @@
         -0.0
       ],
       "mesh_paths": [
-        "meshes/spike_mid.obj"
+        "meshes/spike_b.obj"
       ],
       "box_size_mm": null,
       "material_id": "steel_carbon",
-      "body_name": "spike_mid",
-      "geom_name": "spike_mid",
+      "body_name": "spike_b",
+      "geom_name": "spike_b",
       "zone_type": null,
       "color_rgba": [
         0.43137254901960786,
@@ -230,16 +230,16 @@
       "include_in_segmentation": true
     },
     {
-      "label": "spike_low_right",
-      "semantic_label": "spike_low_right",
-      "instance_id": "spike_low_right",
-      "instance_name": "spike_low_right",
+      "label": "spike_c",
+      "semantic_label": "spike_c",
+      "instance_id": "spike_c",
+      "instance_name": "spike_c",
       "object_type": "part",
       "object_id": 6,
       "pos_mm": [
-        82.0,
-        -72.0,
-        104.0
+        4.0,
+        -78.0,
+        110.0
       ],
       "euler_deg": [
         -0.0,
@@ -247,12 +247,12 @@
         -0.0
       ],
       "mesh_paths": [
-        "meshes/spike_low_right.obj"
+        "meshes/spike_c.obj"
       ],
       "box_size_mm": null,
       "material_id": "steel_carbon",
-      "body_name": "spike_low_right",
-      "geom_name": "spike_low_right",
+      "body_name": "spike_c",
+      "geom_name": "spike_c",
       "zone_type": null,
       "color_rgba": [
         0.43137254901960786,
@@ -268,16 +268,92 @@
       "include_in_segmentation": true
     },
     {
+      "label": "spike_d",
+      "semantic_label": "spike_d",
+      "instance_id": "spike_d",
+      "instance_name": "spike_d",
+      "object_type": "part",
+      "object_id": 7,
+      "pos_mm": [
+        92.0,
+        88.0,
+        96.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/spike_d.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "steel_carbon",
+      "body_name": "spike_d",
+      "geom_name": "spike_d",
+      "zone_type": null,
+      "color_rgba": [
+        0.43137254901960786,
+        0.45098039215686275,
+        0.4823529411764706,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        66,
+        235,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "spike_e",
+      "semantic_label": "spike_e",
+      "instance_id": "spike_e",
+      "instance_name": "spike_e",
+      "object_type": "part",
+      "object_id": 8,
+      "pos_mm": [
+        136.0,
+        -86.0,
+        84.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/spike_e.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "steel_carbon",
+      "body_name": "spike_e",
+      "geom_name": "spike_e",
+      "zone_type": null,
+      "color_rgba": [
+        0.43137254901960786,
+        0.45098039215686275,
+        0.4823529411764706,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        117
+      ],
+      "include_in_segmentation": true
+    },
+    {
       "label": "steel_ball",
       "semantic_label": "steel_ball",
       "instance_id": "steel_ball",
       "instance_name": "steel_ball",
       "object_type": "part",
-      "object_id": 7,
+      "object_id": 9,
       "pos_mm": [
-        -326.0,
-        4.0,
-        230.0
+        -334.0,
+        -10.0,
+        231.0
       ],
       "euler_deg": [
         0.0,
@@ -299,9 +375,9 @@
         1.0
       ],
       "segmentation_color_rgb": [
-        66,
-        235,
-        59
+        59,
+        169,
+        235
       ],
       "include_in_segmentation": true
     },
@@ -311,11 +387,11 @@
       "instance_id": "zone_goal",
       "instance_name": "zone_goal",
       "object_type": "zone",
-      "object_id": 8,
+      "object_id": 10,
       "pos_mm": [
-        144.0,
-        14.0,
-        29.0
+        160.0,
+        26.0,
+        25.0
       ],
       "euler_deg": [
         0.0,
@@ -324,9 +400,9 @@
       ],
       "mesh_paths": [],
       "box_size_mm": [
-        36.0,
-        54.0,
-        21.0
+        18.0,
+        26.0,
+        25.0
       ],
       "material_id": null,
       "body_name": null,
@@ -339,9 +415,9 @@
         0.22
       ],
       "segmentation_color_rgb": [
+        220,
         235,
-        59,
-        117
+        59
       ],
       "include_in_segmentation": false
     },
@@ -351,9 +427,9 @@
       "instance_id": "zone_forbid_0_upper_descent_keepout",
       "instance_name": "zone_forbid_0_upper_descent_keepout",
       "object_type": "zone",
-      "object_id": 9,
+      "object_id": 11,
       "pos_mm": [
-        -173.0,
+        -168.0,
         0.0,
         166.0
       ],
@@ -364,7 +440,7 @@
       ],
       "mesh_paths": [],
       "box_size_mm": [
-        59.0,
+        60.0,
         96.0,
         48.0
       ],
@@ -379,8 +455,8 @@
         0.2
       ],
       "segmentation_color_rgb": [
+        198,
         59,
-        169,
         235
       ],
       "include_in_segmentation": false
@@ -391,11 +467,11 @@
       "instance_id": "zone_forbid_1_spike_field_keepout",
       "instance_name": "zone_forbid_1_spike_field_keepout",
       "object_type": "zone",
-      "object_id": 10,
+      "object_id": 12,
       "pos_mm": [
-        -51.0,
+        -40.0,
         -10.0,
-        92.0
+        95.0
       ],
       "euler_deg": [
         0.0,
@@ -404,9 +480,9 @@
       ],
       "mesh_paths": [],
       "box_size_mm": [
-        151.0,
-        110.0,
-        68.0
+        180.0,
+        120.0,
+        71.0
       ],
       "material_id": null,
       "body_name": null,
@@ -419,9 +495,9 @@
         0.2
       ],
       "segmentation_color_rgb": [
-        220,
+        59,
         235,
-        59
+        146
       ],
       "include_in_segmentation": false
     },
@@ -431,7 +507,7 @@
       "instance_id": "zone_build",
       "instance_name": "zone_build",
       "object_type": "zone",
-      "object_id": 11,
+      "object_id": 13,
       "pos_mm": [
         0.0,
         0.0,
@@ -459,9 +535,9 @@
         0.14
       ],
       "segmentation_color_rgb": [
-        198,
-        59,
-        235
+        235,
+        95,
+        59
       ],
       "include_in_segmentation": false
     }

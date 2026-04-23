@@ -160,6 +160,30 @@
     "family_name": "central_bypass"
   },
   {
+    "id": "ep-central-bypass-08",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded central-bypass handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `left_start_deck`, `right_goal_deck`, and `central_blocker`, plus the payload label `projectile_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that routes `projectile_ball` around `central_blocker` on the positive-Y side without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: the blocker is shifted toward negative-Y, making the positive-Y corridor the cleaner path.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-central-bypass-08",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the central-bypass benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent bypass-style engineering plan with exact label grounding for `projectile_ball`, `left_start_deck`, `central_blocker`, and `right_goal_deck`, plus budget-consistent calculations for the positive-Y bypass variant.",
+    "family_name": "central_bypass"
+  },
+  {
+    "id": "ep-central-bypass-09",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded central-bypass handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `left_start_deck`, `right_goal_deck`, and `central_blocker`, plus the payload label `transfer_cube`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that routes `transfer_cube` around `central_blocker` on the negative-Y side without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: the blocker is centered and widened, so the lower lane is the natural bypass choice.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-central-bypass-09",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the central-bypass benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent bypass-style engineering plan with exact label grounding for `transfer_cube`, `left_start_deck`, `central_blocker`, and `right_goal_deck`, plus budget-consistent calculations for the centered wide-blocker variant.",
+    "family_name": "central_bypass"
+  },
+  {
+    "id": "ep-central-bypass-10",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded central-bypass handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `left_start_deck`, `right_goal_deck`, and `central_blocker`, plus the payload label `projectile_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that routes `projectile_ball` around the rotated `central_blocker` on the lower-Y side without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: the blocker is canted about the vertical axis, so the lower lane is skewed rather than axis aligned.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-central-bypass-10",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the central-bypass benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent bypass-style engineering plan with exact label grounding for `projectile_ball`, `left_start_deck`, `central_blocker`, and `right_goal_deck`, plus budget-consistent calculations for the rotated-blocker lower-lane variant.",
+    "family_name": "central_bypass"
+  },
+  {
     "id": "ep-gap-bridge-01",
     "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded gap-bridge handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `left_start_deck`, `right_goal_deck`, `bridge_reference_table`, `gap_floor_guard`, `left_noise_wall`, and `right_noise_wall`, plus the payload label `transfer_cube`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that bridges `transfer_cube` across the side-wall-framed gap without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: paired side walls tighten the bridge corridor.",
     "complexity_level": 0,
@@ -648,6 +672,30 @@
     "family_name": "lower_bin"
   },
   {
+    "id": "ep-spiky-descent-07",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded spiky-descent handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `upper_start_platform`, `upper_mid_step`, `lower_mid_step`, `goal_basin`, `spike_high_left`, `spike_high_right`, `spike_low_left`, and `spike_tail`, plus the payload label `steel_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that carries `steel_ball` down the layered descent into `goal_basin` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: a positive-Y basin shift with spikes split across upper and lower bands.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-spiky-descent-07",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the spiky-descent benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent descent-style engineering plan with exact label grounding for `steel_ball`, `upper_start_platform`, `upper_mid_step`, `lower_mid_step`, `goal_basin`, `spike_high_left`, `spike_high_right`, `spike_low_left`, and `spike_tail`, plus budget-consistent calculations for the layered-field variant.",
+    "family_name": "spiky_descent"
+  },
+  {
+    "id": "ep-spiky-descent-06",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded spiky-descent handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `upper_start_platform`, `upper_mid_step`, `lower_mid_step`, `offset_goal_basin`, `spike_nw`, `spike_ne`, `spike_center`, `spike_sw`, `spike_tail_left`, and `spike_tail_right`, plus the payload label `steel_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that carries `steel_ball` down the offset descent into `offset_goal_basin` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: a positive-Y shifted basin mouth and a six-spike asymmetric field spread across both lanes.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-spiky-descent-06",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the spiky-descent benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent descent-style engineering plan with exact label grounding for `steel_ball`, `upper_start_platform`, `upper_mid_step`, `lower_mid_step`, `offset_goal_basin`, `spike_nw`, `spike_ne`, `spike_center`, `spike_sw`, `spike_tail_left`, and `spike_tail_right`, plus budget-consistent calculations for the asymmetric six-spike variant.",
+    "family_name": "spiky_descent"
+  },
+  {
+    "id": "ep-spiky-descent-05",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded spiky-descent handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `upper_start_platform`, `mid_descent_step`, `lower_descent_step`, `goal_basin`, `spike_a`, `spike_b`, `spike_c`, `spike_d`, and `spike_e`, plus the payload label `steel_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that carries `steel_ball` down the wider stepped descent into `goal_basin` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: a broader basin mouth and a five-spike staggered field spread across both sides of the descent.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-spiky-descent-05",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the spiky-descent benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent descent-style engineering plan with exact label grounding for `steel_ball`, `upper_start_platform`, `mid_descent_step`, `lower_descent_step`, `goal_basin`, `spike_a`, `spike_b`, `spike_c`, `spike_d`, and `spike_e`, plus budget-consistent calculations for the wide-basin variant.",
+    "family_name": "spiky_descent"
+  },
+  {
     "id": "ep-spiky-descent-04",
     "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded spiky-descent handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `upper_start_platform`, `compact_mid_step`, `compact_lower_step`, `shallow_goal_basin`, `spike_front_left`, `spike_mid`, and `spike_low_right`, plus the payload label `steel_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that carries `steel_ball` down the compressed descent into `shallow_goal_basin` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: a shortened runout, a shallower basin, and a compact three-spike diagonal.",
     "complexity_level": 0,
@@ -742,5 +790,29 @@
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-gravity-chute-10-patterned-riser-decoy-wall",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the gravity-chute benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent gravity-chute engineering plan with exact label grounding for `steel_ball`, `upper_inlet_frame`, `upper_chute_step`, `riser_a`, `riser_b`, `riser_c`, `lower_chute_step`, `exit_tray`, `left_guard_rail`, `right_guard_rail`, and `decoy_wall`, plus budget-consistent calculations for the patterned-riser variant.",
     "family_name": "gravity_chute"
+  },
+  {
+    "id": "ep-spiky-descent-08",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded spiky-descent handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `upper_start_platform`, `upper_mid_step`, `lower_mid_step`, `goal_basin`, `spike_front_left`, `spike_front_right`, `spike_mid_center`, `spike_tail_left`, and `spike_tail_right`, plus the payload label `steel_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that carries `steel_ball` down the compressed descent into `goal_basin` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: a compact runout with a tighter basin mouth and a five-spike staggered field.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-spiky-descent-08",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the spiky-descent benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent descent-style engineering plan with exact label grounding for `steel_ball`, `upper_start_platform`, `upper_mid_step`, `lower_mid_step`, `goal_basin`, `spike_front_left`, `spike_front_right`, `spike_mid_center`, `spike_tail_left`, and `spike_tail_right`, plus budget-consistent calculations for the compact-runout variant.",
+    "family_name": "spiky_descent"
+  },
+  {
+    "id": "ep-spiky-descent-09",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded spiky-descent handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `upper_start_platform`, `upper_mid_step`, `lower_mid_step`, `goal_basin`, `spike_west_high`, `spike_west_low`, `spike_center_high`, `spike_center_low`, `spike_tail_left`, and `spike_tail_right`, plus the payload label `steel_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that carries `steel_ball` down the taller descent into `goal_basin` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: a taller launch, a deeper negative-Y basin, and a six-spike alternating field.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-spiky-descent-09",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the spiky-descent benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent descent-style engineering plan with exact label grounding for `steel_ball`, `upper_start_platform`, `upper_mid_step`, `lower_mid_step`, `goal_basin`, `spike_west_high`, `spike_west_low`, `spike_center_high`, `spike_center_low`, `spike_tail_left`, and `spike_tail_right`, plus budget-consistent calculations for the taller-descent variant.",
+    "family_name": "spiky_descent"
+  },
+  {
+    "id": "ep-spiky-descent-10",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded spiky-descent handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `upper_start_platform`, `upper_mid_step`, `lower_mid_step`, `goal_basin`, `spike_row_left_1`, `spike_row_right_1`, `spike_row_left_2`, `spike_row_right_2`, `spike_row_left_3`, `spike_row_right_3`, and `spike_tail`, plus the payload label `steel_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that carries `steel_ball` down the patterned descent into `goal_basin` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: a patterned seven-spike field with a slightly shallower basin and a narrower X corridor.",
+    "complexity_level": 0,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-spiky-descent-10",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the spiky-descent benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent descent-style engineering plan with exact label grounding for `steel_ball`, `upper_start_platform`, `upper_mid_step`, `lower_mid_step`, `goal_basin`, `spike_row_left_1`, `spike_row_right_1`, `spike_row_left_2`, `spike_row_right_2`, `spike_row_left_3`, `spike_row_right_3`, and `spike_tail`, plus budget-consistent calculations for the patterned-field variant.",
+    "family_name": "spiky_descent"
   }
 ]

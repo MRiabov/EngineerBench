@@ -1,0 +1,43 @@
+version: "1.0"
+units:
+  length: "mm"
+  volume: "mm3"
+  mass: "g"
+  currency: "USD"
+
+constraints:
+  benchmark_max_unit_cost_usd: 27.0
+  benchmark_max_weight_g: 30.0
+  planner_target_max_unit_cost_usd: 18.0
+  planner_target_max_weight_g: 20.0
+
+manufactured_parts:
+  - part_name: starter_stub_block
+    part_id: starter_stub_block
+    manufacturing_method: CNC
+    material_id: aluminum_6061
+    quantity: 1
+    part_volume_mm3: 125.0
+    stock_bbox_mm:
+      x: 8.0
+      y: 8.0
+      z: 8.0
+    stock_volume_mm3: 512.0
+    removed_volume_mm3: 387.0
+    estimated_unit_cost_usd: 1.0
+
+final_assembly:
+  - subassembly_id: starter_stub_assembly
+    parts:
+      - name: starter_stub_block
+        config: null
+    joints: []
+
+totals:
+  estimated_unit_cost_usd: 1.0
+  estimated_weight_g: 0.34
+  estimate_confidence: low
+
+dfm_suggestions:
+  - This starter template is intentionally minimal and should be replaced with the task-specific design during a real revision.
+  - Keep the one-part inventory stable so the shared starter remains easy to validate and preview.
