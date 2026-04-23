@@ -36,6 +36,7 @@ Within the agents tree, `specs/architecture/agents/roles-detailed/` is the sourc
 ### Runtime and infrastructure
 
 - [Distributed execution](./architecture/distributed-execution.md): controller plus split worker plane, worker APIs, dedicated renderer worker, persistence, Temporal boundary, and backend-routing rules such as fast validation preview versus physics simulation.
+- [Inference pipeline](./architecture/inference-pipeline.md): canonical application inference entrypoint, strict stage graph, job-state persistence, resume behavior, and optional seed backfill.
 - [CAD and other infrastructure](./architecture/CAD-and-other-infra.md): CAD metadata, schema contracts, and supporting infra assumptions.
 - [Rendering](./architecture/rendering.md): render-worker boundary, preview artifacts, bundle contracts, and visual-evidence policy.
 - [Simulation](./architecture/simulation.md): physics assumptions, backend split, constraints model, and motion contracts.

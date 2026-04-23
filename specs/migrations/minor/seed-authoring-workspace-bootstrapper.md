@@ -56,6 +56,7 @@ building a new row.
 | Area | Current behavior | Why it must change |
 | -- | -- | -- |
 | `dataset/evals/materialize_seed_workspace.py` | Materializes a seeded row into `/tmp/problemologist-evals/<agent>/` for inspection and optional CLI-provider launching. | It is the wrong shape for seed creation because it assumes the row already exists and treats the workspace as a replay surface. |
+| `dataset/evals/materialize_seed_authoring_workspace.py` | Bootstraps a blank authoring workspace and links the repository-local `.venv` into it. | It is the missing authoring entrypoint that seed creators need. |
 | `evals/logic/workspace.py` | Shared workspace materialization code copies seed artifacts and writes `.manifests/current_role.json`. | The helper logic is already present, but there is no authoring-focused CLI around it. |
 | `shared/agent_templates/__init__.py` | Loads the starter file set for each agent. | The new bootstrapper must reuse this source of truth instead of duplicating starter-path logic. |
 | `shared/eval_artifacts.py` | Defines the per-agent starter template file registry used by validation and seed maintenance. | The authoring helper must stay aligned with the same registry that validation uses. |
@@ -77,12 +78,15 @@ building a new row.
 4. The helper writes the backend-owned workspace metadata required by the
    runtime contract, including the current-role manifest and any prompt/context
    files the seed authoring flow needs.
-5. The helper fails closed when the requested agent has no starter set or when
+5. The helper links the repository-local `.venv` into the workspace instead of
+   copying it, so the authoring workspace keeps a stable Python entrypoint
+   without duplicating the full environment tree.
+6. The helper fails closed when the requested agent has no starter set or when
    the workspace cannot be assembled exactly from the shared registry.
-6. `scripts/update_eval_seed_templates.py` remains the separate corpus-refresh
+7. `scripts/update_eval_seed_templates.py` remains the separate corpus-refresh
    tool, and `dataset/evals/materialize_seed_workspace.py` remains the separate
    inspection helper.
-7. Docs and skill guidance direct seed creators to the new helper for
+8. Docs and skill guidance direct seed creators to the new helper for
    bootstrapping and to the refresh utility only for corpus synchronization.
 
 ## Required Work

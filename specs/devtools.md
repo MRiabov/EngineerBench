@@ -142,7 +142,7 @@ The eval tooling mirrors the integration tooling, but it owns a separate lock, a
 - It uses the exclusive eval lock while bootstrapping and then downgrades to the shared validation lock so multiple validation-only consumers can coexist while the stack remains protected.
 - After bootstrap it stops mutating the lock state and keeps only the shared lock file handle open.
 - It exposes explicit sandbox selection through `--yolo` and `--no-yolo`; the script should never invent a hidden bypass mode.
-- The blank-slate seed-authoring helper lives in `dataset/evals/materialize_seed_authoring_workspace.py` and is tracked in [Seed Authoring Workspace Bootstrapper](./migrations/minor/seed-authoring-workspace-bootstrapper.md); it bootstraps a fresh authoring workspace instead of rehydrating an existing seed row and synchronizes the repository-local `.venv` into that workspace so the authoring agent can run workspace-local commands immediately.
+- The blank-slate seed-authoring helper lives in `dataset/evals/materialize_seed_authoring_workspace.py` and is tracked in [Seed Authoring Workspace Bootstrapper](./migrations/minor/seed-authoring-workspace-bootstrapper.md); it bootstraps a fresh authoring workspace instead of rehydrating an existing seed row and links the repository-local `.venv` into that workspace so the authoring agent can run workspace-local commands without duplicating the environment tree.
 
 ### `dataset/evals/run_e2e_seed.py`
 
@@ -153,20 +153,22 @@ The eval tooling mirrors the integration tooling, but it owns a separate lock, a
 ### `dataset/evals/eval_inference_pipeline.py`
 
 - `dataset/evals/eval_inference_pipeline.py` is the canonical application inference entrypoint.
+- The full contract lives in [Inference Pipeline](./architecture/inference-pipeline.md); this section is the developer-facing summary.
 - It loads `inference_config.yaml`, records explicit job progression state under `logs/evals/inference_pipeline/`, and dispatches the strict stage registry instead of hardcoding the `engineer_planner` / `seed_worker` compatibility path.
 - The first executable benchmark release wires `benchmark_planner`, `benchmark_plan_reviewer`, `benchmark_coder`, and `benchmark_reviewer`; engineer stages may remain declarative until their executor adapters are wired.
-- The pipeline can run in persistence mode or run-only mode. When persistence is enabled, successful benchmark reviewer output is copied into `engineer_planner` seed storage after the normal validation/review gates pass. Benchmark coder output is the same bundle without the review document when needed.
-- The stage graph and fan-out policy come from `inference_config.yaml`, so the application contract owns downstream multiplicity, resume policy, and executor wiring rather than hardcoding them into the worker prompt.
+- `--stage` selects the start stage and `--run-until-stage` can cap graph draining at a named downstream stage without mutating the config.
+- The pipeline can run in persistence mode or run-only mode. It keeps the internal state graph regardless of persistence. When persistence is enabled, only outputs that have passed the normal validation/review gates are eligible for copy-back into `engineer_planner` seed storage; benchmark reviewer output is the canonical persisted form, and benchmark coder output is only eligible when it corresponds to a reviewed and validated bundle whose review document is intentionally omitted by policy.
+- The stage graph, job-state machine, and fan-out policy come from `inference_config.yaml`, so the application contract owns downstream multiplicity, resume policy, and executor wiring rather than hardcoding them into the worker prompt.
 - It must not call into `dataset/evals/eval_seed_update_autopilot_per_seed.py` or any other seed-maintenance devtool at runtime; shared workspace, validation, review, and copy-back logic belongs in extracted library helpers.
 - The pipeline keeps a separate job-state file for resume/replay and mirrors the compatibility seed task-state file only after successful copy-back.
-- It is the formal application-facing wrapper; the current engineer_planner seed corpus is a persistence sink under that contract, not the whole contract.
+- It is the formal application-facing wrapper; the current engineer_planner seed corpus is one optional persistence sink under that contract, not the whole contract.
 
 ### `dataset/evals/eval_seed_update_autopilot.py`
 
 - `dataset/evals/eval_seed_update_autopilot.py` remains the reusable seed-update compatibility entrypoint for eval rows and should be read as the maintenance compatibility shim, not the canonical application inference entrypoint.
 - It runs engineer_planner seed jobs one row at a time with process-level concurrency: each worker owns one seed worktree, launches the authoring Codex CLI, refreshes the seed artifacts, runs `scripts/validate_eval_seed.py`, and then runs a read-only review prompt before the relevant workspace files are copied back.
 - It is a separate maintenance pipeline from the application inference entrypoint; the two may share extracted helpers, but neither one should invoke the other as a runtime dependency.
-- For new rows, the worker bootstraps the worktree through `dataset/evals/materialize_seed_authoring_workspace.py` before authoring starts, so the blank workspace and `.venv` are already in place when the model receives the prompt.
+- For new rows, the worker bootstraps the worktree through `dataset/evals/materialize_seed_authoring_workspace.py` before authoring starts, so the blank workspace and workspace-local `.venv` link are already in place when the model receives the prompt.
 - The autopilot creates new rows and repairs broken existing rows: if a canonical `task_id` already exists in `dataset/data/seed/role_based/engineer_planner.json`, it is skipped when the persisted task-state record shows the current bundle fingerprint was already validated and reviewed cleanly, and it is requeued when the current `scripts/validate_eval_seed.py` check fails or the persisted task state is missing/stale.
 - The persisted task-state file lives at `logs/evals/seed_update_autopilot/task_state.json`; successful copy-back runs refresh it with the task id, bundle fingerprint, and the last validation/review outcome, so later runs do not need to re-review unchanged clean rows.
 - Its authoring and review prompts inline the row's task and expected criteria when available so the model can self-check exact role and label grounding before editing the workspace.

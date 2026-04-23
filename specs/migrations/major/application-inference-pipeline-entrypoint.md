@@ -30,21 +30,22 @@ The core execution model does not change:
 3. let those agents complete the task through the existing tool and review
    flow,
 4. validate and review the outputs,
-5. optionally persist successful benchmark bundles into `engineer_planner`
-   seed storage.
+5. optionally persist validated and reviewed benchmark bundles into
+   `engineer_planner` seed storage.
 
 What changes is the application contract around that loop. The pipeline becomes
-an explicit entrypoint for stage-driven inference jobs, not just a seed
-generator or seed maintenance script. The migration removes the current
-`engineer_planner`-only hardcoding, makes the benchmark plan-review and
-benchmark execution-review stages explicit runnable stages, and turns seed
-persistence into one declared sink instead of the whole reason for the pipeline
-to exist.
+an explicit entrypoint for stage-driven inference jobs with internal state and
+graph progression, not just a seed generator or seed maintenance script. The
+migration removes the current `engineer_planner`-only hardcoding, makes the
+benchmark plan-review and benchmark execution-review stages explicit runnable
+stages, and turns seed persistence into one optional, gated sink instead of the
+whole reason for the pipeline to exist.
 
 This migration is intentionally compatible with the current quick-prototype
 workflow. The existing seed-autopilot path remains available. The new contract
 adds a formal application entrypoint that can be used for larger batch work,
-replayable job progression, and optional eval-seed backfill.
+replayable job progression, and optional eval-seed backfill from validated and
+reviewed outputs.
 
 The application inference pipeline is a distinct pipeline from the seed-update
 autopilot. The application entrypoint must not depend on
@@ -61,6 +62,9 @@ routing the application pipeline through the seed-update autopilot devtool.
 1. Load `inference_config.yaml` through `evals.logic.inference_pipeline`.
 2. Resolve the requested `stage_name` against the config and build a stage
    executor registry from `InferenceStageConfig.executor`.
+   The entrypoint may also accept a `--run-until-stage` cutoff so a run can
+   drain downstream stages only through a chosen reachable stage without
+   mutating the config.
 3. Load `logs/evals/inference_pipeline/task_state.json` as the authoritative
    application resume state and
    `logs/evals/seed_update_autopilot/task_state.json` as the compatibility
@@ -69,7 +73,8 @@ routing the application pipeline through the seed-update autopilot devtool.
    jobs using the declared `workspace_source` type and the deduplication
    policy.
 5. Materialize the workspace with shared helpers, run the application
-   pipeline's worker/review loop, and convert the result into
+   pipeline's worker/review loop, advance the internal job graph, and convert
+   the result into
    `InferenceJobResult` and `InferenceJobState`.
 6. Write the per-job state and run summary after each completion.
 7. Copy successful outputs back into `engineer_planner` seed storage only when
@@ -95,12 +100,15 @@ job request
   -> dispatch the stage executor
   -> run the existing validate / review / repair loop
   -> classify outcome
-  -> optionally persist successful results to eval seeds
+  -> optionally persist validated and reviewed results to eval seeds
   -> write job summary + updated resume state
 ```
 
-The entrypoint is not a new solver. It is an orchestrator around the existing
-agent workflow.
+The entrypoint keeps an internal job graph and resume state. Persistence to
+the seed corpus is an optional sink off that graph, not the graph itself.
+
+The entrypoint is not a new solver. It is a stateful orchestrator around the
+existing agent workflow.
 
 ### Job Request Contract
 
@@ -113,7 +121,8 @@ Each inference job should carry, at minimum:
 - `workspace_source`: a typed `InferenceWorkspaceSource` that declares one of
   `seed_row`, `artifact_dir`, `derived_job`, or `bundle`, plus the fields
   required by that source type
-- `persist_results`: the explicit copy-back decision for the run
+- `persist_results`: the explicit copy-back decision for the run; copy-back is
+  permitted only for outputs that pass validation and review
 - `resume_token`: optional resume pointer; persisted state remains authoritative
   when the token is absent or stale
 - `metadata`: structured provenance fields for observability, including family,
@@ -212,8 +221,9 @@ The benchmark-side persistence sink is separate from the executable graph:
   `engineer_planner` seed storage when persistence is enabled,
 - the benchmark reviewer output is the canonical persisted form of that
   bundle, and
-- the benchmark coder output is the same bundle without the review document
-  when the review artifact is absent or intentionally omitted.
+- the benchmark coder output is eligible only when it corresponds to a
+  validated and reviewed bundle and the review artifact is intentionally
+  omitted from the persisted copy.
 
 That sink is a family-plan-backed corpus-generation step, not a new solver
 stage. If the pipeline ever needs more than one persistence target, add a
@@ -265,7 +275,7 @@ jobs, but not the formal application entrypoint that should own it.
 | Area | Current behavior | Why it must change |
 | -- | -- | -- |
 | `evals/logic/inference_pipeline.py` | Strict typed pipeline config, job request/result/state models, and pipeline run-state path helpers. | The application entrypoint needs a typed contract boundary instead of ad hoc dicts, and the contract must stay fail-closed on unknown fields. |
-| `dataset/evals/eval_inference_pipeline.py` | Canonical application-facing entrypoint that loads `inference_config.yaml`, records pipeline job state, dispatches a stage executor registry, and persists resume/checkpoint metadata under `logs/evals/inference_pipeline/`. | This is the new formal application surface, and the current implementation now exercises the full benchmark graph end to end while keeping engineer stages declarative until their adapter is wired. |
+| `dataset/evals/eval_inference_pipeline.py` | Canonical application-facing entrypoint that loads `inference_config.yaml`, records pipeline job state, dispatches a stage executor registry, and persists resume/checkpoint metadata under `logs/evals/inference_pipeline/`. | This is the formal application surface, and the current implementation keeps the benchmark graph and job state internally while queueing downstream jobs instead of auto-executing the full transitive graph in one invocation. |
 | `dataset/evals/eval_seed_update_autopilot_per_seed.py` | Runs seed selection, workspace bootstrap, Codex CLI spawning, validation, review, and copy-back for one canonical seed row at a time. | This is a separate maintenance pipeline; any reusable behavior must be extracted into shared helpers before the application pipeline can use it. |
 | `dataset/evals/eval_seed_update_autopilot.py` | Thin compatibility wrapper around the per-seed implementation. | It preserves the old path, but it does not define a formal application contract and must not become the application pipeline's runtime dependency. |
 | `inference_config.yaml` | Declarative stage graph, fan-out policy, retry policy, resume policy, and executor names, including the benchmark plan-review and benchmark execution-review nodes and the engineer compatibility sink. | The graph is now versioned with the application rather than implied by code paths. |
@@ -279,13 +289,13 @@ jobs, but not the formal application entrypoint that should own it.
 ## Proposed Target State
 
 1. The application exposes a canonical inference pipeline entrypoint with a
-   documented job contract and a stage executor registry.
+   documented job contract, internal state graph, and stage executor registry.
 2. The pipeline accepts an inference job description, materializes the
    workspace, dispatches the registered stage executor, and runs the existing
    validation/review flow unchanged.
-3. Seed persistence becomes an optional sink. When enabled, successful jobs
-   can write back the approved benchmark bundle into `engineer_planner` seed
-   storage.
+3. Seed persistence becomes an optional sink. When enabled, only validated and
+   reviewed jobs can write back the approved benchmark bundle into
+   `engineer_planner` seed storage.
 4. The pipeline records progression state at the job level so long-running or
    interrupted runs can resume cleanly.
 5. The current seed-autopilot behavior remains available as a compatibility
@@ -340,7 +350,8 @@ jobs, but not the formal application entrypoint that should own it.
 
 ### 3. Make persistence optional and explicit
 
-- Add an explicit persistence sink for eval seed artifacts.
+- Add an explicit persistence sink for eval seed artifacts that accepts only
+  validated and reviewed benchmark outputs.
 - When persistence is enabled, write the approved benchmark bundle back into
   the `engineer_planner` seed corpus after the normal validation/review gates
   pass.
@@ -348,9 +359,10 @@ jobs, but not the formal application entrypoint that should own it.
   inference job and preserve only the run artifacts and job state.
 - Keep persistence decisions out of the worker prompt. They belong in the
   pipeline contract.
-- Treat benchmark reviewer output as the canonical persisted bundle, with
-  benchmark coder output accepted as the same bundle minus the review
-  document when that review artifact is intentionally omitted.
+- Treat benchmark reviewer output as the canonical persisted bundle. Benchmark
+  coder output is only eligible as the same bundle when it corresponds to a
+  validated and reviewed run and the review document is intentionally omitted
+  by policy.
 
 ### 4. Promote progression state to a first-class job concept
 
@@ -392,25 +404,26 @@ jobs, but not the formal application entrypoint that should own it.
   graph before any engineer stages are promoted.
 - Add a regression that proves benchmark reviewer output can be copied into
   `engineer_planner` seed storage and that benchmark coder output is accepted
-  as the same bundle without the review document.
+  only when it corresponds to a validated and reviewed bundle whose review
+  document is intentionally omitted.
 
 ## Implementation Checklist
 
 ### Phase 1: Define the contract
 
 - [x] Add `evals/logic/inference_pipeline.py` with typed pipeline config,
-      request, result, state, and summary models.
+  request, result, state, and summary models.
 - [x] Add `inference_config.yaml` to the repo and make its schema explicit,
-      including the benchmark reviewer chain.
+  including the benchmark reviewer chain.
 - [x] Define the top-level inference job model, including mode, workspace
-      source, persistence policy, and resume state.
+  source, persistence policy, and resume state.
 - [x] Define the stage executor registry and document which stage names are
-      wired in the first release, including the benchmark plan-review and
-      benchmark execution-review stages.
+  wired in the first release, including the benchmark plan-review and
+  benchmark execution-review stages.
 - [x] Decide which existing CLI or module will be the canonical application
-      entrypoint.
+  entrypoint.
 - [x] Add `dataset/evals/eval_inference_pipeline.py` as the canonical
-      application entrypoint.
+  application entrypoint.
 
 ### Phase 2: Wire the execution path
 
@@ -419,25 +432,25 @@ jobs, but not the formal application entrypoint that should own it.
 - [x] Reuse the existing agent spawning path.
 - [x] Reuse the existing validation, review, and copy-back gates.
 - [x] Extract the shared workspace, validation, review, and copy-back helpers
-      out of `dataset/evals/eval_seed_update_autopilot_per_seed.py` so
-      `dataset/evals/eval_inference_pipeline.py` does not depend on the
-      seed-maintenance devtool at runtime.
+  out of `dataset/evals/eval_seed_update_autopilot_per_seed.py` so
+  `dataset/evals/eval_inference_pipeline.py` does not depend on the
+  seed-maintenance devtool at runtime.
 - [x] Remove the application pipeline runtime dependency on
-      `dataset/evals/eval_seed_update_autopilot_per_seed.py` by extracting the
-      shared workspace, validation, review, and copy-back helpers into the
-      library surface.
+  `dataset/evals/eval_seed_update_autopilot_per_seed.py` by extracting the
+  shared workspace, validation, review, and copy-back helpers into the
+  library surface.
 - [x] Replace the `dataset/evals/eval_inference_pipeline.py`
-      `engineer_planner` / `seed_worker` hardcoding with stage registry
-      dispatch.
+  `engineer_planner` / `seed_worker` hardcoding with stage registry
+  dispatch.
 - [x] Wire benchmark_planner, benchmark_plan_reviewer, benchmark_coder, and
-      benchmark_reviewer end to end before declaring the first release
-      complete.
+  benchmark_reviewer end to end before declaring the first release
+  complete.
 - [x] Add `--persist-results` / `--no-persist-results` to the worker path and
-      forward that policy from the pipeline entrypoint.
+  forward that policy from the pipeline entrypoint.
 - [x] Persist application pipeline runs under `logs/evals/inference_pipeline/`
-      with separate run and state files from the seed-update autopilot.
+  with separate run and state files from the seed-update autopilot.
 - [x] Keep the current seed-autopilot loop available as compatibility
-      plumbing.
+  plumbing.
 
 ### Phase 3: Make fan-out data-driven
 
@@ -446,7 +459,7 @@ jobs, but not the formal application entrypoint that should own it.
 - [x] Support stage-specific persistence policies.
 - [x] Support stage-specific queue or worker hints if needed.
 - [x] Allow stages to be declared before they are executable so the graph can
-      be versioned ahead of adapter wiring.
+  be versioned ahead of adapter wiring.
 
 ### Phase 4: Persist state and outputs
 
@@ -455,22 +468,45 @@ jobs, but not the formal application entrypoint that should own it.
 - [x] Make resume deterministic from persisted job state.
 - [x] Add optional eval-seed persistence as a post-validation sink.
 - [x] Refresh the seed-update autopilot task-state file only when persistence
-      is enabled and a run was copied back into the corpus.
+  is enabled and a run was copied back into the corpus.
 
 ### Phase 5: Update docs and tests
 
 - [x] Update `specs/devtools.md` to describe the pipeline as an application
-      inference entrypoint.
+  inference entrypoint.
 - [x] Update any handover or architecture docs that still frame the flow as
-      seed maintenance only, especially the benchmark review-chain and
-      reviewer-manifest docs.
-- [ ] Add regression coverage for fan-out, resume, optional persistence, and
-      compatibility mode.
-- [ ] Add regression coverage that proves a non-persisting application run
-      still executes the same worker loop and records a pipeline summary.
+  seed maintenance only, especially the benchmark review-chain and
+  reviewer-manifest docs.
+- [x] Add regression coverage for fan-out, resume, the internal job graph,
+  optional persistence, and compatibility mode.
+- [x] Add regression coverage that proves a non-persisting application run
+  still executes the same worker loop, records the graph state, and writes
+  a pipeline summary.
+- [x] Document the `--run-until-stage` cutoff so a run can stop after a named
+  downstream stage without changing the declarative graph.
+- [ ] Add regression coverage that proves copy-back is blocked when
+  validation or review fails, and that the compatibility mirror is not
+  refreshed in that case.
 - [x] Add regression coverage that proves the canonical pipeline entrypoint
-      can wire the full benchmark graph before any engineer stages are
-      promoted.
+  can wire the full benchmark graph before any engineer stages are
+  promoted.
+
+### Phase 6: Lock the stateful graph and gated sink semantics
+
+- [x] Treat the application inference pipeline as a stateful job graph with
+  first-class persisted transitions, not as a one-shot batch runner.
+- [x] Model `queued`, `running`, `validated`, `reviewed`, `persisted`,
+  `skipped`, `failed`, and `interrupted` as explicit job states in the
+  persisted pipeline state.
+- [x] Derive downstream queue entries from the config-driven graph and the
+  persisted resume state rather than recomputing them from seed rows alone.
+- [x] Copy benchmark results back into `engineer_planner` only after the
+  normal validation and review gates have passed.
+- [x] Treat benchmark reviewer output as the canonical persisted bundle.
+- [x] Allow benchmark coder output to persist only when the review document is
+  intentionally omitted from an otherwise validated and reviewed bundle.
+- [x] Refresh `logs/evals/seed_update_autopilot/task_state.json` only after a
+  successful copy-back into the corpus.
 
 ## Non-Goals
 
@@ -502,12 +538,13 @@ The safe order is:
 ## Acceptance Criteria
 
 1. The application exposes a formal inference entrypoint with a documented job
-   contract and stage executor registry.
+   contract, internal state graph, and stage executor registry.
 2. The entrypoint spawns the same agents as the current seed flow and uses the
    same validation/review gates.
 3. `inference_config.yaml` drives downstream fan-out, persistence policy, and
    the benchmark reviewer chain.
-4. Seed persistence is optional and explicit.
+4. Seed persistence is optional and explicit, and only validated/reviewed
+   outputs are eligible for copy-back.
 5. Progression and resume state are persisted at the job level.
 6. The existing seed-autopilot path remains available as compatibility
    plumbing.
