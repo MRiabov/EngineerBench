@@ -1,0 +1,31 @@
+# Engineer-owned payload trajectory scaffold for gap-bridge 002.
+backend: GENESIS
+payload_part_names:
+  - transfer_cube
+initial_pose:
+  reference_point: build_zone_start
+  pos_mm: [-250.0, 0.0, 80.0]
+  rot_deg: [0.0, 0.0, 0.0]
+sample_stride_s: 0.2
+anchors:
+  - t_s: 0.0
+    reference_point: build_zone_start
+    pos_mm: [-250.0, 0.0, 80.0]
+    rot_deg: [0.0, 0.0, 0.0]
+    position_tolerance_mm: [1.0, 1.0, 1.0]
+    rotation_tolerance_deg: [0.5, 0.5, 5.0]
+    build_zone_valid: true
+  - t_s: 0.9
+    reference_point: bridge_reference_table
+    pos_mm: [70.0, 0.0, 78.0]
+    rot_deg: [0.0, 0.0, 0.0]
+    position_tolerance_mm: [1.0, 1.0, 1.0]
+    rotation_tolerance_deg: [0.5, 0.5, 5.0]
+  - t_s: 1.8
+    reference_point: goal_zone_contact
+    pos_mm: [265.0, 0.0, 72.5]
+    rot_deg: [0.0, 0.0, 0.0]
+    position_tolerance_mm: [1.0, 1.0, 1.0]
+    rotation_tolerance_deg: [0.5, 0.5, 5.0]
+    goal_zone_contact: true
+terminal_event: null

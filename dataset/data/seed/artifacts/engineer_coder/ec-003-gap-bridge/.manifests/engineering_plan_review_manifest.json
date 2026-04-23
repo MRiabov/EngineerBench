@@ -1,0 +1,11 @@
+{
+  "artifact_hashes": {
+    "assembly_definition.yaml": "bef6394f8e4b541fd834720c525be19436c59157640fdf0edb797adaceb52b34",
+    "plan.md": "e71884a17f9f4b935dbdbb65fd0732178bd762703c5b06066a4fc746df832834",
+    "todo.md": "932d68bf7b03b64a3505c6b57b50f3ede1f1372f9b1bb75d07df66d6ff64e521"
+  },
+  "planner_node_type": "engineer_planner",
+  "reviewer_stage": "engineer_plan_reviewer",
+  "session_id": "seed-ec-006-gap-bridge",
+  "status": "ready_for_review"
+}
