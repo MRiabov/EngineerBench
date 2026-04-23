@@ -812,6 +812,7 @@ async def validate_planner_artifacts_cross_contract(
         benchmark_definition=benchmark_definition,
         assembly_definition=assembly_definition,
         manufacturing_config=manufacturing_config,
+        artifact_name="benchmark_assembly_definition.yaml",
         planner_node_type=expected_stage,
         files_content_map=files_content_map,
         plan_text=plan_text,

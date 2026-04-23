@@ -9,9 +9,11 @@ from types import SimpleNamespace
 import pytest
 
 from dataset.evals.eval_inference_pipeline import (
+    _bundle_fingerprint,
     _load_resume_state_skip_ids,
     _load_stage_items,
     _run_workspace_job,
+    _select_stage_items_for_run,
     _workspace_dir_for_item,
     main,
 )
@@ -470,6 +472,47 @@ def test_inference_pipeline_skipped_entry_stage_still_drains_downstream(
     ]
 
 
+def test_inference_pipeline_internally_persisted_state_only_ignores_compatibility_mirror(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    config = load_inference_config(ROOT / "inference_config.yaml")
+    stage = config.stage("engineer_planner")
+    selected_items, _ = _load_stage_items(
+        stage=stage,
+        families=["gap_bridge"],
+        task_ids={"ep-gap-bridge-01"},
+        levels=None,
+        limit=1,
+    )
+    assert selected_items
+    selected = selected_items[0]
+    current_fingerprint = _bundle_fingerprint(ROOT / selected.item.seed_artifact_dir)
+    compatibility_state = {
+        selected.item.id: {
+            "bundle_fingerprint": current_fingerprint,
+            "last_validation_passed": True,
+            "last_review_passed": True,
+        }
+    }
+
+    filtered_items, selected_job_ids, skipped_job_ids = _select_stage_items_for_run(
+        stage=stage,
+        families=["gap_bridge"],
+        task_ids={"ep-gap-bridge-01"},
+        levels=None,
+        limit=1,
+        pipeline_task_state={},
+        compatibility_task_state=compatibility_state,
+        pipeline_skip_ids=set(),
+        resume_token=None,
+        use_compatibility_state=False,
+    )
+
+    assert [item.item.id for item in filtered_items] == [selected.item.id]
+    assert selected_job_ids == [f"engineer_planner:{selected.item.id}"]
+    assert skipped_job_ids == []
+
+
 def test_inference_pipeline_benchmark_stage_dry_run_writes_summary() -> None:
     completed = subprocess.run(
         [
@@ -743,6 +786,83 @@ def test_inference_pipeline_non_persisting_run_skips_copy_back(
 
     assert result.status.value == "reviewed"
     assert result.copied_back is False
+    assert result.review_passed is True
+    assert result.validation_passed is True
+
+
+def test_inference_pipeline_internally_persisted_state_only_skips_compatibility_refresh(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    config = load_inference_config(ROOT / "inference_config.yaml")
+    stage = config.stage("engineer_planner")
+    selected_items, _ = _load_stage_items(
+        stage=stage,
+        families=["gap_bridge"],
+        task_ids={"ep-gap-bridge-01"},
+        levels=None,
+        limit=1,
+    )
+    assert selected_items
+    selected = selected_items[0]
+
+    workspace_dir = tmp_path / "workspace"
+    workspace_dir.mkdir(parents=True, exist_ok=True)
+    (workspace_dir / "artifact.txt").write_text("artifact", encoding="utf-8")
+
+    monkeypatch.setattr(
+        "dataset.evals.eval_inference_pipeline.ROOT",
+        tmp_path,
+    )
+    monkeypatch.setattr(
+        "dataset.evals.eval_inference_pipeline.materialize_seed_workspace",
+        lambda **_: SimpleNamespace(workspace_dir=workspace_dir, prompt_text="prompt"),
+    )
+    monkeypatch.setattr(
+        "dataset.evals.eval_inference_pipeline.launch_cli_exec",
+        lambda *_, **__: 0,
+    )
+
+    async def _verify_workspace_for_agent(**_: object) -> SimpleNamespace:
+        return SimpleNamespace(
+            success=True,
+            errors=[],
+            verification_name="verification",
+        )
+
+    monkeypatch.setattr(
+        "dataset.evals.eval_inference_pipeline.verify_workspace_for_agent",
+        _verify_workspace_for_agent,
+    )
+    monkeypatch.setattr(
+        "dataset.evals.eval_inference_pipeline._refresh_persisted_bundle_artifacts",
+        lambda *_, **__: None,
+    )
+    monkeypatch.setattr(
+        "dataset.evals.eval_inference_pipeline._load_compatibility_seed_state",
+        lambda *_: (_ for _ in ()).throw(
+            AssertionError("compatibility mirror should be disabled")
+        ),
+    )
+    monkeypatch.setattr(
+        "dataset.evals.eval_inference_pipeline._write_compatibility_seed_state",
+        lambda *_, **__: (_ for _ in ()).throw(
+            AssertionError("compatibility mirror should be disabled")
+        ),
+    )
+
+    result = _run_workspace_job(
+        stage=stage,
+        item=selected.item,
+        raw_row=selected.raw_row,
+        provider_name="codex",
+        run_dir=tmp_path,
+        persist_results=True,
+        validate_only=False,
+        update_manifests=False,
+        use_compatibility_state=False,
+    )
+
+    assert result.copied_back is True
     assert result.review_passed is True
     assert result.validation_passed is True
 

@@ -2165,21 +2165,22 @@ async def validate_seeded_workspace_handoff_artifacts(
                         )
                     )
 
-        if manufacturing_config_model is not None:
-            handover_errors = validate_planner_handoff_cross_contract(
-                benchmark_definition=benchmark_definition_model,
-                assembly_definition=benchmark_assembly_definition_model,
-                manufacturing_config=manufacturing_config_model,
-                planner_node_type=AgentName.BENCHMARK_PLAN_REVIEWER,
-                plan_text=contents.get("benchmark_plan.md") or plan_content,
-            )
-            errors.extend(
-                _seeded_schema_error(
-                    message=f"benchmark_assembly_definition.yaml: {message}",
-                    artifact_path="benchmark_assembly_definition.yaml",
-                )
-                for message in handover_errors
-            )
+                if manufacturing_config_model is not None:
+                    handover_errors = validate_planner_handoff_cross_contract(
+                        benchmark_definition=benchmark_definition_model,
+                        assembly_definition=benchmark_assembly_definition_model,
+                        manufacturing_config=manufacturing_config_model,
+                        artifact_name="benchmark_assembly_definition.yaml",
+                        planner_node_type=AgentName.BENCHMARK_PLAN_REVIEWER,
+                        plan_text=contents.get("benchmark_plan.md") or plan_content,
+                    )
+                    errors.extend(
+                        _seeded_schema_error(
+                            message=f"benchmark_assembly_definition.yaml: {message}",
+                            artifact_path="benchmark_assembly_definition.yaml",
+                        )
+                        for message in handover_errors
+                    )
 
     render_error = await validate_render_images_non_black(
         worker_client,

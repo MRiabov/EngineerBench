@@ -210,6 +210,16 @@ def _parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--internally-persisted-state-only",
+        action="store_true",
+        help=(
+            "Use only the internally persisted pipeline state and skip the "
+            "compatibility seed-state mirror. Benchmark planner remains "
+            "sourced from the seed corpus; this switch only disables the "
+            "eval-derived mirror used for compatibility backfill."
+        ),
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Print the planned jobs without executing them.",
@@ -568,6 +578,7 @@ def _select_stage_items_for_run(
     compatibility_task_state: dict[str, dict[str, Any]],
     pipeline_skip_ids: set[str],
     resume_token: str | None,
+    use_compatibility_state: bool = True,
 ) -> tuple[list[SelectedStageItem], list[str], list[str]]:
     selected_items, _ = _load_stage_items(
         stage=stage,
@@ -585,7 +596,7 @@ def _select_stage_items_for_run(
         )
 
     skipped_existing_job_ids: list[str] = []
-    if stage.agent_name == AgentName.ENGINEER_PLANNER:
+    if use_compatibility_state and stage.agent_name == AgentName.ENGINEER_PLANNER:
         retained_items: list[SelectedStageItem] = []
         for selected in selected_items:
             item = selected.item
@@ -640,6 +651,7 @@ def _execute_stage_batch(
     seed_workers: int,
     summary: InferenceRunSummary,
     pipeline_job_state: dict[str, InferenceJobState],
+    use_compatibility_state: bool = True,
 ) -> tuple[dict[str, InferenceJobState], list[str], bool]:
     if not selected_items:
         return pipeline_job_state, [], False
@@ -703,6 +715,7 @@ def _execute_stage_batch(
                 persist_results=persist_results,
                 validate_only=validate_only,
                 update_manifests=update_manifests,
+                use_compatibility_state=use_compatibility_state,
             )
             future_map[future] = selected
 
@@ -772,7 +785,11 @@ def _execute_stage_batch(
             summary_path = _write_summary(run_dir, summary)
             print(f"Summary written to {summary_path}")
 
-    return pipeline_job_state, failures, refreshed_compatibility_state
+    return (
+        pipeline_job_state,
+        failures,
+        refreshed_compatibility_state if use_compatibility_state else False,
+    )
 
 
 def _compatibility_state_path(root: Path) -> Path:
@@ -944,6 +961,7 @@ def _run_workspace_job(
     persist_results: bool,
     validate_only: bool,
     update_manifests: bool,
+    use_compatibility_state: bool = True,
 ) -> InferenceJobResult:
     job_id = _job_id(stage.name, item.id)
     workspace_dir = _workspace_dir_for_item(run_dir, stage.name, item.id)
@@ -1030,7 +1048,9 @@ def _run_workspace_job(
                 update_manifests=update_manifests,
             )
             copied_back = True
-            if _is_engineer_planner_seed_storage_dir(target_dir):
+            if use_compatibility_state and _is_engineer_planner_seed_storage_dir(
+                target_dir
+            ):
                 compatibility_state = _load_compatibility_seed_state(ROOT)
                 compatibility_state[item.id] = {
                     "task_id": item.id,
@@ -1195,7 +1215,11 @@ def main() -> int:
         config_path=args.config,
         run_dir=run_dir,
     )
-    compatibility_task_state = _load_compatibility_seed_state(ROOT)
+    use_compatibility_state = not args.internally_persisted_state_only
+    if use_compatibility_state:
+        compatibility_task_state = _load_compatibility_seed_state(ROOT)
+    else:
+        compatibility_task_state = {}
     entry_stage_families = (
         list(args.family)
         if args.family is not None
@@ -1216,6 +1240,7 @@ def main() -> int:
         compatibility_task_state=compatibility_task_state,
         pipeline_skip_ids=pipeline_skip_ids,
         resume_token=args.resume_token,
+        use_compatibility_state=use_compatibility_state,
     )
     stage_order = _stage_execution_order(config, selected_stage.name)
     summary.selected_job_ids = list(selected_job_ids)
@@ -1346,6 +1371,7 @@ def main() -> int:
                 seed_workers=current_seed_workers,
                 summary=summary,
                 pipeline_job_state=pipeline_job_state,
+                use_compatibility_state=use_compatibility_state,
             )
         )
         failures.extend(stage_failures)
@@ -1389,6 +1415,7 @@ def main() -> int:
                 compatibility_task_state=compatibility_task_state,
                 pipeline_skip_ids=_load_resume_state_skip_ids(pipeline_job_state),
                 resume_token=None,
+                use_compatibility_state=use_compatibility_state,
             )
         )
         summary.selected_job_ids.extend(followup_selected_job_ids)
@@ -1409,6 +1436,7 @@ def main() -> int:
                 seed_workers=followup_seed_workers,
                 summary=summary,
                 pipeline_job_state=pipeline_job_state,
+                use_compatibility_state=use_compatibility_state,
             )
         )
         failures.extend(stage_failures)

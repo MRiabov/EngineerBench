@@ -625,6 +625,7 @@ def submit_for_review(
         benchmark_definition=objectives_model,
         assembly_definition=estimation,
         manufacturing_config=dfm_config,
+        artifact_name="benchmark_assembly_definition.yaml",
         planner_node_type=planner_node_type,
         plan_text=plan_content,
     )

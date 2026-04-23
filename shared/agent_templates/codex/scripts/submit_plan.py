@@ -80,6 +80,7 @@ def _required_files(agent_name: AgentName) -> tuple[str, ...]:
     return (
         "benchmark_definition.yaml",
         "assembly_definition.yaml",
+        "benchmark_assembly_definition.yaml",
         SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
     )
 

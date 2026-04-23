@@ -864,11 +864,12 @@ def _validate_payload_trajectory_clearance_from_payload_definition(
     payload_definition: PayloadTrajectoryDefinition,
     assembly_definition: AssemblyDefinition,
     benchmark_assembly_definition: AssemblyDefinition | None,
+    moving_script_path: str = SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
     session_id: str | None = None,
 ) -> list[str]:
     required_scripts = (
         BENCHMARK_SCRIPT_PATH,
-        SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
+        moving_script_path,
     )
     missing_scripts = [
         script_path
@@ -896,7 +897,7 @@ def _validate_payload_trajectory_clearance_from_payload_definition(
             assembly_definition=assembly_definition,
             benchmark_assembly_definition=benchmark_assembly_definition,
             session_id=session_id,
-            moving_script_path=SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
+            moving_script_path=moving_script_path,
         )
         return _relabel_payload_clearance_errors(
             clearance_errors,
@@ -1266,6 +1267,7 @@ def validate_planner_handoff_cross_contract(
     benchmark_definition: BenchmarkDefinition,
     assembly_definition: AssemblyDefinition,
     manufacturing_config: ManufacturingConfig,
+    artifact_name: str = "assembly_definition.yaml",
     planner_node_type: AgentName | str | None = None,
     files_content_map: dict[str, str] | None = None,
     plan_text: str | None = None,
@@ -1414,7 +1416,11 @@ def validate_planner_handoff_cross_contract(
 
     payload_part_names = [part.part_name for part in assembly_definition.payload_parts]
     coarse_payload_trajectory = assembly_definition.coarse_payload_trajectory
-    if is_engineer_planner and coarse_payload_trajectory is None:
+    if (
+        artifact_name == "assembly_definition.yaml"
+        and is_engineer_planner
+        and coarse_payload_trajectory is None
+    ):
         errors.append(
             "assembly_definition.coarse_payload_trajectory is required for "
             "engineer handoffs"
@@ -1803,6 +1809,7 @@ def validate_node_output(
                 benchmark_definition=benchmark_definition_model,
                 assembly_definition=assembly_definition_model,
                 manufacturing_config=effective_config,
+                artifact_name=filename,
                 planner_node_type=node_type,
                 files_content_map=files_content_map,
                 plan_text=plan_content,
@@ -1823,6 +1830,11 @@ def validate_node_output(
         AgentName.ENGINEER_PLANNER,
         AgentName.ENGINEER_CODER,
     }:
+        moving_script_path = (
+            SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH
+            if node_enum == AgentName.ENGINEER_PLANNER
+            else SOLUTION_SCRIPT_PATH
+        )
         is_valid, precise_result = validate_payload_trajectory_definition_yaml(
             payload_trajectory_definition_content,
             benchmark_definition=benchmark_definition_model,
@@ -1860,6 +1872,7 @@ def validate_node_output(
                 payload_definition=payload_trajectory_definition_model,
                 assembly_definition=engineering_assembly_definition_model,
                 benchmark_assembly_definition=benchmark_assembly_definition_model,
+                moving_script_path=moving_script_path,
                 session_id=session_id,
             )
         )

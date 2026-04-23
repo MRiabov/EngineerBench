@@ -268,14 +268,37 @@ def get_engineer_planner_tools(
             plan_path,
             "benchmark_definition.yaml",
             "assembly_definition.yaml",
-            "benchmark_assembly_definition.yaml",
             "benchmark_script.py",
             SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
         ]
         artifacts: dict[str, str] = {}
         missing_files: list[str] = []
 
+        async def _read_optional_from_candidates(
+            candidates: list[str],
+        ) -> str | None:
+            for rel_path in candidates:
+                content = await fs.client.read_file_optional(
+                    rel_path, bypass_agent_permissions=True
+                )
+                if content is not None and content.strip():
+                    return content
+            return None
+
         for rel_path in required_files:
+            if rel_path == "benchmark_assembly_definition.yaml":
+                content = await _read_optional_from_candidates(
+                    [
+                        rel_path,
+                        ".solution/benchmark_assembly_definition.yaml",
+                        "engineer/benchmark_assembly_definition.yaml",
+                    ]
+                )
+                if content is None:
+                    missing_files.append(rel_path)
+                    continue
+                artifacts[rel_path] = content
+                continue
             content = await fs.client.read_file_optional(
                 rel_path, bypass_agent_permissions=True
             )

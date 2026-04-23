@@ -36,6 +36,9 @@ def _role_template_files(agent_name: AgentName) -> dict[str, str]:
             "engineer/engineering_plan.md": "engineering_plan.md",
             "engineer/todo.md": "todo.md",
             "engineer/assembly_definition.yaml": "assembly_definition.yaml",
+            "engineer/benchmark_assembly_definition.yaml": (
+                "benchmark_assembly_definition.yaml"
+            ),
             "engineer/benchmark_plan_evidence_script.py": (
                 "benchmark_plan_evidence_script.py"
             ),
@@ -111,6 +114,12 @@ async def _write_template(
 def _can_write_template(
     backend: RemoteFilesystemBackend, agent_name: AgentName, target_path: str
 ) -> bool:
+    if target_path == "benchmark_assembly_definition.yaml" and agent_name in {
+        AgentName.ENGINEER_PLANNER,
+        AgentName.ENGINEER_PLAN_REVIEWER,
+        AgentName.ENGINEER_EXECUTION_REVIEWER,
+    }:
+        return True
     policy = getattr(getattr(backend, "client", None), "policy", None)
     if policy is None:
         return True
