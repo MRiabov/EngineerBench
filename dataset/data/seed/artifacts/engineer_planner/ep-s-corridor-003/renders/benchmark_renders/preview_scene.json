@@ -1,0 +1,249 @@
+{
+  "component_label": "benchmark_fixtures",
+  "entities": [
+    {
+      "label": "left_launch_pad",
+      "semantic_label": "left_launch_pad",
+      "instance_id": "left_launch_pad",
+      "instance_name": "left_launch_pad",
+      "object_type": "part",
+      "object_id": 0,
+      "pos_mm": [
+        -220.0,
+        -95.0,
+        15.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/left_launch_pad.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "left_launch_pad",
+      "geom_name": "left_launch_pad",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "corridor_block_a",
+      "semantic_label": "corridor_block_a",
+      "instance_id": "corridor_block_a",
+      "instance_name": "corridor_block_a",
+      "object_type": "part",
+      "object_id": 1,
+      "pos_mm": [
+        -50.0,
+        70.0,
+        40.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/corridor_block_a.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "corridor_block_a",
+      "geom_name": "corridor_block_a",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        110,
+        235
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "corridor_block_b",
+      "semantic_label": "corridor_block_b",
+      "instance_id": "corridor_block_b",
+      "instance_name": "corridor_block_b",
+      "object_type": "part",
+      "object_id": 2,
+      "pos_mm": [
+        150.0,
+        -45.0,
+        40.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/corridor_block_b.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "corridor_block_b",
+      "geom_name": "corridor_block_b",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        161,
+        235,
+        59
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "corridor_deadend_block",
+      "semantic_label": "corridor_deadend_block",
+      "instance_id": "corridor_deadend_block",
+      "instance_name": "corridor_deadend_block",
+      "object_type": "part",
+      "object_id": 3,
+      "pos_mm": [
+        250.0,
+        -155.0,
+        40.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/corridor_deadend_block.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "corridor_deadend_block",
+      "geom_name": "corridor_deadend_block",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        59,
+        213
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "corridor_block_c",
+      "semantic_label": "corridor_block_c",
+      "instance_id": "corridor_block_c",
+      "instance_name": "corridor_block_c",
+      "object_type": "part",
+      "object_id": 4,
+      "pos_mm": [
+        340.0,
+        80.0,
+        40.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/corridor_block_c.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "corridor_block_c",
+      "geom_name": "corridor_block_c",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        59,
+        235,
+        205
+      ],
+      "include_in_segmentation": true
+    },
+    {
+      "label": "goal_catch_tray",
+      "semantic_label": "goal_catch_tray",
+      "instance_id": "goal_catch_tray",
+      "instance_name": "goal_catch_tray",
+      "object_type": "part",
+      "object_id": 5,
+      "pos_mm": [
+        560.0,
+        35.0,
+        15.0
+      ],
+      "euler_deg": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "mesh_paths": [
+        "meshes/goal_catch_tray.obj"
+      ],
+      "box_size_mm": null,
+      "material_id": "hardwood",
+      "body_name": "goal_catch_tray",
+      "geom_name": "goal_catch_tray",
+      "zone_type": null,
+      "color_rgba": [
+        0.5450980392156862,
+        0.35294117647058826,
+        0.16862745098039217,
+        1.0
+      ],
+      "segmentation_color_rgb": [
+        235,
+        154,
+        59
+      ],
+      "include_in_segmentation": true
+    }
+  ],
+  "bounds_min_mm": [
+    -260.0,
+    -180.0,
+    0.0
+  ],
+  "bounds_max_mm": [
+    600.0,
+    125.0,
+    80.0
+  ],
+  "center_mm": [
+    170.0,
+    -27.5,
+    40.0
+  ],
+  "diagonal": 915.9830784463215
+}

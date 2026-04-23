@@ -168,10 +168,38 @@
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the corridor benchmark files as read-only context, starts from the checked-in starter-template baseline instead of a pre-solved output, and produces a coherent corridor-style engineering plan with exact label grounding for `transfer_cube`, `left_launch_pad`, `corridor_block_a`, `corridor_block_b`, `corridor_block_c`, and `goal_catch_tray`, plus budget-consistent calculations."
   },
   {
+    "id": "ep-s-corridor-002",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded corridor handoff in the workspace, including the read-only benchmark geometry and benchmark plan evidence for `left_launch_pad`, `corridor_block_a`, `corridor_block_b`, `corridor_block_c`, `corridor_block_d`, and `goal_catch_tray`, plus the payload label `transfer_cube`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that routes `transfer_cube` through the longer four-turn corridor and keeps the offset goal tray inside the published cost and weight envelope.",
+    "complexity_level": 3,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-s-corridor-002",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the corridor benchmark files as read-only context, starts from the checked-in starter-template baseline instead of a pre-solved output, and produces a coherent corridor-style engineering plan with exact label grounding for `transfer_cube`, `left_launch_pad`, `corridor_block_a`, `corridor_block_b`, `corridor_block_c`, `corridor_block_d`, and `goal_catch_tray`, plus budget-consistent calculations."
+  },
+  {
+    "id": "ep-s-corridor-003",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded corridor handoff in the workspace, including the read-only benchmark geometry and benchmark plan evidence for `left_launch_pad`, `corridor_block_a`, `corridor_block_b`, `corridor_deadend_block`, `corridor_block_c`, and `goal_catch_tray`, plus the payload label `transfer_cube`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that routes `transfer_cube` through the pinch point, avoids the dead-end spur, and finishes in the north-shifted goal tray without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope.",
+    "complexity_level": 3,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-s-corridor-003",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the corridor benchmark files as read-only context, starts from the checked-in starter-template baseline instead of a pre-solved output, and produces a coherent corridor-style engineering plan with exact label grounding for `transfer_cube`, `left_launch_pad`, `corridor_block_a`, `corridor_block_b`, `corridor_deadend_block`, `corridor_block_c`, and `goal_catch_tray`, plus budget-consistent calculations."
+  },
+  {
+    "id": "ep-s-corridor-004",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded corridor handoff in the workspace, including the read-only benchmark geometry and benchmark plan evidence for `left_launch_pad`, `corridor_block_a`, `corridor_block_b`, `corridor_block_c`, `corridor_block_d`, `corridor_block_e`, and `goal_catch_tray`, plus the payload label `transfer_cube`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that routes `transfer_cube` through the compressed five-block weave and keeps the farther goal tray inside the published cost and weight envelope.",
+    "complexity_level": 3,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-s-corridor-004",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the corridor benchmark files as read-only context, starts from the checked-in starter-template baseline instead of a pre-solved output, and produces a coherent corridor-style engineering plan with exact label grounding for `transfer_cube`, `left_launch_pad`, `corridor_block_a`, `corridor_block_b`, `corridor_block_c`, `corridor_block_d`, `corridor_block_e`, and `goal_catch_tray`, plus budget-consistent calculations."
+  },
+  {
     "id": "ep-terrain-ridge-01",
     "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded terrain-ridge handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `terrain_base`, `terrain_ridge`, and `goal_catch_tray`, plus the payload label `steel_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that carries `steel_ball` over the ridge into `goal_catch_tray` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope.",
     "complexity_level": 2,
     "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-terrain-ridge-01",
     "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the terrain-ridge benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent guide-bridge engineering plan with exact label grounding for `steel_ball`, `terrain_base`, `terrain_ridge`, and `goal_catch_tray`, plus budget-consistent calculations."
+  },
+  {
+    "id": "ep-terrain-ridge-02",
+    "task": "Confirm `.manifests/current_role.json` names `engineer_planner` before using the seeded artifacts. Review the seeded terrain-ridge handoff in the workspace, including the read-only benchmark geometry and benchmark render evidence for `terrain_base`, `terrain_ridge`, and `goal_catch_tray`, plus the payload label `steel_ball`. Draft an implementation-ready engineering plan from the seeded starter scaffold files that carries `steel_ball` over a flat-topped step ridge into `goal_catch_tray` without modifying the benchmark-owned fixtures and while staying inside the published cost and weight envelope. Variant note: a shorter, box-like step instead of the rounded bump.",
+    "complexity_level": 3,
+    "seed_artifact_dir": "dataset/data/seed/artifacts/engineer_planner/ep-terrain-ridge-02",
+    "expected_criteria": "Requires `.manifests/current_role.json` to name `engineer_planner` and the seeded workspace to match that role. Engineer planner treats the terrain-ridge benchmark files as read-only context, preserves the starter scaffold files, and produces a coherent guide-bridge engineering plan with exact label grounding for `steel_ball`, `terrain_base`, `terrain_ridge`, and `goal_catch_tray`, plus budget-consistent calculations for the step-like ridge variant."
   }
 ]
