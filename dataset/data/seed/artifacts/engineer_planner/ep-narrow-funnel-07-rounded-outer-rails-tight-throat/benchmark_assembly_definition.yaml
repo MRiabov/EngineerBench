@@ -1,0 +1,156 @@
+version: "1.0"
+units:
+  length: "mm"
+  volume: "mm3"
+  mass: "g"
+  currency: "USD"
+constraints:
+  benchmark_max_unit_cost_usd: 72.0
+  benchmark_max_weight_g: 1500.0
+  planner_target_max_unit_cost_usd: 55.0
+  planner_target_max_weight_g: 1200.0
+manufactured_parts:
+  - part_name: left_start_pad
+    part_id: left_start_pad
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 358400.0
+    stock_bbox_mm:
+      x: 160.0
+      y: 140.0
+      z: 16.0
+    stock_volume_mm3: 358400.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 8.0
+  - part_name: funnel_left_outer
+    part_id: funnel_left_outer
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 27991.6
+    stock_bbox_mm:
+      x: 18.0
+      y: 110.0
+      z: 18.0
+    stock_volume_mm3: 35640.0
+    removed_volume_mm3: 7648.4
+    estimated_unit_cost_usd: 5.0
+  - part_name: funnel_right_outer
+    part_id: funnel_right_outer
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 27991.6
+    stock_bbox_mm:
+      x: 18.0
+      y: 110.0
+      z: 18.0
+    stock_volume_mm3: 35640.0
+    removed_volume_mm3: 7648.4
+    estimated_unit_cost_usd: 5.0
+  - part_name: funnel_left_mid
+    part_id: funnel_left_mid
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 158976.0
+    stock_bbox_mm:
+      x: 138.0
+      y: 16.0
+      z: 72.0
+    stock_volume_mm3: 158976.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 5.0
+  - part_name: funnel_right_mid
+    part_id: funnel_right_mid
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 158976.0
+    stock_bbox_mm:
+      x: 138.0
+      y: 16.0
+      z: 72.0
+    stock_volume_mm3: 158976.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 5.0
+  - part_name: funnel_left_inner
+    part_id: funnel_left_inner
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 145152.0
+    stock_bbox_mm:
+      x: 126.0
+      y: 16.0
+      z: 72.0
+    stock_volume_mm3: 145152.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 5.0
+  - part_name: funnel_right_inner
+    part_id: funnel_right_inner
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 145152.0
+    stock_bbox_mm:
+      x: 126.0
+      y: 16.0
+      z: 72.0
+    stock_volume_mm3: 145152.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 5.0
+  - part_name: goal_throat_frame
+    part_id: goal_throat_frame
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 95424.0
+    stock_bbox_mm:
+      x: 20.0
+      y: 94.0
+      z: 84.0
+    stock_volume_mm3: 157920.0
+    removed_volume_mm3: 62496.0
+    estimated_unit_cost_usd: 7.0
+  - part_name: right_goal_pad
+    part_id: right_goal_pad
+    manufacturing_method: CNC
+    material_id: hardwood
+    quantity: 1
+    part_volume_mm3: 211200.0
+    stock_bbox_mm:
+      x: 110.0
+      y: 120.0
+      z: 16.0
+    stock_volume_mm3: 211200.0
+    removed_volume_mm3: 0.0
+    estimated_unit_cost_usd: 8.0
+final_assembly:
+  - name: left_start_pad
+    config: null
+  - name: funnel_left_outer
+    config: null
+  - name: funnel_right_outer
+    config: null
+  - name: funnel_left_mid
+    config: null
+  - name: funnel_right_mid
+    config: null
+  - name: funnel_left_inner
+    config: null
+  - name: funnel_right_inner
+    config: null
+  - name: goal_throat_frame
+    config: null
+  - name: right_goal_pad
+    config: null
+totals:
+  estimated_unit_cost_usd: 53.0
+  estimated_weight_g: 996.9
+  estimate_confidence: high
+dfm_suggestions:
+  - Keep the rounded outer rails static so the mouth reads clearly in render evidence.
+  - Keep the throat frame simple and legible even though the payload is near the top of the size range.
+  - Use a simple planar start pad and goal pad so the shape-family remix remains the only planning challenge.

@@ -71,7 +71,7 @@ payload:
   material_id: steel_carbon
   static_randomization:
     radius_mm: [25.0, 25.0]
-  start_position_mm: [-348.0, 0.0, 52.0]
+  start_position_mm: [-348.0, 0.0, 163.0]
   runtime_jitter_mm: [12.0, 12.0, 4.0]
 constraints:
   estimated_solution_cost_usd: 17.0

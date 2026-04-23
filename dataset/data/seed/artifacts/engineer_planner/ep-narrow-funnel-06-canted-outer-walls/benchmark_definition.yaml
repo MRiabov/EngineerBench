@@ -1,0 +1,97 @@
+objectives:
+  goal_zone_mm:
+    min_mm: [370.0, -38.0, 20.0]
+    max_mm: [460.0, 42.0, 85.0]
+  forbid_zones:
+    - name: funnel_left_outer
+      min_mm: [-133.0, 74.0, 0.0]
+      max_mm: [-23.0, 90.0, 72.0]
+    - name: funnel_right_outer
+      min_mm: [-133.0, -90.0, 0.0]
+      max_mm: [-23.0, -74.0, 72.0]
+    - name: funnel_left_mid
+      min_mm: [28.0, 54.0, 0.0]
+      max_mm: [168.0, 74.0, 72.0]
+    - name: funnel_right_mid
+      min_mm: [28.0, -68.0, 0.0]
+      max_mm: [168.0, -50.0, 72.0]
+    - name: funnel_left_inner
+      min_mm: [183.0, 28.0, 0.0]
+      max_mm: [309.0, 44.0, 72.0]
+    - name: funnel_right_inner
+      min_mm: [183.0, -44.0, 0.0]
+      max_mm: [309.0, -24.0, 72.0]
+    - name: goal_throat_frame
+      min_mm: [340.0, -48.0, 0.0]
+      max_mm: [360.0, 54.0, 84.0]
+  build_zone_mm:
+    min_mm: [-340.0, -180.0, 0.0]
+    max_mm: [490.0, 180.0, 240.0]
+physics:
+  backend: GENESIS
+  compute_target: auto
+simulation_bounds_mm:
+  min_mm: [-380.0, -220.0, -20.0]
+  max_mm: [520.0, 220.0, 300.0]
+payload:
+  label: projectile_ball
+  shape: sphere
+  material_id: abs
+  static_randomization:
+    radius_mm: [18.0, 19.8]
+  start_position_mm: [-260.0, 3.0, 157.0]
+  runtime_jitter_mm: [5.0, 6.0, 3.0]
+benchmark_parts:
+  - part_id: left_start_pad
+    label: left_start_pad
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: funnel_left_outer
+    label: funnel_left_outer
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: funnel_right_outer
+    label: funnel_right_outer
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: funnel_left_mid
+    label: funnel_left_mid
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: funnel_right_mid
+    label: funnel_right_mid
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: funnel_left_inner
+    label: funnel_left_inner
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: funnel_right_inner
+    label: funnel_right_inner
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: goal_throat_frame
+    label: goal_throat_frame
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+  - part_id: right_goal_pad
+    label: right_goal_pad
+    metadata:
+      is_fixed: true
+      material_id: hardwood
+constraints:
+  estimated_solution_cost_usd: 53.0
+  estimated_solution_weight_g: 1148.0
+  max_unit_cost: 72.0
+  max_weight_g: 1500.0
+randomization:
+  static_variation_id: engineer_planner_narrow_funnel_v06_canted_outer_walls
+  runtime_jitter_enabled: true

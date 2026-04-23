@@ -22,7 +22,7 @@ The funnel narrows in steps from the broad capture mouth into the throat frame. 
 - Label: `projectile_ball`
 - Static randomization:
   - sphere radius is randomized through `radius_mm` in the range `[18, 20]` mm.
-- Nominal start position: `[-255, 0, 36]`
+- Nominal start position: `[-255, 0, 140]`
 - Runtime jitter: `[6, 6, 3]` mm
 
 ## 4. Objectives

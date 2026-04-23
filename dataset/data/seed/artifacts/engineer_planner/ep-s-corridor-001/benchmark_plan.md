@@ -24,7 +24,7 @@ The free-space route alternates below `corridor_block_a`, above
 - Label: `transfer_cube`
 - Static randomization:
   - none; the payload remains a cube for the full run
-- Nominal start position: `[-220, -110, 65]`
+- Nominal start position: `[-220, -110, 189]`
 - Runtime jitter: `[10, 10, 5]` mm
 
 ## 4. Objectives

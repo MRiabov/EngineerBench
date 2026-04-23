@@ -1,0 +1,125 @@
+version: "1.0"
+units:
+  length: "mm"
+  volume: "mm3"
+  mass: "g"
+  currency: "USD"
+constraints:
+  benchmark_max_unit_cost_usd: 120.0
+  benchmark_max_weight_g: 2200.0
+  planner_target_max_unit_cost_usd: 84.0
+  planner_target_max_weight_g: 1700.0
+manufactured_parts:
+- part_name: upper_inlet_frame
+  part_id: upper_inlet_frame
+  manufacturing_method: CNC
+  material_id: hardwood
+  quantity: 1
+  part_volume_mm3: 450000.0
+  stock_bbox_mm:
+    x: 150.0
+    y: 150.0
+    z: 20.0
+  stock_volume_mm3: 450000.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 3.5
+- part_name: upper_chute_step
+  part_id: upper_chute_step
+  manufacturing_method: CNC
+  material_id: hdpe
+  quantity: 1
+  part_volume_mm3: 504000.0
+  stock_bbox_mm:
+    x: 180.0
+    y: 140.0
+    z: 20.0
+  stock_volume_mm3: 504000.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 4.5
+- part_name: mid_chute_step
+  part_id: mid_chute_step
+  manufacturing_method: CNC
+  material_id: hdpe
+  quantity: 1
+  part_volume_mm3: 532000.0
+  stock_bbox_mm:
+    x: 190.0
+    y: 140.0
+    z: 20.0
+  stock_volume_mm3: 532000.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 4.5
+- part_name: lower_chute_step
+  part_id: lower_chute_step
+  manufacturing_method: CNC
+  material_id: hdpe
+  quantity: 1
+  part_volume_mm3: 532000.0
+  stock_bbox_mm:
+    x: 190.0
+    y: 140.0
+    z: 20.0
+  stock_volume_mm3: 532000.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 4.5
+- part_name: exit_tray
+  part_id: exit_tray
+  manufacturing_method: CNC
+  material_id: hardwood
+  quantity: 1
+  part_volume_mm3: 765000.0
+  stock_bbox_mm:
+    x: 170.0
+    y: 150.0
+    z: 30.0
+  stock_volume_mm3: 765000.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 3.5
+- part_name: left_guard_rail
+  part_id: left_guard_rail
+  manufacturing_method: CNC
+  material_id: aluminum_6061
+  quantity: 1
+  part_volume_mm3: 841500.0
+  stock_bbox_mm:
+    x: 320.0
+    y: 20.0
+    z: 160.0
+  stock_volume_mm3: 841500.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 6.0
+- part_name: right_guard_rail
+  part_id: right_guard_rail
+  manufacturing_method: CNC
+  material_id: aluminum_6061
+  quantity: 1
+  part_volume_mm3: 841500.0
+  stock_bbox_mm:
+    x: 320.0
+    y: 20.0
+    z: 160.0
+  stock_volume_mm3: 841500.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 6.0
+final_assembly:
+- name: upper_inlet_frame
+  config:
+- name: upper_chute_step
+  config:
+- name: mid_chute_step
+  config:
+- name: lower_chute_step
+  config:
+- name: exit_tray
+  config:
+- name: left_guard_rail
+  config:
+- name: right_guard_rail
+  config:
+totals:
+  estimated_unit_cost_usd: 32.5
+  estimated_weight_g: 1280.0
+  estimate_confidence: high
+dfm_suggestions:
+- Keep the chute steps stair-stepped and symmetric so the gravity path is easy to read in render evidence.
+- Keep the guard rails parallel and continuous so the straight variant stays visibly guided.

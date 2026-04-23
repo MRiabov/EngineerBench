@@ -17,7 +17,7 @@ The openings through `front_gate_wall` and `rear_gate_wall` are the clearance tu
 - Label: `transfer_cube`
 - Static randomization:
   - cube edge length is randomized through `radius_mm` in the range `[17, 19]` mm, which corresponds to an edge length range of `34-38` mm.
-- Nominal start position: `[-250, -6, 38]`
+- Nominal start position: `[-250, -6, 119]`
 - Runtime jitter: `[6, 6, 4]` mm
 
 ## 4. Objectives

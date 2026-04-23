@@ -50,7 +50,7 @@ payload:
   shape: cube
   material_id: abs
   static_randomization: {}
-  start_position_mm: [-264.0, -24.0, 80.0]
+  start_position_mm: [-264.0, -24.0, 131.0]
   runtime_jitter_mm: [10.0, 8.0, 5.0]
 constraints:
   estimated_solution_cost_usd: 69.5

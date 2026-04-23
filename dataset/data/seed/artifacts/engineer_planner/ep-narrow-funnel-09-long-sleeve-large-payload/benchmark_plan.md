@@ -1,6 +1,6 @@
 ## 1. Learning Objective
 
-Test whether an engineer can plan a stable passive transfer that threads `projectile_ball` through a widening capture mouth, then through a longer converging sleeve and tighter goal throat, without inventing hidden actuation, moving benchmark fixtures, or relying on unsupported geometry changes.
+Test whether an engineer can plan a stable passive transfer that threads `projectile_ball` through a wider capture mouth, a longer converging sleeve, and a tighter goal throat, without inventing hidden actuation, moving benchmark fixtures, or relying on unsupported geometry changes.
 
 ## 2. Environment Geometry
 
@@ -11,32 +11,32 @@ Test whether an engineer can plan a stable passive transfer that threads `projec
 - `funnel_right_mid`: static right guide wall centered at `[95, -60, 36]` with size `[140, 16, 72]`.
 - `funnel_left_inner`: static left throat guide centered at `[245, 34, 36]` with size `[128, 16, 72]`.
 - `funnel_right_inner`: static right throat guide centered at `[245, -34, 36]` with size `[128, 16, 72]`.
-- `goal_throat_frame`: static throat frame centered at `[345, 0, 42]` with outer size `[20, 98, 84]` and a centered opening roughly `[48, 64]` mm in the throat plane.
-- `right_goal_pad`: static landing pad centered at `[415, 0, 8]` with size `[110, 120, 16]`.
+- `goal_throat_frame`: static throat frame centered at `[360, 0, 42]` with outer size `[20, 98, 84]` and a centered opening roughly `[48, 64]` mm in the throat plane.
+- `right_goal_pad`: static landing pad centered at `[430, 0, 8]` with size `[110, 120, 16]`.
 
-The funnel narrows in steps from the broad capture mouth into the throat frame. The key challenge is preserving clearance through the narrowing corridor while keeping the payload centered enough to reach the throat opening.
+The funnel narrows in steps from the broad capture mouth into a longer sleeve and the throat frame. The key challenge is preserving clearance through the longer corridor while keeping the payload centered enough to reach the throat opening.
 
 ## 3. Input Objective
 
 - Shape: `sphere`
 - Label: `projectile_ball`
 - Static randomization:
-  - sphere radius is randomized through `radius_mm` in the range `[18, 20]` mm.
-- Nominal start position: `[-255, 0, 36]`
+  - sphere radius is randomized through `radius_mm` in the range `[19, 20]` mm.
+- Nominal start position: `[-255, 0, 154]`
 - Runtime jitter: `[6, 6, 3]` mm
 
 ## 4. Objectives
 
 - `goal_zone_mm`: min_mm `[360, -40, 20]`, max_mm `[450, 40, 85]`
 - `forbid_zones`:
-  - `funnel_left_outer`: approx AABB `[-130, 70, 0]` to `[-20, 86, 72]`
-  - `funnel_right_outer`: approx AABB `[-130, -86, 0]` to `[-20, -70, 72]`
-  - `funnel_left_mid`: approx AABB `[25, 52, 0]` to `[165, 68, 72]`
-  - `funnel_right_mid`: approx AABB `[25, -68, 0]` to `[165, -52, 72]`
-  - `funnel_left_inner`: approx AABB `[181, 26, 0]` to `[309, 42, 72]`
-  - `funnel_right_inner`: approx AABB `[181, -42, 0]` to `[309, -26, 72]`
-  - `goal_throat_frame`: approx AABB `[335, -49, 0]` to `[355, 49, 84]`
-- `build_zone_mm`: min_mm `[-340, -180, 0]`, max_mm `[490, 180, 240]`
+  - `funnel_left_outer`: approx AABB `[-140, 70, 0]` to `[-30, 86, 72]`
+  - `funnel_right_outer`: approx AABB `[-140, -86, 0]` to `[-30, -70, 72]`
+  - `funnel_left_mid`: approx AABB `[30, 52, 0]` to `[170, 68, 72]`
+  - `funnel_right_mid`: approx AABB `[30, -68, 0]` to `[170, -52, 72]`
+  - `funnel_left_inner`: approx AABB `[196, 26, 0]` to `[324, 42, 72]`
+  - `funnel_right_inner`: approx AABB `[196, -42, 0]` to `[324, -26, 72]`
+  - `goal_throat_frame`: approx AABB `[350, -49, 0]` to `[370, 49, 84]`
+- `build_zone_mm`: min_mm `[-340, -180, 0]`, max_mm `[500, 180, 240]`
 
 ## 5. Simulation Bounds
 

@@ -16,7 +16,7 @@ The opening through `gate_wall` is the clearance gate. The gate is intentionally
 - Label: `transfer_cube`
 - Static randomization:
   - cube edge length is randomized through `radius_mm` in the range `[17, 19]` mm, which corresponds to an edge length range of `34-38` mm.
-- Nominal start position: `[-246, -16, 44]`
+- Nominal start position: `[-246, -16, 118]`
 - Runtime jitter: `[5, 5, 4]` mm
 
 ## 4. Objectives

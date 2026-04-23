@@ -1,0 +1,71 @@
+objectives:
+  goal_zone_mm:
+    min_mm: [240.0, -2.0, 10.0]
+    max_mm: [308.0, 46.0, 78.0]
+  forbid_zones:
+    - name: terrace_escape_floor
+      min_mm: [-180.0, -145.0, -5.0]
+      max_mm: [205.0, 130.0, 35.0]
+  build_zone_mm:
+    min_mm: [-350.0, -180.0, 0.0]
+    max_mm: [360.0, 180.0, 260.0]
+benchmark_parts:
+  - part_id: upper_inlet_frame
+    label: upper_inlet_frame
+    metadata:
+      material_id: hardwood
+  - part_id: terrace_a
+    label: terrace_a
+    metadata:
+      material_id: hdpe
+  - part_id: terrace_b
+    label: terrace_b
+    metadata:
+      material_id: hdpe
+  - part_id: terrace_c
+    label: terrace_c
+    metadata:
+      material_id: hdpe
+  - part_id: exit_tray
+    label: exit_tray
+    metadata:
+      material_id: hardwood
+  - part_id: left_guard_rail
+    label: left_guard_rail
+    metadata:
+      material_id: aluminum_6061
+  - part_id: right_guard_rail
+    label: right_guard_rail
+    metadata:
+      material_id: aluminum_6061
+  - part_id: false_baffle_a
+    label: false_baffle_a
+    metadata:
+      material_id: hdpe
+  - part_id: false_baffle_b
+    label: false_baffle_b
+    metadata:
+      material_id: hdpe
+
+physics:
+  backend: GENESIS
+  compute_target: auto
+simulation_bounds_mm:
+  min_mm: [-390.0, -220.0, -20.0]
+  max_mm: [420.0, 220.0, 320.0]
+payload:
+  label: steel_ball
+  shape: sphere
+  material_id: steel_carbon
+  static_randomization:
+    radius_mm: [20.0, 20.0]
+  start_position_mm: [-285.0, 12.0, 220.0]
+  runtime_jitter_mm: [9.0, 7.0, 5.0]
+constraints:
+  estimated_solution_cost_usd: 40.0
+  estimated_solution_weight_g: 1210.0
+  max_unit_cost: 120.0
+  max_weight_g: 2200.0
+randomization:
+  static_variation_id: engineer_planner_gravity_chute_v4
+  runtime_jitter_enabled: true

@@ -18,7 +18,7 @@ payload:
   material_id: abs
   static_randomization:
     radius_mm: [16.0, 18.0]
-  start_position_mm: [-252.0, 16.0, 40.0]
+  start_position_mm: [-252.0, 16.0, 121.0]
   runtime_jitter_mm: [6.0, 6.0, 3.0]
 benchmark_parts:
   - part_id: left_start_pad

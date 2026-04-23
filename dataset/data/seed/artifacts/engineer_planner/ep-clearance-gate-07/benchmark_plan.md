@@ -18,7 +18,7 @@ The opening through `gate_wall` is the clearance gate. The guide rails create a 
 - Label: `transfer_cube`
 - Static randomization:
   - cube edge length is randomized through `radius_mm` in the range `[17, 19]` mm, which corresponds to an edge length range of `34-38` mm.
-- Nominal start position: `[-252, 0, 40]`
+- Nominal start position: `[-252, 0, 120]`
 - Runtime jitter: `[5, 5, 4]` mm
 
 ## 4. Objectives

@@ -25,7 +25,7 @@ dead-end spur before entering `goal_catch_tray`.
 - Label: `transfer_cube`
 - Static randomization:
   - none; the payload remains a cube for the full run
-- Nominal start position: `[-220, -95, 65]`
+- Nominal start position: `[-220, -95, 188]`
 - Runtime jitter: `[10, 14, 5]` mm
 
 ## 4. Objectives

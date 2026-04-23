@@ -1,66 +1,59 @@
-# Benchmark Plan
-
 ## 1. Learning Objective
 
-Test whether the engineer can plan around a single central blocker by taking a
-clean bypass on the positive-Y side instead of forcing a straight-line route
-through the middle.
+Test whether an engineer can route `projectile_ball` around a static central
+blocker using a passive bypass design rather than a direct-line transfer.
 
-## 2. Environment Geometry
+## 2. Geometry
 
-- `left_start_pad`: box centered at `[-180, 0, 10]` with size `[80, 60, 20]`.
-- `central_blocker`: box centered at `[0, 0, 25]` with size `[60, 80, 50]`.
-- `right_goal_pad`: box centered at `[180, 80, 10]` with size `[80, 60, 20]`.
-
-The `central_blocker` occupies the middle lane and pushes the route toward the
-positive-Y side before the payload can reach `right_goal_pad`.
+- `left_start_deck`: static launch deck centered at `[-30, 0, 2]` mm, size
+  `[28, 18, 4]` mm.
+- `right_goal_deck`: static capture deck centered at `[30, 0, 2]` mm, size
+  `[28, 18, 4]` mm.
+- `central_blocker`: tall static blocker centered at `[0, -3, 16]` mm, size
+  `[10, 14, 32]` mm, fixed in the middle of the route but slightly biased
+  toward the negative-Y lane.
+- The benchmark stays static; the challenge is choosing a bypass route around
+  the blocker without relying on benchmark-side motion, with the positive-Y
+  bypass lane carrying most of the signal.
 
 ## 3. Input Objective
 
-- Shape: `cube`
-- Label: `transfer_cube`
-- Static randomization: none beyond the declared cube shape
-- Nominal start position: `[-210, 0, 50]`
-- Runtime jitter: `[8, 8, 5]` mm
+- Shape: `sphere`
+- Label: `projectile_ball`
+- Radius range (static randomization): `[4.5, 5.8]` mm
+- Nominal start position: `[-30, 1.5, 24]`
+- Runtime jitter: `[2, 2, 1]` mm
 
 ## 4. Objectives
 
-- `goal_zone_mm`:
-  - min_mm: `[140, 60, 10]`
-  - max_mm: `[220, 120, 70]`
+- `goal_zone_mm`: min_mm `[27, 2, 6]`, max_mm `[37, 14, 14]`
 - `forbid_zones`:
-  - `central_blocker`:
-    - min_mm: `[-30, -40, 0]`
-    - max_mm: `[30, 40, 50]`
-- `build_zone_mm`:
-  - min_mm: `[-280, -160, 0]`
-  - max_mm: `[320, 200, 180]`
+  - `central_blocker`: min_mm `[-5, -10, 0]`, max_mm `[5, 4, 32]`
+- `build_zone_mm`: min_mm `[-44.0, -28.0, 0.0]`, max_mm `[44.0, 28.0, 48.0]`
 
 ## 5. Simulation Bounds
 
-- min_mm: `[-320, -200, -20]`
-- max_mm: `[360, 220, 220]`
+- min_mm `[-60, -40, -10]`, max_mm `[60, 40, 70]`
 
 ## 6. Constraints Handed To Engineering
 
-- Benchmark/customer caps: `max_unit_cost <= 72 USD`, `max_weight <= 1300 g`
-- The benchmark has no moving fixtures.
-- The engineer should preserve the read-only blocker geometry and choose a
-  passive bypass strategy on the positive-Y side.
+- Benchmark/customer caps: `max_unit_cost <= 24 USD`, `max_weight <= 24 g`
+- All benchmark-owned geometry is static; the challenge should come from the
+  around-obstacle route and jitter tolerance, not hidden actuation.
 
 ## 7. Success Criteria
 
-- Success if `transfer_cube` reaches `goal_zone_mm` without entering the
-  `central_blocker` forbid zone.
-- Fail if the payload leaves `simulation_bounds_mm` or if the design assumes
-  benchmark-side motion that is not present.
+- Success if the ball reaches `goal_zone_mm` without entering the
+  `central_blocker` forbid volume, using the positive-Y bypass lane.
+- Fail if the ball exits `simulation_bounds_mm` or if planner artifacts imply a
+  shortcut through the blocker.
 
 ## 8. Planner Artifacts
 
-- `todo.md` carries the engineer-planner checklist for grounding and drafting.
-- `benchmark_definition.yaml` mirrors the obstacle, goal shift, and runtime
-  jitter contract.
-- `benchmark_assembly_definition.yaml` and `benchmark_script.py` preserve the
-  benchmark-owned fixture inventory as read-only context.
-- `benchmark_plan_evidence_script.py` keeps the benchmark geometry legible for
-  downstream intake.
+- `todo.md` tracks implementation of the launch deck, blocker, bypass route,
+  and goal deck.
+- `benchmark_definition.yaml` mirrors the route geometry and objective zones.
+- `benchmark_assembly_definition.yaml` records benchmark-local cost estimates
+  and confirms the benchmark is fully static.
+- `benchmark_plan_evidence_script.py` and `benchmark_script.py` preview the
+  same static bypass fixture set.

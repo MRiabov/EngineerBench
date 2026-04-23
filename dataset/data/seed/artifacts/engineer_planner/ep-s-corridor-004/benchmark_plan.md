@@ -26,7 +26,7 @@ below `corridor_block_e` before entering `goal_catch_tray`.
 - Label: `transfer_cube`
 - Static randomization:
   - none; the payload remains a cube for the full run
-- Nominal start position: `[-260, -120, 65]`
+- Nominal start position: `[-260, -120, 227]`
 - Runtime jitter: `[12, 10, 5]` mm
 
 ## 4. Objectives

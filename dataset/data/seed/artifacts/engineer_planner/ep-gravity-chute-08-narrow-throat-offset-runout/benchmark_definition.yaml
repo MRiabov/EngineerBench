@@ -1,0 +1,63 @@
+objectives:
+  goal_zone_mm:
+    min_mm: [235.0, -50.0, 10.0]
+    max_mm: [325.0, 45.0, 82.0]
+  forbid_zones:
+    - name: chute_escape_floor
+      min_mm: [-170.0, -140.0, -5.0]
+      max_mm: [200.0, 130.0, 35.0]
+  build_zone_mm:
+    min_mm: [-350.0, -180.0, 0.0]
+    max_mm: [360.0, 180.0, 260.0]
+benchmark_parts:
+  - part_id: upper_inlet_frame
+    label: upper_inlet_frame
+    metadata:
+      material_id: hardwood
+  - part_id: upper_chute_step
+    label: upper_chute_step
+    metadata:
+      material_id: hdpe
+  - part_id: mid_chute_step
+    label: mid_chute_step
+    metadata:
+      material_id: hdpe
+  - part_id: lower_chute_step
+    label: lower_chute_step
+    metadata:
+      material_id: hdpe
+  - part_id: exit_tray
+    label: exit_tray
+    metadata:
+      material_id: hardwood
+  - part_id: left_guard_rail
+    label: left_guard_rail
+    metadata:
+      material_id: aluminum_6061
+  - part_id: right_guard_rail
+    label: right_guard_rail
+    metadata:
+      material_id: aluminum_6061
+
+physics:
+  backend: GENESIS
+  compute_target: auto
+simulation_bounds_mm:
+  min_mm: [-390.0, -220.0, -20.0]
+  max_mm: [420.0, 220.0, 320.0]
+payload:
+  label: steel_ball
+  shape: sphere
+  material_id: steel_carbon
+  static_randomization:
+    radius_mm: [20.0, 20.0]
+  start_position_mm: [-280.0, -4.0, 218.0]
+  runtime_jitter_mm: [8.0, 7.0, 5.0]
+constraints:
+  estimated_solution_cost_usd: 35.0
+  estimated_solution_weight_g: 1230.0
+  max_unit_cost: 120.0
+  max_weight_g: 2200.0
+randomization:
+  static_variation_id: engineer_planner_gravity_chute_v8
+  runtime_jitter_enabled: true

@@ -16,7 +16,7 @@ Test whether an engineer can bridge or hand off a low-friction cube across a sli
 - Shape: `cube`
 - Label: `transfer_cube`
 - Static randomization: none beyond the declared cube size
-- Nominal start position: `[-250, -6, 80]`
+- Nominal start position: `[-250, -6, 129]`
 - Runtime jitter: `[8, 10, 5]` mm
 
 ## 4. Objectives

@@ -55,7 +55,7 @@ the route to read as a mirrored maze rather than a simple open channel.
 - Label: `transfer_cube`
 - Static randomization:
   - none; the payload remains a cube for the full run
-- Nominal start position: `[-250, -190, 65]`
+- Nominal start position: `[-250, -190, 252]`
 - Runtime jitter: `[14, 14, 6]` mm
 
 ## 4. Objectives

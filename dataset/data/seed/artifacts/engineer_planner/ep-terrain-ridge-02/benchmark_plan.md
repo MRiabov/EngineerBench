@@ -24,7 +24,7 @@ between the start and goal zones.
 - Static randomization:
   - radius held fixed at `25 mm`
   - no alternate shapes or size variants
-- Nominal start position: `[-350, 0, 52]`
+- Nominal start position: `[-350, 0, 164]`
 - Runtime jitter: `[12, 12, 4]` mm
 
 ## 4. Objectives

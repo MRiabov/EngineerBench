@@ -18,7 +18,7 @@ The paired wall openings form the stepped clearance tunnel. The lower plinth and
 - Label: `transfer_cube`
 - Static randomization:
   - cube edge length is randomized through `radius_mm` in the range `[16, 18]` mm, which corresponds to an edge length range of `32-36` mm.
-- Nominal start position: `[-250, -8, 40]`
+- Nominal start position: `[-250, -8, 119]`
 - Runtime jitter: `[6, 5, 4]` mm
 
 ## 4. Objectives

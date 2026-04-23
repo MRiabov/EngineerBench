@@ -1,0 +1,125 @@
+version: "1.0"
+units:
+  length: "mm"
+  volume: "mm3"
+  mass: "g"
+  currency: "USD"
+constraints:
+  benchmark_max_unit_cost_usd: 120.0
+  benchmark_max_weight_g: 2200.0
+  planner_target_max_unit_cost_usd: 84.0
+  planner_target_max_weight_g: 1700.0
+manufactured_parts:
+- part_name: upper_inlet_frame
+  part_id: upper_inlet_frame
+  manufacturing_method: CNC
+  material_id: hardwood
+  quantity: 1
+  part_volume_mm3: 450000.0
+  stock_bbox_mm:
+    x: 150.0
+    y: 150.0
+    z: 20.0
+  stock_volume_mm3: 450000.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 3.5
+- part_name: upper_chute_step
+  part_id: upper_chute_step
+  manufacturing_method: CNC
+  material_id: hdpe
+  quantity: 1
+  part_volume_mm3: 432000.0
+  stock_bbox_mm:
+    x: 180.0
+    y: 120.0
+    z: 20.0
+  stock_volume_mm3: 432000.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 4.0
+- part_name: bend_diverter
+  part_id: bend_diverter
+  manufacturing_method: CNC
+  material_id: hdpe
+  quantity: 1
+  part_volume_mm3: 84000.0
+  stock_bbox_mm:
+    x: 40.0
+    y: 30.0
+    z: 70.0
+  stock_volume_mm3: 84000.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 1.5
+- part_name: lower_chute_step
+  part_id: lower_chute_step
+  manufacturing_method: CNC
+  material_id: hdpe
+  quantity: 1
+  part_volume_mm3: 418000.0
+  stock_bbox_mm:
+    x: 190.0
+    y: 110.0
+    z: 20.0
+  stock_volume_mm3: 418000.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 4.0
+- part_name: exit_tray
+  part_id: exit_tray
+  manufacturing_method: CNC
+  material_id: hardwood
+  quantity: 1
+  part_volume_mm3: 672000.0
+  stock_bbox_mm:
+    x: 160.0
+    y: 140.0
+    z: 30.0
+  stock_volume_mm3: 672000.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 3.2
+- part_name: inner_guard_rail
+  part_id: inner_guard_rail
+  manufacturing_method: CNC
+  material_id: aluminum_6061
+  quantity: 1
+  part_volume_mm3: 864000.0
+  stock_bbox_mm:
+    x: 300.0
+    y: 18.0
+    z: 160.0
+  stock_volume_mm3: 864000.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 5.5
+- part_name: outer_guard_rail
+  part_id: outer_guard_rail
+  manufacturing_method: CNC
+  material_id: aluminum_6061
+  quantity: 1
+  part_volume_mm3: 864000.0
+  stock_bbox_mm:
+    x: 300.0
+    y: 18.0
+    z: 160.0
+  stock_volume_mm3: 864000.0
+  removed_volume_mm3: 0.0
+  estimated_unit_cost_usd: 5.5
+final_assembly:
+- name: upper_inlet_frame
+  config:
+- name: upper_chute_step
+  config:
+- name: bend_diverter
+  config:
+- name: lower_chute_step
+  config:
+- name: exit_tray
+  config:
+- name: inner_guard_rail
+  config:
+- name: outer_guard_rail
+  config:
+totals:
+  estimated_unit_cost_usd: 29.0
+  estimated_weight_g: 1335.0
+  estimate_confidence: high
+dfm_suggestions:
+- Keep the bend diverter prominent so the single turn is easy to inspect in render evidence.
+- Keep the outlet tray offset to positive Y so the bend is visually distinct from the straight variant.

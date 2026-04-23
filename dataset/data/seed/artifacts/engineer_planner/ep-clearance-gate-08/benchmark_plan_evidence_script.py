@@ -27,18 +27,14 @@ def build() -> Compound:
         - Box(26.0, 62.0, 96.0, align=(Align.CENTER, Align.CENTER, Align.CENTER))
     ).move(Location((0.0, 0.0, 64.0)))
     front_gate_wall.label = "front_gate_wall"
-    front_gate_wall.metadata = PartMetadata(
-        material_id="aluminum_6061", is_fixed=True
-    )
+    front_gate_wall.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
 
     rear_gate_wall = (
         Box(20.0, 118.0, 124.0, align=(Align.CENTER, Align.CENTER, Align.CENTER))
         - Box(24.0, 58.0, 92.0, align=(Align.CENTER, Align.CENTER, Align.CENTER))
     ).move(Location((78.0, 4.0, 70.0)))
     rear_gate_wall.label = "rear_gate_wall"
-    rear_gate_wall.metadata = PartMetadata(
-        material_id="aluminum_6061", is_fixed=True
-    )
+    rear_gate_wall.metadata = PartMetadata(material_id="aluminum_6061", is_fixed=True)
 
     fixtures = Compound(
         children=[

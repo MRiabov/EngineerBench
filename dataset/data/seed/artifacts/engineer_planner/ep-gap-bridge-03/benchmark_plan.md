@@ -18,7 +18,7 @@ Test whether an engineer can bridge or hand off a low-friction cube across a ste
 - Shape: `cube`
 - Label: `transfer_cube`
 - Static randomization: none beyond the declared cube size
-- Nominal start position: `[-250, 0, 79]`
+- Nominal start position: `[-250, 0, 124]`
 - Runtime jitter: `[7, 7, 5]` mm
 
 ## 4. Objectives

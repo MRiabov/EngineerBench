@@ -9,24 +9,41 @@ def _make_box(
     label: str,
     size: tuple[float, float, float],
     center: tuple[float, float, float],
+    material_id: str,
 ):
     part = Box(*size, align=(Align.CENTER, Align.CENTER, Align.CENTER)).move(
         Location(center)
     )
     part.label = label
-    part.metadata = PartMetadata(material_id="hardwood", is_fixed=True)
+    part.metadata = PartMetadata(material_id=material_id, is_fixed=True)
     return part
 
 
 def build() -> Compound:
-    fixtures = Compound(
-        children=[
-            _make_box("left_start_pad", (80.0, 60.0, 20.0), (-180.0, 0.0, 10.0)),
-            _make_box("central_blocker", (60.0, 80.0, 50.0), (0.0, 0.0, 25.0)),
-            _make_box("right_goal_pad", (80.0, 60.0, 20.0), (180.0, 80.0, 10.0)),
-        ]
-    )
-    fixtures.label = "benchmark_fixtures"
+    """Return the benchmark plan evidence geometry for this workspace."""
+
+    children = [
+        _make_box(
+            "left_start_deck",
+            (28.0, 18.0, 4.0),
+            (-30.0, 0.0, 2.0),
+            "aluminum_6061",
+        ),
+        _make_box(
+            "right_goal_deck",
+            (28.0, 18.0, 4.0),
+            (30.0, 0.0, 2.0),
+            "aluminum_6061",
+        ),
+        _make_box(
+            "central_blocker",
+            (10.0, 14.0, 32.0),
+            (0.0, -3.0, 16.0),
+            "hdpe",
+        ),
+    ]
+    fixtures = Compound(children=children)
+    fixtures.label = "benchmark_environment"
     fixtures.metadata = CompoundMetadata()
     return fixtures
 

@@ -44,7 +44,7 @@ def _make_oval_wall(
     material_id: str,
 ):
     with BuildPart() as bp:
-        with BuildSketch() as sk:
+        with BuildSketch():
             Ellipse(*radii)
         extrude(amount=height)
     part = bp.part.move(Location(center))
