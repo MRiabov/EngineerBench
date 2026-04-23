@@ -225,7 +225,7 @@ We evaluate highly capable models such as GPT-5.4-mini and Qwen 3.6-Plus, both s
 
 We find that models are already capable of solving tasks (with a number of trial and error) involving only static 3d generation. For example, models were able to produce correct and solvable benchmarks [Appendix 2], as well as plausible 3d-constrained engineering plans, which proves our concept. However, when attempting to solve engineering tasks, they were able to review simulation results in numerical format, however when it came to understanding the results of a simulation from images, they were barely capable of reasoning from the progressive video of the simulation.
 
-However, with trial and error, Benchmark Coder was able to be expanded to 100 entries - we find that gpt-5.4 running 100 tokens per second can produce approximately a valid candidate every 12 minutes, with benchmark_planner being able to generate ten plans for a benchmark plans within less than a minute.
+However, with trial and error, Benchmark Coder reached 100 entries; we find that gpt-5.4 running at 100 tokens per second can produce approximately one valid candidate every 12 minutes, with the benchmark planner generating ten benchmark plans in less than a minute.
 
 \section{Conclusions and Future Work}
 We present Problemologist, a scalable, extensible dataset generation engine and a post-training evaluation system for vision-language models to be evaluated on solving mechanical and electronics engineering problems, taking a significant improvement in providing a quality training signal during training and evaluation. Our goal was a system scalable and trustworthy enough that frontier research centres would start training models on mechanical engineering tasks.
