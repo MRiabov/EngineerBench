@@ -348,17 +348,16 @@ def _build_resume_plan(
                     f"Expected {_resume_state_path(resume_root)} or an explicit "
                     "stage workspace directory."
                 )
-            else:
-                completed_stages = list(resume_state.stages)
-                if completed_stages:
-                    last_stage = completed_stages[-1]
-                    selected_stage_index = last_stage.stage_index
-                    start_stage_index = selected_stage_index + 1
-                    source_seed_dir = last_stage.workspace_dir
-                    resume_label = (
-                        f"{last_stage.agent_name.value}@{last_stage.workspace_dir}"
-                    )
-                    resume_root = resume_state.workspace_root
+            completed_stages = list(resume_state.stages)
+            if completed_stages:
+                last_stage = completed_stages[-1]
+                selected_stage_index = last_stage.stage_index
+                start_stage_index = selected_stage_index + 1
+                source_seed_dir = last_stage.workspace_dir
+                resume_label = (
+                    f"{last_stage.agent_name.value}@{last_stage.workspace_dir}"
+                )
+                resume_root = resume_state.workspace_root
 
     handle = _parse_resume_handle(resume_from_agent)
     if handle is not None:
