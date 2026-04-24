@@ -1,12 +1,12 @@
-# Problemologist-AI: A Unified Framework for Autonomous Benchmark Generation and Physical Problem Solving in Mechanical Engineering
+# EngineerBench: A Unified Framework for Autonomous Benchmark Generation and Physical Problem Solving in Mechanical Engineering
 
 ## Abstract
 
-Current Large Language Models (LLMs) excel at symbolic reasoning and software engineering but frequently fail when tasked with complex, physically-grounded mechanical engineering problems. We present **Problemologist-AI**, an end-to-end agentic framework designed to bridge this gap. The system employs a dual-graph architecture: a **Benchmark Generator** that autonomously synthesizes physics-based puzzles with randomized initial conditions, and an **Engineer Agent** that discovers manufacturable, cost-constrained solutions through iterative CAD drafting, simulation, and Design-for-Manufacturability (DFM) verification. By integrating a high-fidelity simulation engine (Genesis/MuJoCo) with a "workbench" of real-world manufacturing constraints (CNC, Injection Molding, 3D Printing), Problemologist-AI provides a rigorous platform for evaluating and training the next generation of visual-language models in mechanical design.
+Current Large Language Models (LLMs) excel at symbolic reasoning and software engineering but frequently fail when tasked with complex, physically-grounded mechanical engineering problems. We present **EngineerBench**, an end-to-end agentic framework designed to bridge this gap. The system employs a dual-graph architecture: a **Benchmark Generator** that autonomously synthesizes physics-based puzzles with randomized initial conditions, and an **Engineer Agent** that discovers manufacturable, cost-constrained solutions through iterative CAD drafting, simulation, and Design-for-Manufacturability (DFM) verification. By integrating a high-fidelity simulation engine (Genesis/MuJoCo) with a "workbench" of real-world manufacturing constraints (CNC, Injection Molding, 3D Printing), EngineerBench provides a rigorous platform for evaluating and training the next generation of visual-language models in mechanical design.
 
 ## 1. Introduction
 
-The transition from "AI for Code" to "AI for Engineering" requires moving beyond syntax to physical world-models. Engineering involves navigating a high-dimensional space of geometry, materials, costs, and dynamics. Problemologist-AI formalizes this process by treating engineering as an optimization problem constrained by physics and economic feasibility.
+The transition from "AI for Code" to "AI for Engineering" requires moving beyond syntax to physical world-models. Engineering involves navigating a high-dimensional space of geometry, materials, costs, and dynamics. EngineerBench formalizes this process by treating engineering as an optimization problem constrained by physics and economic feasibility.
 
 ### Key Contributions
 
@@ -17,7 +17,7 @@ The transition from "AI for Code" to "AI for Engineering" requires moving beyond
 
 ## 2. System Architecture
 
-Problemologist-AI is built on a distributed, microservices-oriented architecture designed for durable execution and high-performance physics workloads. The publication bundle is a narrower subset of this development tree, so this README describes the broader repository and not every surface that ships in the bundle.
+EngineerBench is built on a distributed, microservices-oriented architecture designed for durable execution and high-performance physics workloads. The publication bundle is a narrower subset of this development tree, so this README describes the broader repository and not every surface that ships in the bundle.
 
 ### 2.1 Dual-Agent Framework
 
@@ -66,7 +66,7 @@ Solutions are converted from CAD to mesh and simulated in **Genesis**.
 
 ## 4. Evaluation and Dataset Generation
 
-Problemologist-AI generates a rich dataset of engineering reasoning:
+EngineerBench generates a rich dataset of engineering reasoning:
 
 1. **Reasoning Traces:** Full CoT (Chain-of-Thought) logs of agents designing and failing.
 2. **Journals:** Summarized episodic memory of breakthroughs and architectural pivots.
@@ -79,14 +79,43 @@ Problemologist-AI generates a rich dataset of engineering reasoning:
 
 - Docker / Podman
 - Python 3.12+ (uv recommended)
-- Temporal Server
 
 ### Installation
 
 ```bash
-git clone https://github.com/organization/problemologist-ai
-cd problemologist-ai
-./scripts/env_up.sh
+git clone https://github.com/organization/EngineerBench
+cd EngineerBench
+uv sync # install uv if you haven't: `curl -LsSf https://astral.sh/uv/install.sh | sh`
+```
+
+### Running instuction
+
+For a visual demo of a engineer-planner agent (this agent currently does the most complex operations):
+
+#### Step 1: Start the environment:
+
+```sh
+./scripts/env_up.sh --profile eval
+```
+
+#### Step 2: Ensure that the Eval seed is good
+
+This is a check that the evaluation row (the geometry and constraints to be evaluated on) are in fact valid. (the row controller by `--task-id`).
+
+```sh
+uv run scripts/validate_eval_seed 
+    --agent engineer_planner 
+    --task-id ep-clearance-gate-06
+```
+
+```sh
+uv run dataset/evals/materialize_seed_workspace.py 
+    --agent engineer_coder 
+    --task-id ep-clearance-gate-06 #  --ID of
+    --open-cli-ui # open a visual coding agent interface
+    --yolo #allow agents permissions on your machine
+    --skip-env-up # assuming you've ran `./env_up.sh`
+    --provider codex # Only codex and qwen supported; easily extensible in the codebase. If you use Claude, Pi, or any other agent, ask it to add itself.
 ```
 
 ## 6. Citation
@@ -94,8 +123,8 @@ cd problemologist-ai
 If you use this framework or the generated datasets in your research, please cite:
 
 ```bibtex
-@article{problemologist2026,
-  title={Problemologist-AI: Autonomous Mechatronic Design and Benchmarking},
+@article{engineer-bench2026,
+  title={EngineerBench: A Unified Framework for Autonomous Benchmark Generation and Physical Problem Solving in Mechanical Engineering},
   author={...},
   journal={arXiv preprint},
   year={2026}
