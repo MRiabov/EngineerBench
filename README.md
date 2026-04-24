@@ -95,28 +95,93 @@ For a visual demo of a engineer-planner agent (this agent currently does the mos
 #### Step 1: Start the environment:
 
 ```sh
-./scripts/env_up.sh --profile eval
+./scripts/env_up.sh --profile eval # note: two profiles are available: `interation` (test) and `eval`. `eval` is used for running the actual evaluations
 ```
 
-#### Step 2: Ensure that the Eval seed is good
+#### Step 2: Ensure that the eval seed is good
 
 This is a check that the evaluation row (the geometry and constraints to be evaluated on) are in fact valid. (the row controller by `--task-id`).
 
 ```sh
-uv run scripts/validate_eval_seed 
-    --agent engineer_planner 
+# The agent you are evaluating.
+uv run scripts/validate_eval_seed \
+    --agent engineer_planner \
     --task-id ep-clearance-gate-06
 ```
 
+#### Step 3: Run the row (and observe the agents' reasoning):
+
+This will launch the agent's execution.
+
 ```sh
-uv run dataset/evals/materialize_seed_workspace.py 
-    --agent engineer_coder 
-    --task-id ep-clearance-gate-06 #  --ID of
-    --open-cli-ui # open a visual coding agent interface
-    --yolo #allow agents permissions on your machine
-    --skip-env-up # assuming you've ran `./env_up.sh`
-    --provider codex # Only codex and qwen supported; easily extensible in the codebase. If you use Claude, Pi, or any other agent, ask it to add itself.
+# Run the engineer_planner workspace with the visual CLI open.
+uv run dataset/evals/materialize_seed_workspace.py \
+    --agent engineer_planner \
+    --task-id ep-clearance-gate-06 \
+    --open-cli-ui \
+    --yolo \
+    --skip-env-up \
+    --provider codex
 ```
+
+#### Step 4 (optional) Run evaluations batch for a specific agent or run system inference for all (benchmark) agents
+
+Use `dataset/evals/run_evals.py` for the eval runner and
+`dataset/evals/eval_inference_pipeline.py` for the application inference pipeline.
+
+Run a specific agent or task with the eval runner:
+
+```sh
+uv run dataset/evals/run_evals.py \
+    --agent benchmark_planner \
+    --task-id ep-clearance-gate-06 \
+    --provider qwen \
+    --skip-env-up
+```
+
+Common eval-runner flags:
+
+- `--agent`: choose the agent to evaluate, or use `all`
+- `--task-id`: limit the run to one or more task IDs
+- `--level`: limit the run to one or more complexity levels
+- `--limit`: cap the number of selected eval items
+- `--provider`: choose the local CLI provider
+- `--skip-env-up`: reuse an already running stack
+- `--queue`: wait for the shared eval lock instead of failing fast (necessary if you've ran evals before)
+- `--open-cli-ui`: open local CLI runs in an interactive terminal UI
+
+Run the application inference pipeline directly:
+
+```sh
+uv run dataset/evals/eval_inference_pipeline.py \
+    --config inference_config.yaml \
+    --stage benchmark_planner \
+    --author \
+    --run-until-stage benchmark_reviewer \
+    --skip-env-up
+```
+
+*Note*: Due to technical constraints of engineer_coder and engineer_execution_reviewer not working at the moment, we didn't add functionality to run inference pipeline over them.
+
+Common inference pipeline flags:
+
+- `--config`: path to `inference_config.yaml`
+- `--stage`: choose the starting pipeline stage
+- `--run-until-stage`: stop after a downstream stage is reached
+- `--author`: run the author/validate/review loop
+- `--family`: restrict the run to one or more engineer-planner families
+- `--task-id`: limit the run to one or more canonical task IDs
+- `--level`: limit the run to one or more complexity levels
+- `--limit`: cap the number of selected jobs
+- `--provider`: choose `codex` or `qwen`
+- `--skip-env-up`: reuse an already running stack
+- `--queue`: wait for the shared eval lock instead of failing fast
+- `--validate-only`: stop after deterministic validation
+- `--persist-results` / `--no-persist-results`: control copy-back into seed storage
+
+### Documentation and specifications
+
+
 
 ## 6. Citation
 
