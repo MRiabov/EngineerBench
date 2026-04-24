@@ -16,7 +16,6 @@ from shared.script_contracts import (
     PAYLOAD_TRAJECTORY_DEFINITION_PATH,
     SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH,
 )
-from shared.type_checking import type_check
 
 from .base import BaseNode, SharedNodeContext
 
@@ -39,7 +38,6 @@ class CoderSignature(dspy.Signature):
     )
 
 
-@type_check
 class CoderNode(BaseNode):
     """
     Coder node: Picks a task from TODO, writes code, executes it, and fixes errors.
@@ -258,7 +256,6 @@ class CoderNode(BaseNode):
 
 
 # Factory function for LangGraph
-@type_check
 async def coder_node(state: AgentState) -> AgentState:
     session_id = state.session_id
     if not session_id:

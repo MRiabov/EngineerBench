@@ -39,7 +39,6 @@ from shared.simulation.schemas import (
     SimulatorBackendType,
     get_default_simulator_backend,
 )
-from shared.type_checking import type_check
 from shared.workers.schema import SimulationArtifacts, ValidationResultRecord
 
 from ..benchmark_handover_validation import (
@@ -116,7 +115,6 @@ def _extract_markdown_section(markdown: str, heading: str) -> str:
     return match.group(1).strip()
 
 
-@type_check
 class BenchmarkPlannerNode(BaseNode):
     """Refactored Benchmark Planner using BaseNode for prompt injection."""
 
@@ -995,7 +993,6 @@ class BenchmarkPlannerNode(BaseNode):
         return None, artifacts, journal_entry
 
 
-@type_check
 async def planner_node(state: BenchmarkGeneratorState) -> BenchmarkGeneratorState:
     from controller.config.settings import settings as global_settings
 
@@ -1024,7 +1021,6 @@ class BenchmarkPlanReviewerSignature(dspy.Signature):
     review: ReviewResult = dspy.OutputField()
 
 
-@type_check
 class BenchmarkPlanReviewerNode(BaseNode):
     """Review benchmark planner artifacts before execution begins."""
 
@@ -1357,7 +1353,6 @@ class BenchmarkPlanReviewerNode(BaseNode):
         return state
 
 
-@type_check
 async def plan_reviewer_node(state: BenchmarkGeneratorState) -> BenchmarkGeneratorState:
     from controller.config.settings import settings as global_settings
 
@@ -1383,7 +1378,6 @@ class BenchmarkCoderSignature(dspy.Signature):
     journal = dspy.OutputField(desc="A summary of what was done")
 
 
-@type_check
 class BenchmarkCoderNode(BaseNode):
     """Refactored Benchmark Coder using BaseNode."""
 
@@ -1736,7 +1730,6 @@ class BenchmarkCoderNode(BaseNode):
         return state
 
 
-@type_check
 async def coder_node(state: BenchmarkGeneratorState) -> BenchmarkGeneratorState:
     from controller.config.settings import settings as global_settings
 
@@ -1762,7 +1755,6 @@ class BenchmarkReviewerSignature(dspy.Signature):
     review: ReviewResult = dspy.OutputField()
 
 
-@type_check
 class BenchmarkReviewerNode(BaseNode):
     """Refactored Benchmark Reviewer using BaseNode."""
 
@@ -1915,7 +1907,6 @@ class BenchmarkReviewerNode(BaseNode):
         return None
 
 
-@type_check
 async def reviewer_node(state: BenchmarkGeneratorState) -> BenchmarkGeneratorState:
     from controller.config.settings import settings as global_settings
 

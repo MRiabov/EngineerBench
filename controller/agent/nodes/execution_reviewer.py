@@ -22,7 +22,6 @@ from shared.script_contracts import (
     PAYLOAD_TRAJECTORY_DEFINITION_PATH,
     SOLUTION_SCRIPT_PATH,
 )
-from shared.type_checking import type_check
 
 from ..review_handover import validate_reviewer_handover
 from .base import BaseNode, SharedNodeContext
@@ -55,7 +54,6 @@ class SimulationReviewOutcome(BaseModel):
     source: Literal["simulation", "precheck"]
 
 
-@type_check
 class ExecutionReviewerNode(BaseNode):
     """
     Engineer Execution Reviewer node: Evaluates the implementation after simulation.
@@ -516,7 +514,6 @@ class ExecutionReviewerNode(BaseNode):
 
 
 # Factory function for LangGraph
-@type_check
 async def engineer_execution_reviewer_node(state: AgentState) -> AgentState:
     session_id = state.session_id
     if not session_id:

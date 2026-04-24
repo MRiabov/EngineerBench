@@ -12,7 +12,6 @@ import structlog
 from pydantic import BaseModel, StrictBool, StrictInt, StrictStr
 
 from shared.git_utils import repo_revision
-from shared.type_checking import type_check
 
 logger = structlog.get_logger(__name__)
 
@@ -75,7 +74,6 @@ def _prepared_execution(
     yield actual_env
 
 
-@type_check
 def run_command(
     command: str,
     env: dict[str, str] | None = None,
@@ -138,7 +136,6 @@ def run_command(
             )
 
 
-@type_check
 async def run_command_async(
     command: str,
     env: dict[str, str] | None = None,

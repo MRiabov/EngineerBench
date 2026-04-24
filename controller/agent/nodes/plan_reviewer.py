@@ -12,7 +12,6 @@ from controller.observability.tracing import record_worker_events
 from shared.enums import AgentName, ReviewDecision
 from shared.models.schemas import ReviewResult
 from shared.observability.schemas import ReviewDecisionEvent
-from shared.type_checking import type_check
 
 from .base import BaseNode, SharedNodeContext
 
@@ -33,7 +32,6 @@ class PlanReviewerSignature(dspy.Signature):
     review: ReviewResult = dspy.OutputField()
 
 
-@type_check
 class PlanReviewerNode(BaseNode):
     """
     Engineer Plan Reviewer node: Evaluates the engineering plan before implementation.
@@ -188,7 +186,6 @@ class PlanReviewerNode(BaseNode):
 
 
 # Factory function for LangGraph
-@type_check
 async def engineer_plan_reviewer_node(state: AgentState) -> AgentState:
     session_id = state.session_id
     if not session_id:

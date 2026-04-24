@@ -3,7 +3,6 @@ import structlog
 import trimesh
 from build123d import Compound, Part, Solid
 
-from shared.type_checking import type_check
 from shared.workers.workbench_models import (
     CostBreakdown,
     ManufacturingConfig,
@@ -46,7 +45,6 @@ def _resolve_im_material(
     return material_name, material_cfg
 
 
-@type_check
 def _check_draft_angles(
     mesh: trimesh.Trimesh,
     pull_vector: tuple[float, float, float] = (0.0, 0.0, 1.0),
@@ -89,7 +87,6 @@ def _check_draft_angles(
     return violations
 
 
-@type_check
 def _check_wall_thickness(
     mesh: trimesh.Trimesh, min_mm: float = 1.0, max_mm: float = 4.0
 ) -> list[str]:
@@ -143,7 +140,6 @@ def _check_wall_thickness(
     return violations
 
 
-@type_check
 def _calculate_im_cost(
     part: Part | Compound | Solid,
     config: ManufacturingConfig,
@@ -232,7 +228,6 @@ def _calculate_im_cost(
     )
 
 
-@type_check
 def analyze_im(
     part: Part | Compound | Solid, config: ManufacturingConfig, quantity: int = 1
 ) -> WorkbenchResult:
@@ -301,7 +296,6 @@ def analyze_im(
     )
 
 
-@type_check
 class InjectionMoldingWorkbench(Workbench):
     """
     Injection Molding Workbench (Workbench Class wrapper).

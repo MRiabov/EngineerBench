@@ -5,7 +5,6 @@ from typing import Protocol
 from build123d import Compound, Part
 from deprecated import deprecated
 
-from shared.type_checking import type_check
 from shared.workers.workbench_models import (
     CostBreakdown,
     ManufacturingConfig,
@@ -27,7 +26,6 @@ class WorkbenchAnalyzer(Protocol):
     ) -> WorkbenchResult: ...
 
 
-@type_check
 class Workbench(ABC):
     """
     Abstract Base Class for all Workbenches in the Agentic CAD Environment.

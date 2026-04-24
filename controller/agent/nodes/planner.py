@@ -11,7 +11,6 @@ from controller.observability.tracing import record_worker_events
 from shared.enums import AgentName
 from shared.observability.schemas import SubmissionValidationEvent
 from shared.script_contracts import SOLUTION_PLAN_EVIDENCE_SCRIPT_PATH
-from shared.type_checking import type_check
 
 from .base import BaseNode, SharedNodeContext
 
@@ -29,7 +28,6 @@ class PlannerSignature(dspy.Signature):
     summary = dspy.OutputField(desc="A summary of the plan created")
 
 
-@type_check
 class PlannerNode(BaseNode):
     """
     Planner node: Analyzes the task and creates engineering_plan.md and todo.md using tools.
@@ -148,7 +146,6 @@ class PlannerNode(BaseNode):
 
 
 # Factory function for LangGraph
-@type_check
 async def planner_node(state: AgentState) -> AgentState:
     session_id = state.session_id
     if not session_id:

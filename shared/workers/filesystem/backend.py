@@ -32,7 +32,6 @@ from shared.backend.utils import (
     format_content_with_line_numbers,
     perform_string_replacement,
 )
-from shared.type_checking import type_check
 
 logger = structlog.get_logger(__name__)
 
@@ -185,7 +184,6 @@ def get_session_root(session_id: str) -> Path:
     return Path(_SESSION_DIR_REGISTRY[canonical_session_id].name)
 
 
-@type_check
 class LocalFilesystemBackend(BaseFilesystemBackend):
     """Local-disk backed filesystem with session-based isolation."""
 

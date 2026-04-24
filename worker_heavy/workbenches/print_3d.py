@@ -1,7 +1,6 @@
 import structlog
 from build123d import Compound, Part, Solid
 
-from shared.type_checking import type_check
 from shared.workers.workbench_models import (
     CostBreakdown,
     ManufacturingConfig,
@@ -40,7 +39,6 @@ def _resolve_3dp_material(
     return material_name, material_cfg
 
 
-@type_check
 def calculate_3dp_cost(
     part: Part | Compound | Solid,
     config: ManufacturingConfig,
@@ -118,7 +116,6 @@ def calculate_3dp_cost(
     )
 
 
-@type_check
 def analyze_3dp(
     part: Part | Compound | Solid, config: ManufacturingConfig, quantity: int = 1
 ) -> WorkbenchResult:
@@ -191,7 +188,6 @@ def analyze_3dp(
     )
 
 
-@type_check
 class Print3DWorkbench(Workbench):
     """
     Workbench for 3D Printing (FDM/SLA).

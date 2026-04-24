@@ -9,8 +9,6 @@ import boto3
 import structlog
 from pydantic import BaseModel, Field, StrictInt, StrictStr
 
-from shared.type_checking import type_check
-
 logger = structlog.get_logger()
 
 
@@ -32,7 +30,6 @@ class S3Config(BaseModel):
     region_name: StrictStr = Field(default="us-east-1", description="AWS Region")
 
 
-@type_check
 class S3Client:
     """Wrapper around boto3 S3 client for observability artifacts."""
 
