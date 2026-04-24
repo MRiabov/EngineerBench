@@ -1,6 +1,6 @@
 ---
 name: desloppify
-description: >
+description: >-
   Multi-language codebase health scanner. Use when the user explicitly asks
   to run desloppify, scan for technical debt, get a health score, or create
   a cleanup plan. Do NOT trigger for general code review, renaming, or
@@ -8,6 +8,7 @@ description: >
 ---
 
 <!-- desloppify-begin -->
+
 <!-- desloppify-skill-version: 6 -->
 
 # Desloppify
@@ -43,6 +44,7 @@ desloppify status              # check scores — are we at target?
 After scanning, **always run `desloppify next`** — it tells you exactly what to do, in order. Don't interpret the scan output yourself or ask the user what to do. Just run `next` and follow its instructions.
 
 The scan will tell you if subjective dimensions need review. Follow its instructions. To trigger a review manually:
+
 ```bash
 desloppify review --prepare    # then follow your runner's review workflow
 ```
@@ -50,6 +52,7 @@ desloppify review --prepare    # then follow your runner's review workflow
 ### Phase 2: Plan — decide what to work on
 
 After reviews, triage stages and plan creation appear in the execution queue surfaced by `next`. Complete them in order — `next` tells you what each stage expects in the `--report`:
+
 ```bash
 desloppify next                                        # shows the next execution workflow step
 desloppify plan triage --stage observe --report "themes and root causes..."
@@ -76,12 +79,14 @@ desloppify plan skip <pat>              # defer — hide from next
 Trust the plan and execute. Don't rescan mid-queue — finish the queue first.
 
 **Branch first.** Create a dedicated branch — never commit health work directly to main:
+
 ```bash
 git checkout -b desloppify/code-health    # or desloppify/<focus-area>
 desloppify config set commit_pr 42        # link a PR for auto-updated descriptions
 ```
 
 **The loop:**
+
 ```bash
 # 1. Get the next item from the execution queue
 desloppify next
@@ -315,4 +320,5 @@ Run artifacts go to `.desloppify/triage_runs/<timestamp>/` — each run gets its
 If automated triage stalls, check `run.log` for the last event, then use `desloppify plan triage --stage-prompt <stage>` to get the full prompt with gate rules.
 
 <!-- desloppify-overlay: codex -->
+
 <!-- desloppify-end -->
