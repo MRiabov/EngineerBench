@@ -78,3 +78,9 @@ _bmad/
 **/bmad-*
 
 .zip
+
+# LaTeX build artifacts
+*.aux
+*.fdb_latexmk
+*.fls
+*.out
