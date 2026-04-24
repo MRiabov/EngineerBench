@@ -92,7 +92,7 @@ class InferenceWorkspaceSource(StrictModel):
     notes: str | None = None
 
     @model_validator(mode="after")
-    def _validate_source(self) -> "InferenceWorkspaceSource":
+    def _validate_source(self) -> InferenceWorkspaceSource:
         if self.source_type == InferenceWorkspaceSourceType.SEED_ROW:
             if not self.task_id:
                 raise ValueError("seed_row workspace_source requires task_id")
@@ -179,7 +179,7 @@ class InferencePipelineConfig(StrictModel):
         return text
 
     @model_validator(mode="after")
-    def _validate_stage_graph(self) -> "InferencePipelineConfig":
+    def _validate_stage_graph(self) -> InferencePipelineConfig:
         stage_names: dict[str, InferenceStageConfig] = {}
         for stage in self.stages:
             if stage.name in stage_names:

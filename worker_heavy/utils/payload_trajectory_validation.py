@@ -47,7 +47,7 @@ class RotationCell:
     def midpoint(self) -> tuple[float, float, float]:
         return tuple((self.lower_deg[i] + self.upper_deg[i]) / 2.0 for i in range(3))
 
-    def split(self) -> tuple["RotationCell", "RotationCell"]:
+    def split(self) -> tuple[RotationCell, RotationCell]:
         axis = self.widest_axis()
         lower = list(self.lower_deg)
         upper = list(self.upper_deg)

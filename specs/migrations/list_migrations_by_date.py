@@ -10,10 +10,11 @@ from __future__ import annotations
 import argparse
 import re
 import subprocess
+from collections.abc import Iterable
 from dataclasses import dataclass
-from datetime import datetime, time, timezone
+from datetime import UTC, datetime, time
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 import yaml
 
@@ -88,7 +89,7 @@ def git_last_edit_timestamp(root: Path, path: Path) -> datetime | None:
     value = completed.stdout.strip()
     if not value:
         return None
-    return datetime.fromtimestamp(int(value), tz=timezone.utc).astimezone()
+    return datetime.fromtimestamp(int(value), tz=UTC).astimezone()
 
 
 def parse_bound(value: str, *, is_since: bool) -> datetime:

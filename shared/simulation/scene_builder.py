@@ -168,10 +168,8 @@ def materialize_payload(payload: Any) -> MaterializedPayload:
     with contextlib.suppress(Exception):
         geometry.label = label
 
-    start_position = tuple(
-        float(value) for value in getattr(payload, "start_position_mm")
-    )
-    material_id = str(getattr(payload, "material_id"))
+    start_position = tuple(float(value) for value in payload.start_position_mm)
+    material_id = str(payload.material_id)
     return MaterializedPayload(
         label=label,
         scene_name=payload_scene_name(label),
@@ -503,17 +501,17 @@ class MeshProcessor:
 
 
 __all__ = [
+    "PAYLOAD_SCENE_PREFIX",
     "AssemblyPartData",
     "CommonAssemblyTraverser",
     "MaterializedPayload",
     "MeshProcessor",
-    "PAYLOAD_SCENE_PREFIX",
     "PreviewEntity",
     "PreviewScene",
     "build_payload_geometry",
     "build_payload_start_geometry",
     "is_payload_scene_name",
     "materialize_payload",
-    "payload_scene_name",
     "normalize_preview_label",
+    "payload_scene_name",
 ]

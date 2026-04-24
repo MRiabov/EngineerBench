@@ -570,7 +570,7 @@ class WorkerClient:
                 (
                     f'Content-Disposition: form-data; name="{cls._multipart_escape(name)}"'
                     "\r\n\r\n"
-                ).encode("utf-8")
+                ).encode()
             )
             body.extend(value.encode("utf-8"))
             body.extend(b"\r\n")
@@ -582,7 +582,7 @@ class WorkerClient:
                     f'Content-Disposition: form-data; name="{cls._multipart_escape(name)}"; '
                     f'filename="{cls._multipart_escape(filename)}"\r\n'
                     "Content-Type: application/octet-stream\r\n\r\n"
-                ).encode("utf-8")
+                ).encode()
             )
             body.extend(content)
             body.extend(b"\r\n")

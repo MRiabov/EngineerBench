@@ -485,7 +485,7 @@ class SimulationBuilderBase(ABC):
         self,
         assembly: Compound,
         objectives: BenchmarkDefinition | None = None,
-        payload_parts: list["PayloadPart"] | None = None,
+        payload_parts: list[PayloadPart] | None = None,
         smoke_test_mode: bool = False,
     ) -> Path:
         """Converts an assembly of parts into a simulation scene."""
@@ -503,7 +503,7 @@ class MuJoCoSimulationBuilder(SimulationBuilderBase):
         self,
         assembly: Compound,
         objectives: BenchmarkDefinition | None = None,
-        payload_parts: list["PayloadPart"] | None = None,
+        payload_parts: list[PayloadPart] | None = None,
         smoke_test_mode: bool = False,
     ) -> Path:
         """Converts an assembly of parts into a MuJoCo scene.xml and associated STLs."""
@@ -769,7 +769,7 @@ class GenesisSimulationBuilder(SimulationBuilderBase):
         self,
         assembly: Compound,
         objectives: BenchmarkDefinition | None = None,
-        payload_parts: list["PayloadPart"] | None = None,
+        payload_parts: list[PayloadPart] | None = None,
         smoke_test_mode: bool = False,
     ) -> Path:
         """Converts an assembly of parts into a Genesis scene descriptor (JSON)."""

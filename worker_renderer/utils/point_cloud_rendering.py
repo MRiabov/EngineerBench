@@ -111,9 +111,7 @@ def _scene_signature(raw_scene_json: str, *, sample_limit: int) -> int:
         sort_keys=True,
         separators=(",", ":"),
     )
-    digest = hashlib.sha256(
-        f"{payload}|sample_limit={sample_limit}".encode("utf-8")
-    ).digest()
+    digest = hashlib.sha256(f"{payload}|sample_limit={sample_limit}".encode()).digest()
     return int.from_bytes(digest[:8], byteorder="big", signed=False)
 
 

@@ -21,10 +21,11 @@ import math
 import statistics
 import sys
 import time
+from collections.abc import Sequence
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[4]
 if str(ROOT) not in sys.path:

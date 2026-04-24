@@ -3,7 +3,8 @@ from __future__ import annotations
 import math
 import random
 import re
-from typing import Any, Iterable
+from collections.abc import Iterable
+from typing import Any
 
 import numpy as np
 from build123d import (
@@ -365,12 +366,12 @@ def validate_route_clearance(
         pipe_bounds = route_pipe.bounding_box()
         build_zone = benchmark_definition.objectives.build_zone_mm
         if (
-            pipe_bounds.min.X < build_zone.min_mm[0]
-            or pipe_bounds.min.Y < build_zone.min_mm[1]
-            or pipe_bounds.min.Z < build_zone.min_mm[2]
-            or pipe_bounds.max.X > build_zone.max_mm[0]
-            or pipe_bounds.max.Y > build_zone.max_mm[1]
-            or pipe_bounds.max.Z > build_zone.max_mm[2]
+            build_zone.min_mm[0] > pipe_bounds.min.X
+            or build_zone.min_mm[1] > pipe_bounds.min.Y
+            or build_zone.min_mm[2] > pipe_bounds.min.Z
+            or build_zone.max_mm[0] < pipe_bounds.max.X
+            or build_zone.max_mm[1] < pipe_bounds.max.Y
+            or build_zone.max_mm[2] < pipe_bounds.max.Z
         ):
             errors.append("route clearance: swept route pipe leaves build_zone bounds")
     except Exception as exc:

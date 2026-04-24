@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 import subprocess
 import tempfile
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 BACKUP_ROOT = "refs/codex/pre-commit-backups"
@@ -42,7 +42,7 @@ def has_changes(repo_root: Path) -> bool:
 
 
 def create_snapshot(repo_root: Path) -> tuple[str, str]:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     stamp = now.strftime("%Y%m%dT%H%M%SZ")
 
     with tempfile.NamedTemporaryFile(

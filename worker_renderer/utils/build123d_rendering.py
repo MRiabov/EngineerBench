@@ -364,23 +364,23 @@ def _combined_bounds(
 
 
 def _scene_bounds_min(scene: PreviewScene) -> tuple[float, float, float]:
-    return _tuple3(getattr(scene, "bounds_min_mm"))
+    return _tuple3(scene.bounds_min_mm)
 
 
 def _scene_bounds_max(scene: PreviewScene) -> tuple[float, float, float]:
-    return _tuple3(getattr(scene, "bounds_max_mm"))
+    return _tuple3(scene.bounds_max_mm)
 
 
 def _scene_center(scene: PreviewScene) -> tuple[float, float, float]:
-    return _tuple3(getattr(scene, "center_mm"))
+    return _tuple3(scene.center_mm)
 
 
 def _entity_pos(entity: PreviewEntity) -> tuple[float, float, float]:
-    return _tuple3(getattr(entity, "pos_mm"))
+    return _tuple3(entity.pos_mm)
 
 
 def _entity_euler(entity: PreviewEntity) -> tuple[float, float, float]:
-    return _tuple3(getattr(entity, "euler_deg"))
+    return _tuple3(entity.euler_deg)
 
 
 def _entity_box_size(entity: PreviewEntity) -> tuple[float, float, float] | None:

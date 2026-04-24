@@ -21,9 +21,10 @@ import inspect
 import json
 import statistics
 import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 import mujoco
 import numpy as np
