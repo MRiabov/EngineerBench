@@ -119,7 +119,7 @@ def workspace_artifacts_for_agent(agent_name: AgentName) -> tuple[str, ...]:
 
 __all__ = [
     "plan_artifacts_for_agent",
-    "seed_template_exclusion_files_for_agent",
     "seed_starter_template_files_for_agent",
+    "seed_template_exclusion_files_for_agent",
     "workspace_artifacts_for_agent",
 ]

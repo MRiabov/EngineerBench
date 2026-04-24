@@ -16,9 +16,9 @@ from .schemas import (
 from .serialization import dump_yaml_content, dump_yaml_model
 
 __all__ = [
-    "CoarsePayloadTrajectory",
     "BenchmarkDefinition",
     "BoundingBox",
+    "CoarsePayloadTrajectory",
     "Constraints",
     "ObjectivesSection",
     "Payload",

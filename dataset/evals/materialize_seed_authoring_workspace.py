@@ -17,11 +17,11 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from evals.logic.codex_workspace import (
-    MaterializedWorkspace,  # noqa: E402
-    sync_repo_venv,  # noqa: E402
+    MaterializedWorkspace,
+    sync_repo_venv,
 )
 from evals.logic.codex_workspace import (
-    materialize_seed_workspace as materialize_workspace,  # noqa: E402
+    materialize_seed_workspace as materialize_workspace,
 )
 from evals.logic.models import EvalDatasetItem  # noqa: E402
 from evals.logic.temp_paths import mkdtemp_in_eval_temp_root  # noqa: E402

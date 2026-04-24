@@ -134,7 +134,7 @@ class _LocalSeedWorkspaceClient:
     def _normalize(path: str | Path) -> Path:
         candidate = str(path or "").strip()
         if candidate in {"", "/", "."}:
-            return Path(".")
+            return Path()
         normalized = candidate.lstrip("/")
         if normalized.startswith("../") or "/../" in normalized or normalized == "..":
             raise ValueError(f"Path escapes workspace root: {path}")
@@ -146,7 +146,7 @@ class _LocalSeedWorkspaceClient:
 
     async def exists(
         self, path: str, *, bypass_agent_permissions: bool = False
-    ) -> bool:  # noqa: ARG002
+    ) -> bool:
         resolved = self._resolve(path)
         if resolved.exists():
             return True
@@ -161,13 +161,13 @@ class _LocalSeedWorkspaceClient:
 
     async def read_file(
         self, path: str, *, bypass_agent_permissions: bool = False
-    ) -> str:  # noqa: ARG002
+    ) -> str:
         content = self._resolve(path).read_text(encoding="utf-8")
         return content
 
     async def read_file_optional(
         self, path: str, *, bypass_agent_permissions: bool = False
-    ) -> str | None:  # noqa: ARG002
+    ) -> str | None:
         resolved = self._resolve(path)
         if not resolved.exists():
             return None
@@ -178,7 +178,7 @@ class _LocalSeedWorkspaceClient:
 
     async def read_file_binary(
         self, path: str, *, bypass_agent_permissions: bool = False
-    ) -> bytes:  # noqa: ARG002
+    ) -> bytes:
         return self._resolve(path).read_bytes()
 
     async def read_files_binary(
@@ -186,7 +186,7 @@ class _LocalSeedWorkspaceClient:
         paths: list[str],
         *,
         bypass_agent_permissions: bool = False,
-    ) -> dict[str, bytes]:  # noqa: ARG002
+    ) -> dict[str, bytes]:
         blobs: dict[str, bytes] = {}
         for path in paths:
             resolved = self._resolve(path)
@@ -196,7 +196,7 @@ class _LocalSeedWorkspaceClient:
 
     async def list_files(
         self, path: str = "/", *, bypass_agent_permissions: bool = False
-    ) -> list[SimpleNamespace]:  # noqa: ARG002
+    ) -> list[SimpleNamespace]:
         resolved = self._resolve(path)
         if not resolved.exists():
             return []

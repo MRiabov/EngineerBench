@@ -92,7 +92,7 @@ async def _refresh_current_role_manifest(
             await worker_client.aclose()
 
 
-async def _engineer_plan_reviewer_handover_with_layout(*, contract, state):  # noqa: ANN001
+async def _engineer_plan_reviewer_handover_with_layout(*, contract, state):
     handover_errors = await plan_reviewer_handover_custom_check_from_session_id(
         session_id=(
             getattr(state, "worker_session_id", None)
@@ -107,7 +107,7 @@ async def _engineer_plan_reviewer_handover_with_layout(*, contract, state):  # n
     )
 
 
-async def _engineer_execution_reviewer_handover_with_layout(*, contract, state):  # noqa: ANN001
+async def _engineer_execution_reviewer_handover_with_layout(*, contract, state):
     handover_errors = await reviewer_handover_custom_check_from_session_id(
         session_id=(
             getattr(state, "worker_session_id", None)
