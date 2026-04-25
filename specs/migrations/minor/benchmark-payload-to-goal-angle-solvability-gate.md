@@ -37,6 +37,15 @@ The target contract is:
 5. the benchmark planner, benchmark coder, and benchmark reviewer all see the
    same rejection reason before handoff or node entry continues.
 
+Follow-on correction:
+
+- benchmark objective zones are interpreted as millimeters and must fail
+  closed when any declared goal/build/forbid zone spans less than 3 mm on its
+  largest axis,
+- the validator must not auto-scale tiny coordinates as a unit guess, and
+- the 3 mm floor is a heuristic guard against forgotten units, not a
+  manufacturing tolerance rule.
+
 This is intentionally a benchmark-definition gate, not a CAD-geometry gate.
 `validate_benchmark()` on authored `Compound` geometry should stay focused on
 the benchmark assembly itself. The new rule belongs in the YAML validation

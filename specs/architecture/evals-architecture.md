@@ -109,6 +109,10 @@ Proposal: normalize the simulation to the center bottom of the build zone. So th
    spawn-to-goal bottom-center angle falls below the configured solvability
    threshold, because gravity-driven benchmarks need a steep enough downhill
    run to stay plausibly solvable.
+8. Benchmark-definition validation fails closed when any declared objective
+   zone (goal, build, or forbid) fits inside a 3 mm span instead of
+   auto-scaling tiny coordinates; this is a heuristic guard against forgotten
+   units, not a manufacturing tolerance rule.
 
 ##### Medium evals - Benchmark Plan Reviewer
 

@@ -53,6 +53,9 @@ The Benchmark Planner turns a problem brief into a benchmark handoff package. It
 - The benchmark handoff must stay exact across `benchmark_plan.md`, the YAML files, and both planner scripts.
 - `payload.material_id` must resolve to a known material from `manufacturing_config.yaml`.
 - Moving benchmark-owned fixtures need explicit, reviewer-visible motion facts.
+- The benchmark objective zones must stay in millimeters and each of goal,
+  build, and forbid must span at least 3 mm on its largest axis; tiny zones
+  fail closed instead of being auto-scaled.
 - The payload-to-goal bottom-center angle must meet the configured
   `benchmark_solvability.minimum_payload_to_goal_angle_deg` threshold so the
   benchmark remains solvable with gravity-driven motion.

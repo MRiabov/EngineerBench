@@ -11,11 +11,12 @@ We want to support one primary use-case: moving a payload from one position to a
 We define the "simulation objective" from four components:
 
 1. A "build zone" - where the agent can actually create parts (note: the agent is forbidden to construct outside of this zone),
-2. A "goal zone" - the area to which the payload needs to move,
-3. The payload - the object which is spawned to be moved into the goal
-4. A "forbid" zone - an area none of the simulation objects the agent may not go into.
+   2\. A "goal zone" - the area to which the payload needs to move,
+   3\. The payload - the object which is spawned to be moved into the goal
+   4\. A "forbid" zone - an area none of the simulation objects the agent may not go into.
 
 The objectives are always axis-aligned bounding boxes (AABB) for simplicity. The forbid or goal zone is triggered if the agent touches it even slightly.
+Benchmark objective zones are interpreted as millimeters. If any benchmark objective zone fits inside a 3 mm span, validation fails closed instead of guessing a unit conversion; the threshold is a heuristic guard against forgotten units, not a precision manufacturing rule.
 
 Additionally, the simulation is constrained by the bounds of the simulation, i.e. the space which the simulation can not leave.
 

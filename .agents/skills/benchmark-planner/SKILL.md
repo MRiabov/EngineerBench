@@ -86,6 +86,9 @@ Read these before drafting or revising the handoff:
 - Keep every dimension formula-backed; if the handoff is missing a needed length, thickness, clearance, or placement datum, fix the source rather than guessing.
 - Use `render_cad(...)` for live scene previews and objective-overlay evidence.
 - Use `payload_path=True` on `render_cad(...)` when the live payload-path overlay is part of the inspection.
+- Treat goal, build, and forbid zones as millimeter coordinates; any objective
+  zone smaller than 3 mm on its largest axis fails closed instead of being
+  auto-scaled.
 - Keep the payload-to-goal bottom-center angle above the configured
   `benchmark_solvability.minimum_payload_to_goal_angle_deg` threshold so the
   benchmark is plausibly solvable with gravity-driven motion.

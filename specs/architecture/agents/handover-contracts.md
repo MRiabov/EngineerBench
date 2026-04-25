@@ -487,6 +487,7 @@ randomization:
 4. Engineer solution metadata stays in `assembly_definition.yaml` and runtime CAD `.metadata`.
 5. `payload.material_id` is mandatory and must be a known material ID from `manufacturing_config.yaml`, and for benchmark-planner handoff `constraints.estimated_solution_cost_usd` and `constraints.estimated_solution_weight_g` are planner-authored while runtime derives `max_unit_cost` and `max_weight_g` from those estimates during `submit_benchmark_plan()`.
 6. Benchmark solvability is checked from the payload start position to the goal zone bottom center, and benchmarks that are too shallow for gravity-driven motion fail closed during validation.
+7. Benchmark objective zones (goal, build, and forbid) are all interpreted as millimeters; any one of them that spans less than 3 mm on its largest axis fails closed instead of being auto-scaled.
 
 <!-- Note: we are using metric units and degrees. -->
 

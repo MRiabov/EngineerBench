@@ -68,6 +68,8 @@ from worker_heavy.utils.rendering import prerender_24_views
 from worker_heavy.workbenches.config import load_config, load_merged_config
 
 from .dfm import (
+    MIN_OBJECTIVE_ZONE_SPAN_MM,
+    _objective_zone_bounds_mm_for_compare,
     resolve_requested_quantity,
     validate_and_price,
 )
@@ -156,36 +158,6 @@ def _shape_volume(shape: Any) -> float:
         except (TypeError, ValueError):
             continue
     return total
-
-
-def _normalize_mixed_unit_bounds_for_compare(
-    bounds: Any,
-) -> tuple[tuple[float, float, float], tuple[float, float, float]]:
-    """Normalize legacy sub-meter bounds to the millimeter coordinate space.
-
-    Current build123d geometry arrives in millimeters. Some legacy benchmark
-    artifacts still serialize spatial bounds with meter-scale numeric values
-    under the mm-suffixed fields. When the declared bounds are clearly
-    sub-meter, scale them before comparing against build123d boxes so the
-    validator does not report a false violation.
-    """
-
-    min_values = getattr(bounds, "min_mm", None)
-    max_values = getattr(bounds, "max_mm", None)
-    if min_values is None or max_values is None:
-        if isinstance(bounds, dict):
-            min_values = bounds.get("min_mm", bounds.get("min"))
-            max_values = bounds.get("max_mm", bounds.get("max"))
-        if min_values is None or max_values is None:
-            raise ValueError("Spatial bounds must define min/max coordinates")
-
-    min_mm = tuple(float(value) for value in min_values)
-    max_mm = tuple(float(value) for value in max_values)
-    max_abs = max(abs(value) for value in (*min_mm, *max_mm))
-    if 0.0 < max_abs < 1.0:
-        min_mm = tuple(value * 1000.0 for value in min_mm)
-        max_mm = tuple(value * 1000.0 for value in max_mm)
-    return min_mm, max_mm
 
 
 def _workspace_relative_render_paths(
@@ -498,10 +470,35 @@ def _validate_benchmark_definition_consistency(
         if box_error is not None:
             return box_error
 
+    for zone_label, zone_box in (
+        ("goal_zone_mm", goal),
+        ("build_zone_mm", build_zone),
+    ):
+        zone_spans_mm = tuple(
+            float(zone_box.max_mm[index]) - float(zone_box.min_mm[index])
+            for index in range(3)
+        )
+        if max(zone_spans_mm) < MIN_OBJECTIVE_ZONE_SPAN_MM:
+            return _benchmark_refusal_error(
+                BenchmarkRefusalReason.INVALID_OBJECTIVES,
+                f"{zone_label} is smaller than the 3 mm sanity floor; "
+                "fail closed instead of auto-scaling",
+            )
+
     for zone in objectives.objectives.forbid_zones:
         zone_error = _validate_bounding_box_order(f"forbid zone '{zone.name}'", zone)
         if zone_error is not None:
             return zone_error
+
+        zone_spans_mm = tuple(
+            float(zone.max_mm[index]) - float(zone.min_mm[index]) for index in range(3)
+        )
+        if max(zone_spans_mm) < MIN_OBJECTIVE_ZONE_SPAN_MM:
+            return _benchmark_refusal_error(
+                BenchmarkRefusalReason.INVALID_OBJECTIVES,
+                f"forbid zone '{zone.name}' is smaller than the 3 mm sanity "
+                "floor; fail closed instead of auto-scaling",
+            )
 
         if _boxes_intersect(goal.min_mm, goal.max_mm, zone.min_mm, zone.max_mm):
             return _benchmark_refusal_error(
@@ -1634,18 +1631,18 @@ def validate(
             except Exception:
                 pass
 
-    normalized_build_zone = None
+    build_zone_mm_for_compare = None
     if effective_build_zone is not None:
         try:
             build_zone_min_mm, build_zone_max_mm = (
-                _normalize_mixed_unit_bounds_for_compare(effective_build_zone)
+                _objective_zone_bounds_mm_for_compare(effective_build_zone)
             )
-            normalized_build_zone = {
+            build_zone_mm_for_compare = {
                 "min_mm": build_zone_min_mm,
                 "max_mm": build_zone_max_mm,
             }
-        except Exception:
-            normalized_build_zone = effective_build_zone
+        except ValueError as exc:
+            return False, f"Invalid build_zone_mm: {exc}"
 
     if engineering_role:
         payload_path = working_root / "payload_trajectory_definition.yaml"
@@ -1695,12 +1692,12 @@ def validate(
         if not is_valid:
             return False, "; ".join(payload_result)
 
-    if normalized_build_zone:
-        b_min = normalized_build_zone.get(
-            "min_mm", normalized_build_zone.get("min", [-1000, -1000, -1000])
+    if build_zone_mm_for_compare:
+        b_min = build_zone_mm_for_compare.get(
+            "min_mm", build_zone_mm_for_compare.get("min", [-1000, -1000, -1000])
         )
-        b_max = normalized_build_zone.get(
-            "max_mm", normalized_build_zone.get("max", [1000, 1000, 1000])
+        b_max = build_zone_mm_for_compare.get(
+            "max_mm", build_zone_mm_for_compare.get("max", [1000, 1000, 1000])
         )
         if (
             b_min[0] > bbox.min.X
@@ -1730,7 +1727,7 @@ def validate(
             return (
                 False,
                 "Build zone violation: "
-                f"bbox {bbox} outside build_zone {normalized_build_zone}"
+                f"bbox {bbox} outside build_zone {build_zone_mm_for_compare}"
                 f"{offender_text}",
             )
     else:

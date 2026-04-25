@@ -103,17 +103,29 @@ def _part_reports_for_analysis(part: Part | Compound) -> list[Part | Compound]:
     ]
 
 
-def _normalize_mixed_unit_bounds_for_compare(
+MIN_OBJECTIVE_ZONE_SPAN_MM = 3.0
+
+
+def _objective_zone_bounds_mm_for_compare(
     bounds: BoundingBox,
 ) -> tuple[tuple[float, float, float], tuple[float, float, float]]:
-    """Normalize legacy sub-meter bounds to the millimeter coordinate space."""
+    """Return build-zone bounds in millimeters for containment checks.
+
+    build123d geometry is already expressed in millimeters. We do not try to
+    auto-rescale suspiciously small zones. If the declared benchmark zone fits
+    inside a 3 mm cube, fail closed instead of guessing a different unit.
+    """
 
     min_mm = tuple(float(value) for value in bounds.min_mm)
     max_mm = tuple(float(value) for value in bounds.max_mm)
-    max_abs = max(abs(value) for value in (*min_mm, *max_mm))
-    if 0.0 < max_abs < 1.0:
-        min_mm = tuple(value * 1000.0 for value in min_mm)
-        max_mm = tuple(value * 1000.0 for value in max_mm)
+    spans_mm = tuple(max_mm[index] - min_mm[index] for index in range(3))
+    largest_span_mm = max(spans_mm)
+    if largest_span_mm < MIN_OBJECTIVE_ZONE_SPAN_MM:
+        raise ValueError(
+            "build zone span is too small to trust "
+            f"({largest_span_mm:.2f} mm < {MIN_OBJECTIVE_ZONE_SPAN_MM:.2f} mm); "
+            "fail closed instead of auto-scaling"
+        )
     return min_mm, max_mm
 
 
@@ -128,9 +140,12 @@ def _is_within_bounds(
         (False, error_message) if out of bounds
     """
     bbox = part.bounding_box()
-    build_zone_min_mm, build_zone_max_mm = _normalize_mixed_unit_bounds_for_compare(
-        build_zone
-    )
+    try:
+        build_zone_min_mm, build_zone_max_mm = _objective_zone_bounds_mm_for_compare(
+            build_zone
+        )
+    except ValueError as exc:
+        return False, str(exc)
 
     # Check each dimension
     violations = []
@@ -350,14 +365,27 @@ def validate_and_price(
         )
 
     # First, check build zone if provided
-    build_zone_violations: list[str] = []
     if build_zone is not None:
         is_valid, error_msg = _is_within_bounds(part, build_zone)
         if not is_valid:
-            build_zone_violations = [
-                _prefix_part_violation(label, f"Build zone violation: {error_msg}")
-            ]
-            logger.warning("build_zone_violations", violations=build_zone_violations)
+            build_zone_violation = _prefix_part_violation(
+                label, f"Build zone violation: {error_msg}"
+            )
+            logger.warning("build_zone_violations", violations=[build_zone_violation])
+            return WorkbenchResult(
+                is_manufacturable=False,
+                unit_cost=0.0,
+                weight_g=0.0,
+                violations=[build_zone_violation],
+                metadata=WorkbenchMetadata(
+                    additional_info={
+                        "quantity": quantity,
+                        "requested_quantity": quantity,
+                        "batch_total_cost_usd": 0.0,
+                        "skipped_fixed_context": False,
+                    }
+                ),
+            )
 
     # Dispatch to appropriate workbench
     if method == ManufacturingMethod.CNC:
@@ -388,18 +416,13 @@ def validate_and_price(
         update={"additional_info": additional_info}
     )
 
-    # Combine all violations
-    all_violations = [
-        _prefix_part_violation(label, violation)
-        for violation in (list(result.violations) + build_zone_violations)
-    ]
-    is_manufacturable = result.is_manufacturable and not build_zone_violations
-
     return WorkbenchResult(
-        is_manufacturable=is_manufacturable,
+        is_manufacturable=result.is_manufacturable,
         unit_cost=result.unit_cost,
         weight_g=result.weight_g,
-        violations=all_violations,
+        violations=[
+            _prefix_part_violation(label, violation) for violation in result.violations
+        ],
         metadata=result_metadata,
     )
 
@@ -442,6 +465,27 @@ def validate_and_price_assembly(
                 unit_cost=0.0,
                 weight_g=0.0,
                 violations=inventory_errors,
+                metadata=WorkbenchMetadata(
+                    additional_info={
+                        "part_reports": [],
+                        "part_count": 0,
+                        "quantity": quantity,
+                        "requested_quantity": quantity,
+                    }
+                ),
+            )
+
+    if build_zone is not None:
+        try:
+            _objective_zone_bounds_mm_for_compare(build_zone)
+        except ValueError as exc:
+            label = _part_label(part)
+            violation = _prefix_part_violation(label, f"Build zone violation: {exc}")
+            return WorkbenchResult(
+                is_manufacturable=False,
+                unit_cost=0.0,
+                weight_g=0.0,
+                violations=[violation],
                 metadata=WorkbenchMetadata(
                     additional_info={
                         "part_reports": [],

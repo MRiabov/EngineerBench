@@ -50,6 +50,9 @@ The Benchmark Coder turns an approved benchmark handoff into `benchmark_script.p
 - `benchmark_definition.yaml` and `benchmark_assembly_definition.yaml` are read-only context after plan approval.
 - The benchmark coder preserves the approved labels and repeated quantities exactly.
 - `benchmark_plan_evidence_script.py` is the inspectable source of the approved geometry; do not reinterpret it.
+- The benchmark objective zones must stay in millimeters and each of goal,
+  build, and forbid must span at least 3 mm on its largest axis; tiny zones
+  fail closed instead of being auto-scaled.
 - The payload-to-goal bottom-center angle must satisfy the configured
   `benchmark_solvability.minimum_payload_to_goal_angle_deg` threshold; if the
   benchmark is too shallow for gravity-driven motion, the handoff is
