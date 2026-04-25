@@ -58,11 +58,10 @@ Every proposed solution is passed through a "Workbench" validator that computes:
 
 ### 3.3 Simulation & Verification
 
-Solutions are converted from CAD to mesh and simulated in **Genesis**.
+Solutions are converted from CAD to mesh and simulated in **MuJoCo** or **Genesis**.
 
 - **Dynamic Objectives:** Success is defined by the reliable delivery of a `moved_object` to a `goal_zone`.
 - **Robustness Testing:** Solutions are evaluated against "runtime jitter" (randomized initial conditions) to ensure mechanical stability.
-- **Actuator Limits:** Motors are constrained by real-world torque/power curves, failing if overloaded.
 
 ## 4. Evaluation and Dataset Generation
 
@@ -77,7 +76,7 @@ EngineerBench generates a rich dataset of engineering reasoning:
 
 ### Prerequisites
 
-- Docker / Podman
+- Docker and `docker compose` installed
 - Python 3.12+ (uv recommended)
 
 ### Installation
@@ -85,6 +84,10 @@ EngineerBench generates a rich dataset of engineering reasoning:
 ```bash
 git clone https://github.com/organization/EngineerBench
 cd EngineerBench
+
+# install the dependencies for rendering and physical simulation
+sudo apt-get update && sudo apt-get install -y --no-install-recommends libgl1 libglu1-mesa libxrender1 libxext6 libfontconfig1 libx11-6 libegl1 libosmesa6 libglib2.0-0 libsm6 libvulkan1 libxcursor1 libxinerama1 libxft2 libxrandr2 libxi6
+
 uv sync # install uv if you haven't: `curl -LsSf https://astral.sh/uv/install.sh | sh`
 ```
 
@@ -161,7 +164,7 @@ uv run dataset/evals/eval_inference_pipeline.py \
     --skip-env-up
 ```
 
-*Note*: Due to technical constraints of engineer_coder and engineer_execution_reviewer not working at the moment, we didn't add functionality to run inference pipeline over them.
+*Note*: Due to LLM constraints of engineer_coder and engineer_execution_reviewer not working at the moment, we didn't add functionality to run inference pipeline over them. This is readily extendable, however.
 
 Common inference pipeline flags:
 
@@ -181,7 +184,8 @@ Common inference pipeline flags:
 
 ### Documentation and specifications
 
-
+The primary specifications live in `specs/architecture/` files. everything about the system and agents lives there.
+See `specs/architecture/desired_architecture.md` for the index.
 
 ## 6. Citation
 
