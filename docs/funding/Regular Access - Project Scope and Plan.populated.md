@@ -40,86 +40,79 @@ Mechanical engineering design remains poorly served by current open AI benchmark
 
 Problemologist-AI targets this gap. The system creates randomized engineering problems, plans and implements candidate solutions, validates CAD correctness, estimates manufacturing cost and weight, and simulates the design to test whether it satisfies objective regions and avoids forbidden regions. The output is not only a pass/fail score. Each run produces structured plans, code-CAD scripts, simulation artifacts, renders, LLM-as-a-Judge review decisions, and compressed reasoning traces. This provides the kind of dense, inspectable training signal that has made software engineering benchmarks valuable for AI research, but for physical design.
 
-The requested EuroHPC allocation is needed primarily for model training on solving the environment, not for the environment runtime itself. For example, fine-tuning Qwen3.5‑35B‑A3B in bf16 LoRA works on 74GB VRAM when training on SFT prediciton; substantially more if the model is trained using Reinforcement Learning. Scaling compute is what will prove the model to be useful for industrial settings.
+The requested EuroHPC allocation is needed primarily for model training on solving the environment, not for the environment runtime itself. For example, fine-tuning Qwen3.5‑35B‑A3B in bf16 LoRA works on 74GB VRAM when training on SFT prediciton; substantially more if the model is trained using Reinforcement Learning, and long-horizon rollouts. Scaling compute and data is what will prove the model to be useful for industrial settings.
 
-The target training path is SFT followed by GRPO or closely related online reinforcement learning. Initial experiments have used 9B models, but the main target is a substantially larger model, including a 30B-parameter dense or mixture-of-experts model if the allocation permits. Based on comparable CAD post-training work, for example CADEvolve and CAD modelling research, using SFT plus online RL/GRPO, the expected lower-bound training requirement is approximately 1,500-5,000 H100-hours. 
+To clarify: initially, the research assumed that models under specific guidance, automatic prompt engineering and other training-free models will work. We have, unfortunately, discovered that models in fact require additional training.
 
-Notably, the figures above are probably significantly higher, as experimentally, we have proven that models as GPT-5.4 require starting from 100k output token length to solve even basic problems due to numerous trial-and-error (however, solving them in the end). Also notably, one task of this research is to reduce the error rates of the models.
+As such, we need to post-train the models, using methods as SFT followed by GRPO or closely related online reinforcement learning. Initial experiments have used 9B models, but the main target is a substantially larger model, including a 30B-parameter dense or mixture-of-experts model if the allocation permits. Based on comparable CAD post-training work (for example CADEvolve paper) and other CAD modelling research, using SFT plus online RL/GRPO will require *at least* 1,500-5,000 H100-hours.
+
+Notably, the figures above are probably significantly higher, as experimentally, we have proven that models as GPT-5.4 require starting from 100k output token length to solve even basic problems due to numerous trial-and-error (however, solving them in the end). Also notably, one task of this research is to reduce the error rates of the models, making them more computationally efficient.
 
 ## Overview of the project (2 pages)
 
-The project motivation is that frontier AI models can generate plausible mechanical plans and CAD-like code, but there is still no trustworthy open environment that can train and evaluate them on dynamic, manufacturable engineering tasks. Static CAD reconstruction evaluates geometry syntax or similarity; finite-element-only workflows test isolated structural properties; robotics environments usually assume the robot already exists. Problemologist-AI instead asks the model to create or solve a complete engineering task: for example, move an object (payload) from a start region into a target position while adhering to constraints such as avoiding forbidden regions and cost, weight, material, and manufacturing constraints.
+The project motivation is that frontier AI models can generate CAD-like code (not without an error, too), but they can not solve real problems. For one, being able to solve such problems is very industrially useful and commercially attractive, however from the scientific point of view - no way exists in literature to train models on end-to-end engineering tasks. 
+Many works do narrow LLM models, for example Text-to-CAD or Image-to-CAD reconstruction; or finite element model understanding; 3D diffusion models create high quality but non-industrially-useful models, robotics environments move objects, but they assume the robot already exists. EngineerLab instead asks the model to create or solve a complete engineering task: for example, move an object (payload) from a start region into a target position using a machine that the agent created on its own.
 
-The system has two main agent graphs.
+We have introduced 8 agents to solve the problem - four are responsible for planning and creating benchmarks (test cases for veriication of whether the designed system can really solve the problem) and the engineer solving the problems. In spirit of LangGraph, we are calling the two systems as two graphs.
 
-1. The Benchmark Generator graph creates new problems. It plans objective geometry, randomization, allowed build zones, static obstacles, benchmark-owned fixtures, and cost/weight envelopes; a reviewer checks the plan; a coder implements the benchmark; and an execution reviewer accepts only validated benchmark tasks.
-2. The Engineer graph solves accepted benchmarks. It plans a mechanism, reviews the plan, generates CadQuery CAD code and simulation artifacts, validates manufacturability and pricing, simulates the candidate, and subjects the final solution to execution review.
+1. The Benchmark Generator graph creates new problems. It plans final and forbidden positions, static obstacles, where model can and can not build, randomization, and cost/weight caps; its reviewer checks the plan; its coder implements the benchmark (adhering ); its execution reviewer catches issues deterministic validation can not catch.
+2. The Engineer graph solves the benchmarks. It plans a mechanism, reviews the plan, generates CadQuery CAD code and simulation artifacts, validates manufacturability and pricing, simulates the candidate, and subjects the final solution to execution review. 
 
-The project uses structured handoff artifacts rather than informal chat. Plans, assembly definitions, objective zones, payload trajectories, reviewer decisions, simulation outputs, and render manifests are represented as Markdown, YAML, JSON, or Pydantic-backed schemas. This makes failures reviewable and makes the resulting traces suitable for later model training.
+For now, we have already achieved relatively consistent creation of benchmarks (small dataset of them is already available) (success rates are ~90% and improving), and with a lot of trial and error, solutioning of the environment - we estimate that even correct, coherent static solution (we estimate that internally) is done only done at 5% using a 100k output token budget. The main cause is because models an not create coherent, or reason about 3D geometry as well as they reason about code.
+
+The system itself is built for agentic reliability - we validate plans, geometry, simulation rigorously; for example, during planning, engineering and benchmark agents need to specify the payload's (the object we are trying to move) trajectory, and ensure that it doesn't intersect any object - which is not an easy task for an agent. Additionally, cost and weight constraints must be met.
 
 The main computational methods are:
 
-- Agentic search with planner, coder, reviewer, and skill-improvement roles, using strict validation and fail-closed handoff gates.
-- Large-scale ensemble execution, where many independent benchmark/solution episodes run in parallel and each episode emits persistent data for training and evaluation.
+- Supervised fine-tuning (SFT) as consistent with other literature,
+- Reinforcement learning (RL), using methods such as GRPO and similar on-policy methods.
 - Simulation and rendering of execution attempts, in simulators such as MuJoCo.
 
-The scientific challenges are both computational and methodological. Computationally, the system needs to generate validated traces and then post-train models at a scale large enough to measure real solver improvement. Methodologically, the challenge is to convert loosely stated physical design problems into validated machine-checkable contracts without collapsing to trivial geometry or overfitting to one simulator. Problemologist-AI addresses this by separating static validation, manufacturability checks, dynamic simulation, visual evidence, and reviewer acceptance into distinct gates.
+The scientific challenges are both methodological and computational. Methodologically, we are the first in the world to introduce closed-loop simulation into the engineering tasks. Further, to create such an agentic system which can do it; and most importantly, create datasets and training methods after which models will perform. Computationally, we then need to train the models - not a small compute requirement. 
 
-The EuroHPC award will enable the following advances:
-
-- Scale the benchmark corpus from prototype examples to a reusable open dataset of dynamic mechanical design tasks.
-- Generate validated solution trajectories, including failed and corrected attempts, that are valuable for post-training and prompt/skill optimization.
-- Post-train a solver model using SFT and GRPO-style reinforcement learning to demonstrate that the environment provides a usable training signal.
-- Measure model capability across task complexity levels, from simple rigid-body mechanisms to larger multi-part assemblies.
-- Evaluate robustness under randomized starts, geometric tolerances, and payload trajectories rather than single deterministic runs.
-- Prepare the architecture for multiphysics extensions, including fluids, deformables, and electromechanical tasks.
-
-Expected outcomes are:
-
-- An open-source benchmark-generation and engineering-evaluation framework.
-- A dataset of generated benchmark problems with objective definitions, fixtures, renders, and validation metadata.
-- A dataset of solution attempts with CAD code, manufacturability checks, cost/weight estimates, simulation results, and reviewer decisions.
-- A dataset of reasoning traces and compressed journals for model training and diagnostic analysis.
-- Post-trained model checkpoints or adapters, subject to licensing constraints of the selected base model.
-- Performance measurements and best practices for running CAD/engineering post-training workloads on HPC systems.
-
-The interdisciplinary value is that the project links machine learning, computational mechanics, CAD, manufacturing, robotics simulation, and software systems. The resulting environment can be used by AI researchers, mechanical engineers, and computational design researchers who need repeatable physical-design tasks rather than only natural-language examples.
+Our justification for computational resources are as follows:
+* Having a system that can solve mechanical engineering tasks will allow rapid advancement and decrease of costs in hardware engineering tasks,
+* To create such a system we need to post-train models to become better at computer vision in CAD domain, and become better creating geometry that can in fact deliver the solution.
 
 ## Validation, verification, state of the art (1 page)
 
 ### Validation & Verification
 
-The validation strategy is layered. First, every handoff file is checked for structural validity: required Markdown sections, valid YAML/JSON, known schema fields, object labels, units, objective zones, and role-specific file ownership. This prevents downstream stages from silently accepting ambiguous plans.
+We make the agentic infrastructure robust.
+Agents operate in a filesystem, similar to general Claude Code, Codex or OpenHands agents (in fact, we use Codex as our driver). 8 agents all have three sets of documents: read-only, read-write and hidden, and agents have requirements they must meet requirements in contents of the files.
+For example, the declared material must match the one during planning. Trajectory of the payload must meet the actual simulation results. Reviewers must persist files with supporting evidence. It is this strict validation that has given us ability to solve the environments with, including, weaker models; and also allowing more dense rewards; and also allowing more useful intermediary outputs to reuse during other than the main RL loop (for example, having plan files allows us to later train an agent to follow the plan).
 
-Second, generated CAD is validated geometrically. The system checks that parts export to valid meshes, that custom-built parts remain inside the build zone, that benchmark-owned fixtures are not modified by the engineer graph, and that static objects and objective zones do not violate declared constraints. Manufacturability checks then test process-relevant constraints such as wall thickness, undercuts, cost estimates, and material assumptions.
+We also validate that CAD is validated geometrically. Notably, models produce inconsistent geometry in about 80% of file edits. We created a system validating the the files at virtually every stage: meshes, that engineer's parts remain inside the build zone, that benchmark files are not modified by the engineer graph, that static objects and objective zones do not violate weight, manufacturability rules and cost constraints, etc. 
 
-Third, dynamic behavior is validated by simulation. The target object must enter the goal region, avoid forbidden zones, and satisfy timing, contact, and payload-trajectory expectations. For robustness, successful solutions are rerun under randomized runtime jitter, start-state variation, and motion envelopes. Simulation evidence includes structured results and visual artifacts so reviewers can inspect both numeric and visual behavior.
+Third, dynamic behavior is validated by simulation. We find that moving objects from one place to another in a constrained environment is both a low-hanging fruit of teaching models do engineering as well as being industrially relevant (e.g. assembly tasks). The target object (payload) must enter the goal region, avoid forbidden zones, and satisfy timing, contact, and payload-trajectory expectations. For robustness, successful solutions are rerun under randomized runtime jitter, start-state variation, and motion envelopes. Simulation evidence includes structured results and visual artifacts so reviewers can inspect both numeric and visual behavior.
 
 Fourth, reviewer agents provide an adversarial validation layer. Plan reviewers reject infeasible, ambiguous, unsupported, or inconsistent handoffs. Execution reviewers inspect static and dynamic evidence and reject non-robust or non-manufacturable solutions. Reviewer behavior is itself evaluated with seeded cases so that approval is not merely a textual formality.
 
 Reproducibility is supported by deterministic session workspaces, strict schemas, persistent render bundles, stored simulation outputs, event logs, and journal summaries. Each accepted artifact can be traced back to the input benchmark, agent role, revision, validation result, and review decision. Local integration tests are used as the primary verification route for service boundaries.
 
+On the simulation side, we do not use systems like FENiCS or other FEM simulators due to: high setup complexity, troubles with multiphysics support, troubles with multiphysics support, and low added-value over what MuJoCo or Genesis (which supports multiphysics) have to offer.
+
 ### Comparison with state of the art
 
-Existing CAD-generation benchmarks and tools typically focus on generating code or reconstructing geometry, not on whether a generated mechanism is manufacturable, cost-constrained, and dynamically successful. CAD-GPT, CAD-Llama, STEP-LLM, CADEvolve, CAD-Recode, and related systems are important for text-to-CAD, image-to-CAD, and CAD-sequence generation, but their evaluation is usually static or reconstruction-focused. CADEvolve is especially relevant because it is CadQuery-based and demonstrates the value of large synthetic executable CAD corpora for fine-tuning. Related CAD reconstruction work also shows that SFT followed by online RL methods such as GRPO can improve CAD generation. Problemologist-AI extends this direction from static/reconstruction CAD to dynamic, manufacturable engineering tasks with simulation-backed acceptance.
+Existing CAD-generation benchmarks and tools typically focus on generating code or reconstructing geometry, not on whether a generated mechanism is manufacturable, cost-constrained, and dynamically successful. CAD-GPT, CAD-Llama, STEP-LLM, CADEvolve, CAD-Recode, and related systems are important for text-to-CAD, image-to-CAD, and CAD-sequence generation, but their evaluation is usually static or reconstruction-focused. Because of general (e.g. GPT-5) models do not perform well on CAD tasks most state-of-the-art in CAD is achieved via fine-tuning. In particular, CAD reconstruction work also shows that SFT followed by online RL methods such as GRPO can improve CAD generation. EngineerLab extends this direction from static/reconstruction CAD to solutions validated by simulation, and introducing cost, weight, and manufacturability constraints into the training pipeline.
 
 Robotics and embodied-agent environments evaluate control policies in simulated worlds, but they usually assume the robot or mechanism is already defined. Automated environment-generation systems can synthesize software or embodied tasks, but they do not normally require the model to produce a manufacturable mechanism that satisfies cost and weight constraints.
 
-Problemologist-AI's advantage is the combination of adversarial benchmark generation, code-CAD, manufacturability screening, simulation-backed dynamic objectives, reviewer gates, retained reasoning traces, and a training loop intended to produce a solver model. Its drawback is that model post-training is computationally expensive, especially beyond small models. Environment execution is comparatively lightweight, and simulation validity remains bounded by the chosen physics backends. For this reason the project treats MuJoCo and Genesis as complementary: MuJoCo provides fast rigid-body validation, while Genesis provides a route toward richer multiphysics tasks.
+EngineerLab's advantage is the data pipeline that was built: adversarial benchmark (test case) generation, code-CAD, manufacturability screening, simulation being a verifiable reward, LLM-as-a-Judge systems, and a training loop intended to produce a solver model. 
 
 ## Software and Attributes (1 page)
 
 ### Software
 
-The main codebase is Problemologist-AI, an open-source Python-first platform using FastAPI services, LangGraph/DSPy agent orchestration, strict Pydantic schemas, PostgreSQL, MinIO-compatible object storage, Temporal workflows, and a secondary React/TypeScript dashboard. The scientific workflow uses CadQuery for parametric CAD, MuJoCo for fast rigid-body simulation, Genesis for broader physics simulation, and VTK/OSMesa/EGL-backed rendering for visual evidence. The training workflow will use the generated traces and rewards for SFT and GRPO-style post-training of open-weight models.
+The main codebase is EngineerLab, an open-source Python-first platform using FastAPI services, LangGraph/DSPy agent orchestration, strict Pydantic schemas, PostgreSQL, MinIO-compatible object storage, Temporal workflows, and a secondary React/TypeScript dashboard. The scientific workflow uses CadQuery for parametric CAD, MuJoCo for fast rigid-body simulation, Genesis for broader physics simulation, and VTK/OSMesa/EGL-backed rendering for visual evidence. The training workflow will use the generated traces and rewards for SFT and GRPO-style post-training of open-weight models.
 
 The alternatives considered include pure mesh generation, static CAD reconstruction, finite-element-only workflows, and direct reinforcement-learning control environments. These alternatives are not sufficient alone because the project needs editable CAD, manufacturability metadata, cost/weight screening, and dynamic task validation in one loop. CadQuery is the intended CAD basis because it keeps the design editable and closer to manufacturing workflows while also aligning better with the availability of existing public CAD-code datasets.
 
 ### Particular libraries
 
-The project uses Python 3.12, CadQuery/OpenCascade-style CAD geometry, MuJoCo, Genesis, FastAPI, Pydantic, SQLAlchemy/Alembic, PostgreSQL, MinIO/S3-compatible storage, Temporal, LangGraph, DSPy, VTK, and supporting scientific Python libraries. Model training will use the selected open-weight model stack for SFT and GRPO-style RL; exact packages and distributed-training configuration should be filled in after the base model and target EuroHPC machine are selected. The frontend uses React, TypeScript, Vite, and Tailwind CSS for inspection only; it is not required for batch production.
+The project uses Python 3.12, CadQuery/OpenCascade-style CAD geometry, MuJoCo, Genesis, FastAPI, Pydantic, SQLAlchemy/Alembic, PostgreSQL, MinIO/S3-compatible storage, Temporal, LangGraph, DSPy, VTK, and supporting scientific Python libraries. Model training will use the selected open-weight model stack for SFT and GRPO-style RL; we use TRL and Unsloth in particular. 
 
-The repository is managed with git. Local development and integration execution use the existing project scripts and Python virtual environment. Production HPC execution is expected to use containers or environment modules that provide Python 3.12, compiler/runtime support for CAD and simulation libraries, OpenGL/EGL or OSMesa rendering support, and access to a shared filesystem or object store for artifacts.
+The repository is managed with git. Local development and integration execution use the existing project scripts and Python virtual environment. Production HPC execution is expected to use containers or environment modules that provide Python 3.12, compiler/runtime support for CAD and simulation libraries, OpenGL/EGL or OSMesa rendering support.
 
 ### Parallel programming
 
@@ -127,9 +120,7 @@ The environment workload is primarily task-parallel across independent benchmark
 
 ### I/O requirements
 
-Each episode writes small structured text files and medium-size binary artifacts. Typical per-episode outputs include Markdown/YAML/JSON handoffs, CAD exports, MJCF or backend simulation files, 24-view RGB/depth/segmentation render bundles, simulation videos, frame metadata, object pose tables, logs, and review records. For planning purposes, a simple rigid-body episode is expected to produce about 50-250 MB, while richer multiphysics or video-heavy episodes may produce 0.5-2 GB. Production should batch artifacts by episode and avoid excessive small-file churn by using manifests and object-store-backed bundles where possible.
-
-The largest file counts occur during active episode workspaces and render bundles. A conservative planning estimate is 100-1,000 files per active episode, with production scheduling limiting simultaneous active episodes per worker group to stay within site file-count policies. Restart overhead is moderate: a failed episode can resume from persisted session files and manifests, but some physics backends have nontrivial cold-start and scene-build costs. Local tests show that warm process reuse can substantially reduce repeated simulation overhead.
+Each episode writes small structured text files and medium-size binary artifacts. Typical per-episode outputs include Markdown/YAML/JSON handoffs, CAD exports, MJCF or backend simulation files, 24-view RGB/depth/segmentation render pipelines, simulation videos, frame metadata, object pose tables, logs, and review records. Images normally take about 20mb per episode in lower resolutions (higher is unnecessary at the moment), while richer multiphysics or video-heavy episodes may produce 100mb of of video. We use S3 as a filesystem natively. As such, the IO requirements are relatively insignificant (we are unlikely to produce more than 4 tb of dataset during the whole training set.
 
 ## Data: Management Plan, Storage, Analysis and Visualization (~1 page)
 
@@ -137,7 +128,7 @@ The largest file counts occur during active episode workspaces and render bundle
 
 The project will produce benchmark definitions, CAD scripts, validation logs, simulation results, render bundles, videos, review decisions, event logs, reasoning traces, training datasets, and model outputs such as checkpoints or adapters. Completed episode bundles are designed to be compressed or staged into object-store-style archives with manifest metadata.
 
-Publicly releasable code and datasets are intended to be published through the project repository and a suitable research-data archive. EuroHPC support should be acknowledged in publications and in dataset provenance metadata. The scientific workflow does not require personal data; agent traces contain model and tool outputs, not human-subject records. Credentials, API keys, and operational secrets should be excluded from published artifacts.
+Publicly releasable code and datasets are intended to be published through HuggingFace under MIT license. EuroHPC support should be acknowledged in publications and in dataset provenance metadata. The scientific workflow does not require personal data; agent traces contain model and tool outputs, not human-subject records. Credentials, API keys, and operational secrets should be excluded from published artifacts.
 
 ### Project workflow
 
