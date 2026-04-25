@@ -59,11 +59,9 @@ The project uses structured handoff artifacts rather than informal chat. Plans, 
 
 The main computational methods are:
 
-- Parametric code-CAD using CadQuery, selected because it produces editable, reproducible engineering geometry, can export real CAD artifacts, and aligns with more readily available public CAD-code datasets for model training.
-- Rigid-body simulation using MuJoCo for fast dynamic validation and Genesis for broader multiphysics extensibility, including future deformables, fluids, and stress-related tasks.
-- Manufacturing and economic screening, including cost, weight, material, and process constraints for manufacturing methods such as CNC machining, injection molding, and additive manufacturing.
 - Agentic search with planner, coder, reviewer, and skill-improvement roles, using strict validation and fail-closed handoff gates.
 - Large-scale ensemble execution, where many independent benchmark/solution episodes run in parallel and each episode emits persistent data for training and evaluation.
+- Simulation and rendering of execution attempts, in simulators such as MuJoCo.
 
 The scientific challenges are both computational and methodological. Computationally, the system needs to generate validated traces and then post-train models at a scale large enough to measure real solver improvement. Methodologically, the challenge is to convert loosely stated physical design problems into validated machine-checkable contracts without collapsing to trivial geometry or overfitting to one simulator. Problemologist-AI addresses this by separating static validation, manufacturability checks, dynamic simulation, visual evidence, and reviewer acceptance into distinct gates.
 
