@@ -4,7 +4,7 @@
   "created_at": "2026-04-23T21:35:34.018135+00:00",
   "episode_id": "f9c2c8d8-8ca8-5e1c-abcc-e2b44befeb54",
   "worker_session_id": "seed-renders-ep-central-bypass-10-manual",
-  "revision": "b384d3b700553611d4a1ab58da3f7e6d706d29a5",
+  "revision": "7b3bec37947cabc2aa16f76e93abeb6dc24c8af0",
   "scene_hash": "338b6b892cd2fccdfc9094b3ef839542cd7566f503ca1159ddfda34166d5099a",
   "bundle_path": "renders/benchmark_renders",
   "environment_version": "1.0",
